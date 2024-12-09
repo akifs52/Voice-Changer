@@ -115,7 +115,7 @@ void MainWindow::on_inputcombobox_currentIndexChanged(int index)
     // Varsayılan format ayarları
     format->setSampleRate(48000);
     format->setChannelCount(2);
-    format->setSampleFormat(QAudioFormat::UInt8);
+    format->setSampleFormat(QAudioFormat::Int16);
 
     QVariant inputData = ui->inputcombobox->itemData(index);
     if (!inputData.isValid()) {
@@ -163,7 +163,7 @@ void MainWindow::on_outputcombobox_currentIndexChanged(int index)
     // Varsayılan format ayarları
     format->setSampleRate(48000);
     format->setChannelCount(2);
-    format->setSampleFormat(QAudioFormat::UInt8);
+    format->setSampleFormat(QAudioFormat::Int16);
 
     QVariant outputData = ui->outputcombobox->itemData(index);
     if (!outputData.isValid())
@@ -312,27 +312,28 @@ void MainWindow::progressBarOutput()
         return;
     }
 
-    // UInt8 formatında genlik hesaplama
-    const unsigned char *samples = reinterpret_cast<const unsigned char *>(data.data());
-    int numSamples = data.size();
-    unsigned char maxAmplitude = 0;
+    // Ses genliği hesaplama
+    qint16 *samples = reinterpret_cast<qint16 *>(data.data());
+    int numSamples = data.size() / sizeof(qint16);
+    qint16 maxAmplitude = 0;
 
-    for(int i = 0; i<numSamples; i++)
-    {
-        maxAmplitude = qMax(maxAmplitude,static_cast<unsigned char>(qAbs(samples[i]-128)));
-         // `samples[i] - 128`: Sessizlik seviyesi için ofset çıkarılır.
-
-        float normalizedAmplitude = static_cast<float>(maxAmplitude)/127.0f; // Sessizlik seviyesi çevresinde normalize
-        int progressValue = static_cast<int>(normalizedAmplitude*100); // 0-100 arası değer
-
-        ui->progressBar->setValue(progressValue); //Progress bar güncelle
-        qDebug() << "Volume Level:" << progressValue;
-
-        qint64 written = outputDevice->write(data);
-        if(written == -1)
-        {
-            qCritical() << "Failed to write data to output device.";
-        }
+    for (int i = 0; i < numSamples; ++i) {
+        maxAmplitude = qMax(maxAmplitude, qAbs(samples[i]));
     }
 
+    // Normalize ve progress bar güncelle
+    float normalizedAmplitude = static_cast<float>(maxAmplitude) / 32767.0f;
+    int progressValue = static_cast<int>(normalizedAmplitude * 100); // 0-100 arası değer
+
+    ui->progressBar->setValue(progressValue); // Progress bar güncelle
+    qDebug() << "Volume Level:" << progressValue;
+
+
+    qint64 written = outputDevice->write(data);
+    if(written == -1)
+    {
+        qCritical() << "Failed to write data to output device.";
+    }
 }
+
+
