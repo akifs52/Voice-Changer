@@ -69,12 +69,30 @@ void MainWindow::searchOutputDevice()
 void MainWindow::on_inputslider_valueChanged(int value)
 {
     ui->inputlabel->setText(QString::number(value).arg("%0"));
+
+    if (audioInput) {
+        ui->inputslider->setValue(static_cast<int>(audioInput->volume() * 100));
+    }
+
+
+    float volume = value/100.0f;
+    audioInput->setVolume(volume);
+
 }
 
 void MainWindow::on_outputslider_valueChanged(int value)
 {
 
+
     ui->outputlabel->setText(QString::number(value).arg("%0"));
+
+    if (audioOutput) {
+        ui->outputslider->setValue(static_cast<int>(audioOutput->volume() * 100));
+
+    }
+
+    float volume = value/100.0f;
+    audioOutput->setVolume(volume);
 }
 
 
