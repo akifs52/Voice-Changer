@@ -33,10 +33,13 @@ MainWindow::~MainWindow()
         delete audioOutput;
     }
 
+    disconnect(inputDevice, &QIODevice::readyRead,this,&MainWindow::progressBarOutput);
+
     delete format;
 
 
     delete ui;
+
 
 }
 
@@ -260,20 +263,20 @@ void MainWindow::on_testButton_clicked()
         return;
     }
 
-    connect(inputDevice, &QIODevice::readyRead, this, &MainWindow::processAudioInput);
+    //connect(inputDevice, &QIODevice::readyRead, this, &MainWindow::processAudioInput);
+    connect(inputDevice, &QIODevice::readyRead,this,&MainWindow::progressBarOutput);
+
     isListening = true;
     qDebug() << "Listening started.";
 }
-
-
-
 
 
 void MainWindow::on_stopButton_clicked()
 {
 
         if (inputDevice) {
-            disconnect(inputDevice, &QIODevice::readyRead, this, &MainWindow::processAudioInput);
+           // disconnect(inputDevice, &QIODevice::readyRead, this, &MainWindow::processAudioInput);
+            disconnect(inputDevice, &QIODevice::readyRead,this,&MainWindow::progressBarOutput);
         }
 
         if (audioInput) {
@@ -290,3 +293,46 @@ void MainWindow::on_stopButton_clicked()
         qDebug() << "Listening stopped.";
 }
 
+
+void MainWindow::progressBarOutput()
+{
+
+
+    if(!inputDevice || !outputDevice)
+    {
+        qCritical() << "Input or output device is null.";
+        return;
+    }
+
+    QByteArray data = inputDevice->readAll();
+
+    if(data.isEmpty())
+    {
+        qWarning() << "No data read from input device.";
+        return;
+    }
+
+    // UInt8 formatında genlik hesaplama
+    const unsigned char *samples = reinterpret_cast<const unsigned char *>(data.data());
+    int numSamples = data.size();
+    unsigned char maxAmplitude = 0;
+
+    for(int i = 0; i<numSamples; i++)
+    {
+        maxAmplitude = qMax(maxAmplitude,static_cast<unsigned char>(qAbs(samples[i]-128)));
+         // `samples[i] - 128`: Sessizlik seviyesi için ofset çıkarılır.
+
+        float normalizedAmplitude = static_cast<float>(maxAmplitude)/127.0f; // Sessizlik seviyesi çevresinde normalize
+        int progressValue = static_cast<int>(normalizedAmplitude*100); // 0-100 arası değer
+
+        ui->progressBar->setValue(progressValue); //Progress bar güncelle
+        qDebug() << "Volume Level:" << progressValue;
+
+        qint64 written = outputDevice->write(data);
+        if(written == -1)
+        {
+            qCritical() << "Failed to write data to output device.";
+        }
+    }
+
+}

@@ -55,6 +55,7 @@ private:
     void searchInputDevice();
     void searchOutputDevice();
     void processAudioInput();
+    void progressBarOutput();
 
 };
 #endif // MAINWINDOW_H
