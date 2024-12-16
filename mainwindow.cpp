@@ -6,17 +6,19 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
     , format(new QAudioFormat)
     , audioOutput(nullptr)
+    , audioOutputVirtual(nullptr)
     , audioInput(nullptr)
+    , outputDeviceVirtual(nullptr)
     , inputDevice(nullptr)
     , outputDevice(nullptr)
-    , isListening(false)
+
 {
     ui->setupUi(this);
 
     ui->frame_3->hide();
-    ui->stopButton->hide();
     searchInputDevice();
     searchOutputDevice();
+    searchVirtualOutputDevice();
 
 }
 
@@ -34,6 +36,7 @@ MainWindow::~MainWindow()
     }
 
     disconnect(inputDevice, &QIODevice::readyRead,this,&MainWindow::progressBarOutput);
+
 
     delete format;
 
@@ -64,6 +67,14 @@ void MainWindow::searchOutputDevice()
 
 }
 
+void MainWindow::searchVirtualOutputDevice()
+{
+    const auto devicesO = QMediaDevices::audioInputs();
+    for(const QAudioDevice &device : devicesO)
+    {
+        ui->VirtualOutputBox->addItem(device.description(), QVariant::fromValue(device));
+    }
+}
 
 
 void MainWindow::on_inputslider_valueChanged(int value)
@@ -95,6 +106,23 @@ void MainWindow::on_outputslider_valueChanged(int value)
     audioOutput->setVolume(volume);
 }
 
+void MainWindow::on_horizontalSlider_valueChanged(int value)
+{
+    ui->labelVirtual->setText(QString::number(value).arg("%0"));
+
+    if(audioOutputVirtual)
+    {
+        ui->horizontalSlider->setValue(static_cast<int>(audioOutputVirtual->volume()*100));
+
+    }
+    else
+    {
+        return;
+    }
+
+    float volume = value/100.0f;
+    audioOutputVirtual->setVolume(volume);
+}
 
 
 
@@ -124,6 +152,18 @@ void MainWindow::on_refreshOutput_clicked()
     searchOutputDevice();
 
 }
+
+void MainWindow::on_refresVirtualOutput_clicked()
+{
+    qDebug()<<ui->VirtualOutputBox->count();
+    for(int i= ui->VirtualOutputBox->count(); i>-1; i--)
+    {
+        ui->VirtualOutputBox->removeItem(i);
+    }
+
+    searchVirtualOutputDevice();
+}
+
 
 
 
@@ -236,6 +276,57 @@ void MainWindow::on_outputcombobox_currentIndexChanged(int index)
 
 }
 
+
+void MainWindow::on_VirtualOutputBox_currentIndexChanged(int index)
+{
+    // Varsayılan format ayarları
+    format->setSampleRate(48000);
+    format->setChannelCount(2);
+    format->setSampleFormat(QAudioFormat::Int16);
+
+    QVariant virtualOutputData = ui->VirtualOutputBox->currentData(index);
+
+    if (!virtualOutputData.isValid())
+    {
+        qWarning() << "No valid virtual output device selected.";
+        return;
+    }
+
+    QAudioDevice virtualOutputinfo = virtualOutputData.value<QAudioDevice>();
+
+    // Cihazın format desteği kontrolü
+    if (!virtualOutputinfo.isFormatSupported(*format)) {
+        qWarning() << "Selected device does not support the default format. Updating format.";
+        *format = virtualOutputinfo.preferredFormat();
+        qDebug() << "Updated Format: SampleRate:" << format->sampleRate()
+                 << ", Channels:" << format->channelCount()
+                 << ", SampleFormat:" << format->sampleFormat();
+    }
+
+    // Eski `audioOutput` nesnesini temizleme
+    if (audioOutputVirtual)
+    {
+        audioOutputVirtual->stop();
+        delete audioOutput;
+    }
+
+    // Yeni `audioOutput` nesnesini oluşturma
+    audioOutputVirtual = new QAudioSource(virtualOutputinfo,*format,this);
+
+    // Sinyal bağlantısı
+    connect(audioOutputVirtual, &QAudioSource::stateChanged, this, [](QAudio::State state) {
+        if (state == QAudio::IdleState) {
+            qDebug() << "Audio virtual output is idle.";
+        } else if (state == QAudio::StoppedState) {
+            qDebug() << "Audio virtual output has stopped.";
+        }
+    });
+
+    // Ses kaynağını başlatma
+    outputDeviceVirtual = audioOutputVirtual->start();
+
+}
+
 void MainWindow::processAudioInput()
 {
     if (!inputDevice || !outputDevice) {
@@ -258,57 +349,55 @@ void MainWindow::processAudioInput()
 
 
 
-void MainWindow::on_testButton_clicked()
+void MainWindow::on_testButton_clicked(bool checked)
 {
+    if (checked) {
+        ui->testButton->setText("Stop");
 
-    if (!audioInput || !audioOutput) {
-        qCritical() << "Audio devices are not properly initialized.";
-        //ui->testButton->setChecked(false);
-        return;
+            audioInput->resume();
+            audioOutput->resume();
+
+            qDebug() << "Listening started.";
+
+            if(audioInput && audioOutput)
+            {
+                connect(inputDevice, &QIODevice::readyRead, this, [=]() {
+
+                    if(usingEffects)
+                    {
+                        data = inputDevice->readAll();
+                        qDebug() << "ab";
+                    }
+
+                    progressBarOutput(); // Progress bar işlemi
+
+                    // Output ver
+                    if (outputDevice) {
+                        outputDevice->write(data);
+                    }
+                });
+            }
+             else
+            {
+            qWarning() << "Audio devices are not properly initialized.";
+            }
     }
+        else {
+        ui->testButton->setText("Test Device");
 
-    inputDevice = audioInput->start();
-    if (!inputDevice) {
-        qCritical() << "Failed to start audio input device.";
-        //ui->testButton->setChecked(false);
-        return;
-    }
-
-    outputDevice = audioOutput->start();
-    if (!outputDevice) {
-        qCritical() << "Failed to start audio output device.";
-        //ui->testButton->setChecked(false);
-        return;
-    }
-
-    //connect(inputDevice, &QIODevice::readyRead, this, &MainWindow::processAudioInput);
-    connect(inputDevice, &QIODevice::readyRead,this,&MainWindow::progressBarOutput);
-
-    isListening = true;
-    qDebug() << "Listening started.";
-}
-
-
-void MainWindow::on_stopButton_clicked()
-{
-
+        // Dinlemeyi durdur
         if (inputDevice) {
-           // disconnect(inputDevice, &QIODevice::readyRead, this, &MainWindow::processAudioInput);
-            disconnect(inputDevice, &QIODevice::readyRead,this,&MainWindow::progressBarOutput);
+            disconnect(inputDevice, &QIODevice::readyRead,this,nullptr);
         }
-
         if (audioInput) {
-            audioInput->stop();
-            inputDevice = nullptr;
+            audioInput->suspend();
         }
-
         if (audioOutput) {
-            audioOutput->stop();
-            outputDevice = nullptr;
+            audioOutput->suspend();
         }
 
-        isListening = false;
         qDebug() << "Listening stopped.";
+    }
 }
 
 
@@ -322,7 +411,7 @@ void MainWindow::progressBarOutput()
         return;
     }
 
-    QByteArray data = inputDevice->readAll();
+    //data = inputDevice->readAll();
 
     if(data.isEmpty())
     {
@@ -346,12 +435,19 @@ void MainWindow::progressBarOutput()
     ui->progressBar->setValue(progressValue); // Progress bar güncelle
     qDebug() << "Volume Level:" << progressValue;
 
-
-    qint64 written = outputDevice->write(data);
-    if(written == -1)
-    {
-        qCritical() << "Failed to write data to output device.";
-    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
