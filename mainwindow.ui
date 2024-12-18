@@ -655,12 +655,55 @@ QProgressBar::chunk {
          <property name="text">
           <string>eko ses</string>
          </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="robotButton">
          <property name="text">
           <string>Robot sesi</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="devilButton">
+         <property name="text">
+          <string>Canavar sesi</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="boldButton">
+         <property name="text">
+          <string>Kalın ses</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="femaleButton">
+         <property name="text">
+          <string>kadın sesi</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="combineButton">
+         <property name="text">
+          <string>overwatch hl</string>
          </property>
          <property name="checkable">
           <bool>true</bool>

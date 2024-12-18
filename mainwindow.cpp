@@ -47,7 +47,6 @@ MainWindow::~MainWindow()
 }
 
 
-
 void MainWindow::searchInputDevice()
 {
     const auto devicesI = QMediaDevices::audioInputs();
@@ -163,9 +162,6 @@ void MainWindow::on_refresVirtualOutput_clicked()
 
     searchVirtualOutputDevice();
 }
-
-
-
 
 
 void MainWindow::on_inputcombobox_currentIndexChanged(int index)
@@ -307,7 +303,8 @@ void MainWindow::on_VirtualOutputBox_currentIndexChanged(int index)
     if (audioOutputVirtual)
     {
         audioOutputVirtual->stop();
-        delete audioOutput;
+        delete audioOutputVirtual;
+        audioOutputVirtual = nullptr;
     }
 
     // Yeni `audioOutput` nesnesini oluşturma
@@ -324,6 +321,9 @@ void MainWindow::on_VirtualOutputBox_currentIndexChanged(int index)
 
     // Ses kaynağını başlatma
     outputDeviceVirtual = audioOutputVirtual->start();
+    if (!outputDeviceVirtual) {
+        qWarning() << "Failed to start audio output.";
+    }
 
 }
 
@@ -353,6 +353,7 @@ void MainWindow::on_testButton_clicked(bool checked)
 {
     if (checked) {
         ui->testButton->setText("Stop");
+        testNotOpened= false; //test açılmadıysa inputu efektlerin içinde açar
 
             audioInput->resume();
             audioOutput->resume();
@@ -375,6 +376,8 @@ void MainWindow::on_testButton_clicked(bool checked)
                     if (outputDevice) {
                         outputDevice->write(data);
                     }
+
+
                 });
             }
              else
@@ -436,18 +439,3 @@ void MainWindow::progressBarOutput()
     qDebug() << "Volume Level:" << progressValue;
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

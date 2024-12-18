@@ -40,6 +40,14 @@ private slots:
 
     void processToRobotVoice(QByteArray &data);
 
+    void processToDevilVoice(QByteArray &data);
+
+    void processToFemaleVoice(QByteArray &data);
+
+    void processToCombineVoice(QByteArray &data);
+
+    void processToEkoVoice(QByteArray &data);
+
     void on_bananaButton_clicked(bool checked);
 
     void on_refresVirtualOutput_clicked();
@@ -51,6 +59,16 @@ private slots:
     void on_VirtualOutputBox_currentIndexChanged(int index);
 
     void on_robotButton_clicked(bool checked);
+
+    void on_devilButton_clicked(bool checked);
+
+    void on_ekoButton_clicked(bool checked);
+
+    void on_boldButton_clicked(bool checked);
+
+    void on_femaleButton_clicked(bool checked);
+
+    void on_combineButton_clicked(bool checked);
 
 private:
     Ui::MainWindow *ui;
@@ -65,6 +83,7 @@ private:
 
 
     bool usingEffects = true;
+    bool testNotOpened = true;
     QByteArray data;
 
     void searchInputDevice();
