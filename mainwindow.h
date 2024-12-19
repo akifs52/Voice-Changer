@@ -6,6 +6,7 @@
 #include <QMediaDevices>
 #include <QAudioSource> //input mic
 #include <QAudioSink> //output
+#include <QProcess>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -50,13 +51,7 @@ private slots:
 
     void on_bananaButton_clicked(bool checked);
 
-    void on_refresVirtualOutput_clicked();
-
-    void on_horizontalSlider_valueChanged(int value);
-
     void on_testButton_clicked(bool checked);
-
-    void on_VirtualOutputBox_currentIndexChanged(int index);
 
     void on_robotButton_clicked(bool checked);
 
@@ -70,25 +65,27 @@ private slots:
 
     void on_combineButton_clicked(bool checked);
 
+    void on_startRecord_clicked();
+
+    void on_stopRecord_clicked();
+
 private:
     Ui::MainWindow *ui;
 
     QAudioFormat *format;
     QAudioSink *audioOutput;
-    QAudioSource *audioOutputVirtual;
     QAudioSource *audioInput;
-    QIODevice *outputDeviceVirtual;
     QIODevice *inputDevice;
     QIODevice *outputDevice;
 
+    QProcess *ffmpegProcess;
+
 
     bool usingEffects = true;
-    bool testNotOpened = true;
     QByteArray data;
 
     void searchInputDevice();
     void searchOutputDevice();
-    void searchVirtualOutputDevice();
     void processAudioInput();
     void progressBarOutput();
 

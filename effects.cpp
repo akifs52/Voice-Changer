@@ -259,25 +259,20 @@ void MainWindow::on_robotButton_clicked(bool checked)
     {
         ui->robotButton->setText("Stop");
 
-        if(testNotOpened)
+        if(!audioInput)
         {
             audioInput->resume();
         }
 
-        audioOutputVirtual->resume();
 
-        if(audioInput && audioOutputVirtual)
+
+        if(audioInput)
         {
             connect(inputDevice, &QIODevice::readyRead, this, [=](){
 
                 data = inputDevice->readAll();
 
                 processToRobotVoice(data);
-
-                if(outputDeviceVirtual)
-                {
-                    outputDeviceVirtual->write(data);
-                }
 
             });
         }
@@ -301,14 +296,11 @@ void MainWindow::on_robotButton_clicked(bool checked)
         {
         disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
         }
-        if(testNotOpened)
+        if(audioInput)
         {
             audioInput->suspend();
         }
-        if(audioOutputVirtual)
-        {
-          audioOutputVirtual->suspend();
-        }
+
 
         usingEffects = true;
         qDebug() << "robot effect stopped.";
@@ -324,14 +316,12 @@ void MainWindow::on_bananaButton_clicked(bool checked)
     if (checked) {
         ui->bananaButton->setText("Stop");
 
-        if(testNotOpened)
+        if(!audioInput)
         {
             audioInput->resume();
         }
 
-        audioOutputVirtual->resume();
-
-        if (audioInput && audioOutput) {
+        if (audioInput) {
             connect(inputDevice, &QIODevice::readyRead, this, [=]() {
                 data = inputDevice->readAll();
 
@@ -339,10 +329,6 @@ void MainWindow::on_bananaButton_clicked(bool checked)
                 processToBananaVoice(data);
 
 
-                // Sanal cihaza yaz
-                if (outputDeviceVirtual) {
-                    outputDeviceVirtual->write(data);
-                }
 
             });
 
@@ -362,15 +348,11 @@ void MainWindow::on_bananaButton_clicked(bool checked)
         if (inputDevice) {
             disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
         }
-        if(testNotOpened)
+        if(audioInput)
         {
             audioInput->suspend();
         }
 
-        if(audioOutputVirtual)
-        {
-          audioOutputVirtual->suspend();
-        }
 
         usingEffects = true;
         qDebug() << "Child voice effect stopped.";
@@ -386,25 +368,17 @@ void MainWindow::on_devilButton_clicked(bool checked)
     {
         ui->devilButton->setText("Stop");
 
-        if(testNotOpened)
+        if(!audioInput)
         {
             audioInput->resume();
         }
-
-        audioOutputVirtual->resume();
-
-        if(audioInput && audioOutputVirtual)
+        if(audioInput)
         {
-            connect(inputDevice, &QIODevice::readyRead, this, [=] {
+            connect(inputDevice, &QIODevice::readyRead, this, [=](){
 
                 data = inputDevice->readAll();
 
                 processToDevilVoice(data);
-
-                // Sanal cihaza yaz
-                if (outputDeviceVirtual) {
-                    outputDeviceVirtual->write(data);
-                }
 
 
             });
@@ -426,14 +400,9 @@ void MainWindow::on_devilButton_clicked(bool checked)
         if (inputDevice) {
             disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
         }
-        if(testNotOpened)
+        if(audioInput)
         {
             audioInput->suspend();
-        }
-
-        if(audioOutputVirtual)
-        {
-            audioOutputVirtual->suspend();
         }
 
         usingEffects = true;
@@ -449,25 +418,22 @@ void MainWindow::on_ekoButton_clicked(bool checked)
     {
         ui->ekoButton->setText("Stop");
 
-        if(testNotOpened)
+        if(!audioInput)
         {
             audioInput->resume();
         }
 
-        audioOutputVirtual->resume();
 
-        if(audioInput && audioOutputVirtual)
+
+        if(audioInput)
         {
             connect(inputDevice, &QIODevice::readyRead, this, [=] {
+
+
 
                 data = inputDevice->readAll();
 
                 processToEkoVoice(data);
-
-                // Sanal cihaza yaz
-                if (outputDeviceVirtual) {
-                    outputDeviceVirtual->write(data);
-                }
 
 
             });
@@ -489,16 +455,10 @@ void MainWindow::on_ekoButton_clicked(bool checked)
         if (inputDevice) {
             disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
         }
-        if(testNotOpened)
+        if(audioInput)
         {
             audioInput->suspend();
         }
-
-        if(audioOutputVirtual)
-        {
-            audioOutputVirtual->suspend();
-        }
-
         usingEffects = true;
         qDebug() << "eko effect stopped.";
     }
@@ -518,25 +478,23 @@ void MainWindow::on_femaleButton_clicked(bool checked)
     {
         ui->femaleButton->setText("Stop");
 
-        if(testNotOpened)
+        if(!audioInput)
         {
             audioInput->resume();
         }
 
-        audioOutputVirtual->resume();
 
-        if(audioInput && audioOutputVirtual)
+        if(audioInput )
         {
+
+            data.clear();
+
             connect(inputDevice, &QIODevice::readyRead, this, [=] {
+
 
                 data = inputDevice->readAll();
 
                 processToFemaleVoice(data);
-
-                // Sanal cihaza yaz
-                if (outputDeviceVirtual) {
-                    outputDeviceVirtual->write(data);
-                }
 
 
             });
@@ -558,15 +516,12 @@ void MainWindow::on_femaleButton_clicked(bool checked)
         if (inputDevice) {
             disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
         }
-        if(testNotOpened)
+        if(audioInput)
         {
             audioInput->suspend();
         }
 
-        if(audioOutputVirtual)
-        {
-            audioOutputVirtual->suspend();
-        }
+
 
         usingEffects = true;
         qDebug() << "female effect stopped.";
@@ -580,26 +535,18 @@ void MainWindow::on_combineButton_clicked(bool checked)
     {
         ui->combineButton->setText("Stop");
 
-        if(testNotOpened)
+        if(!audioInput)
         {
             audioInput->resume();
         }
 
-        audioOutputVirtual->resume();
-
-        if(audioInput && audioOutputVirtual)
+        if(audioInput)
         {
             connect(inputDevice, &QIODevice::readyRead, this, [=] {
 
                 data = inputDevice->readAll();
 
                 processToCombineVoice(data);
-
-                // Sanal cihaza yaz
-                if (outputDeviceVirtual) {
-                    outputDeviceVirtual->write(data);
-                }
-
 
             });
 
@@ -620,14 +567,9 @@ void MainWindow::on_combineButton_clicked(bool checked)
         if (inputDevice) {
             disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
         }
-        if(testNotOpened)
+        if(audioInput)
         {
             audioInput->suspend();
-        }
-
-        if(audioOutputVirtual)
-        {
-            audioOutputVirtual->suspend();
         }
 
         usingEffects = true;

@@ -6,19 +6,17 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
     , format(new QAudioFormat)
     , audioOutput(nullptr)
-    , audioOutputVirtual(nullptr)
     , audioInput(nullptr)
-    , outputDeviceVirtual(nullptr)
     , inputDevice(nullptr)
     , outputDevice(nullptr)
+    , ffmpegProcess(new QProcess)
 
 {
     ui->setupUi(this);
-
     ui->frame_3->hide();
     searchInputDevice();
     searchOutputDevice();
-    searchVirtualOutputDevice();
+
 
 }
 
@@ -40,9 +38,21 @@ MainWindow::~MainWindow()
 
     delete format;
 
+    if (ffmpegProcess->state() == QProcess::Running) {
+        qDebug() << "Kayıt durduruluyor...";
+
+        // ffmpeg'e özel bir kapatma sinyali gönder
+        ffmpegProcess->write("q");  // FFmpeg'e "q" göndererek kaydı bitirmesini istiyoruz
+        ffmpegProcess->closeWriteChannel();  // Yazma kanalını kapat, FFmpeg sonlandırmayı işlesin
+
+        if (!ffmpegProcess->waitForFinished(5000)) {  // 5 saniye bekle, hala durmadıysa...
+            qDebug() << "FFmpeg işlemi düzgün şekilde sonlandırılamadı, zorla kapatılıyor...";
+            ffmpegProcess->kill();  // Zorla sonlandırmak en son çare
+            ffmpegProcess->waitForFinished();
+        }
+    }
 
     delete ui;
-
 
 }
 
@@ -64,15 +74,6 @@ void MainWindow::searchOutputDevice()
         ui->outputcombobox->addItem(device.description(), QVariant::fromValue(device));
     }
 
-}
-
-void MainWindow::searchVirtualOutputDevice()
-{
-    const auto devicesO = QMediaDevices::audioInputs();
-    for(const QAudioDevice &device : devicesO)
-    {
-        ui->VirtualOutputBox->addItem(device.description(), QVariant::fromValue(device));
-    }
 }
 
 
@@ -105,25 +106,6 @@ void MainWindow::on_outputslider_valueChanged(int value)
     audioOutput->setVolume(volume);
 }
 
-void MainWindow::on_horizontalSlider_valueChanged(int value)
-{
-    ui->labelVirtual->setText(QString::number(value).arg("%0"));
-
-    if(audioOutputVirtual)
-    {
-        ui->horizontalSlider->setValue(static_cast<int>(audioOutputVirtual->volume()*100));
-
-    }
-    else
-    {
-        return;
-    }
-
-    float volume = value/100.0f;
-    audioOutputVirtual->setVolume(volume);
-}
-
-
 
 void MainWindow::on_refreshInput_clicked()
 {
@@ -152,16 +134,6 @@ void MainWindow::on_refreshOutput_clicked()
 
 }
 
-void MainWindow::on_refresVirtualOutput_clicked()
-{
-    qDebug()<<ui->VirtualOutputBox->count();
-    for(int i= ui->VirtualOutputBox->count(); i>-1; i--)
-    {
-        ui->VirtualOutputBox->removeItem(i);
-    }
-
-    searchVirtualOutputDevice();
-}
 
 
 void MainWindow::on_inputcombobox_currentIndexChanged(int index)
@@ -170,6 +142,7 @@ void MainWindow::on_inputcombobox_currentIndexChanged(int index)
     format->setSampleRate(48000);
     format->setChannelCount(2);
     format->setSampleFormat(QAudioFormat::Int16);
+
 
     QVariant inputData = ui->inputcombobox->itemData(index);
     if (!inputData.isValid()) {
@@ -218,6 +191,7 @@ void MainWindow::on_outputcombobox_currentIndexChanged(int index)
     format->setSampleRate(48000);
     format->setChannelCount(2);
     format->setSampleFormat(QAudioFormat::Int16);
+
 
     QVariant outputData = ui->outputcombobox->itemData(index);
     if (!outputData.isValid())
@@ -272,88 +246,10 @@ void MainWindow::on_outputcombobox_currentIndexChanged(int index)
 
 }
 
-
-void MainWindow::on_VirtualOutputBox_currentIndexChanged(int index)
-{
-    // Varsayılan format ayarları
-    format->setSampleRate(48000);
-    format->setChannelCount(2);
-    format->setSampleFormat(QAudioFormat::Int16);
-
-    QVariant virtualOutputData = ui->VirtualOutputBox->currentData(index);
-
-    if (!virtualOutputData.isValid())
-    {
-        qWarning() << "No valid virtual output device selected.";
-        return;
-    }
-
-    QAudioDevice virtualOutputinfo = virtualOutputData.value<QAudioDevice>();
-
-    // Cihazın format desteği kontrolü
-    if (!virtualOutputinfo.isFormatSupported(*format)) {
-        qWarning() << "Selected device does not support the default format. Updating format.";
-        *format = virtualOutputinfo.preferredFormat();
-        qDebug() << "Updated Format: SampleRate:" << format->sampleRate()
-                 << ", Channels:" << format->channelCount()
-                 << ", SampleFormat:" << format->sampleFormat();
-    }
-
-    // Eski `audioOutput` nesnesini temizleme
-    if (audioOutputVirtual)
-    {
-        audioOutputVirtual->stop();
-        delete audioOutputVirtual;
-        audioOutputVirtual = nullptr;
-    }
-
-    // Yeni `audioOutput` nesnesini oluşturma
-    audioOutputVirtual = new QAudioSource(virtualOutputinfo,*format,this);
-
-    // Sinyal bağlantısı
-    connect(audioOutputVirtual, &QAudioSource::stateChanged, this, [](QAudio::State state) {
-        if (state == QAudio::IdleState) {
-            qDebug() << "Audio virtual output is idle.";
-        } else if (state == QAudio::StoppedState) {
-            qDebug() << "Audio virtual output has stopped.";
-        }
-    });
-
-    // Ses kaynağını başlatma
-    outputDeviceVirtual = audioOutputVirtual->start();
-    if (!outputDeviceVirtual) {
-        qWarning() << "Failed to start audio output.";
-    }
-
-}
-
-void MainWindow::processAudioInput()
-{
-    if (!inputDevice || !outputDevice) {
-        qCritical() << "Input or output device is null.";
-        return;
-    }
-
-    QByteArray data = inputDevice->readAll();
-    if (data.isEmpty()) {
-        qWarning() << "No data read from input device.";
-        return;
-    }
-
-    qint64 written = outputDevice->write(data);
-    if (written == -1) {
-        qCritical() << "Failed to write data to output device.";
-    }
-}
-
-
-
-
 void MainWindow::on_testButton_clicked(bool checked)
 {
     if (checked) {
         ui->testButton->setText("Stop");
-        testNotOpened= false; //test açılmadıysa inputu efektlerin içinde açar
 
             audioInput->resume();
             audioOutput->resume();
@@ -406,8 +302,6 @@ void MainWindow::on_testButton_clicked(bool checked)
 
 void MainWindow::progressBarOutput()
 {
-
-
     if(!inputDevice || !outputDevice)
     {
         qCritical() << "Input or output device is null.";
@@ -439,3 +333,8 @@ void MainWindow::progressBarOutput()
     qDebug() << "Volume Level:" << progressValue;
 
 }
+
+
+
+
+
