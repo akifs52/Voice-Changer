@@ -1,6 +1,7 @@
 #include "effects.h"
 #include "ui_mainwindow.h"
 #include <QTime>
+#include "mainwindow.h"
 
 effects::effects(QWidget *parent)
     : QMainWindow{parent}
@@ -296,11 +297,8 @@ void MainWindow::on_robotButton_clicked(bool checked)
         {
         disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
         }
-        if(audioInput)
-        {
-            audioInput->suspend();
-        }
 
+        data.clear();
 
         usingEffects = true;
         qDebug() << "robot effect stopped.";
@@ -348,13 +346,11 @@ void MainWindow::on_bananaButton_clicked(bool checked)
         if (inputDevice) {
             disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
         }
-        if(audioInput)
-        {
-            audioInput->suspend();
-        }
 
+        data.clear();
 
         usingEffects = true;
+
         qDebug() << "Child voice effect stopped.";
     }
 
@@ -400,10 +396,8 @@ void MainWindow::on_devilButton_clicked(bool checked)
         if (inputDevice) {
             disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
         }
-        if(audioInput)
-        {
-            audioInput->suspend();
-        }
+
+        data.clear();
 
         usingEffects = true;
         qDebug() << "Devil effect stopped.";
@@ -455,10 +449,9 @@ void MainWindow::on_ekoButton_clicked(bool checked)
         if (inputDevice) {
             disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
         }
-        if(audioInput)
-        {
-            audioInput->suspend();
-        }
+
+        data.clear();
+
         usingEffects = true;
         qDebug() << "eko effect stopped.";
     }
@@ -516,12 +509,8 @@ void MainWindow::on_femaleButton_clicked(bool checked)
         if (inputDevice) {
             disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
         }
-        if(audioInput)
-        {
-            audioInput->suspend();
-        }
 
-
+        data.clear();
 
         usingEffects = true;
         qDebug() << "female effect stopped.";
@@ -567,10 +556,8 @@ void MainWindow::on_combineButton_clicked(bool checked)
         if (inputDevice) {
             disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
         }
-        if(audioInput)
-        {
-            audioInput->suspend();
-        }
+
+        data.clear();
 
         usingEffects = true;
         qDebug() << "combine effect stopped.";

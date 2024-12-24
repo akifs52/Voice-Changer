@@ -33,9 +33,6 @@ MainWindow::~MainWindow()
         delete audioOutput;
     }
 
-    disconnect(inputDevice, &QIODevice::readyRead,this,&MainWindow::progressBarOutput);
-
-
     delete format;
 
     if (ffmpegProcess->state() == QProcess::Running) {
@@ -251,7 +248,12 @@ void MainWindow::on_testButton_clicked(bool checked)
     if (checked) {
         ui->testButton->setText("Stop");
 
+        if(!audioInput)
+        {
             audioInput->resume();
+        }
+
+
             audioOutput->resume();
 
             qDebug() << "Listening started.";
@@ -288,9 +290,8 @@ void MainWindow::on_testButton_clicked(bool checked)
         if (inputDevice) {
             disconnect(inputDevice, &QIODevice::readyRead,this,nullptr);
         }
-        if (audioInput) {
-            audioInput->suspend();
-        }
+
+
         if (audioOutput) {
             audioOutput->suspend();
         }
@@ -333,6 +334,10 @@ void MainWindow::progressBarOutput()
     qDebug() << "Volume Level:" << progressValue;
 
 }
+
+
+
+
 
 
 

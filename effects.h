@@ -2,7 +2,7 @@
 #define EFFECTS_H
 
 #include <QMainWindow>
-#include "mainwindow.h"
+
 
 class effects : public QMainWindow
 {

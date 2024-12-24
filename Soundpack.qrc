@@ -1,0 +1,15 @@
+<RCC>
+    <qresource prefix="/img">
+        <file>img/ajdar-israil.jpg</file>
+        <file>img/chineseRap.jpeg</file>
+        <file>img/osuru2.jpg</file>
+        <file>img/osuruk.jpg</file>
+        <file>img/osuruk1.jpg</file>
+        <file>img/sus.jpg</file>
+        <file>img/talisca.jpeg</file>
+        <file>img/trollface.jpg</file>
+        <file>img/yArra.jpg</file>
+        <file>img/yArra-Earrape.jpg</file>
+        <file>img/ohacet.jpg</file>
+    </qresource>
+</RCC>
