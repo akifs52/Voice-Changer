@@ -12,7 +12,10 @@ public:
 
 private:
 
+
 signals:
+
+
 };
 
 #endif // SOUNDPACK_H

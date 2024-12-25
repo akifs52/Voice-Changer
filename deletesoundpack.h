@@ -10,6 +10,8 @@ public:
     explicit deletesoundpack(QWidget *parent = nullptr);
 
 signals:
+
+
 };
 
 #endif // DELETESOUNDPACK_H

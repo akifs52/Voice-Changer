@@ -8,6 +8,7 @@
 #include <QAudioSink> //output
 #include <QProcess>
 #include <QCoreApplication>
+#include "QAudioDecoder"
 
 
 QT_BEGIN_NAMESPACE
@@ -72,9 +73,10 @@ private slots:
 
     void on_stopRecord_clicked();
 
+
+
+
     void on_sound1_clicked();
-
-
 
     void on_sound2_clicked();
 
@@ -113,6 +115,66 @@ private slots:
     void on_sound19_clicked();
 
     void on_sound20_clicked();
+
+    void on_delete1_clicked();
+
+    void on_delete2_clicked();
+
+    void on_delete3_clicked();
+
+    void on_delete4_clicked();
+
+    void on_delete5_clicked();
+
+    void on_delete6_clicked();
+
+    void on_delete7_clicked();
+
+    void on_delete8_clicked();
+
+    void on_delete9_clicked();
+
+    void on_delete10_clicked();
+
+    void on_delete11_clicked();
+
+    void on_delete12_clicked();
+
+    void on_delete13_clicked();
+
+    void on_delete14_clicked();
+
+    void on_delete15_clicked();
+
+    void on_delete16_clicked();
+
+    void on_delete17_clicked();
+
+    void on_delete18_clicked();
+
+    void on_delete19_clicked();
+
+    void on_delete20_clicked();
+
+    void on_load1_clicked();
+
+    void on_load2_clicked();
+
+    void on_load3_clicked();
+
+    void on_load4_clicked();
+
+    void on_load5_clicked();
+
+    void on_save1_clicked();
+
+    void on_save2_clicked();
+
+    void on_savee3_clicked();
+
+    void on_save4_clicked();
+
+    void on_save5_clicked();
 
 private:
     Ui::MainWindow *ui;
@@ -172,10 +234,19 @@ private:
     QString pic20;
 
 
+    QThread *currentDecodeThread = nullptr;
+    QThread *currentOutputThread = nullptr;
+    QAudioDecoder *currentAudioDecoder = nullptr;
+
+
     void searchInputDevice();
     void searchOutputDevice();
     void processAudioInput();
     void progressBarOutput();
+    void saveLoadout(const QString &loadoutName);
+    void loadLoadout(const QString &loadoutName);
+    void stopCurrentAudio();
+
 
 };
 #endif // MAINWINDOW_H

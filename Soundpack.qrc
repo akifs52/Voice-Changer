@@ -12,4 +12,24 @@
         <file>img/yArra-Earrape.jpg</file>
         <file>img/ohacet.jpg</file>
     </qresource>
+    <qresource prefix="/app">
+        <file>img/app/bin (1).png</file>
+        <file>img/app/bin (2).png</file>
+        <file>img/app/bin.png</file>
+        <file>img/app/button.png</file>
+        <file>img/app/menu.png</file>
+        <file>img/app/microphone.png</file>
+        <file>img/app/record.png</file>
+        <file>img/app/refresh.png</file>
+        <file>img/app/stop.png</file>
+        <file>img/app/stop-button.png</file>
+        <file>img/app/cave.png</file>
+        <file>img/app/children.png</file>
+        <file>img/app/diskette.png</file>
+        <file>img/app/lambda.png</file>
+        <file>img/app/ogre.png</file>
+        <file>img/app/robot.png</file>
+        <file>img/app/save-instagram.png</file>
+        <file>img/app/woman.png</file>
+    </qresource>
 </RCC>

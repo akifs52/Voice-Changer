@@ -15,6 +15,21 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
+    <property name="spacing">
+     <number>0</number>
+    </property>
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
     <item>
      <widget class="QFrame" name="frame">
       <property name="minimumSize">
@@ -77,6 +92,12 @@
               <height>0</height>
              </size>
             </property>
+            <property name="styleSheet">
+             <string notr="true">QFrame
+{	
+	background-color: rgb(172, 176, 155);
+}</string>
+            </property>
             <property name="frameShape">
              <enum>QFrame::Shape::StyledPanel</enum>
             </property>
@@ -84,39 +105,189 @@
              <enum>QFrame::Shadow::Raised</enum>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_10">
+             <property name="spacing">
+              <number>0</number>
+             </property>
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
              <item>
-              <widget class="QPushButton" name="load1">
-               <property name="text">
-                <string>1</string>
+              <widget class="QFrame" name="frame_24">
+               <property name="frameShape">
+                <enum>QFrame::Shape::StyledPanel</enum>
                </property>
+               <property name="frameShadow">
+                <enum>QFrame::Shadow::Raised</enum>
+               </property>
+               <layout class="QVBoxLayout" name="verticalLayout_15">
+                <item>
+                 <widget class="QPushButton" name="save1">
+                  <property name="text">
+                   <string>s1</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="Soundpack.qrc">
+                    <normaloff>:/app/img/app/diskette.png</normaloff>:/app/img/app/diskette.png</iconset>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="load1">
+                  <property name="text">
+                   <string>l1</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="Soundpack.qrc">
+                    <normaloff>:/app/img/app/save-instagram.png</normaloff>:/app/img/app/save-instagram.png</iconset>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="load2">
-               <property name="text">
-                <string>2</string>
+              <widget class="QFrame" name="frame_25">
+               <property name="frameShape">
+                <enum>QFrame::Shape::StyledPanel</enum>
                </property>
+               <property name="frameShadow">
+                <enum>QFrame::Shadow::Raised</enum>
+               </property>
+               <layout class="QVBoxLayout" name="verticalLayout_16">
+                <item>
+                 <widget class="QPushButton" name="save2">
+                  <property name="text">
+                   <string>s2</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="Soundpack.qrc">
+                    <normaloff>:/app/img/app/diskette.png</normaloff>:/app/img/app/diskette.png</iconset>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="load2">
+                  <property name="text">
+                   <string>l2</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="Soundpack.qrc">
+                    <normaloff>:/app/img/app/save-instagram.png</normaloff>:/app/img/app/save-instagram.png</iconset>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="load3">
-               <property name="text">
-                <string>3</string>
+              <widget class="QFrame" name="frame_26">
+               <property name="frameShape">
+                <enum>QFrame::Shape::StyledPanel</enum>
                </property>
+               <property name="frameShadow">
+                <enum>QFrame::Shadow::Raised</enum>
+               </property>
+               <layout class="QVBoxLayout" name="verticalLayout_17">
+                <item>
+                 <widget class="QPushButton" name="savee3">
+                  <property name="text">
+                   <string>s3</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="Soundpack.qrc">
+                    <normaloff>:/app/img/app/diskette.png</normaloff>:/app/img/app/diskette.png</iconset>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="load3">
+                  <property name="text">
+                   <string>l3</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="Soundpack.qrc">
+                    <normaloff>:/app/img/app/save-instagram.png</normaloff>:/app/img/app/save-instagram.png</iconset>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="load4">
-               <property name="text">
-                <string>4</string>
+              <widget class="QFrame" name="frame_27">
+               <property name="frameShape">
+                <enum>QFrame::Shape::StyledPanel</enum>
                </property>
+               <property name="frameShadow">
+                <enum>QFrame::Shadow::Raised</enum>
+               </property>
+               <layout class="QVBoxLayout" name="verticalLayout_18">
+                <item>
+                 <widget class="QPushButton" name="save4">
+                  <property name="text">
+                   <string>s4</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="Soundpack.qrc">
+                    <normaloff>:/app/img/app/diskette.png</normaloff>:/app/img/app/diskette.png</iconset>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="load4">
+                  <property name="text">
+                   <string>l4</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="Soundpack.qrc">
+                    <normaloff>:/app/img/app/save-instagram.png</normaloff>:/app/img/app/save-instagram.png</iconset>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="load5">
-               <property name="text">
-                <string>5</string>
+              <widget class="QFrame" name="frame_28">
+               <property name="frameShape">
+                <enum>QFrame::Shape::StyledPanel</enum>
                </property>
+               <property name="frameShadow">
+                <enum>QFrame::Shadow::Raised</enum>
+               </property>
+               <layout class="QVBoxLayout" name="verticalLayout_19">
+                <item>
+                 <widget class="QPushButton" name="save5">
+                  <property name="text">
+                   <string>s5</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="Soundpack.qrc">
+                    <normaloff>:/app/img/app/diskette.png</normaloff>:/app/img/app/diskette.png</iconset>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="load5">
+                  <property name="text">
+                   <string>l5</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="Soundpack.qrc">
+                    <normaloff>:/app/img/app/save-instagram.png</normaloff>:/app/img/app/save-instagram.png</iconset>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
               </widget>
              </item>
             </layout>
@@ -192,6 +363,13 @@
              </widget>
             </widget>
             <widget class="QWidget" name="page_2">
+             <property name="styleSheet">
+              <string notr="true">QWidget{
+	
+	
+	background-color: rgb(222, 240, 255);
+}</string>
+             </property>
              <layout class="QHBoxLayout" name="horizontalLayout_11">
               <property name="leftMargin">
                <number>0</number>
@@ -243,6 +421,23 @@
                      <height>100</height>
                     </size>
                    </property>
+                   <property name="styleSheet">
+                    <string notr="true">QPushButton {
+    background-color: #e74c3c; /* Kırmızı arka plan */
+    color: white; /* Beyaz metin */
+    border: none; 
+    border-radius: 8px;
+    padding: 12px 24px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Gölge */
+}
+QPushButton:hover {
+    background-color: #c0392b; /* Daha koyu kırmızı */
+}
+QPushButton:pressed {
+    background-color: #a93226; /* Basıldığında koyulaşma */
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3); /* İç gölge */
+}</string>
+                   </property>
                    <property name="text">
                     <string/>
                    </property>
@@ -271,6 +466,23 @@
                      <width>100</width>
                      <height>100</height>
                     </size>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">QPushButton {
+    background-color: #e74c3c; /* Kırmızı arka plan */
+    color: white; /* Beyaz metin */
+    border: none; 
+    border-radius: 8px;
+    padding: 12px 24px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Gölge */
+}
+QPushButton:hover {
+    background-color: #c0392b; /* Daha koyu kırmızı */
+}
+QPushButton:pressed {
+    background-color: #a93226; /* Basıldığında koyulaşma */
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3); /* İç gölge */
+}</string>
                    </property>
                    <property name="text">
                     <string/>
@@ -301,6 +513,23 @@
                      <height>100</height>
                     </size>
                    </property>
+                   <property name="styleSheet">
+                    <string notr="true">QPushButton {
+    background-color: #e74c3c; /* Kırmızı arka plan */
+    color: white; /* Beyaz metin */
+    border: none; 
+    border-radius: 8px;
+    padding: 12px 24px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Gölge */
+}
+QPushButton:hover {
+    background-color: #c0392b; /* Daha koyu kırmızı */
+}
+QPushButton:pressed {
+    background-color: #a93226; /* Basıldığında koyulaşma */
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3); /* İç gölge */
+}</string>
+                   </property>
                    <property name="text">
                     <string/>
                    </property>
@@ -329,6 +558,23 @@
                      <width>100</width>
                      <height>100</height>
                     </size>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">QPushButton {
+    background-color: #e74c3c; /* Kırmızı arka plan */
+    color: white; /* Beyaz metin */
+    border: none; 
+    border-radius: 8px;
+    padding: 12px 24px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Gölge */
+}
+QPushButton:hover {
+    background-color: #c0392b; /* Daha koyu kırmızı */
+}
+QPushButton:pressed {
+    background-color: #a93226; /* Basıldığında koyulaşma */
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3); /* İç gölge */
+}</string>
                    </property>
                    <property name="text">
                     <string/>
@@ -359,6 +605,23 @@
                      <height>100</height>
                     </size>
                    </property>
+                   <property name="styleSheet">
+                    <string notr="true">QPushButton {
+    background-color: #e74c3c; /* Kırmızı arka plan */
+    color: white; /* Beyaz metin */
+    border: none; 
+    border-radius: 8px;
+    padding: 12px 24px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Gölge */
+}
+QPushButton:hover {
+    background-color: #c0392b; /* Daha koyu kırmızı */
+}
+QPushButton:pressed {
+    background-color: #a93226; /* Basıldığında koyulaşma */
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3); /* İç gölge */
+}</string>
+                   </property>
                    <property name="text">
                     <string/>
                    </property>
@@ -379,6 +642,12 @@
               </item>
               <item>
                <widget class="QFrame" name="frame_20">
+                <property name="maximumSize">
+                 <size>
+                  <width>40</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
                 <property name="frameShape">
                  <enum>QFrame::Shape::StyledPanel</enum>
                 </property>
@@ -403,36 +672,86 @@
                  </property>
                  <item>
                   <widget class="QPushButton" name="delete1">
+                   <property name="maximumSize">
+                    <size>
+                     <width>30</width>
+                     <height>30</height>
+                    </size>
+                   </property>
                    <property name="text">
-                    <string>PushButton</string>
+                    <string/>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="Soundpack.qrc">
+                     <normaloff>:/app/img/app/bin (2).png</normaloff>:/app/img/app/bin (2).png</iconset>
                    </property>
                   </widget>
                  </item>
                  <item>
                   <widget class="QPushButton" name="delete2">
+                   <property name="maximumSize">
+                    <size>
+                     <width>30</width>
+                     <height>30</height>
+                    </size>
+                   </property>
                    <property name="text">
-                    <string>PushButton</string>
+                    <string/>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="Soundpack.qrc">
+                     <normaloff>:/app/img/app/bin (2).png</normaloff>:/app/img/app/bin (2).png</iconset>
                    </property>
                   </widget>
                  </item>
                  <item>
                   <widget class="QPushButton" name="delete3">
+                   <property name="maximumSize">
+                    <size>
+                     <width>30</width>
+                     <height>30</height>
+                    </size>
+                   </property>
                    <property name="text">
-                    <string>PushButton</string>
+                    <string/>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="Soundpack.qrc">
+                     <normaloff>:/app/img/app/bin (2).png</normaloff>:/app/img/app/bin (2).png</iconset>
                    </property>
                   </widget>
                  </item>
                  <item>
                   <widget class="QPushButton" name="delete4">
+                   <property name="maximumSize">
+                    <size>
+                     <width>30</width>
+                     <height>30</height>
+                    </size>
+                   </property>
                    <property name="text">
-                    <string>PushButton</string>
+                    <string/>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="Soundpack.qrc">
+                     <normaloff>:/app/img/app/bin (2).png</normaloff>:/app/img/app/bin (2).png</iconset>
                    </property>
                   </widget>
                  </item>
                  <item>
                   <widget class="QPushButton" name="delete5">
+                   <property name="maximumSize">
+                    <size>
+                     <width>30</width>
+                     <height>30</height>
+                    </size>
+                   </property>
                    <property name="text">
-                    <string>PushButton</string>
+                    <string/>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="Soundpack.qrc">
+                     <normaloff>:/app/img/app/bin (2).png</normaloff>:/app/img/app/bin (2).png</iconset>
                    </property>
                   </widget>
                  </item>
@@ -471,6 +790,23 @@
                      <height>100</height>
                     </size>
                    </property>
+                   <property name="styleSheet">
+                    <string notr="true">QPushButton {
+    background-color: #e74c3c; /* Kırmızı arka plan */
+    color: white; /* Beyaz metin */
+    border: none; 
+    border-radius: 8px;
+    padding: 12px 24px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Gölge */
+}
+QPushButton:hover {
+    background-color: #c0392b; /* Daha koyu kırmızı */
+}
+QPushButton:pressed {
+    background-color: #a93226; /* Basıldığında koyulaşma */
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3); /* İç gölge */
+}</string>
+                   </property>
                    <property name="text">
                     <string/>
                    </property>
@@ -493,6 +829,23 @@
                      <width>100</width>
                      <height>100</height>
                     </size>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">QPushButton {
+    background-color: #e74c3c; /* Kırmızı arka plan */
+    color: white; /* Beyaz metin */
+    border: none; 
+    border-radius: 8px;
+    padding: 12px 24px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Gölge */
+}
+QPushButton:hover {
+    background-color: #c0392b; /* Daha koyu kırmızı */
+}
+QPushButton:pressed {
+    background-color: #a93226; /* Basıldığında koyulaşma */
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3); /* İç gölge */
+}</string>
                    </property>
                    <property name="text">
                     <string/>
@@ -517,6 +870,23 @@
                      <height>100</height>
                     </size>
                    </property>
+                   <property name="styleSheet">
+                    <string notr="true">QPushButton {
+    background-color: #e74c3c; /* Kırmızı arka plan */
+    color: white; /* Beyaz metin */
+    border: none; 
+    border-radius: 8px;
+    padding: 12px 24px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Gölge */
+}
+QPushButton:hover {
+    background-color: #c0392b; /* Daha koyu kırmızı */
+}
+QPushButton:pressed {
+    background-color: #a93226; /* Basıldığında koyulaşma */
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3); /* İç gölge */
+}</string>
+                   </property>
                    <property name="text">
                     <string/>
                    </property>
@@ -539,6 +909,23 @@
                      <width>100</width>
                      <height>100</height>
                     </size>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">QPushButton {
+    background-color: #e74c3c; /* Kırmızı arka plan */
+    color: white; /* Beyaz metin */
+    border: none; 
+    border-radius: 8px;
+    padding: 12px 24px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Gölge */
+}
+QPushButton:hover {
+    background-color: #c0392b; /* Daha koyu kırmızı */
+}
+QPushButton:pressed {
+    background-color: #a93226; /* Basıldığında koyulaşma */
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3); /* İç gölge */
+}</string>
                    </property>
                    <property name="text">
                     <string/>
@@ -563,6 +950,23 @@
                      <height>100</height>
                     </size>
                    </property>
+                   <property name="styleSheet">
+                    <string notr="true">QPushButton {
+    background-color: #e74c3c; /* Kırmızı arka plan */
+    color: white; /* Beyaz metin */
+    border: none; 
+    border-radius: 8px;
+    padding: 12px 24px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Gölge */
+}
+QPushButton:hover {
+    background-color: #c0392b; /* Daha koyu kırmızı */
+}
+QPushButton:pressed {
+    background-color: #a93226; /* Basıldığında koyulaşma */
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3); /* İç gölge */
+}</string>
+                   </property>
                    <property name="text">
                     <string/>
                    </property>
@@ -583,6 +987,12 @@
               </item>
               <item>
                <widget class="QFrame" name="frame_21">
+                <property name="maximumSize">
+                 <size>
+                  <width>40</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
                 <property name="frameShape">
                  <enum>QFrame::Shape::StyledPanel</enum>
                 </property>
@@ -590,38 +1000,103 @@
                  <enum>QFrame::Shadow::Raised</enum>
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_12">
+                 <property name="spacing">
+                  <number>0</number>
+                 </property>
+                 <property name="leftMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>0</number>
+                 </property>
                  <item>
-                  <widget class="QPushButton" name="pushButton">
+                  <widget class="QPushButton" name="delete6">
+                   <property name="maximumSize">
+                    <size>
+                     <width>30</width>
+                     <height>30</height>
+                    </size>
+                   </property>
                    <property name="text">
-                    <string>PushButton</string>
+                    <string/>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="Soundpack.qrc">
+                     <normaloff>:/app/img/app/bin (2).png</normaloff>:/app/img/app/bin (2).png</iconset>
                    </property>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QPushButton" name="pushButton_2">
+                  <widget class="QPushButton" name="delete7">
+                   <property name="maximumSize">
+                    <size>
+                     <width>30</width>
+                     <height>30</height>
+                    </size>
+                   </property>
                    <property name="text">
-                    <string>PushButton</string>
+                    <string/>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="Soundpack.qrc">
+                     <normaloff>:/app/img/app/bin (2).png</normaloff>:/app/img/app/bin (2).png</iconset>
                    </property>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QPushButton" name="pushButton_3">
+                  <widget class="QPushButton" name="delete8">
+                   <property name="maximumSize">
+                    <size>
+                     <width>30</width>
+                     <height>30</height>
+                    </size>
+                   </property>
                    <property name="text">
-                    <string>PushButton</string>
+                    <string/>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="Soundpack.qrc">
+                     <normaloff>:/app/img/app/bin (2).png</normaloff>:/app/img/app/bin (2).png</iconset>
                    </property>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QPushButton" name="pushButton_4">
+                  <widget class="QPushButton" name="delete9">
+                   <property name="maximumSize">
+                    <size>
+                     <width>30</width>
+                     <height>30</height>
+                    </size>
+                   </property>
                    <property name="text">
-                    <string>PushButton</string>
+                    <string/>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="Soundpack.qrc">
+                     <normaloff>:/app/img/app/bin (2).png</normaloff>:/app/img/app/bin (2).png</iconset>
                    </property>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QPushButton" name="pushButton_5">
+                  <widget class="QPushButton" name="delete10">
+                   <property name="maximumSize">
+                    <size>
+                     <width>30</width>
+                     <height>30</height>
+                    </size>
+                   </property>
                    <property name="text">
-                    <string>PushButton</string>
+                    <string/>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="Soundpack.qrc">
+                     <normaloff>:/app/img/app/bin (2).png</normaloff>:/app/img/app/bin (2).png</iconset>
                    </property>
                   </widget>
                  </item>
@@ -660,6 +1135,23 @@
                      <height>100</height>
                     </size>
                    </property>
+                   <property name="styleSheet">
+                    <string notr="true">QPushButton {
+    background-color: #e74c3c; /* Kırmızı arka plan */
+    color: white; /* Beyaz metin */
+    border: none; 
+    border-radius: 8px;
+    padding: 12px 24px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Gölge */
+}
+QPushButton:hover {
+    background-color: #c0392b; /* Daha koyu kırmızı */
+}
+QPushButton:pressed {
+    background-color: #a93226; /* Basıldığında koyulaşma */
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3); /* İç gölge */
+}</string>
+                   </property>
                    <property name="text">
                     <string/>
                    </property>
@@ -672,6 +1164,23 @@
                      <width>100</width>
                      <height>100</height>
                     </size>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">QPushButton {
+    background-color: #e74c3c; /* Kırmızı arka plan */
+    color: white; /* Beyaz metin */
+    border: none; 
+    border-radius: 8px;
+    padding: 12px 24px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Gölge */
+}
+QPushButton:hover {
+    background-color: #c0392b; /* Daha koyu kırmızı */
+}
+QPushButton:pressed {
+    background-color: #a93226; /* Basıldığında koyulaşma */
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3); /* İç gölge */
+}</string>
                    </property>
                    <property name="text">
                     <string/>
@@ -686,6 +1195,23 @@
                      <height>100</height>
                     </size>
                    </property>
+                   <property name="styleSheet">
+                    <string notr="true">QPushButton {
+    background-color: #e74c3c; /* Kırmızı arka plan */
+    color: white; /* Beyaz metin */
+    border: none; 
+    border-radius: 8px;
+    padding: 12px 24px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Gölge */
+}
+QPushButton:hover {
+    background-color: #c0392b; /* Daha koyu kırmızı */
+}
+QPushButton:pressed {
+    background-color: #a93226; /* Basıldığında koyulaşma */
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3); /* İç gölge */
+}</string>
+                   </property>
                    <property name="text">
                     <string/>
                    </property>
@@ -698,6 +1224,23 @@
                      <width>100</width>
                      <height>100</height>
                     </size>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">QPushButton {
+    background-color: #e74c3c; /* Kırmızı arka plan */
+    color: white; /* Beyaz metin */
+    border: none; 
+    border-radius: 8px;
+    padding: 12px 24px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Gölge */
+}
+QPushButton:hover {
+    background-color: #c0392b; /* Daha koyu kırmızı */
+}
+QPushButton:pressed {
+    background-color: #a93226; /* Basıldığında koyulaşma */
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3); /* İç gölge */
+}</string>
                    </property>
                    <property name="text">
                     <string/>
@@ -712,6 +1255,23 @@
                      <height>100</height>
                     </size>
                    </property>
+                   <property name="styleSheet">
+                    <string notr="true">QPushButton {
+    background-color: #e74c3c; /* Kırmızı arka plan */
+    color: white; /* Beyaz metin */
+    border: none; 
+    border-radius: 8px;
+    padding: 12px 24px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Gölge */
+}
+QPushButton:hover {
+    background-color: #c0392b; /* Daha koyu kırmızı */
+}
+QPushButton:pressed {
+    background-color: #a93226; /* Basıldığında koyulaşma */
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3); /* İç gölge */
+}</string>
+                   </property>
                    <property name="text">
                     <string/>
                    </property>
@@ -722,12 +1282,120 @@
               </item>
               <item>
                <widget class="QFrame" name="frame_22">
+                <property name="maximumSize">
+                 <size>
+                  <width>40</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
                 <property name="frameShape">
                  <enum>QFrame::Shape::StyledPanel</enum>
                 </property>
                 <property name="frameShadow">
                  <enum>QFrame::Shadow::Raised</enum>
                 </property>
+                <layout class="QVBoxLayout" name="verticalLayout_13">
+                 <property name="spacing">
+                  <number>0</number>
+                 </property>
+                 <property name="leftMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>0</number>
+                 </property>
+                 <item>
+                  <widget class="QPushButton" name="delete11">
+                   <property name="maximumSize">
+                    <size>
+                     <width>30</width>
+                     <height>30</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string/>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="Soundpack.qrc">
+                     <normaloff>:/app/img/app/bin (2).png</normaloff>:/app/img/app/bin (2).png</iconset>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="delete12">
+                   <property name="maximumSize">
+                    <size>
+                     <width>30</width>
+                     <height>30</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string/>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="Soundpack.qrc">
+                     <normaloff>:/app/img/app/bin (2).png</normaloff>:/app/img/app/bin (2).png</iconset>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="delete13">
+                   <property name="maximumSize">
+                    <size>
+                     <width>30</width>
+                     <height>30</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string/>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="Soundpack.qrc">
+                     <normaloff>:/app/img/app/bin (2).png</normaloff>:/app/img/app/bin (2).png</iconset>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="delete14">
+                   <property name="maximumSize">
+                    <size>
+                     <width>30</width>
+                     <height>30</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string/>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="Soundpack.qrc">
+                     <normaloff>:/app/img/app/bin (2).png</normaloff>:/app/img/app/bin (2).png</iconset>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="delete15">
+                   <property name="maximumSize">
+                    <size>
+                     <width>30</width>
+                     <height>30</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string/>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="Soundpack.qrc">
+                     <normaloff>:/app/img/app/bin (2).png</normaloff>:/app/img/app/bin (2).png</iconset>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
                </widget>
               </item>
               <item>
@@ -762,6 +1430,23 @@
                      <height>100</height>
                     </size>
                    </property>
+                   <property name="styleSheet">
+                    <string notr="true">QPushButton {
+    background-color: #e74c3c; /* Kırmızı arka plan */
+    color: white; /* Beyaz metin */
+    border: none; 
+    border-radius: 8px;
+    padding: 12px 24px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Gölge */
+}
+QPushButton:hover {
+    background-color: #c0392b; /* Daha koyu kırmızı */
+}
+QPushButton:pressed {
+    background-color: #a93226; /* Basıldığında koyulaşma */
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3); /* İç gölge */
+}</string>
+                   </property>
                    <property name="text">
                     <string/>
                    </property>
@@ -774,6 +1459,23 @@
                      <width>100</width>
                      <height>100</height>
                     </size>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">QPushButton {
+    background-color: #e74c3c; /* Kırmızı arka plan */
+    color: white; /* Beyaz metin */
+    border: none; 
+    border-radius: 8px;
+    padding: 12px 24px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Gölge */
+}
+QPushButton:hover {
+    background-color: #c0392b; /* Daha koyu kırmızı */
+}
+QPushButton:pressed {
+    background-color: #a93226; /* Basıldığında koyulaşma */
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3); /* İç gölge */
+}</string>
                    </property>
                    <property name="text">
                     <string/>
@@ -788,6 +1490,23 @@
                      <height>100</height>
                     </size>
                    </property>
+                   <property name="styleSheet">
+                    <string notr="true">QPushButton {
+    background-color: #e74c3c; /* Kırmızı arka plan */
+    color: white; /* Beyaz metin */
+    border: none; 
+    border-radius: 8px;
+    padding: 12px 24px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Gölge */
+}
+QPushButton:hover {
+    background-color: #c0392b; /* Daha koyu kırmızı */
+}
+QPushButton:pressed {
+    background-color: #a93226; /* Basıldığında koyulaşma */
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3); /* İç gölge */
+}</string>
+                   </property>
                    <property name="text">
                     <string/>
                    </property>
@@ -800,6 +1519,23 @@
                      <width>100</width>
                      <height>100</height>
                     </size>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">QPushButton {
+    background-color: #e74c3c; /* Kırmızı arka plan */
+    color: white; /* Beyaz metin */
+    border: none; 
+    border-radius: 8px;
+    padding: 12px 24px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Gölge */
+}
+QPushButton:hover {
+    background-color: #c0392b; /* Daha koyu kırmızı */
+}
+QPushButton:pressed {
+    background-color: #a93226; /* Basıldığında koyulaşma */
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3); /* İç gölge */
+}</string>
                    </property>
                    <property name="text">
                     <string/>
@@ -814,8 +1550,143 @@
                      <height>100</height>
                     </size>
                    </property>
+                   <property name="styleSheet">
+                    <string notr="true">QPushButton {
+    background-color: #e74c3c; /* Kırmızı arka plan */
+    color: white; /* Beyaz metin */
+    border: none; 
+    border-radius: 8px;
+    padding: 12px 24px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Gölge */
+}
+QPushButton:hover {
+    background-color: #c0392b; /* Daha koyu kırmızı */
+}
+QPushButton:pressed {
+    background-color: #a93226; /* Basıldığında koyulaşma */
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3); /* İç gölge */
+}</string>
+                   </property>
                    <property name="text">
                     <string/>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QFrame" name="frame_23">
+                <property name="maximumSize">
+                 <size>
+                  <width>40</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="frameShape">
+                 <enum>QFrame::Shape::StyledPanel</enum>
+                </property>
+                <property name="frameShadow">
+                 <enum>QFrame::Shadow::Raised</enum>
+                </property>
+                <layout class="QVBoxLayout" name="verticalLayout_14">
+                 <property name="spacing">
+                  <number>0</number>
+                 </property>
+                 <property name="leftMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>0</number>
+                 </property>
+                 <item>
+                  <widget class="QPushButton" name="delete16">
+                   <property name="maximumSize">
+                    <size>
+                     <width>30</width>
+                     <height>30</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string/>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="Soundpack.qrc">
+                     <normaloff>:/app/img/app/bin (2).png</normaloff>:/app/img/app/bin (2).png</iconset>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="delete17">
+                   <property name="maximumSize">
+                    <size>
+                     <width>30</width>
+                     <height>30</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string/>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="Soundpack.qrc">
+                     <normaloff>:/app/img/app/bin (2).png</normaloff>:/app/img/app/bin (2).png</iconset>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="delete18">
+                   <property name="maximumSize">
+                    <size>
+                     <width>30</width>
+                     <height>30</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string/>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="Soundpack.qrc">
+                     <normaloff>:/app/img/app/bin (2).png</normaloff>:/app/img/app/bin (2).png</iconset>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="delete19">
+                   <property name="maximumSize">
+                    <size>
+                     <width>30</width>
+                     <height>30</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string/>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="Soundpack.qrc">
+                     <normaloff>:/app/img/app/bin (2).png</normaloff>:/app/img/app/bin (2).png</iconset>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="delete20">
+                   <property name="maximumSize">
+                    <size>
+                     <width>30</width>
+                     <height>30</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string/>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="Soundpack.qrc">
+                     <normaloff>:/app/img/app/bin (2).png</normaloff>:/app/img/app/bin (2).png</iconset>
                    </property>
                   </widget>
                  </item>
@@ -914,6 +1785,10 @@
             <property name="text">
              <string/>
             </property>
+            <property name="icon">
+             <iconset resource="Soundpack.qrc">
+              <normaloff>:/app/img/app/menu.png</normaloff>:/app/img/app/menu.png</iconset>
+            </property>
            </widget>
           </item>
           <item>
@@ -1000,6 +1875,10 @@
               <widget class="QPushButton" name="refreshInput">
                <property name="text">
                 <string/>
+               </property>
+               <property name="icon">
+                <iconset resource="Soundpack.qrc">
+                 <normaloff>:/app/img/app/refresh.png</normaloff>:/app/img/app/refresh.png</iconset>
                </property>
               </widget>
              </item>
@@ -1114,7 +1993,17 @@ QProgressBar::chunk {
              <item>
               <widget class="QPushButton" name="testButton">
                <property name="text">
-                <string>Test Device</string>
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset resource="Soundpack.qrc">
+                 <normaloff>:/app/img/app/microphone.png</normaloff>:/app/img/app/microphone.png</iconset>
+               </property>
+               <property name="iconSize">
+                <size>
+                 <width>30</width>
+                 <height>30</height>
+                </size>
                </property>
                <property name="checkable">
                 <bool>true</bool>
@@ -1198,6 +2087,10 @@ QProgressBar::chunk {
                </property>
                <property name="text">
                 <string/>
+               </property>
+               <property name="icon">
+                <iconset resource="Soundpack.qrc">
+                 <normaloff>:/app/img/app/refresh.png</normaloff>:/app/img/app/refresh.png</iconset>
                </property>
               </widget>
              </item>
@@ -1308,14 +2201,22 @@ QProgressBar::chunk {
              <item>
               <widget class="QPushButton" name="startRecord">
                <property name="text">
-                <string>Start</string>
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset resource="Soundpack.qrc">
+                 <normaloff>:/app/img/app/record.png</normaloff>:/app/img/app/record.png</iconset>
                </property>
               </widget>
              </item>
              <item>
               <widget class="QPushButton" name="stopRecord">
                <property name="text">
-                <string>Stop</string>
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset resource="Soundpack.qrc">
+                 <normaloff>:/app/img/app/stop-button.png</normaloff>:/app/img/app/stop-button.png</iconset>
                </property>
               </widget>
              </item>
@@ -1405,6 +2306,10 @@ QProgressBar::chunk {
             <property name="text">
              <string/>
             </property>
+            <property name="icon">
+             <iconset resource="Soundpack.qrc">
+              <normaloff>:/app/img/app/menu.png</normaloff>:/app/img/app/menu.png</iconset>
+            </property>
            </widget>
           </item>
          </layout>
@@ -1413,7 +2318,17 @@ QProgressBar::chunk {
        <item>
         <widget class="QPushButton" name="bananaButton">
          <property name="text">
-          <string>çocuk sesi</string>
+          <string>Çocuk</string>
+         </property>
+         <property name="icon">
+          <iconset resource="Soundpack.qrc">
+           <normaloff>:/app/img/app/children.png</normaloff>:/app/img/app/children.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>30</width>
+           <height>30</height>
+          </size>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -1423,7 +2338,17 @@ QProgressBar::chunk {
        <item>
         <widget class="QPushButton" name="ekoButton">
          <property name="text">
-          <string>eko ses</string>
+          <string>eko</string>
+         </property>
+         <property name="icon">
+          <iconset resource="Soundpack.qrc">
+           <normaloff>:/app/img/app/cave.png</normaloff>:/app/img/app/cave.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>30</width>
+           <height>30</height>
+          </size>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -1433,7 +2358,17 @@ QProgressBar::chunk {
        <item>
         <widget class="QPushButton" name="robotButton">
          <property name="text">
-          <string>Robot sesi</string>
+          <string>Robot</string>
+         </property>
+         <property name="icon">
+          <iconset resource="Soundpack.qrc">
+           <normaloff>:/app/img/app/robot.png</normaloff>:/app/img/app/robot.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>30</width>
+           <height>30</height>
+          </size>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -1443,7 +2378,17 @@ QProgressBar::chunk {
        <item>
         <widget class="QPushButton" name="devilButton">
          <property name="text">
-          <string>Canavar sesi</string>
+          <string>Canavar </string>
+         </property>
+         <property name="icon">
+          <iconset resource="Soundpack.qrc">
+           <normaloff>:/app/img/app/ogre.png</normaloff>:/app/img/app/ogre.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>30</width>
+           <height>30</height>
+          </size>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -1463,7 +2408,17 @@ QProgressBar::chunk {
        <item>
         <widget class="QPushButton" name="femaleButton">
          <property name="text">
-          <string>kadın sesi</string>
+          <string>kadın </string>
+         </property>
+         <property name="icon">
+          <iconset resource="Soundpack.qrc">
+           <normaloff>:/app/img/app/woman.png</normaloff>:/app/img/app/woman.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>30</width>
+           <height>30</height>
+          </size>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -1473,7 +2428,17 @@ QProgressBar::chunk {
        <item>
         <widget class="QPushButton" name="combineButton">
          <property name="text">
-          <string>overwatch hl</string>
+          <string>overwatch</string>
+         </property>
+         <property name="icon">
+          <iconset resource="Soundpack.qrc">
+           <normaloff>:/app/img/app/lambda.png</normaloff>:/app/img/app/lambda.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>30</width>
+           <height>30</height>
+          </size>
          </property>
          <property name="checkable">
           <bool>true</bool>

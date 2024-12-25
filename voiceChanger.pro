@@ -12,6 +12,7 @@ CONFIG += c++17
 SOURCES += \
     deletesoundpack.cpp \
     effects.cpp \
+    loadouts.cpp \
     main.cpp \
     mainwindow.cpp \
     recorder.cpp \
@@ -20,6 +21,7 @@ SOURCES += \
 HEADERS += \
     deletesoundpack.h \
     effects.h \
+    loadouts.h \
     mainwindow.h \
     recorder.h \
     soundpack.h

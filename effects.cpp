@@ -33,6 +33,8 @@ void MainWindow::processToBananaVoice(QByteArray &data)
 
     // Yeni veriyi kullan
     data = newData;
+
+
 }
 
 void MainWindow::processToRobotVoice(QByteArray &data)
