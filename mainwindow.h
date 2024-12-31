@@ -9,6 +9,10 @@
 #include <QProcess>
 #include <QCoreApplication>
 #include "QAudioDecoder"
+#include "qpushbutton.h"
+
+
+
 
 
 QT_BEGIN_NAMESPACE
@@ -234,10 +238,16 @@ private:
     QString pic20;
 
 
-    QThread *currentDecodeThread = nullptr;
-    QThread *currentOutputThread = nullptr;
-    QAudioDecoder *currentAudioDecoder = nullptr;
+    QThread *decodeThread = nullptr;
+    QThread *outputThread = nullptr;
+    QAudioDecoder *audioDecoder = nullptr;
 
+
+
+
+    void stopCurrentAudio();
+
+    void playAudio(const QString &filename, const QString &picPath, QPushButton *button);
 
     void searchInputDevice();
     void searchOutputDevice();
@@ -245,7 +255,7 @@ private:
     void progressBarOutput();
     void saveLoadout(const QString &loadoutName);
     void loadLoadout(const QString &loadoutName);
-    void stopCurrentAudio();
+
 
 
 };

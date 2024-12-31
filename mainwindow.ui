@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>Voice Changer</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="Soundpack.qrc">
+    <normaloff>:/img/img/app/WhatsApp Image 2024-11-26 at 22.59.00_27fe18d8.jpg</normaloff>:/img/img/app/WhatsApp Image 2024-11-26 at 22.59.00_27fe18d8.jpg</iconset>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
     <property name="spacing">
@@ -367,7 +371,7 @@
               <string notr="true">QWidget{
 	
 	
-	background-color: rgb(222, 240, 255);
+	background-color: rgb(133, 133, 173);
 }</string>
              </property>
              <layout class="QHBoxLayout" name="horizontalLayout_11">

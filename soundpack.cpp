@@ -7,39 +7,149 @@
 #include <QThread>
 
 
+bool isPlaying = false;
+
+std::atomic<bool> stopRequested = false;
+
 
 soundpack::soundpack(QWidget *parent)
     : QMainWindow{parent}
 {}
 
-void MainWindow::stopCurrentAudio() {
-    if (currentDecodeThread) {
-        currentDecodeThread->quit();
-        currentDecodeThread->wait();
-        delete currentDecodeThread;
-        currentDecodeThread = nullptr;
-    }
 
-    if (currentOutputThread) {
-        currentOutputThread->quit();
-        currentOutputThread->wait();
-        delete currentOutputThread;
-        currentOutputThread = nullptr;
-    }
 
-    if (currentAudioDecoder) {
-        currentAudioDecoder->stop();
-        currentAudioDecoder->deleteLater();
-        currentAudioDecoder = nullptr;
-    }
+void MainWindow::stopCurrentAudio()
+{
+    if (isPlaying) {
+        // Çalmayı durdur
+        stopRequested = true;
 
-    data.clear();
+        // Decode işlemini durdur
+        if (audioDecoder) {
+            audioDecoder->stop();
+            audioDecoder->deleteLater();
+            audioDecoder = nullptr;
+        }
+
+        // Output cihazını kapat ve serbest bırak
+        if (outputDevice) {
+
+            outputDevice = nullptr;
+        }
+
+        if (audioOutput) {
+            audioOutput->suspend();
+            delete audioOutput;
+            audioOutput = nullptr;
+        }
+
+        // İş parçacıklarını temizle
+        if (decodeThread && decodeThread->isRunning()) {
+            decodeThread->quit();
+            decodeThread->wait();
+            delete decodeThread;
+            decodeThread = nullptr;
+        }
+
+        if (outputThread && outputThread->isRunning()) {
+            outputThread->quit();
+            outputThread->wait();
+            delete outputThread;
+            outputThread = nullptr;
+        }
+
+        data.clear(); // PCM verisini temizle
+        isPlaying = false;
+    }
 }
+
+void MainWindow::playAudio(const QString &filename, const QString &picPath, QPushButton *button)
+{
+
+
+        // Önceki çalmayı durdur
+    stopCurrentAudio();
+
+    // Yeni ses çalma için bayrağı sıfırla
+    stopRequested = false;
+
+    // Buton için ikon ayarla
+    QPixmap icon(picPath);
+    QIcon buttonIcon = icon;
+    button->setIcon(buttonIcon);
+    button->setIconSize(QSize(75, 75));
+
+    // İş parçacıklarını ve ses çözücüsünü oluştur
+    decodeThread = new QThread;
+    outputThread = new QThread;
+    audioDecoder = new QAudioDecoder;
+
+    audioDecoder->setAudioFormat(*format);
+    audioDecoder->moveToThread(decodeThread);
+
+    isPlaying = true;
+
+    // Decode işlemini başlat
+    connect(decodeThread, &QThread::started, this, [=]() {
+        audioDecoder->setSource(filename);
+        audioDecoder->start();
+    });
+
+    // PCM verilerini topla
+    connect(audioDecoder, &QAudioDecoder::bufferReady, this, [=]() {
+        const QAudioBuffer buffer = audioDecoder->read();
+        QByteArray pcmData(reinterpret_cast<const char *>(buffer.data<void>()), buffer.byteCount());
+        data.append(pcmData);
+    });
+
+    // Decode işlemi tamamlandığında
+    connect(audioDecoder, &QAudioDecoder::finished, this, [=]() {
+        qDebug() << "Decoding finished.";
+        decodeThread->quit();
+    });
+
+    // Playback işlemini başlat
+    connect(audioDecoder, &QAudioDecoder::finished, this, [=]() {
+        connect(outputThread, &QThread::started, [=]() {
+            if (outputDevice) {
+                qint64 written = 0;
+                while (written < data.size() && !stopRequested) {
+                    written += outputDevice->write(data.mid(written));
+                }
+                if (stopRequested) {
+                    qDebug() << "Playback interrupted.";
+                } else {
+                    qDebug() << "Playback finished.";
+                }
+            }
+            outputThread->quit();
+        });
+
+        connect(outputThread, &QThread::finished, outputThread, &QThread::deleteLater);
+
+        outputThread->start();
+    });
+
+    // İş parçacıklarının bitiminde temizleme
+    connect(decodeThread, &QThread::finished, this, [=]() {
+        decodeThread->deleteLater();
+        decodeThread = nullptr;
+    });
+
+    connect(outputThread, &QThread::finished, this, [=]() {
+        outputThread->deleteLater();
+        outputThread = nullptr;
+        isPlaying = false; // Playback tamamlandı
+    });
+
+    // Decode işlemini başlat
+    decodeThread->start();
+}
+
 
 void MainWindow::on_sound1_clicked()
 {
 
-    stopCurrentAudio();
 
     if (filename1.isEmpty()) {
         filename1 = QFileDialog::getOpenFileName(this, tr("Open MP3 File"), "", tr("Audio Files (*.wav)"));
@@ -57,62 +167,12 @@ void MainWindow::on_sound1_clicked()
         }
     }
 
-    QPixmap icon(pic1);
-    QIcon buttonIcon = icon;
-    ui->sound1->setIcon(buttonIcon);
-    ui->sound1->setIconSize(QSize(75, 75));
-
-    currentDecodeThread = new QThread;
-    currentAudioDecoder = new QAudioDecoder;
-    currentAudioDecoder->setAudioFormat(*format);
-    currentAudioDecoder->moveToThread(currentDecodeThread);
-
-    connect(currentDecodeThread, &QThread::started, currentAudioDecoder, [=]() {
-        currentAudioDecoder->setSource(filename1);
-        currentAudioDecoder->start();
-    });
-
-    connect(currentAudioDecoder, &QAudioDecoder::bufferReady, this, [=]() {
-        const QAudioBuffer buffer = currentAudioDecoder->read();
-        QByteArray pcmData(reinterpret_cast<const char *>(buffer.data<void>()), buffer.byteCount());
-        data.append(pcmData);
-    });
-
-    connect(currentAudioDecoder, &QAudioDecoder::finished, this, [=]() {
-        qDebug() << "Decoding finished.";
-        currentDecodeThread->quit();
-    });
-
-    connect(currentDecodeThread, &QThread::finished, currentAudioDecoder, &QAudioDecoder::deleteLater);
-    connect(currentDecodeThread, &QThread::finished, currentDecodeThread, &QThread::deleteLater);
-
-    connect(currentAudioDecoder, &QAudioDecoder::finished, this, [=]() {
-        currentOutputThread = new QThread;
-
-        connect(currentOutputThread, &QThread::started, [=]() {
-            if (outputDevice) {
-                qint64 written = 0;
-                while (written < data.size()) {
-                    written += outputDevice->write(data.mid(written));
-                }
-                qDebug() << "Playback finished.";
-            }
-            currentOutputThread->quit();
-        });
-
-        connect(currentOutputThread, &QThread::finished, currentOutputThread, &QThread::deleteLater);
-
-        currentOutputThread->start();
-    });
-
-    currentDecodeThread->start();
+    playAudio(filename1, pic1, ui->sound1);
 }
 
 
 void MainWindow::on_sound2_clicked()
 {
-
-    stopCurrentAudio();
 
     if (filename2.isEmpty()) {
         filename2 = QFileDialog::getOpenFileName(this, tr("Open MP3 File"), "", tr("Audio Files (*.wav)"));
@@ -122,70 +182,20 @@ void MainWindow::on_sound2_clicked()
         }
     }
 
-    if (pic1.isEmpty()) {
-        pic1 = QFileDialog::getOpenFileName(this, tr("Open image"), "", tr("Images (*.jpg *.png *.jpeg)"));
-        if (pic1.isEmpty()) {
+    if (pic2.isEmpty()) {
+        pic2 = QFileDialog::getOpenFileName(this, tr("Open image"), "", tr("Images (*.jpg *.png *.jpeg)"));
+        if (pic2.isEmpty()) {
             qWarning() << "No file selected.";
             return;
         }
     }
 
-    QPixmap icon(pic2);
-    QIcon buttonIcon = icon;
-    ui->sound2->setIcon(buttonIcon);
-    ui->sound2->setIconSize(QSize(75, 75));
-
-    currentDecodeThread = new QThread;
-    currentAudioDecoder = new QAudioDecoder;
-    currentAudioDecoder->setAudioFormat(*format);
-    currentAudioDecoder->moveToThread(currentDecodeThread);
-
-    connect(currentDecodeThread, &QThread::started, currentAudioDecoder, [=]() {
-        currentAudioDecoder->setSource(filename2);
-        currentAudioDecoder->start();
-    });
-
-    connect(currentAudioDecoder, &QAudioDecoder::bufferReady, this, [=]() {
-        const QAudioBuffer buffer = currentAudioDecoder->read();
-        QByteArray pcmData(reinterpret_cast<const char *>(buffer.data<void>()), buffer.byteCount());
-        data.append(pcmData);
-    });
-
-    connect(currentAudioDecoder, &QAudioDecoder::finished, this, [=]() {
-        qDebug() << "Decoding finished.";
-        currentDecodeThread->quit();
-    });
-
-    connect(currentDecodeThread, &QThread::finished, currentAudioDecoder, &QAudioDecoder::deleteLater);
-    connect(currentDecodeThread, &QThread::finished, currentDecodeThread, &QThread::deleteLater);
-
-    connect(currentAudioDecoder, &QAudioDecoder::finished, this, [=]() {
-        currentOutputThread = new QThread;
-
-        connect(currentOutputThread, &QThread::started, [=]() {
-            if (outputDevice) {
-                qint64 written = 0;
-                while (written < data.size()) {
-                    written += outputDevice->write(data.mid(written));
-                }
-                qDebug() << "Playback finished.";
-            }
-            currentOutputThread->quit();
-        });
-
-        connect(currentOutputThread, &QThread::finished, currentOutputThread, &QThread::deleteLater);
-
-        currentOutputThread->start();
-    });
-
-    currentDecodeThread->start();
+    playAudio(filename2, pic2, ui->sound2);
 }
 
 
 void MainWindow::on_sound3_clicked()
 {
-
-    stopCurrentAudio();
 
     if (filename3.isEmpty()) {
         filename3 = QFileDialog::getOpenFileName(this, tr("Open MP3 File"), "", tr("Audio Files (*.wav)"));
@@ -203,62 +213,12 @@ void MainWindow::on_sound3_clicked()
         }
     }
 
-    QPixmap icon(pic3);
-    QIcon buttonIcon = icon;
-    ui->sound3->setIcon(buttonIcon);
-    ui->sound3->setIconSize(QSize(75, 75));
-
-    currentDecodeThread = new QThread;
-    currentAudioDecoder = new QAudioDecoder;
-    currentAudioDecoder->setAudioFormat(*format);
-    currentAudioDecoder->moveToThread(currentDecodeThread);
-
-    connect(currentDecodeThread, &QThread::started, currentAudioDecoder, [=]() {
-        currentAudioDecoder->setSource(filename3);
-        currentAudioDecoder->start();
-    });
-
-    connect(currentAudioDecoder, &QAudioDecoder::bufferReady, this, [=]() {
-        const QAudioBuffer buffer = currentAudioDecoder->read();
-        QByteArray pcmData(reinterpret_cast<const char *>(buffer.data<void>()), buffer.byteCount());
-        data.append(pcmData);
-    });
-
-    connect(currentAudioDecoder, &QAudioDecoder::finished, this, [=]() {
-        qDebug() << "Decoding finished.";
-        currentDecodeThread->quit();
-    });
-
-    connect(currentDecodeThread, &QThread::finished, currentAudioDecoder, &QAudioDecoder::deleteLater);
-    connect(currentDecodeThread, &QThread::finished, currentDecodeThread, &QThread::deleteLater);
-
-    connect(currentAudioDecoder, &QAudioDecoder::finished, this, [=]() {
-        currentOutputThread = new QThread;
-
-        connect(currentOutputThread, &QThread::started, [=]() {
-            if (outputDevice) {
-                qint64 written = 0;
-                while (written < data.size()) {
-                    written += outputDevice->write(data.mid(written));
-                }
-                qDebug() << "Playback finished.";
-            }
-            currentOutputThread->quit();
-        });
-
-        connect(currentOutputThread, &QThread::finished, currentOutputThread, &QThread::deleteLater);
-
-        currentOutputThread->start();
-    });
-
-    currentDecodeThread->start();
+    playAudio(filename3, pic3, ui->sound3);
 }
 
 
 void MainWindow::on_sound4_clicked()
 {
-
-    stopCurrentAudio();
 
     if (filename4.isEmpty()) {
         filename4 = QFileDialog::getOpenFileName(this, tr("Open MP3 File"), "", tr("Audio Files (*.wav)"));
@@ -276,55 +236,7 @@ void MainWindow::on_sound4_clicked()
         }
     }
 
-    QPixmap icon(pic4);
-    QIcon buttonIcon = icon;
-    ui->sound4->setIcon(buttonIcon);
-    ui->sound4->setIconSize(QSize(75, 75));
-
-    currentDecodeThread = new QThread;
-    currentAudioDecoder = new QAudioDecoder;
-    currentAudioDecoder->setAudioFormat(*format);
-    currentAudioDecoder->moveToThread(currentDecodeThread);
-
-    connect(currentDecodeThread, &QThread::started, currentAudioDecoder, [=]() {
-        currentAudioDecoder->setSource(filename4);
-        currentAudioDecoder->start();
-    });
-
-    connect(currentAudioDecoder, &QAudioDecoder::bufferReady, this, [=]() {
-        const QAudioBuffer buffer = currentAudioDecoder->read();
-        QByteArray pcmData(reinterpret_cast<const char *>(buffer.data<void>()), buffer.byteCount());
-        data.append(pcmData);
-    });
-
-    connect(currentAudioDecoder, &QAudioDecoder::finished, this, [=]() {
-        qDebug() << "Decoding finished.";
-        currentDecodeThread->quit();
-    });
-
-    connect(currentDecodeThread, &QThread::finished, currentAudioDecoder, &QAudioDecoder::deleteLater);
-    connect(currentDecodeThread, &QThread::finished, currentDecodeThread, &QThread::deleteLater);
-
-    connect(currentAudioDecoder, &QAudioDecoder::finished, this, [=]() {
-        currentOutputThread = new QThread;
-
-        connect(currentOutputThread, &QThread::started, [=]() {
-            if (outputDevice) {
-                qint64 written = 0;
-                while (written < data.size()) {
-                    written += outputDevice->write(data.mid(written));
-                }
-                qDebug() << "Playback finished.";
-            }
-            currentOutputThread->quit();
-        });
-
-        connect(currentOutputThread, &QThread::finished, currentOutputThread, &QThread::deleteLater);
-
-        currentOutputThread->start();
-    });
-
-    currentDecodeThread->start();
+    playAudio(filename4, pic4, ui->sound4);
 }
 
 
