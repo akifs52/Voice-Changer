@@ -23,6 +23,8 @@ AVFrame *frame = nullptr;
 AVPacket *packet = nullptr;
 SwrContext *swrCtx = nullptr; // Örnekleme dönüştürücü
 
+int64_t pts = 0;
+
 recorder::recorder(QWidget *parent)
     : QMainWindow{parent}
 {
@@ -63,64 +65,40 @@ void MainWindow::on_startRecord_clicked()
             return;
         }
 
-        // Check supported sample formats
-        const enum AVSampleFormat *sample_fmts = codec->sample_fmts;
-        if (!sample_fmts) {
-            qCritical() << "No sample formats available for the codec.";
-            return;
-        }
-
-        qDebug() << "Supported sample formats:";
-        bool formatFound = false;
-        AVSampleFormat selectedSampleFormat = AV_SAMPLE_FMT_NONE;
-        int i = 0;
-        while (sample_fmts[i] != AV_SAMPLE_FMT_NONE) {
-            qDebug() << " - " << av_get_sample_fmt_name(sample_fmts[i]);
-            if (!formatFound && (sample_fmts[i] == AV_SAMPLE_FMT_S32P)) {
-                selectedSampleFormat = sample_fmts[i];
-                formatFound = true;
-            }
-            i++;
-        }
-
-        if (!formatFound) {
-            qCritical() << "No valid sample format found for the codec.";
-            return;
-        }
-
-        qDebug() << "Selected sample format:" << av_get_sample_fmt_name(selectedSampleFormat);
-
         // Configure codec parameters
-        try {
-            codecContext = avcodec_alloc_context3(codec);
-            if (!codecContext) {
-                throw std::runtime_error("Failed to allocate codec context.");
-            }
+        codecContext = avcodec_alloc_context3(codec);
+        if (!codecContext) {
+            qCritical() << "Failed to allocate codec context.";
+            return;
+        }
 
-            codecContext->sample_fmt = selectedSampleFormat;
-            codecContext->bit_rate = 192000; // MP3 bitrate
-            codecContext->sample_rate = 48000; // Sampling rate
-            av_channel_layout_default(&codecContext->ch_layout, 2); // Stereo
+        codecContext->sample_fmt = AV_SAMPLE_FMT_FLTP; // Use floating point format for compatibility
+        codecContext->bit_rate = 192000; // MP3 bitrate
+        codecContext->sample_rate = 48000; // Sampling rate
+        av_channel_layout_default(&codecContext->ch_layout, 2); // Stereo
 
-            if (formatContext->oformat->flags & AVFMT_GLOBALHEADER)
-                codecContext->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
 
-            if (avcodec_open2(codecContext, codec, nullptr) < 0) {
-                throw std::runtime_error("Failed to open codec.");
-            }
 
-            audioStream = avformat_new_stream(formatContext, nullptr);
-            if (!audioStream) {
-                throw std::runtime_error("Failed to create new stream.");
-            }
+        if (formatContext->oformat->flags & AVFMT_GLOBALHEADER) {
+            codecContext->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
+        }
 
-            if (avcodec_parameters_from_context(audioStream->codecpar, codecContext) < 0) {
-                throw std::runtime_error("Failed to copy codec parameters.");
-            }
-        } catch (const std::exception &e) {
-            qCritical() << "Error occurred while configuring codec: " << e.what();
+        if (avcodec_open2(codecContext, codec, nullptr) < 0) {
+            qCritical() << "Failed to open codec.";
             avcodec_free_context(&codecContext);
-            avformat_free_context(formatContext);
+            return;
+        }
+
+        audioStream = avformat_new_stream(formatContext, nullptr);
+        if (!audioStream) {
+            qCritical() << "Failed to create new stream.";
+            avcodec_free_context(&codecContext);
+            return;
+        }
+
+        if (avcodec_parameters_from_context(audioStream->codecpar, codecContext) < 0) {
+            qCritical() << "Failed to copy codec parameters.";
+            avcodec_free_context(&codecContext);
             return;
         }
 
@@ -129,7 +107,6 @@ void MainWindow::on_startRecord_clicked()
             if (avio_open(&formatContext->pb, mp3FileName.toStdString().c_str(), AVIO_FLAG_WRITE) < 0) {
                 qCritical() << "Failed to open output file.";
                 avcodec_free_context(&codecContext);
-                avformat_free_context(formatContext);
                 return;
             }
         }
@@ -137,59 +114,39 @@ void MainWindow::on_startRecord_clicked()
         if (avformat_write_header(formatContext, nullptr) < 0) {
             qCritical() << "Failed to write header.";
             avcodec_free_context(&codecContext);
-            avformat_free_context(formatContext);
             return;
         }
 
         qDebug() << "Recording started.";
 
-        // Initialize SwrContext for format conversion
+        AVChannelLayout inputChannelLayoutStruct;
+        AVChannelLayout outputChannelLayoutStruct;
+
+        av_channel_layout_default(&inputChannelLayoutStruct, 2); // Mono
+        av_channel_layout_default(&outputChannelLayoutStruct, 2); // Stereo
+
         swrCtx = swr_alloc();
         if (!swrCtx) {
             qCritical() << "Failed to allocate SwrContext.";
             return;
         }
 
-        int64_t inputChannelLayout = codecContext->ch_layout.u.mask; // Mono
-        int64_t outputChannelLayout = AV_CH_LAYOUT_STEREO; // Stereo
+        if (swr_alloc_set_opts2(&swrCtx, &outputChannelLayoutStruct, AV_SAMPLE_FMT_FLTP, codecContext->sample_rate,
+                                &inputChannelLayoutStruct, AV_SAMPLE_FMT_S16, codecContext->sample_rate, 0, nullptr) < 0) {
+            qCritical() << "Failed to allocate and set options for SwrContext.";
+            return;
+        }
 
-        qDebug() << "Selected input channel layout: MONO";
-        qDebug() << "Selected output channel layout: STEREO";
-
-
-
-        // SwrContext ayarları
-        av_opt_set_int(swrCtx, "in_channel_layout", inputChannelLayout, 0);
-        av_opt_set_int(swrCtx, "out_channel_layout", outputChannelLayout, 0);
-        av_opt_set_int(swrCtx, "in_sample_rate", codecContext->sample_rate, 0);
-        av_opt_set_int(swrCtx, "out_sample_rate", codecContext->sample_rate, 0);
-        av_opt_set_sample_fmt(swrCtx, "in_sample_fmt", codecContext->sample_fmt, 0);
-        av_opt_set_sample_fmt(swrCtx, "out_sample_fmt", AV_SAMPLE_FMT_S32, 0);
-
-        // SwrContext başlatma
         if (swr_init(swrCtx) < 0) {
             qCritical() << "Failed to initialize SwrContext.";
-            qCritical() << "Details:";
-            qCritical() << " - Input Channel Layout: " << inputChannelLayout;
-            qCritical() << " - Output Channel Layout: " << outputChannelLayout;
-            qCritical() << " - Input Sample Rate:" << codecContext->sample_rate;
-            qCritical() << " - Output Sample Rate:" << codecContext->sample_rate;
-            qCritical() << " - Input Sample Format:" << av_get_sample_fmt_name(codecContext->sample_fmt);
-            qCritical() << " - Output Sample Format: s32";
             swr_free(&swrCtx);
             return;
         }
 
-        qDebug() << "SwrContext initialized successfully.";
-
-        qDebug() << "SwrContext initialized successfully.";
-
-        // Prepare for data processing
         frame = av_frame_alloc();
         if (!frame) {
             qCritical() << "Failed to allocate frame.";
             avcodec_free_context(&codecContext);
-            avformat_free_context(formatContext);
             return;
         }
 
@@ -201,7 +158,6 @@ void MainWindow::on_startRecord_clicked()
             qCritical() << "Failed to allocate audio frame buffer.";
             av_frame_free(&frame);
             avcodec_free_context(&codecContext);
-            avformat_free_context(formatContext);
             return;
         }
 
@@ -210,32 +166,40 @@ void MainWindow::on_startRecord_clicked()
             qCritical() << "Failed to allocate packet.";
             av_frame_free(&frame);
             avcodec_free_context(&codecContext);
-            avformat_free_context(formatContext);
             return;
         }
 
+         audioInput->setBufferSize(16384);
+
         connect(inputDevice, &QIODevice::readyRead, this, [=]() {
             try {
-                data = inputDevice->readAll();
+                if (usingEffects) {
+                    data = inputDevice->readAll();
+                }
+
                 if (data.isEmpty()) {
                     qWarning() << "No data received.";
                     return;
                 }
 
-                // Convert s32p to s32
+                for (int i = 0; i < data.size(); ++i)
+                {
+                    data[i] = static_cast<char>(qMin(qMax(static_cast<int>(data[i]), -32768), 32767));
+                }
+
                 const uint8_t *inData[AV_NUM_DATA_POINTERS] = { reinterpret_cast<const uint8_t *>(data.data()) };
                 uint8_t *outData[AV_NUM_DATA_POINTERS] = { nullptr };
 
                 int outLinesize;
                 int outSamples = av_samples_alloc(outData, &outLinesize, codecContext->ch_layout.nb_channels,
-                                                  codecContext->frame_size, AV_SAMPLE_FMT_S32, 0);
+                                                  frame->nb_samples, codecContext->sample_fmt, 0);
 
                 if (outSamples < 0) {
                     qCritical() << "Failed to allocate output samples.";
                     return;
                 }
 
-                int convertedSamples = swr_convert(swrCtx, outData, outSamples, inData, codecContext->frame_size);
+                int convertedSamples = swr_convert(swrCtx, outData, frame->nb_samples, inData, frame->nb_samples);
 
                 if (convertedSamples < 0) {
                     qCritical() << "Failed to convert audio samples.";
@@ -243,15 +207,15 @@ void MainWindow::on_startRecord_clicked()
                     return;
                 }
 
-                int dataSize = av_samples_fill_arrays(frame->data, frame->linesize,
-                                                      outData[0], codecContext->ch_layout.nb_channels,
-                                                      convertedSamples, AV_SAMPLE_FMT_S32, 0);
-
-                if (dataSize < 0) {
+                if (av_samples_fill_arrays(frame->data, frame->linesize, outData[0], codecContext->ch_layout.nb_channels,
+                                           convertedSamples, codecContext->sample_fmt, 0) < 0) {
                     qCritical() << "Failed to fill frame with converted data.";
                     av_freep(&outData[0]);
                     return;
                 }
+
+                frame->pts = pts;
+                pts += frame->nb_samples;
 
                 if (avcodec_send_frame(codecContext, frame) < 0) {
                     qWarning() << "Failed to send frame to encoder.";
@@ -260,6 +224,8 @@ void MainWindow::on_startRecord_clicked()
                 }
 
                 while (avcodec_receive_packet(codecContext, packet) == 0) {
+                    packet->stream_index = audioStream->index;
+                    av_packet_rescale_ts(packet, codecContext->time_base, audioStream->time_base);
                     av_write_frame(formatContext, packet);
                     av_packet_unref(packet);
                 }
@@ -272,14 +238,25 @@ void MainWindow::on_startRecord_clicked()
     } catch (const std::runtime_error &e) {
         qCritical() << "Error occurred: " << e.what();
         avcodec_free_context(&codecContext);
-        avformat_free_context(formatContext);
         return;
     }
 }
 
+
+
 void MainWindow::on_stopRecord_clicked()
 {
     if (formatContext) {
+        // Flush the encoder
+        if (codecContext) {
+            avcodec_send_frame(codecContext, nullptr);
+            while (avcodec_receive_packet(codecContext, packet) == 0) {
+                av_write_frame(formatContext, packet);
+                av_packet_unref(packet);
+            }
+        }
+
+        // Write trailer
         av_write_trailer(formatContext);
 
         if (!(formatContext->oformat->flags & AVFMT_NOFILE)) {
@@ -296,5 +273,8 @@ void MainWindow::on_stopRecord_clicked()
 
     data.clear();
 
+    pts = 0;
+
     disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
 }
+

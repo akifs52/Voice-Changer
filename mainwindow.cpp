@@ -9,7 +9,7 @@ MainWindow::MainWindow(QWidget *parent)
     , audioInput(nullptr)
     , inputDevice(nullptr)
     , outputDevice(nullptr)
-    , ffmpegProcess(new QProcess)
+
 
 {
     ui->setupUi(this);
@@ -35,19 +35,7 @@ MainWindow::~MainWindow()
 
     delete format;
 
-    if (ffmpegProcess->state() == QProcess::Running) {
-        qDebug() << "Kayıt durduruluyor...";
-
-        // ffmpeg'e özel bir kapatma sinyali gönder
-        ffmpegProcess->write("q");  // FFmpeg'e "q" göndererek kaydı bitirmesini istiyoruz
-        ffmpegProcess->closeWriteChannel();  // Yazma kanalını kapat, FFmpeg sonlandırmayı işlesin
-
-        if (!ffmpegProcess->waitForFinished(5000)) {  // 5 saniye bekle, hala durmadıysa...
-            qDebug() << "FFmpeg işlemi düzgün şekilde sonlandırılamadı, zorla kapatılıyor...";
-            ffmpegProcess->kill();  // Zorla sonlandırmak en son çare
-            ffmpegProcess->waitForFinished();
-        }
-    }
+    on_stopRecord_clicked();
 
     delete ui;
 

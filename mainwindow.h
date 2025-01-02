@@ -6,7 +6,6 @@
 #include <QMediaDevices>
 #include <QAudioSource> //input mic
 #include <QAudioSink> //output
-#include <QProcess>
 #include <QCoreApplication>
 #include "QAudioDecoder"
 #include "qpushbutton.h"
@@ -188,9 +187,6 @@ private:
     QAudioSource *audioInput;
     QIODevice *inputDevice;
     QIODevice *outputDevice;
-
-
-    QProcess *ffmpegProcess;
 
 
     bool usingEffects = true;
