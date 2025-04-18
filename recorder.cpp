@@ -3,7 +3,6 @@
 #include "ui_mainwindow.h"
 #include "mainwindow.h"
 
-
 extern "C"{
 #include <libavformat/avformat.h>
 #include <libavcodec/avcodec.h>
@@ -14,7 +13,6 @@ extern "C"{
 #include <libavutil/opt.h>
 #include <libavutil/channel_layout.h>
 }
-
 
 AVFormatContext *formatContext = nullptr;
 AVStream *audioStream = nullptr;
@@ -30,8 +28,6 @@ recorder::recorder(QWidget *parent)
 {
 
 }
-
-
 
 void MainWindow::on_startRecord_clicked()
 {
@@ -169,7 +165,7 @@ void MainWindow::on_startRecord_clicked()
             return;
         }
 
-         audioInput->setBufferSize(16384);
+        audioInput->setBufferSize(16384);
 
         connect(inputDevice, &QIODevice::readyRead, this, [=]() {
             try {
@@ -242,8 +238,6 @@ void MainWindow::on_startRecord_clicked()
     }
 }
 
-
-
 void MainWindow::on_stopRecord_clicked()
 {
     if (formatContext) {
@@ -268,13 +262,10 @@ void MainWindow::on_stopRecord_clicked()
         av_frame_free(&frame);
         av_packet_free(&packet);
 
-        qDebug() << "Recording stopped.";
+        qDebug() << " recording stop";
+
+        pts = 0;
+
+        disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
     }
-
-    data.clear();
-
-    pts = 0;
-
-    disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
 }
-

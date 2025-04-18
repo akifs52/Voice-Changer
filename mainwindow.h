@@ -78,7 +78,6 @@ private slots:
 
 
 
-
     void on_sound1_clicked();
 
     void on_sound2_clicked();
@@ -192,6 +191,7 @@ private:
     bool usingEffects = true;
     QByteArray data;
 
+
     QString filename1 = QCoreApplication::applicationDirPath() + ("/soundpack/YARRA.wav");
     QString pic1 = ":/img/img/yArra.jpg";
     QString filename2 = QCoreApplication::applicationDirPath() + ("/soundpack/YARRA-ULTRA-BASS-EARRAPE.wav");
@@ -244,6 +244,8 @@ private:
     void stopCurrentAudio();
 
     void playAudio(const QString &filename, const QString &picPath, QPushButton *button);
+
+    void playAudioNotInterrupt(const QString &filename, const QString &picPath, QPushButton *button);
 
     void searchInputDevice();
     void searchOutputDevice();
