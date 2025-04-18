@@ -243,8 +243,6 @@ private:
 
     void stopCurrentAudio();
 
-    void playAudio(const QString &filename, const QString &picPath, QPushButton *button);
-
     void playAudioNotInterrupt(const QString &filename, const QString &picPath, QPushButton *button);
 
     void searchInputDevice();

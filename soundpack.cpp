@@ -18,50 +18,6 @@ soundpack::soundpack(QWidget *parent)
 
 QByteArray *localData = new QByteArray;
 
-void MainWindow::stopCurrentAudio()
-{
-    if (isPlaying) {
-        // Çalmayı durdur
-        stopRequested = true;
-
-        // Decode işlemini durdur
-        if (audioDecoder) {
-            audioDecoder->stop();
-            audioDecoder->deleteLater();
-            audioDecoder = nullptr;
-        }
-
-        // Output cihazını kapat ve serbest bırak
-        if (outputDevice) {
-
-            outputDevice = nullptr;
-        }
-
-        if (audioOutput) {
-            audioOutput->suspend();
-            delete audioOutput;
-            audioOutput = nullptr;
-        }
-
-        // İş parçacıklarını temizle
-        if (decodeThread && decodeThread->isRunning()) {
-            decodeThread->quit();
-            decodeThread->wait();
-            delete decodeThread;
-            decodeThread = nullptr;
-        }
-
-        if (outputThread && outputThread->isRunning()) {
-            outputThread->quit();
-            outputThread->wait();
-            delete outputThread;
-            outputThread = nullptr;
-        }
-
-        localData->clear(); // PCM verisini temizle
-        isPlaying = false;
-    }
-}
 
 void MainWindow::playAudioNotInterrupt(const QString &filename, const QString &picPath, QPushButton *button)
 {
@@ -135,81 +91,6 @@ void MainWindow::playAudioNotInterrupt(const QString &filename, const QString &p
     audioDecoder->start();
 
     localData->clear();
-}
-
-void MainWindow::playAudio(const QString &filename, const QString &picPath, QPushButton *button)
-{
-
-    stopCurrentAudio();
-    stopRequested = false;
-
-    QPixmap icon(picPath);
-    QIcon buttonIcon = icon;
-    button->setIcon(buttonIcon);
-    button->setIconSize(QSize(75, 75));
-
-    decodeThread = new QThread;
-    outputThread = new QThread;
-    audioDecoder = new QAudioDecoder;
-
-    audioDecoder->setAudioFormat(*format);
-    audioDecoder->moveToThread(decodeThread);
-
-    isPlaying = true;
-
-    // Yerel QByteArray oluştur
-
-    connect(decodeThread, &QThread::started, this, [=]() {
-        audioDecoder->setSource(filename);
-        audioDecoder->start();
-    });
-
-    connect(audioDecoder, &QAudioDecoder::bufferReady, this, [=]() {
-        const QAudioBuffer buffer = audioDecoder->read();
-        localData->append(reinterpret_cast<const char *>(buffer.data<void>()), buffer.byteCount());
-    });
-
-    connect(audioDecoder, &QAudioDecoder::finished, this, [=]() {
-        qDebug() << "Decoding finished.";
-        decodeThread->quit();
-    });
-
-    connect(audioDecoder, &QAudioDecoder::finished, this, [=]() {
-        connect(outputThread, &QThread::started, [=]() {
-            if (outputDevice) {
-                qint64 written = 0;
-                while (written < localData->size() && !stopRequested) {
-                    written += outputDevice->write(localData->mid(written));
-                }
-
-                if (stopRequested) {
-                    qDebug() << "Playback interrupted.";
-                } else {
-                    qDebug() << "Playback finished.";
-                }
-            }
-            outputThread->quit();
-        });
-
-        connect(outputThread, &QThread::finished, [=]() {
-            outputThread->deleteLater();
-            delete localData;  // belleği serbest bırak
-        });
-
-        outputThread->start();
-    });
-
-    connect(decodeThread, &QThread::finished, this, [=]() {
-        decodeThread->deleteLater();
-        decodeThread = nullptr;
-    });
-
-    connect(outputThread, &QThread::finished, this, [=]() {
-        outputThread = nullptr;
-        isPlaying = false;
-    });
-
-    decodeThread->start();
 }
 
 
