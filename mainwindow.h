@@ -216,6 +216,7 @@ private:
     void setupGlobalShortcuts();
     void saveHotkeys();
     void loadHotkeys();
+    void stopAllEffects();
     bool winEventFilter(MSG *message, long *result);
     bool nativeEvent(const QByteArray &eventType, void *message, qintptr *result) override;
 };

@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QSettings>
+#include <QTimer>
 
 #ifdef Q_OS_WIN
 #include <windows.h>
@@ -40,6 +41,8 @@ MainWindow::MainWindow(QWidget *parent)
     
     // Load saved hotkeys
     loadHotkeys();
+
+
 }
 
 MainWindow::~MainWindow()
@@ -245,6 +248,16 @@ void MainWindow::on_inputcombobox_currentIndexChanged(int index)
 
     // Ses kaynağını başlatma
     inputDevice = audioInput->start();
+    
+    // Başlangıçta normal mod bağlantısı kur (progress bar için)
+    if (inputDevice) {
+        connect(inputDevice, &QIODevice::readyRead, this, [=](){
+            data = inputDevice->readAll();
+            progressBarOutput();
+            // Normal modda output'a gönderme
+        });
+        qDebug() << "Initial audio connection established.";
+    }
 }
 
 
@@ -317,53 +330,90 @@ void MainWindow::on_testButton_clicked(bool checked)
 
         if(!audioInput)
         {
-            audioInput->resume();
+            qWarning() << "Audio input is not initialized";
+            return;
         }
 
+        audioInput->resume();
+        
+        if(audioOutput) {
+            audioOutput->resume();
+        }
 
-        audioOutput->resume();
-
-        qDebug() << "Listening started.";
+        qDebug() << "Test mode started.";
 
         if(audioInput && audioOutput)
         {
-            connect(inputDevice, &QIODevice::readyRead, this, [=]() {
-
-                if(usingEffects)
-                {
+            // Önce mevcut bağlantıları temizle
+            if (inputDevice) {
+                disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
+            }
+            
+            // Test modu bağlantısı kur - efekt durumunu kontrol et
+            if (inputDevice) {
+                connect(inputDevice, &QIODevice::readyRead, this, [=]() {
                     data = inputDevice->readAll();
-                    qDebug() << "ab";
-                }
-
-                progressBarOutput(); // Progress bar işlemi
-
-                // Output ver
-                if (outputDevice) {
-                    outputDevice->write(data);
-                }
-
-
-            });
+                    
+                    // Eğer bir efekt aktifse onu uygula
+                    if (!usingEffects) {
+                        // Hangi efekt aktif olduğunu kontrol et
+                        if (ui->robotButton->isChecked()) {
+                            processToRobotVoice(data);
+                        } else if (ui->bananaButton->isChecked()) {
+                            processToBananaVoice(data);
+                        } else if (ui->devilButton->isChecked()) {
+                            processToDevilVoice(data);
+                        } else if (ui->femaleButton->isChecked()) {
+                            processToFemaleVoice(data);
+                        } else if (ui->combineButton->isChecked()) {
+                            processToCombineVoice(data);
+                        } else if (ui->ekoButton->isChecked()) {
+                            processToEkoVoice(data);
+                        }
+                        // Efekt yoksa data değişmeden kalır
+                    }
+                    
+                    // Progress bar'ı güncelle
+                    progressBarOutput();
+                    
+                    // SADECE test modunda output'a gönder
+                    if (outputDevice && outputDevice->isOpen()) {
+                        outputDevice->write(data);
+                    }
+                });
+            }
         }
         else
         {
             qWarning() << "Audio devices are not properly initialized.";
         }
-    }
+    } 
     else {
         ui->testButton->setText("Test Device");
 
-        // Dinlemeyi durdur
+        // Test bağlantısını kopar
         if (inputDevice) {
-            disconnect(inputDevice, &QIODevice::readyRead,this,nullptr);
+            disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
+            
+            if (usingEffects == false) {
+                // Bir efekt aktifse, onun bağlantısını kur
+                // Bu stopAllEffects içinde handled olur
+                stopAllEffects();
+            } else {
+                // Normal mod için bağlantı kur - HİÇBİR ZAMAN output'a gönderme
+                connect(inputDevice, &QIODevice::readyRead, this, [=]() {
+                    data = inputDevice->readAll();
+                    progressBarOutput();
+                    // KESİNLİKLE output'a gönderme - test butonuna basılana kadar sessiz
+                });
+            }
         }
-
 
         if (audioOutput) {
             audioOutput->suspend();
         }
-
-        qDebug() << "Listening stopped.";
+        
+        qDebug() << "Test mode stopped.";
     }
 }
 
@@ -376,11 +426,10 @@ void MainWindow::progressBarOutput()
         return;
     }
 
-    //data = inputDevice->readAll();
-
+    // data değişkeni zaten efekt tarafından doldurulmuş olmalı
     if(data.isEmpty())
     {
-        qWarning() << "No data read from input device.";
+        qWarning() << "No data available for progress bar.";
         return;
     }
 
@@ -389,7 +438,7 @@ void MainWindow::progressBarOutput()
     int numSamples = data.size() / sizeof(qint16);
     qint16 maxAmplitude = 0;
 
-for (int i = 0; i < numSamples; ++i) {
+    for (int i = 0; i < numSamples; ++i) {
         maxAmplitude = qMax(maxAmplitude, qAbs(samples[i]));
     }
 
@@ -399,6 +448,5 @@ for (int i = 0; i < numSamples; ++i) {
 
     ui->progressBar->setValue(progressValue); // Progress bar güncelle
     qDebug() << "Volume Level:" << progressValue;
-
 }
 

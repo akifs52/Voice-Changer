@@ -19,256 +19,184 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <property name="styleSheet">
-    <string notr="true">/* ===== MODERN DARK TO LIGHT THEME ===== */
-
-/* Ana Pencere */
-QMainWindow {
-    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                stop:0 #2b2b2b, stop:1 #3c3c3c);
-    color: #ffffff;
+    <string notr="true">QMainWindow {
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+    font-family: &quot;Segoe UI&quot;;
+    font-size: 9pt;
 }
 
-/* Merkez Widget */
 QWidget {
     background: transparent;
-    color: #ffffff;
+    color: #e0e0e0;
 }
 
-/* ===== BUTONLAR ===== */
+/* ================================
+   FRAME / CARD
+================================ */
+QFrame {
+    background: #252525;
+    border-radius: 12px;
+    padding: 6px;
+}
 
-/* Ana Butonlar - Modern Gradient */
-QPushButton {
-    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                stop:0 #4a4a4a, stop:1 #2a2a2a);
-    border: 1px solid #555555;
+QFrame[class=&quot;card&quot;] {
+    background: #2b2b2b;
+    border-radius: 14px;
+}
+
+/* ================================
+   LABELS
+================================ */
+QLabel {
+    color: #e0e0e0;
+}
+
+QLabel[class=&quot;title&quot;] {
+    color: #00ff88;
+    font-size: 14pt;
+    font-weight: bold;
+}
+
+QLabel[class=&quot;panelTitle&quot;] {
+    color: #00ff88;
+    font-size: 11pt;
+    font-weight: bold;
+    border-bottom: 1px solid #3a3a3a;
+    padding-bottom: 4px;
+    margin-bottom: 6px;
+}
+
+/* ================================
+   SCROLLBAR (MINIMAL)
+================================ */
+QScrollBar:vertical {
+    background: transparent;
+    width: 6px;
+}
+QScrollBar::handle:vertical {
+    background: #00ff88;
     border-radius: 3px;
+}
+QScrollBar::add-line,
+QScrollBar::sub-line {
+    height: 0px;
+}
+
+/* ================================
+   BUTTONS (BASE)
+================================ */
+QPushButton {
+    background: #2f2f2f;
+    border: 1px solid #3a3a3a;
+    border-radius: 8px;
     color: #ffffff;
-    font: 8pt &quot;Segoe UI&quot;;
-    padding: 2px 4px;
-    min-width: 50px;
-    min-height: 18px;
-    max-height: 20px;
+    padding: 4px 10px;
 }
 
 QPushButton:hover {
-    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                stop:0 #5a5a5a, stop:1 #3a3a3a);
-    border-color: #00ff88;
-    transform: translateY(-2px);
+    background: #3a3a3a;
+    border: 1px solid #00ff88;
 }
 
 QPushButton:pressed {
-    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                stop:0 #3a3a3a, stop:1 #1a1a1a);
-    border-color: #00ff88;
-    transform: translateY(0px);
+    background: #1f1f1f;
 }
 
-/* Ses Butonları - Grid Görünüm */
+/* ================================
+   SOUND GRID BUTTONS
+================================ */
 QPushButton[class=&quot;soundButton&quot;] {
-    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                stop:0 #3a3a3a, stop:1 #2a2a2a);
-    border: 1px solid #444444;
-    border-radius: 4px;
-    color: #ffffff;
-    font: 7pt &quot;Segoe UI&quot;;
-    padding: 4px;
-    min-width: 55px;
-    min-height: 40px;
-    max-width: 55px;
-    max-height: 40px;
+    background: #2a2a2a;
+    border-radius: 10px;
+    min-width: 58px;
+    max-width: 58px;
+    min-height: 44px;
+    max-height: 44px;
+    font-size: 7pt;
 }
 
 QPushButton[class=&quot;soundButton&quot;]:hover {
-    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                stop:0 #4a4a4a, stop:1 #3a3a3a);
-    border-color: #00ff88;
-    box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3);
+    background: #353535;
+    border: 1px solid #00ff88;
 }
 
-QPushButton[class=&quot;soundButton&quot;]:pressed {
-    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                stop:0 #2a2a2a, stop:1 #1a1a1a);
-    border-color: #00ff88;
-}
-
-/* Efekt Butonları */
+/* ================================
+   EFFECT / ACCENT BUTTONS
+================================ */
 QPushButton[class=&quot;effectButton&quot;] {
-    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                stop:0 #ff6b35, stop:1 #d84315);
-    border: 1px solid #ff8a65;
-    border-radius: 6px;
-    color: #ffffff;
-    font: 8pt &quot;Segoe UI&quot;;
-    padding: 4px 8px;
-    min-width: 65px;
-    min-height: 20px;
-    max-height: 22px;
+    background: #ff6b35;
+    border-radius: 10px;
+    padding: 4px 12px;
+    font-weight: bold;
 }
 
 QPushButton[class=&quot;effectButton&quot;]:hover {
-    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                stop:0 #ff8a65, stop:1 #ff6b35);
-    border-color: #ffffff;
-    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4);
+    background: #ff855c;
 }
 
 QPushButton[class=&quot;effectButton&quot;]:checked {
-    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                stop:0 #00ff88, stop:1 #00cc6a);
-    border-color: #ffffff;
-}
-
-/* ===== COMBOBOXLAR - KARANMAKTAN AÇIĞA ===== */
-
-QComboBox {
-    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                stop:0 #4a4a4a, stop:1 #2a2a2a);
-    border: 1px solid #555555;
-    border-radius: 3px;
-    color: #ffffff;
-    font: 8pt &quot;Segoe UI&quot;;
-    padding: 2px 4px;
-    min-width: 80px;
-    min-height: 18px;
-    max-height: 20px;
-}
-
-QComboBox:hover {
-    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                stop:0 #5a5a5a, stop:1 #3a3a3a);
-    border-color: #00ff88;
-}
-
-QComboBox:focus {
-    border-color: #00ff88;
-    outline: none;
-}
-
-QComboBox::drop-down {
-    subcontrol-origin: padding;
-    subcontrol-position: top right;
-    width: 20px;
-    border-left: 1px solid #555555;
-    border-radius: 0 6px 6px 0;
-    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                stop:0 #5a5a5a, stop:1 #3a3a3a);
-}
-
-QComboBox::down-arrow {
-    image: url(:/icons/down_arrow.png);
-    width: 12px;
-    height: 12px;
-}
-
-QComboBox QAbstractItemView {
-    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                stop:0 #5a5a5a, stop:1 #3a3a3a);
-    border: 2px solid #00ff88;
-    border-radius: 6px;
-    color: #ffffff;
-    selection-background-color: #00ff88;
-    selection-color: #000000;
-    outline: none;
-}
-
-QComboBox QAbstractItemView::item {
-    padding: 8px 12px;
-    border-bottom: 1px solid #444444;
-}
-
-QComboBox QAbstractItemView::item:selected {
     background: #00ff88;
     color: #000000;
 }
 
-QComboBox QAbstractItemView::item:hover {
-    background: #4a4a4a;
+/* ================================
+   COMBOBOX
+================================ */
+QComboBox {
+    background: #2f2f2f;
+    border-radius: 8px;
+    border: 1px solid #3a3a3a;
+    padding: 2px 8px;
 }
 
-/* ===== SLIDERLAR ===== */
+QComboBox:hover {
+    border: 1px solid #00ff88;
+}
 
+QComboBox::drop-down {
+    border: none;
+    width: 18px;
+}
+
+QComboBox QAbstractItemView {
+    background: #2a2a2a;
+    border: 1px solid #00ff88;
+    selection-background-color: #00ff88;
+    selection-color: #000000;
+}
+
+/* ================================
+   SLIDER
+================================ */
 QSlider::groove:horizontal {
-    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
-                stop:0 #3a3a3a, stop:1 #2a2a2a);
-    border: 1px solid #555555;
-    border-radius: 4px;
-    height: 8px;
+    height: 4px;
+    background: #3a3a3a;
+    border-radius: 2px;
 }
 
 QSlider::handle:horizontal {
-    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                stop:0 #00ff88, stop:1 #00cc6a);
-    border: 2px solid #ffffff;
-    border-radius: 8px;
-    width: 16px;
-    height: 16px;
-    margin: -4px 0;
+    width: 14px;
+    height: 14px;
+    margin: -5px 0;
+    background: #00ff88;
+    border-radius: 7px;
 }
 
-QSlider::handle:horizontal:hover {
-    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                stop:0 #4affaa, stop:1 #2aff88);
-    transform: scale(1.2);
-}
-
-/* ===== LABELLAR ===== */
-
-QLabel {
-    color: #ffffff;
-    font: 10pt &quot;Segoe UI&quot;;
-    background: transparent;
-}
-
-QLabel[class=&quot;title&quot;] {
-    font: bold 14pt &quot;Segoe UI&quot;;
-    color: #00ff88;
-    margin: 5px 0;
-}
-
-QLabel[class=&quot;subtitle&quot;] {
-    font: 11pt &quot;Segoe UI&quot;;
-    color: #cccccc;
-    margin: 3px 0;
-}
-
-/* ===== FRAME'LAR ===== */
-
-QFrame {
-    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                stop:0 #333333, stop:1 #2a2a2a);
-    border: none;
-    border-radius: 3px;
-    margin: 1px;
-    padding: 3px;
-}
-
-QFrame[class=&quot;soundFrame&quot;] {
-    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                stop:0 #3a3a3a, stop:1 #2a2a2a);
-    border: none;
-    border-radius: 6px;
-}
-
-/* ===== PROGRESS BAR ===== */
-
+/* ================================
+   PROGRESS BAR
+================================ */
 QProgressBar {
-    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
-                stop:0 #2a2a2a, stop:1 #1a1a1a);
-    border: 2px solid #555555;
-    border-radius: 6px;
+    background: #2a2a2a;
+    border-radius: 8px;
     text-align: center;
     color: #ffffff;
-    font: bold 9pt &quot;Segoe UI&quot;;
 }
 
 QProgressBar::chunk {
-    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
-                stop:0 #00ff88, stop:1 #00cc6a);
-    border-radius: 4px;
-    margin: 2px;
-}
-</string>
+    background: #00ff88;
+    border-radius: 8px;
+}</string>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout">
     <property name="spacing">
@@ -666,32 +594,18 @@ QProgressBar::chunk {
                   <widget class="QPushButton" name="sound1">
                    <property name="minimumSize">
                     <size>
-                     <width>98</width>
-                     <height>42</height>
+                     <width>0</width>
+                     <height>0</height>
                     </size>
                    </property>
                    <property name="maximumSize">
                     <size>
                      <width>100</width>
-                     <height>44</height>
+                     <height>16777215</height>
                     </size>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">QPushButton {
-    background-color: #e74c3c; /* Kırmızı arka plan */
-    color: white; /* Beyaz metin */
-    border: none; 
-    border-radius: 8px;
-    padding: 12px 24px;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Gölge */
-}
-QPushButton:hover {
-    background-color: #c0392b; /* Daha koyu kırmızı */
-}
-QPushButton:pressed {
-    background-color: #a93226; /* Basıldığında koyulaşma */
-    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3); /* İç gölge */
-}</string>
+                    <string notr="true"/>
                    </property>
                    <property name="text">
                     <string/>
@@ -712,32 +626,18 @@ QPushButton:pressed {
                   <widget class="QPushButton" name="sound2">
                    <property name="minimumSize">
                     <size>
-                     <width>98</width>
-                     <height>42</height>
+                     <width>0</width>
+                     <height>0</height>
                     </size>
                    </property>
                    <property name="maximumSize">
                     <size>
                      <width>100</width>
-                     <height>44</height>
+                     <height>16777215</height>
                     </size>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">QPushButton {
-    background-color: #e74c3c; /* Kırmızı arka plan */
-    color: white; /* Beyaz metin */
-    border: none; 
-    border-radius: 8px;
-    padding: 12px 24px;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Gölge */
-}
-QPushButton:hover {
-    background-color: #c0392b; /* Daha koyu kırmızı */
-}
-QPushButton:pressed {
-    background-color: #a93226; /* Basıldığında koyulaşma */
-    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3); /* İç gölge */
-}</string>
+                    <string notr="true"/>
                    </property>
                    <property name="text">
                     <string/>
@@ -758,32 +658,18 @@ QPushButton:pressed {
                   <widget class="QPushButton" name="sound3">
                    <property name="minimumSize">
                     <size>
-                     <width>98</width>
-                     <height>42</height>
+                     <width>0</width>
+                     <height>0</height>
                     </size>
                    </property>
                    <property name="maximumSize">
                     <size>
                      <width>100</width>
-                     <height>44</height>
+                     <height>16777215</height>
                     </size>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">QPushButton {
-    background-color: #e74c3c; /* Kırmızı arka plan */
-    color: white; /* Beyaz metin */
-    border: none; 
-    border-radius: 8px;
-    padding: 12px 24px;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Gölge */
-}
-QPushButton:hover {
-    background-color: #c0392b; /* Daha koyu kırmızı */
-}
-QPushButton:pressed {
-    background-color: #a93226; /* Basıldığında koyulaşma */
-    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3); /* İç gölge */
-}</string>
+                    <string notr="true"/>
                    </property>
                    <property name="text">
                     <string/>
@@ -804,32 +690,18 @@ QPushButton:pressed {
                   <widget class="QPushButton" name="sound4">
                    <property name="minimumSize">
                     <size>
-                     <width>98</width>
-                     <height>42</height>
+                     <width>0</width>
+                     <height>0</height>
                     </size>
                    </property>
                    <property name="maximumSize">
                     <size>
                      <width>100</width>
-                     <height>44</height>
+                     <height>16777215</height>
                     </size>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">QPushButton {
-    background-color: #e74c3c; /* Kırmızı arka plan */
-    color: white; /* Beyaz metin */
-    border: none; 
-    border-radius: 8px;
-    padding: 12px 24px;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Gölge */
-}
-QPushButton:hover {
-    background-color: #c0392b; /* Daha koyu kırmızı */
-}
-QPushButton:pressed {
-    background-color: #a93226; /* Basıldığında koyulaşma */
-    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3); /* İç gölge */
-}</string>
+                    <string notr="true"/>
                    </property>
                    <property name="text">
                     <string/>
@@ -850,32 +722,18 @@ QPushButton:pressed {
                   <widget class="QPushButton" name="sound5">
                    <property name="minimumSize">
                     <size>
-                     <width>98</width>
-                     <height>42</height>
+                     <width>0</width>
+                     <height>0</height>
                     </size>
                    </property>
                    <property name="maximumSize">
                     <size>
                      <width>100</width>
-                     <height>44</height>
+                     <height>16777215</height>
                     </size>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">QPushButton {
-    background-color: #e74c3c; /* Kırmızı arka plan */
-    color: white; /* Beyaz metin */
-    border: none; 
-    border-radius: 8px;
-    padding: 12px 24px;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Gölge */
-}
-QPushButton:hover {
-    background-color: #c0392b; /* Daha koyu kırmızı */
-}
-QPushButton:pressed {
-    background-color: #a93226; /* Basıldığında koyulaşma */
-    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3); /* İç gölge */
-}</string>
+                    <string notr="true"/>
                    </property>
                    <property name="text">
                     <string/>
@@ -930,7 +788,7 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>30</width>
-                     <height>26</height>
+                     <height>16777215</height>
                     </size>
                    </property>
                    <property name="text">
@@ -950,7 +808,7 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>30</width>
-                     <height>26</height>
+                     <height>16777215</height>
                     </size>
                    </property>
                    <property name="text">
@@ -970,7 +828,7 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>30</width>
-                     <height>26</height>
+                     <height>16777215</height>
                     </size>
                    </property>
                    <property name="text">
@@ -990,7 +848,7 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>30</width>
-                     <height>26</height>
+                     <height>16777215</height>
                     </size>
                    </property>
                    <property name="text">
@@ -1010,7 +868,7 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>30</width>
-                     <height>26</height>
+                     <height>16777215</height>
                     </size>
                    </property>
                    <property name="text">
@@ -1063,25 +921,11 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>100</width>
-                     <height>44</height>
+                     <height>16777215</height>
                     </size>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">QPushButton {
-    background-color: #e74c3c; /* Kırmızı arka plan */
-    color: white; /* Beyaz metin */
-    border: none; 
-    border-radius: 8px;
-    padding: 12px 24px;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Gölge */
-}
-QPushButton:hover {
-    background-color: #c0392b; /* Daha koyu kırmızı */
-}
-QPushButton:pressed {
-    background-color: #a93226; /* Basıldığında koyulaşma */
-    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3); /* İç gölge */
-}</string>
+                    <string notr="true"/>
                    </property>
                    <property name="text">
                     <string/>
@@ -1103,25 +947,11 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>100</width>
-                     <height>44</height>
+                     <height>16777215</height>
                     </size>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">QPushButton {
-    background-color: #e74c3c; /* Kırmızı arka plan */
-    color: white; /* Beyaz metin */
-    border: none; 
-    border-radius: 8px;
-    padding: 12px 24px;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Gölge */
-}
-QPushButton:hover {
-    background-color: #c0392b; /* Daha koyu kırmızı */
-}
-QPushButton:pressed {
-    background-color: #a93226; /* Basıldığında koyulaşma */
-    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3); /* İç gölge */
-}</string>
+                    <string notr="true"/>
                    </property>
                    <property name="text">
                     <string/>
@@ -1143,25 +973,11 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>100</width>
-                     <height>44</height>
+                     <height>16777215</height>
                     </size>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">QPushButton {
-    background-color: #e74c3c; /* Kırmızı arka plan */
-    color: white; /* Beyaz metin */
-    border: none; 
-    border-radius: 8px;
-    padding: 12px 24px;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Gölge */
-}
-QPushButton:hover {
-    background-color: #c0392b; /* Daha koyu kırmızı */
-}
-QPushButton:pressed {
-    background-color: #a93226; /* Basıldığında koyulaşma */
-    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3); /* İç gölge */
-}</string>
+                    <string notr="true"/>
                    </property>
                    <property name="text">
                     <string/>
@@ -1183,25 +999,11 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>100</width>
-                     <height>44</height>
+                     <height>16777215</height>
                     </size>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">QPushButton {
-    background-color: #e74c3c; /* Kırmızı arka plan */
-    color: white; /* Beyaz metin */
-    border: none; 
-    border-radius: 8px;
-    padding: 12px 24px;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Gölge */
-}
-QPushButton:hover {
-    background-color: #c0392b; /* Daha koyu kırmızı */
-}
-QPushButton:pressed {
-    background-color: #a93226; /* Basıldığında koyulaşma */
-    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3); /* İç gölge */
-}</string>
+                    <string notr="true"/>
                    </property>
                    <property name="text">
                     <string/>
@@ -1223,25 +1025,11 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>100</width>
-                     <height>44</height>
+                     <height>16777215</height>
                     </size>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">QPushButton {
-    background-color: #e74c3c; /* Kırmızı arka plan */
-    color: white; /* Beyaz metin */
-    border: none; 
-    border-radius: 8px;
-    padding: 12px 24px;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Gölge */
-}
-QPushButton:hover {
-    background-color: #c0392b; /* Daha koyu kırmızı */
-}
-QPushButton:pressed {
-    background-color: #a93226; /* Basıldığında koyulaşma */
-    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3); /* İç gölge */
-}</string>
+                    <string notr="true"/>
                    </property>
                    <property name="text">
                     <string/>
@@ -1296,7 +1084,7 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>30</width>
-                     <height>26</height>
+                     <height>16777215</height>
                     </size>
                    </property>
                    <property name="text">
@@ -1316,7 +1104,7 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>30</width>
-                     <height>26</height>
+                     <height>16777215</height>
                     </size>
                    </property>
                    <property name="text">
@@ -1336,7 +1124,7 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>30</width>
-                     <height>26</height>
+                     <height>16777215</height>
                     </size>
                    </property>
                    <property name="text">
@@ -1356,7 +1144,7 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>30</width>
-                     <height>26</height>
+                     <height>16777215</height>
                     </size>
                    </property>
                    <property name="text">
@@ -1376,7 +1164,7 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>30</width>
-                     <height>26</height>
+                     <height>16777215</height>
                     </size>
                    </property>
                    <property name="text">
@@ -1429,25 +1217,11 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>100</width>
-                     <height>44</height>
+                     <height>16777215</height>
                     </size>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">QPushButton {
-    background-color: #e74c3c; /* Kırmızı arka plan */
-    color: white; /* Beyaz metin */
-    border: none; 
-    border-radius: 8px;
-    padding: 12px 24px;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Gölge */
-}
-QPushButton:hover {
-    background-color: #c0392b; /* Daha koyu kırmızı */
-}
-QPushButton:pressed {
-    background-color: #a93226; /* Basıldığında koyulaşma */
-    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3); /* İç gölge */
-}</string>
+                    <string notr="true"/>
                    </property>
                    <property name="text">
                     <string/>
@@ -1459,25 +1233,11 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>100</width>
-                     <height>44</height>
+                     <height>16777215</height>
                     </size>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">QPushButton {
-    background-color: #e74c3c; /* Kırmızı arka plan */
-    color: white; /* Beyaz metin */
-    border: none; 
-    border-radius: 8px;
-    padding: 12px 24px;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Gölge */
-}
-QPushButton:hover {
-    background-color: #c0392b; /* Daha koyu kırmızı */
-}
-QPushButton:pressed {
-    background-color: #a93226; /* Basıldığında koyulaşma */
-    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3); /* İç gölge */
-}</string>
+                    <string notr="true"/>
                    </property>
                    <property name="text">
                     <string/>
@@ -1489,25 +1249,11 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>100</width>
-                     <height>44</height>
+                     <height>16777215</height>
                     </size>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">QPushButton {
-    background-color: #e74c3c; /* Kırmızı arka plan */
-    color: white; /* Beyaz metin */
-    border: none; 
-    border-radius: 8px;
-    padding: 12px 24px;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Gölge */
-}
-QPushButton:hover {
-    background-color: #c0392b; /* Daha koyu kırmızı */
-}
-QPushButton:pressed {
-    background-color: #a93226; /* Basıldığında koyulaşma */
-    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3); /* İç gölge */
-}</string>
+                    <string notr="true"/>
                    </property>
                    <property name="text">
                     <string/>
@@ -1519,25 +1265,11 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>100</width>
-                     <height>44</height>
+                     <height>16777215</height>
                     </size>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">QPushButton {
-    background-color: #e74c3c; /* Kırmızı arka plan */
-    color: white; /* Beyaz metin */
-    border: none; 
-    border-radius: 8px;
-    padding: 12px 24px;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Gölge */
-}
-QPushButton:hover {
-    background-color: #c0392b; /* Daha koyu kırmızı */
-}
-QPushButton:pressed {
-    background-color: #a93226; /* Basıldığında koyulaşma */
-    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3); /* İç gölge */
-}</string>
+                    <string notr="true"/>
                    </property>
                    <property name="text">
                     <string/>
@@ -1549,25 +1281,11 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>100</width>
-                     <height>44</height>
+                     <height>16777215</height>
                     </size>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">QPushButton {
-    background-color: #e74c3c; /* Kırmızı arka plan */
-    color: white; /* Beyaz metin */
-    border: none; 
-    border-radius: 8px;
-    padding: 12px 24px;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Gölge */
-}
-QPushButton:hover {
-    background-color: #c0392b; /* Daha koyu kırmızı */
-}
-QPushButton:pressed {
-    background-color: #a93226; /* Basıldığında koyulaşma */
-    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3); /* İç gölge */
-}</string>
+                    <string notr="true"/>
                    </property>
                    <property name="text">
                     <string/>
@@ -1612,7 +1330,7 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>30</width>
-                     <height>26</height>
+                     <height>16777215</height>
                     </size>
                    </property>
                    <property name="text">
@@ -1632,7 +1350,7 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>30</width>
-                     <height>26</height>
+                     <height>16777215</height>
                     </size>
                    </property>
                    <property name="text">
@@ -1652,7 +1370,7 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>30</width>
-                     <height>26</height>
+                     <height>16777215</height>
                     </size>
                    </property>
                    <property name="text">
@@ -1672,7 +1390,7 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>30</width>
-                     <height>26</height>
+                     <height>16777215</height>
                     </size>
                    </property>
                    <property name="text">
@@ -1692,7 +1410,7 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>30</width>
-                     <height>26</height>
+                     <height>16777215</height>
                     </size>
                    </property>
                    <property name="text">
@@ -1745,25 +1463,11 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>100</width>
-                     <height>44</height>
+                     <height>16777215</height>
                     </size>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">QPushButton {
-    background-color: #e74c3c; /* Kırmızı arka plan */
-    color: white; /* Beyaz metin */
-    border: none; 
-    border-radius: 8px;
-    padding: 12px 24px;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Gölge */
-}
-QPushButton:hover {
-    background-color: #c0392b; /* Daha koyu kırmızı */
-}
-QPushButton:pressed {
-    background-color: #a93226; /* Basıldığında koyulaşma */
-    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3); /* İç gölge */
-}</string>
+                    <string notr="true"/>
                    </property>
                    <property name="text">
                     <string/>
@@ -1775,25 +1479,11 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>100</width>
-                     <height>44</height>
+                     <height>16777215</height>
                     </size>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">QPushButton {
-    background-color: #e74c3c; /* Kırmızı arka plan */
-    color: white; /* Beyaz metin */
-    border: none; 
-    border-radius: 8px;
-    padding: 12px 24px;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Gölge */
-}
-QPushButton:hover {
-    background-color: #c0392b; /* Daha koyu kırmızı */
-}
-QPushButton:pressed {
-    background-color: #a93226; /* Basıldığında koyulaşma */
-    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3); /* İç gölge */
-}</string>
+                    <string notr="true"/>
                    </property>
                    <property name="text">
                     <string/>
@@ -1805,25 +1495,11 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>100</width>
-                     <height>44</height>
+                     <height>16777215</height>
                     </size>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">QPushButton {
-    background-color: #e74c3c; /* Kırmızı arka plan */
-    color: white; /* Beyaz metin */
-    border: none; 
-    border-radius: 8px;
-    padding: 12px 24px;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Gölge */
-}
-QPushButton:hover {
-    background-color: #c0392b; /* Daha koyu kırmızı */
-}
-QPushButton:pressed {
-    background-color: #a93226; /* Basıldığında koyulaşma */
-    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3); /* İç gölge */
-}</string>
+                    <string notr="true"/>
                    </property>
                    <property name="text">
                     <string/>
@@ -1835,25 +1511,11 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>100</width>
-                     <height>44</height>
+                     <height>16777215</height>
                     </size>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">QPushButton {
-    background-color: #e74c3c; /* Kırmızı arka plan */
-    color: white; /* Beyaz metin */
-    border: none; 
-    border-radius: 8px;
-    padding: 12px 24px;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Gölge */
-}
-QPushButton:hover {
-    background-color: #c0392b; /* Daha koyu kırmızı */
-}
-QPushButton:pressed {
-    background-color: #a93226; /* Basıldığında koyulaşma */
-    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3); /* İç gölge */
-}</string>
+                    <string notr="true"/>
                    </property>
                    <property name="text">
                     <string/>
@@ -1865,25 +1527,11 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>100</width>
-                     <height>44</height>
+                     <height>16777215</height>
                     </size>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">QPushButton {
-    background-color: #e74c3c; /* Kırmızı arka plan */
-    color: white; /* Beyaz metin */
-    border: none; 
-    border-radius: 8px;
-    padding: 12px 24px;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Gölge */
-}
-QPushButton:hover {
-    background-color: #c0392b; /* Daha koyu kırmızı */
-}
-QPushButton:pressed {
-    background-color: #a93226; /* Basıldığında koyulaşma */
-    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3); /* İç gölge */
-}</string>
+                    <string notr="true"/>
                    </property>
                    <property name="text">
                     <string/>
@@ -1928,7 +1576,7 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>30</width>
-                     <height>26</height>
+                     <height>16777215</height>
                     </size>
                    </property>
                    <property name="text">
@@ -1948,7 +1596,7 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>30</width>
-                     <height>26</height>
+                     <height>16777215</height>
                     </size>
                    </property>
                    <property name="text">
@@ -1968,7 +1616,7 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>30</width>
-                     <height>26</height>
+                     <height>16777215</height>
                     </size>
                    </property>
                    <property name="text">
@@ -1988,7 +1636,7 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>30</width>
-                     <height>26</height>
+                     <height>16777215</height>
                     </size>
                    </property>
                    <property name="text">
@@ -2008,7 +1656,7 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>30</width>
-                     <height>26</height>
+                     <height>16777215</height>
                     </size>
                    </property>
                    <property name="text">
@@ -2103,14 +1751,14 @@ QPushButton:pressed {
            <widget class="QPushButton" name="min">
             <property name="minimumSize">
              <size>
-              <width>60</width>
-              <height>24</height>
+              <width>0</width>
+              <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
               <width>50</width>
-              <height>26</height>
+              <height>16777215</height>
              </size>
             </property>
             <property name="text">
@@ -2187,8 +1835,8 @@ QPushButton:pressed {
               <widget class="QComboBox" name="inputcombobox">
                <property name="minimumSize">
                 <size>
-                 <width>90</width>
-                 <height>24</height>
+                 <width>0</width>
+                 <height>0</height>
                 </size>
                </property>
                <property name="currentIndex">
@@ -2360,14 +2008,14 @@ QPushButton:pressed {
               <widget class="QComboBox" name="outputcombobox">
                <property name="minimumSize">
                 <size>
-                 <width>90</width>
-                 <height>24</height>
+                 <width>0</width>
+                 <height>0</height>
                 </size>
                </property>
                <property name="maximumSize">
                 <size>
                  <width>16777215</width>
-                 <height>26</height>
+                 <height>16777215</height>
                 </size>
                </property>
               </widget>
@@ -2376,8 +2024,8 @@ QPushButton:pressed {
               <widget class="QPushButton" name="refreshOutput">
                <property name="minimumSize">
                 <size>
-                 <width>60</width>
-                 <height>24</height>
+                 <width>0</width>
+                 <height>0</height>
                 </size>
                </property>
                <property name="text">
@@ -2575,7 +2223,7 @@ QPushButton:pressed {
             <property name="maximumSize">
              <size>
               <width>50</width>
-              <height>26</height>
+              <height>16777215</height>
              </size>
             </property>
             <property name="text">

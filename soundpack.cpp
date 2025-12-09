@@ -9,7 +9,15 @@
 
 soundpack::soundpack(QWidget *parent)
     : QMainWindow{parent}
-{}
+{
+    QList<QPushButton*> buttons =
+        parent->findChildren<QPushButton*>();
+
+    for (auto btn : buttons) {
+        btn->setProperty("class", "soundPack");
+        btn->style()->polish(btn);
+    }
+}
 
 QByteArray *localData = new QByteArray;
 
@@ -29,6 +37,9 @@ void MainWindow::playAudioNotInterrupt(const QString &filename, const QString &p
 
     button->setIconSize(size);
 
+    // Seçili slot olarak işaretle
+    button->setProperty("selected", true);
+    button->style()->polish(button);
 
     // QThread oluşturuluyor
     QThread *decodeThread = new QThread;
@@ -60,6 +71,10 @@ void MainWindow::playAudioNotInterrupt(const QString &filename, const QString &p
 
     // Decode işlemi bittikten sonra ses çıkışını başlat
     connect(audioDecoder, &QAudioDecoder::finished, this, [=]() {
+        // Ses çalmaya başla - playing durumunu işaretle
+        button->setProperty("playing", true);
+        button->style()->polish(button);
+
         // Ses çıkış işlemini yeni bir thread'e taşıyoruz
         QThread *outputThread = new QThread;
 
@@ -70,6 +85,10 @@ void MainWindow::playAudioNotInterrupt(const QString &filename, const QString &p
                     written += outputDevice->write(localData->mid(written));
                 }
                 qDebug() << "Playback finished.";
+                
+                // Ses bitti - playing durumunu kaldır
+                button->setProperty("playing", false);
+                button->style()->polish(button);
             }
             outputThread->quit();
         });

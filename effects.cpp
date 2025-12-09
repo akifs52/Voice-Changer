@@ -3,6 +3,56 @@
 #include <QTime>
 #include "mainwindow.h"
 
+// Efekt yönetimi için yardımcı fonksiyon
+void MainWindow::stopAllEffects()
+{
+    // Tüm efekt butonlarını durdur ve text'lerini geri getir
+    ui->robotButton->setChecked(false);
+    ui->robotButton->setText("Robot sesi");
+    
+    ui->bananaButton->setChecked(false);
+    ui->bananaButton->setText("Çocuk Sesi");
+    
+    ui->devilButton->setChecked(false);
+    ui->devilButton->setText("Canavar sesi");
+    
+    ui->femaleButton->setChecked(false);
+    ui->femaleButton->setText("Kadın sesi");
+    
+    ui->combineButton->setChecked(false);
+    ui->combineButton->setText("Birleşik ses");
+    
+    ui->ekoButton->setChecked(false);
+    ui->ekoButton->setText("Eko");
+    
+    // Mevcut bağlantıları kopar
+    if (inputDevice) {
+        disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
+        
+        // Test durumuna göre bağlantı kur
+        if (ui->testButton->isChecked()) {
+            // Test modu: output'a gönder
+            connect(inputDevice, &QIODevice::readyRead, this, [=](){
+                data = inputDevice->readAll();
+                progressBarOutput(); // Progress bar'ı güncelle
+                if (outputDevice && outputDevice->isOpen()) {
+                    outputDevice->write(data);
+                }
+            });
+        } else {
+            // Normal mod: KESİNLİKLE output'a gönderme - sadece progress bar
+            connect(inputDevice, &QIODevice::readyRead, this, [=](){
+                data = inputDevice->readAll();
+                progressBarOutput(); // Progress bar'ı güncelle
+                // HİÇBİR ŞEKİLDE output'a gönderme
+            });
+        }
+    }
+    
+    data.clear();
+    usingEffects = true; // Normal voice changer'a geri dön
+}
+
 effects::effects(QWidget *parent)
     : QMainWindow{parent}
 
@@ -46,30 +96,30 @@ void MainWindow::processToRobotVoice(QByteArray &data)
     int sampleCount = data.size() / sizeof(int16_t);
 
     // Echo gecikmesi için tampon boyutunu hesaplayın
-    int delaySamples = format->sampleRate() / 100; // 10ms gecikme
+    int delaySamples = format->sampleRate() / 200; // 5ms gecikme (daha kısa)
 
     // Echo için bir tampon oluşturun
     QVector<int16_t> echoBuffer(delaySamples, 0);
 
     for (int i = 0; i < sampleCount; ++i) {
-        // Kare dalga üretimi (daha düşük genlik)
-        samples[i] = samples[i] > 0 ? 8000 : -8000;
+        // Daha yumuşak kare dalga (daha düşük genlik)
+        int16_t robotSample = samples[i] > 0 ? 4000 : -4000; // Genlik yarıya indirildi
+        
+        // Çok hafif modülasyon (pıt pıt önlemek için)
+        double modulator = 0.02 * sin(2.0 * M_PI * 30 * i / format->sampleRate()); // 30Hz, çok düşük amplitude
+        robotSample = static_cast<int16_t>(robotSample * (1.0 + modulator));
 
-        // Modülasyon ekleme (daha hafif modülasyon)
-        double modulator = 0.1 * sin(2.0 * M_PI * 50 * i / format->sampleRate());
-        samples[i] = static_cast<int16_t>(samples[i] * (1.0 + modulator));
-
-        // Echo efekti (çok hafif echo efekti)
+        // Çok hafif echo efekti
         if (i >= delaySamples) {
-            int16_t echoSample = static_cast<int16_t>(0.05 * echoBuffer[i % delaySamples]); // Echo genliği daha da düşürüldü
-            samples[i] = static_cast<int16_t>(samples[i] + echoSample);
+            int16_t echoSample = static_cast<int16_t>(0.02 * echoBuffer[i % delaySamples]); // Çok düşük echo
+            robotSample = static_cast<int16_t>(robotSample + echoSample);
         }
 
         // Echo tamponunu güncelle
-        echoBuffer[i % delaySamples] = samples[i];
+        echoBuffer[i % delaySamples] = robotSample;
 
-        // Genliği çok sıkı bir şekilde sınırlandır
-        samples[i] = static_cast<int16_t>(qBound(-12000, samples[i], 12000));
+        // Genliği daha yumuşak sınırlandır
+        samples[i] = static_cast<int16_t>(qBound(-8000, robotSample, 8000));
     }
 }
 
@@ -112,7 +162,7 @@ void MainWindow::processToFemaleVoice(QByteArray &data)
     int sampleCount = data.size() / sizeof(int16_t);
 
     // Frekansı artırmak için yeni örnek sayısını belirleyin
-    double pitchFactor = 1.2; // Kadın sesi için frekans artırımı
+    double pitchFactor = 1.15; // Daha az frekans artırımı
     int newSampleCount = sampleCount / pitchFactor;
 
     QByteArray newData(newSampleCount * sizeof(int16_t), Qt::Uninitialized);
@@ -128,9 +178,9 @@ void MainWindow::processToFemaleVoice(QByteArray &data)
         newSamples[i] = static_cast<int16_t>((1 - weight) * samples[index1] + weight * samples[index2]);
     }
 
-    // Modülasyon ekleme (Kadın sesine hafif bir efekt için)
-    double modFrequency = 150.0; // Kadın sesi için daha düşük bir modülasyon frekansı
-    double modAmplitude = 0.1;   // Daha ince bir modülasyon genliği
+    // Çok hafif modülasyon (pıt pıt önlemek için)
+    double modFrequency = 80.0; // Daha düşük modülasyon frekansı
+    double modAmplitude = 0.03;   // Çok düşük modülasyon genliği
     double sampleRate = format->sampleRate();
 
     for (int i = 0; i < newSampleCount; ++i) {
@@ -204,49 +254,48 @@ void MainWindow::processToEkoVoice(QByteArray &data)
     int16_t *samples = reinterpret_cast<int16_t *>(data.data());
     int sampleCount = data.size() / sizeof(int16_t);
 
-    double decay = 0.5;  // Yankının azalması
-    int delaySamples = 500;  // Gecikme (örnek sayısı)
+    // Mağara ekosu parametreleri
+    double decay1 = 0.4;  // İlk yankı gücü
+    double decay2 = 0.25; // İkinci yankı gücü  
+    double decay3 = 0.15; // Üçüncü yankı gücü
+    int delay1 = format->sampleRate() / 5;   // 200ms - ilk yankı
+    int delay2 = format->sampleRate() / 3;   // 333ms - ikinci yankı
+    int delay3 = format->sampleRate() / 2;   // 500ms - üçüncü yankı
 
-    // Yeni boyut: Cubik interpolasyonla örnek sayısını artırıyoruz
-    int newSampleCount = sampleCount + delaySamples * 2;  // Ek yankı alanı için genişletilmiş boyut
+    // Yeni boyut: Orijinal + en uzun yankı alanı
+    int newSampleCount = sampleCount + delay3;
     QByteArray newData(newSampleCount * sizeof(int16_t), Qt::Uninitialized);
     int16_t *newSamples = reinterpret_cast<int16_t *>(newData.data());
+    
+    // Başlangıçta sıfırla
+    memset(newSamples, 0, newSampleCount * sizeof(int16_t));
 
-    // İlk olarak orijinal örnekleri cubic interpolasyonla genişletiyoruz
-    for (int i = 0; i < newSampleCount; ++i) {
-        if (i < sampleCount) {
-            double srcIndex = i;
-            int index1 = static_cast<int>(srcIndex);
-            int index2 = qMin(index1 + 1, sampleCount - 1);
-            int index3 = qMin(index1 + 2, sampleCount - 1);
-            int index4 = qMin(index1 + 3, sampleCount - 1);
+    // Orijinal sesi kopyala
+    for (int i = 0; i < sampleCount; ++i) {
+        newSamples[i] = samples[i];
+    }
 
-            // Cubic interpolasyon hesaplama
-            double t = srcIndex - index1;
-            double a0 = samples[index4] - samples[index3] - samples[index1] + samples[index2];
-            double a1 = samples[index1] - samples[index2] - a0;
-            double a2 = samples[index3] - samples[index1];
-            double a3 = samples[index2];
-
-            // Interpolasyon sonucu yeni örneğe atanır
-            newSamples[i] = static_cast<int16_t>(a0 * t * t * t + a1 * t * t + a2 * t + a3);
-        } else {
-            newSamples[i] = 0;  // Boş kalan alanlar sıfırlanır
+    // Çoklu yankı ekle (mağara efekti)
+    for (int i = 0; i < sampleCount; ++i) {
+        // İlk yankı
+        if (i + delay1 < newSampleCount) {
+            newSamples[i + delay1] += static_cast<int16_t>(samples[i] * decay1);
+        }
+        
+        // İkinci yankı
+        if (i + delay2 < newSampleCount) {
+            newSamples[i + delay2] += static_cast<int16_t>(samples[i] * decay2);
+        }
+        
+        // Üçüncü yankı
+        if (i + delay3 < newSampleCount) {
+            newSamples[i + delay3] += static_cast<int16_t>(samples[i] * decay3);
         }
     }
 
-    // Orijinal sesin üzerine yankıyı ekliyoruz
+    // Sınırlama (clipping önlemek için)
     for (int i = 0; i < newSampleCount; ++i) {
-        if (i >= delaySamples) {
-            newSamples[i] += static_cast<int16_t>(newSamples[i - delaySamples] * decay);
-        }
-        if (i >= 2 * delaySamples) {
-            newSamples[i] += static_cast<int16_t>(newSamples[i - 2 * delaySamples] * (decay / 2));
-        }
-
-        // Sınırlandırma
-        if (newSamples[i] > INT16_MAX) newSamples[i] = INT16_MAX;
-        if (newSamples[i] < INT16_MIN) newSamples[i] = INT16_MIN;
+        newSamples[i] = static_cast<int16_t>(qBound(-15000, newSamples[i], 15000));
     }
 
     // Yeni veriyi geri ata
@@ -256,129 +305,172 @@ void MainWindow::processToEkoVoice(QByteArray &data)
 
 void MainWindow::on_robotButton_clicked(bool checked)
 {
-
-
     if(checked)
     {
+        // Diğer tüm efektleri durdur
+        stopAllEffects();
+        
+        // Robot efektini başlat
+        ui->robotButton->setChecked(true);
         ui->robotButton->setText("Stop");
 
-        if(!audioInput)
-        {
-            audioInput->resume();
-        }
-
-
-
+        // Audio input'u kontrol et ama kapatma
         if(audioInput)
         {
+            // Mevcut bağlantıyı kopar
+            disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
+            
+            // Yeni efekt bağlantısı kur
             connect(inputDevice, &QIODevice::readyRead, this, [=](){
-
                 data = inputDevice->readAll();
-
                 processToRobotVoice(data);
-
+                progressBarOutput(); // Progress bar'ı güncelle
+                
+                // SADECE test modunda output'a gönder
+                if (ui->testButton->isChecked()) {
+                    if (outputDevice && outputDevice->isOpen()) {
+                        outputDevice->write(data);
+                    }
+                }
+                // Test kapalıysa KESİNLİKLE output'a gönderme
             });
         }
-
         else {
             qWarning() << "Audio devices are not properly initialized.";
         }
 
-
-        usingEffects = false;
-
+        usingEffects = false; // Efekt modu
         qDebug() << "robot effect started.";
     }
-
     else
     {
         ui->robotButton->setText("Robot sesi");
 
-        // İşlemi durdur
+        // Sadece robot efektini durdur
         if (inputDevice)
         {
-        disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
+            disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
+            
+            // Normal bağlantıyı geri kur (test veya normal mode)
+            if (ui->testButton->isChecked()) {
+                connect(inputDevice, &QIODevice::readyRead, this, [=](){
+                    data = inputDevice->readAll();
+                    progressBarOutput();
+                    if (outputDevice && outputDevice->isOpen()) {
+                        outputDevice->write(data);
+                    }
+                });
+            } else {
+                connect(inputDevice, &QIODevice::readyRead, this, [=](){
+                    data = inputDevice->readAll();
+                    progressBarOutput();
+                    // KESİNLİKLE output'a gönderme
+                });
+            }
         }
 
         data.clear();
-
-        usingEffects = true;
+        usingEffects = true; // Normal voice changer'a geri dön
         qDebug() << "robot effect stopped.";
     }
-
 }
 
 
 void MainWindow::on_bananaButton_clicked(bool checked)
 {
-
-
     if (checked) {
+        // Diğer tüm efektleri durdur
+        stopAllEffects();
+        
+        // Banana efektini başlat
+        ui->bananaButton->setChecked(true);
         ui->bananaButton->setText("Stop");
 
-        if(!audioInput)
-        {
-            audioInput->resume();
-        }
-
         if (audioInput) {
+            // Mevcut bağlantıyı kopar
+            disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
+            
+            // Yeni efekt bağlantısı kur
             connect(inputDevice, &QIODevice::readyRead, this, [=]() {
                 data = inputDevice->readAll();
-
-                // Çocuk sesi efektini uygula
                 processToBananaVoice(data);
-
-
-
+                progressBarOutput(); // Progress bar'ı güncelle
+                
+                // SADECE test modunda output'a gönder
+                if (ui->testButton->isChecked()) {
+                    if (outputDevice && outputDevice->isOpen()) {
+                        outputDevice->write(data);
+                    }
+                }
+                // Test kapalıysa KESİNLİKLE output'a gönderme
             });
 
             usingEffects = false;
-
             qDebug() << "Child voice effect started.";
-
         }
-        else
-        {
+        else {
             qWarning() << "Audio devices are not properly initialized.";
         }
     } else {
         ui->bananaButton->setText("Çocuk Sesi");
 
-        // İşlemi durdur
+        // Sadece banana efektini durdur
         if (inputDevice) {
             disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
+            
+            // Normal bağlantıyı geri kur (test veya normal mode)
+            if (ui->testButton->isChecked()) {
+                connect(inputDevice, &QIODevice::readyRead, this, [=](){
+                    data = inputDevice->readAll();
+                    progressBarOutput();
+                    if (outputDevice && outputDevice->isOpen()) {
+                        outputDevice->write(data);
+                    }
+                });
+            } else {
+                connect(inputDevice, &QIODevice::readyRead, this, [=](){
+                    data = inputDevice->readAll();
+                    progressBarOutput();
+                    // KESİNLİKLE output'a gönderme
+                });
+            }
         }
 
         data.clear();
-
         usingEffects = true;
-
         qDebug() << "Child voice effect stopped.";
     }
-
 }
 
 void MainWindow::on_devilButton_clicked(bool checked)
 {
-
-
     if(checked)
     {
+        // Diğer tüm efektleri durdur
+        stopAllEffects();
+        
+        // Devil efektini başlat
+        ui->devilButton->setChecked(true);
         ui->devilButton->setText("Stop");
 
-        if(!audioInput)
-        {
-            audioInput->resume();
-        }
         if(audioInput)
         {
+            // Mevcut bağlantıyı kopar
+            disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
+            
+            // Yeni efekt bağlantısı kur
             connect(inputDevice, &QIODevice::readyRead, this, [=](){
-
                 data = inputDevice->readAll();
-
                 processToDevilVoice(data);
-
-
+                progressBarOutput(); // Progress bar'ı güncelle
+                
+                // SADECE test modunda output'a gönder
+                if (ui->testButton->isChecked()) {
+                    if (outputDevice && outputDevice->isOpen()) {
+                        outputDevice->write(data);
+                    }
+                }
+                // Test kapalıysa KESİNLİKLE output'a gönderme
             });
 
             usingEffects = false;
@@ -386,52 +478,70 @@ void MainWindow::on_devilButton_clicked(bool checked)
         }
         else
         {
-              qWarning() << "Audio devices are not properly initialized.";
+            qWarning() << "Audio devices are not properly initialized.";
         }
-
     }
     else
     {
         ui->devilButton->setText("Canavar sesi");
 
-        // İşlemi durdur
+        // Sadece devil efektini durdur
         if (inputDevice) {
             disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
+            
+            // Normal bağlantıyı geri kur (test veya normal mode)
+            if (ui->testButton->isChecked()) {
+                connect(inputDevice, &QIODevice::readyRead, this, [=](){
+                    data = inputDevice->readAll();
+                    progressBarOutput();
+                    if (outputDevice && outputDevice->isOpen()) {
+                        outputDevice->write(data);
+                    }
+                });
+            } else {
+                connect(inputDevice, &QIODevice::readyRead, this, [=](){
+                    data = inputDevice->readAll();
+                    progressBarOutput();
+                    // KESİNLİKLE output'a gönderme
+                });
+            }
         }
 
         data.clear();
-
         usingEffects = true;
-        qDebug() << "Devil effect stopped.";
+        qDebug() << "Devil voice effect stopped.";
     }
 }
 
 void MainWindow::on_ekoButton_clicked(bool checked)
 {
-
-
     if(checked)
     {
+        // Diğer tüm efektleri durdur
+        stopAllEffects();
+        
+        // Eko efektini başlat
+        ui->ekoButton->setChecked(true);
         ui->ekoButton->setText("Stop");
-
-        if(!audioInput)
-        {
-            audioInput->resume();
-        }
-
-
 
         if(audioInput)
         {
+            // Mevcut bağlantıyı kopar
+            disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
+            
+            // Yeni efekt bağlantısı kur
             connect(inputDevice, &QIODevice::readyRead, this, [=] {
-
-
-
                 data = inputDevice->readAll();
-
                 processToEkoVoice(data);
-
-
+                progressBarOutput(); // Progress bar'ı güncelle
+                
+                // SADECE test modunda output'a gönder
+                if (ui->testButton->isChecked()) {
+                    if (outputDevice && outputDevice->isOpen()) {
+                        outputDevice->write(data);
+                    }
+                }
+                // Test kapalıysa KESİNLİKLE output'a gönderme
             });
 
             usingEffects = false;
@@ -441,19 +551,34 @@ void MainWindow::on_ekoButton_clicked(bool checked)
         {
             qWarning() << "Audio devices are not properly initialized.";
         }
-
     }
     else
     {
-        ui->ekoButton->setText("Eko sesi");
+        ui->ekoButton->setText("Eko");
 
-        // İşlemi durdur
+        // Sadece eko efektini durdur
         if (inputDevice) {
             disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
+            
+            // Normal bağlantıyı geri kur (test veya normal mode)
+            if (ui->testButton->isChecked()) {
+                connect(inputDevice, &QIODevice::readyRead, this, [=](){
+                    data = inputDevice->readAll();
+                    progressBarOutput();
+                    if (outputDevice && outputDevice->isOpen()) {
+                        outputDevice->write(data);
+                    }
+                });
+            } else {
+                connect(inputDevice, &QIODevice::readyRead, this, [=](){
+                    data = inputDevice->readAll();
+                    progressBarOutput();
+                    // KESİNLİKLE output'a gönderme
+                });
+            }
         }
 
         data.clear();
-
         usingEffects = true;
         qDebug() << "eko effect stopped.";
     }
@@ -468,30 +593,33 @@ void MainWindow::on_boldButton_clicked(bool checked)
 
 void MainWindow::on_femaleButton_clicked(bool checked)
 {
-
     if(checked)
     {
+        // Diğer tüm efektleri durdur
+        stopAllEffects();
+        
+        // Female efektini başlat
+        ui->femaleButton->setChecked(true);
         ui->femaleButton->setText("Stop");
 
-        if(!audioInput)
+        if(audioInput)
         {
-            audioInput->resume();
-        }
-
-
-        if(audioInput )
-        {
-
-            data.clear();
-
+            // Mevcut bağlantıyı kopar
+            disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
+            
+            // Yeni efekt bağlantısı kur
             connect(inputDevice, &QIODevice::readyRead, this, [=] {
-
-
                 data = inputDevice->readAll();
-
                 processToFemaleVoice(data);
-
-
+                progressBarOutput(); // Progress bar'ı güncelle
+                
+                // SADECE test modunda output'a gönder
+                if (ui->testButton->isChecked()) {
+                    if (outputDevice && outputDevice->isOpen()) {
+                        outputDevice->write(data);
+                    }
+                }
+                // Test kapalıysa KESİNLİKLE output'a gönderme
             });
 
             usingEffects = false;
@@ -501,19 +629,34 @@ void MainWindow::on_femaleButton_clicked(bool checked)
         {
             qWarning() << "Audio devices are not properly initialized.";
         }
-
     }
     else
     {
         ui->femaleButton->setText("Kadın sesi");
 
-        // İşlemi durdur
+        // Sadece female efektini durdur
         if (inputDevice) {
             disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
+            
+            // Normal bağlantıyı geri kur (test veya normal mode)
+            if (ui->testButton->isChecked()) {
+                connect(inputDevice, &QIODevice::readyRead, this, [=](){
+                    data = inputDevice->readAll();
+                    progressBarOutput();
+                    if (outputDevice && outputDevice->isOpen()) {
+                        outputDevice->write(data);
+                    }
+                });
+            } else {
+                connect(inputDevice, &QIODevice::readyRead, this, [=](){
+                    data = inputDevice->readAll();
+                    progressBarOutput();
+                    // KESİNLİKLE output'a gönderme
+                });
+            }
         }
 
         data.clear();
-
         usingEffects = true;
         qDebug() << "female effect stopped.";
     }
@@ -524,21 +667,31 @@ void MainWindow::on_combineButton_clicked(bool checked)
 {
     if(checked)
     {
+        // Diğer tüm efektleri durdur
+        stopAllEffects();
+        
+        // Combine efektini başlat
+        ui->combineButton->setChecked(true);
         ui->combineButton->setText("Stop");
-
-        if(!audioInput)
-        {
-            audioInput->resume();
-        }
 
         if(audioInput)
         {
+            // Mevcut bağlantıyı kopar
+            disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
+            
+            // Yeni efekt bağlantısı kur
             connect(inputDevice, &QIODevice::readyRead, this, [=] {
-
                 data = inputDevice->readAll();
-
                 processToCombineVoice(data);
-
+                progressBarOutput(); // Progress bar'ı güncelle
+                
+                // SADECE test modunda output'a gönder
+                if (ui->testButton->isChecked()) {
+                    if (outputDevice && outputDevice->isOpen()) {
+                        outputDevice->write(data);
+                    }
+                }
+                // Test kapalıysa KESİNLİKLE output'a gönderme
             });
 
             usingEffects = false;
@@ -548,19 +701,34 @@ void MainWindow::on_combineButton_clicked(bool checked)
         {
             qWarning() << "Audio devices are not properly initialized.";
         }
-
     }
     else
     {
-        ui->combineButton->setText("Combine hl");
+        ui->combineButton->setText("Birleşik ses");
 
-        // İşlemi durdur
+        // Sadece combine efektini durdur
         if (inputDevice) {
             disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
+            
+            // Normal bağlantıyı geri kur (test veya normal mode)
+            if (ui->testButton->isChecked()) {
+                connect(inputDevice, &QIODevice::readyRead, this, [=](){
+                    data = inputDevice->readAll();
+                    progressBarOutput();
+                    if (outputDevice && outputDevice->isOpen()) {
+                        outputDevice->write(data);
+                    }
+                });
+            } else {
+                connect(inputDevice, &QIODevice::readyRead, this, [=](){
+                    data = inputDevice->readAll();
+                    progressBarOutput();
+                    // KESİNLİKLE output'a gönderme
+                });
+            }
         }
 
         data.clear();
-
         usingEffects = true;
         qDebug() << "combine effect stopped.";
     }
