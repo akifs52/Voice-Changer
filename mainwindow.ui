@@ -18,6 +18,258 @@
     <normaloff>:/img/img/app/WhatsApp Image 2024-11-26 at 22.59.00_27fe18d8.jpg</normaloff>:/img/img/app/WhatsApp Image 2024-11-26 at 22.59.00_27fe18d8.jpg</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
+   <property name="styleSheet">
+    <string notr="true">/* ===== MODERN DARK TO LIGHT THEME ===== */
+
+/* Ana Pencere */
+QMainWindow {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                stop:0 #2b2b2b, stop:1 #3c3c3c);
+    color: #ffffff;
+}
+
+/* Merkez Widget */
+QWidget {
+    background: transparent;
+    color: #ffffff;
+}
+
+/* ===== BUTONLAR ===== */
+
+/* Ana Butonlar - Modern Gradient */
+QPushButton {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #4a4a4a, stop:1 #2a2a2a);
+    border: 1px solid #555555;
+    border-radius: 3px;
+    color: #ffffff;
+    font: 8pt &quot;Segoe UI&quot;;
+    padding: 2px 4px;
+    min-width: 50px;
+    min-height: 18px;
+    max-height: 20px;
+}
+
+QPushButton:hover {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #5a5a5a, stop:1 #3a3a3a);
+    border-color: #00ff88;
+    transform: translateY(-2px);
+}
+
+QPushButton:pressed {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #3a3a3a, stop:1 #1a1a1a);
+    border-color: #00ff88;
+    transform: translateY(0px);
+}
+
+/* Ses Butonları - Grid Görünüm */
+QPushButton[class=&quot;soundButton&quot;] {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                stop:0 #3a3a3a, stop:1 #2a2a2a);
+    border: 1px solid #444444;
+    border-radius: 4px;
+    color: #ffffff;
+    font: 7pt &quot;Segoe UI&quot;;
+    padding: 4px;
+    min-width: 55px;
+    min-height: 40px;
+    max-width: 55px;
+    max-height: 40px;
+}
+
+QPushButton[class=&quot;soundButton&quot;]:hover {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                stop:0 #4a4a4a, stop:1 #3a3a3a);
+    border-color: #00ff88;
+    box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3);
+}
+
+QPushButton[class=&quot;soundButton&quot;]:pressed {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                stop:0 #2a2a2a, stop:1 #1a1a1a);
+    border-color: #00ff88;
+}
+
+/* Efekt Butonları */
+QPushButton[class=&quot;effectButton&quot;] {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #ff6b35, stop:1 #d84315);
+    border: 1px solid #ff8a65;
+    border-radius: 6px;
+    color: #ffffff;
+    font: 8pt &quot;Segoe UI&quot;;
+    padding: 4px 8px;
+    min-width: 65px;
+    min-height: 20px;
+    max-height: 22px;
+}
+
+QPushButton[class=&quot;effectButton&quot;]:hover {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #ff8a65, stop:1 #ff6b35);
+    border-color: #ffffff;
+    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4);
+}
+
+QPushButton[class=&quot;effectButton&quot;]:checked {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #00ff88, stop:1 #00cc6a);
+    border-color: #ffffff;
+}
+
+/* ===== COMBOBOXLAR - KARANMAKTAN AÇIĞA ===== */
+
+QComboBox {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #4a4a4a, stop:1 #2a2a2a);
+    border: 1px solid #555555;
+    border-radius: 3px;
+    color: #ffffff;
+    font: 8pt &quot;Segoe UI&quot;;
+    padding: 2px 4px;
+    min-width: 80px;
+    min-height: 18px;
+    max-height: 20px;
+}
+
+QComboBox:hover {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #5a5a5a, stop:1 #3a3a3a);
+    border-color: #00ff88;
+}
+
+QComboBox:focus {
+    border-color: #00ff88;
+    outline: none;
+}
+
+QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 20px;
+    border-left: 1px solid #555555;
+    border-radius: 0 6px 6px 0;
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #5a5a5a, stop:1 #3a3a3a);
+}
+
+QComboBox::down-arrow {
+    image: url(:/icons/down_arrow.png);
+    width: 12px;
+    height: 12px;
+}
+
+QComboBox QAbstractItemView {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #5a5a5a, stop:1 #3a3a3a);
+    border: 2px solid #00ff88;
+    border-radius: 6px;
+    color: #ffffff;
+    selection-background-color: #00ff88;
+    selection-color: #000000;
+    outline: none;
+}
+
+QComboBox QAbstractItemView::item {
+    padding: 8px 12px;
+    border-bottom: 1px solid #444444;
+}
+
+QComboBox QAbstractItemView::item:selected {
+    background: #00ff88;
+    color: #000000;
+}
+
+QComboBox QAbstractItemView::item:hover {
+    background: #4a4a4a;
+}
+
+/* ===== SLIDERLAR ===== */
+
+QSlider::groove:horizontal {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                stop:0 #3a3a3a, stop:1 #2a2a2a);
+    border: 1px solid #555555;
+    border-radius: 4px;
+    height: 8px;
+}
+
+QSlider::handle:horizontal {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #00ff88, stop:1 #00cc6a);
+    border: 2px solid #ffffff;
+    border-radius: 8px;
+    width: 16px;
+    height: 16px;
+    margin: -4px 0;
+}
+
+QSlider::handle:horizontal:hover {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #4affaa, stop:1 #2aff88);
+    transform: scale(1.2);
+}
+
+/* ===== LABELLAR ===== */
+
+QLabel {
+    color: #ffffff;
+    font: 10pt &quot;Segoe UI&quot;;
+    background: transparent;
+}
+
+QLabel[class=&quot;title&quot;] {
+    font: bold 14pt &quot;Segoe UI&quot;;
+    color: #00ff88;
+    margin: 5px 0;
+}
+
+QLabel[class=&quot;subtitle&quot;] {
+    font: 11pt &quot;Segoe UI&quot;;
+    color: #cccccc;
+    margin: 3px 0;
+}
+
+/* ===== FRAME'LAR ===== */
+
+QFrame {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                stop:0 #333333, stop:1 #2a2a2a);
+    border: none;
+    border-radius: 3px;
+    margin: 1px;
+    padding: 3px;
+}
+
+QFrame[class=&quot;soundFrame&quot;] {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #3a3a3a, stop:1 #2a2a2a);
+    border: none;
+    border-radius: 6px;
+}
+
+/* ===== PROGRESS BAR ===== */
+
+QProgressBar {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                stop:0 #2a2a2a, stop:1 #1a1a1a);
+    border: 2px solid #555555;
+    border-radius: 6px;
+    text-align: center;
+    color: #ffffff;
+    font: bold 9pt &quot;Segoe UI&quot;;
+}
+
+QProgressBar::chunk {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                stop:0 #00ff88, stop:1 #00cc6a);
+    border-radius: 4px;
+    margin: 2px;
+}
+</string>
+   </property>
    <layout class="QHBoxLayout" name="horizontalLayout">
     <property name="spacing">
      <number>0</number>
@@ -92,15 +344,12 @@
            <widget class="QFrame" name="frame_13">
             <property name="minimumSize">
              <size>
-              <width>50</width>
+              <width>100</width>
               <height>0</height>
              </size>
             </property>
             <property name="styleSheet">
-             <string notr="true">QFrame
-{	
-	background-color: rgb(172, 176, 155);
-}</string>
+             <string notr="true"/>
             </property>
             <property name="frameShape">
              <enum>QFrame::Shape::StyledPanel</enum>
@@ -344,8 +593,8 @@
                <rect>
                 <x>50</x>
                 <y>410</y>
-                <width>93</width>
-                <height>29</height>
+                <width>116</width>
+                <height>26</height>
                </rect>
               </property>
               <property name="text">
@@ -357,8 +606,8 @@
                <rect>
                 <x>150</x>
                 <y>410</y>
-                <width>93</width>
-                <height>29</height>
+                <width>116</width>
+                <height>26</height>
                </rect>
               </property>
               <property name="text">
@@ -368,11 +617,7 @@
             </widget>
             <widget class="QWidget" name="page_2">
              <property name="styleSheet">
-              <string notr="true">QWidget{
-	
-	
-	background-color: rgb(133, 133, 173);
-}</string>
+              <string notr="true"/>
              </property>
              <layout class="QHBoxLayout" name="horizontalLayout_11">
               <property name="leftMargin">
@@ -389,6 +634,12 @@
               </property>
               <item>
                <widget class="QFrame" name="frame_16">
+                <property name="maximumSize">
+                 <size>
+                  <width>100</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
                 <property name="frameShape">
                  <enum>QFrame::Shape::StyledPanel</enum>
                 </property>
@@ -415,14 +666,14 @@
                   <widget class="QPushButton" name="sound1">
                    <property name="minimumSize">
                     <size>
-                     <width>50</width>
-                     <height>50</height>
+                     <width>98</width>
+                     <height>42</height>
                     </size>
                    </property>
                    <property name="maximumSize">
                     <size>
                      <width>100</width>
-                     <height>100</height>
+                     <height>44</height>
                     </size>
                    </property>
                    <property name="styleSheet">
@@ -461,14 +712,14 @@ QPushButton:pressed {
                   <widget class="QPushButton" name="sound2">
                    <property name="minimumSize">
                     <size>
-                     <width>50</width>
-                     <height>50</height>
+                     <width>98</width>
+                     <height>42</height>
                     </size>
                    </property>
                    <property name="maximumSize">
                     <size>
                      <width>100</width>
-                     <height>100</height>
+                     <height>44</height>
                     </size>
                    </property>
                    <property name="styleSheet">
@@ -507,14 +758,14 @@ QPushButton:pressed {
                   <widget class="QPushButton" name="sound3">
                    <property name="minimumSize">
                     <size>
-                     <width>50</width>
-                     <height>50</height>
+                     <width>98</width>
+                     <height>42</height>
                     </size>
                    </property>
                    <property name="maximumSize">
                     <size>
                      <width>100</width>
-                     <height>100</height>
+                     <height>44</height>
                     </size>
                    </property>
                    <property name="styleSheet">
@@ -553,14 +804,14 @@ QPushButton:pressed {
                   <widget class="QPushButton" name="sound4">
                    <property name="minimumSize">
                     <size>
-                     <width>50</width>
-                     <height>50</height>
+                     <width>98</width>
+                     <height>42</height>
                     </size>
                    </property>
                    <property name="maximumSize">
                     <size>
                      <width>100</width>
-                     <height>100</height>
+                     <height>44</height>
                     </size>
                    </property>
                    <property name="styleSheet">
@@ -599,14 +850,14 @@ QPushButton:pressed {
                   <widget class="QPushButton" name="sound5">
                    <property name="minimumSize">
                     <size>
-                     <width>50</width>
-                     <height>50</height>
+                     <width>98</width>
+                     <height>42</height>
                     </size>
                    </property>
                    <property name="maximumSize">
                     <size>
                      <width>100</width>
-                     <height>100</height>
+                     <height>44</height>
                     </size>
                    </property>
                    <property name="styleSheet">
@@ -648,7 +899,7 @@ QPushButton:pressed {
                <widget class="QFrame" name="frame_20">
                 <property name="maximumSize">
                  <size>
-                  <width>40</width>
+                  <width>16777215</width>
                   <height>16777215</height>
                  </size>
                 </property>
@@ -679,7 +930,7 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>30</width>
-                     <height>30</height>
+                     <height>26</height>
                     </size>
                    </property>
                    <property name="text">
@@ -690,13 +941,16 @@ QPushButton:pressed {
                      <normaloff>:/app/img/app/bin (2).png</normaloff>:/app/img/app/bin (2).png</iconset>
                    </property>
                   </widget>
+                 </item>
+                 <item>
+                  <widget class="QComboBox" name="hotkey1"/>
                  </item>
                  <item>
                   <widget class="QPushButton" name="delete2">
                    <property name="maximumSize">
                     <size>
                      <width>30</width>
-                     <height>30</height>
+                     <height>26</height>
                     </size>
                    </property>
                    <property name="text">
@@ -707,13 +961,16 @@ QPushButton:pressed {
                      <normaloff>:/app/img/app/bin (2).png</normaloff>:/app/img/app/bin (2).png</iconset>
                    </property>
                   </widget>
+                 </item>
+                 <item>
+                  <widget class="QComboBox" name="hotkey2"/>
                  </item>
                  <item>
                   <widget class="QPushButton" name="delete3">
                    <property name="maximumSize">
                     <size>
                      <width>30</width>
-                     <height>30</height>
+                     <height>26</height>
                     </size>
                    </property>
                    <property name="text">
@@ -724,13 +981,16 @@ QPushButton:pressed {
                      <normaloff>:/app/img/app/bin (2).png</normaloff>:/app/img/app/bin (2).png</iconset>
                    </property>
                   </widget>
+                 </item>
+                 <item>
+                  <widget class="QComboBox" name="hotkey3"/>
                  </item>
                  <item>
                   <widget class="QPushButton" name="delete4">
                    <property name="maximumSize">
                     <size>
                      <width>30</width>
-                     <height>30</height>
+                     <height>26</height>
                     </size>
                    </property>
                    <property name="text">
@@ -743,11 +1003,14 @@ QPushButton:pressed {
                   </widget>
                  </item>
                  <item>
+                  <widget class="QComboBox" name="hotkey4"/>
+                 </item>
+                 <item>
                   <widget class="QPushButton" name="delete5">
                    <property name="maximumSize">
                     <size>
                      <width>30</width>
-                     <height>30</height>
+                     <height>26</height>
                     </size>
                    </property>
                    <property name="text">
@@ -759,11 +1022,20 @@ QPushButton:pressed {
                    </property>
                   </widget>
                  </item>
+                 <item>
+                  <widget class="QComboBox" name="hotkey5"/>
+                 </item>
                 </layout>
                </widget>
               </item>
               <item>
                <widget class="QFrame" name="frame_17">
+                <property name="maximumSize">
+                 <size>
+                  <width>100</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
                 <property name="frameShape">
                  <enum>QFrame::Shape::StyledPanel</enum>
                 </property>
@@ -791,7 +1063,7 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>100</width>
-                     <height>100</height>
+                     <height>44</height>
                     </size>
                    </property>
                    <property name="styleSheet">
@@ -831,7 +1103,7 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>100</width>
-                     <height>100</height>
+                     <height>44</height>
                     </size>
                    </property>
                    <property name="styleSheet">
@@ -871,7 +1143,7 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>100</width>
-                     <height>100</height>
+                     <height>44</height>
                     </size>
                    </property>
                    <property name="styleSheet">
@@ -911,7 +1183,7 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>100</width>
-                     <height>100</height>
+                     <height>44</height>
                     </size>
                    </property>
                    <property name="styleSheet">
@@ -951,7 +1223,7 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>100</width>
-                     <height>100</height>
+                     <height>44</height>
                     </size>
                    </property>
                    <property name="styleSheet">
@@ -993,7 +1265,7 @@ QPushButton:pressed {
                <widget class="QFrame" name="frame_21">
                 <property name="maximumSize">
                  <size>
-                  <width>40</width>
+                  <width>16777215</width>
                   <height>16777215</height>
                  </size>
                 </property>
@@ -1024,7 +1296,7 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>30</width>
-                     <height>30</height>
+                     <height>26</height>
                     </size>
                    </property>
                    <property name="text">
@@ -1035,13 +1307,16 @@ QPushButton:pressed {
                      <normaloff>:/app/img/app/bin (2).png</normaloff>:/app/img/app/bin (2).png</iconset>
                    </property>
                   </widget>
+                 </item>
+                 <item>
+                  <widget class="QComboBox" name="hotkey6"/>
                  </item>
                  <item>
                   <widget class="QPushButton" name="delete7">
                    <property name="maximumSize">
                     <size>
                      <width>30</width>
-                     <height>30</height>
+                     <height>26</height>
                     </size>
                    </property>
                    <property name="text">
@@ -1052,13 +1327,16 @@ QPushButton:pressed {
                      <normaloff>:/app/img/app/bin (2).png</normaloff>:/app/img/app/bin (2).png</iconset>
                    </property>
                   </widget>
+                 </item>
+                 <item>
+                  <widget class="QComboBox" name="hotkey7"/>
                  </item>
                  <item>
                   <widget class="QPushButton" name="delete8">
                    <property name="maximumSize">
                     <size>
                      <width>30</width>
-                     <height>30</height>
+                     <height>26</height>
                     </size>
                    </property>
                    <property name="text">
@@ -1069,13 +1347,16 @@ QPushButton:pressed {
                      <normaloff>:/app/img/app/bin (2).png</normaloff>:/app/img/app/bin (2).png</iconset>
                    </property>
                   </widget>
+                 </item>
+                 <item>
+                  <widget class="QComboBox" name="hotkey8"/>
                  </item>
                  <item>
                   <widget class="QPushButton" name="delete9">
                    <property name="maximumSize">
                     <size>
                      <width>30</width>
-                     <height>30</height>
+                     <height>26</height>
                     </size>
                    </property>
                    <property name="text">
@@ -1088,11 +1369,14 @@ QPushButton:pressed {
                   </widget>
                  </item>
                  <item>
+                  <widget class="QComboBox" name="hotkey9"/>
+                 </item>
+                 <item>
                   <widget class="QPushButton" name="delete10">
                    <property name="maximumSize">
                     <size>
                      <width>30</width>
-                     <height>30</height>
+                     <height>26</height>
                     </size>
                    </property>
                    <property name="text">
@@ -1104,11 +1388,20 @@ QPushButton:pressed {
                    </property>
                   </widget>
                  </item>
+                 <item>
+                  <widget class="QComboBox" name="hotkey10"/>
+                 </item>
                 </layout>
                </widget>
               </item>
               <item>
                <widget class="QFrame" name="frame_18">
+                <property name="maximumSize">
+                 <size>
+                  <width>100</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
                 <property name="frameShape">
                  <enum>QFrame::Shape::StyledPanel</enum>
                 </property>
@@ -1136,7 +1429,7 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>100</width>
-                     <height>100</height>
+                     <height>44</height>
                     </size>
                    </property>
                    <property name="styleSheet">
@@ -1166,7 +1459,7 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>100</width>
-                     <height>100</height>
+                     <height>44</height>
                     </size>
                    </property>
                    <property name="styleSheet">
@@ -1196,7 +1489,7 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>100</width>
-                     <height>100</height>
+                     <height>44</height>
                     </size>
                    </property>
                    <property name="styleSheet">
@@ -1226,7 +1519,7 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>100</width>
-                     <height>100</height>
+                     <height>44</height>
                     </size>
                    </property>
                    <property name="styleSheet">
@@ -1256,7 +1549,7 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>100</width>
-                     <height>100</height>
+                     <height>44</height>
                     </size>
                    </property>
                    <property name="styleSheet">
@@ -1288,7 +1581,7 @@ QPushButton:pressed {
                <widget class="QFrame" name="frame_22">
                 <property name="maximumSize">
                  <size>
-                  <width>40</width>
+                  <width>16777215</width>
                   <height>16777215</height>
                  </size>
                 </property>
@@ -1319,7 +1612,7 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>30</width>
-                     <height>30</height>
+                     <height>26</height>
                     </size>
                    </property>
                    <property name="text">
@@ -1330,13 +1623,16 @@ QPushButton:pressed {
                      <normaloff>:/app/img/app/bin (2).png</normaloff>:/app/img/app/bin (2).png</iconset>
                    </property>
                   </widget>
+                 </item>
+                 <item>
+                  <widget class="QComboBox" name="hotkey11"/>
                  </item>
                  <item>
                   <widget class="QPushButton" name="delete12">
                    <property name="maximumSize">
                     <size>
                      <width>30</width>
-                     <height>30</height>
+                     <height>26</height>
                     </size>
                    </property>
                    <property name="text">
@@ -1347,13 +1643,16 @@ QPushButton:pressed {
                      <normaloff>:/app/img/app/bin (2).png</normaloff>:/app/img/app/bin (2).png</iconset>
                    </property>
                   </widget>
+                 </item>
+                 <item>
+                  <widget class="QComboBox" name="hotkey12"/>
                  </item>
                  <item>
                   <widget class="QPushButton" name="delete13">
                    <property name="maximumSize">
                     <size>
                      <width>30</width>
-                     <height>30</height>
+                     <height>26</height>
                     </size>
                    </property>
                    <property name="text">
@@ -1364,13 +1663,16 @@ QPushButton:pressed {
                      <normaloff>:/app/img/app/bin (2).png</normaloff>:/app/img/app/bin (2).png</iconset>
                    </property>
                   </widget>
+                 </item>
+                 <item>
+                  <widget class="QComboBox" name="hotkey13"/>
                  </item>
                  <item>
                   <widget class="QPushButton" name="delete14">
                    <property name="maximumSize">
                     <size>
                      <width>30</width>
-                     <height>30</height>
+                     <height>26</height>
                     </size>
                    </property>
                    <property name="text">
@@ -1383,11 +1685,14 @@ QPushButton:pressed {
                   </widget>
                  </item>
                  <item>
+                  <widget class="QComboBox" name="hotkey14"/>
+                 </item>
+                 <item>
                   <widget class="QPushButton" name="delete15">
                    <property name="maximumSize">
                     <size>
                      <width>30</width>
-                     <height>30</height>
+                     <height>26</height>
                     </size>
                    </property>
                    <property name="text">
@@ -1399,11 +1704,20 @@ QPushButton:pressed {
                    </property>
                   </widget>
                  </item>
+                 <item>
+                  <widget class="QComboBox" name="hotkey15"/>
+                 </item>
                 </layout>
                </widget>
               </item>
               <item>
                <widget class="QFrame" name="frame_19">
+                <property name="maximumSize">
+                 <size>
+                  <width>100</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
                 <property name="frameShape">
                  <enum>QFrame::Shape::StyledPanel</enum>
                 </property>
@@ -1431,7 +1745,7 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>100</width>
-                     <height>100</height>
+                     <height>44</height>
                     </size>
                    </property>
                    <property name="styleSheet">
@@ -1461,7 +1775,7 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>100</width>
-                     <height>100</height>
+                     <height>44</height>
                     </size>
                    </property>
                    <property name="styleSheet">
@@ -1491,7 +1805,7 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>100</width>
-                     <height>100</height>
+                     <height>44</height>
                     </size>
                    </property>
                    <property name="styleSheet">
@@ -1521,7 +1835,7 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>100</width>
-                     <height>100</height>
+                     <height>44</height>
                     </size>
                    </property>
                    <property name="styleSheet">
@@ -1551,7 +1865,7 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>100</width>
-                     <height>100</height>
+                     <height>44</height>
                     </size>
                    </property>
                    <property name="styleSheet">
@@ -1583,7 +1897,7 @@ QPushButton:pressed {
                <widget class="QFrame" name="frame_23">
                 <property name="maximumSize">
                  <size>
-                  <width>40</width>
+                  <width>16777215</width>
                   <height>16777215</height>
                  </size>
                 </property>
@@ -1614,7 +1928,7 @@ QPushButton:pressed {
                    <property name="maximumSize">
                     <size>
                      <width>30</width>
-                     <height>30</height>
+                     <height>26</height>
                     </size>
                    </property>
                    <property name="text">
@@ -1625,13 +1939,16 @@ QPushButton:pressed {
                      <normaloff>:/app/img/app/bin (2).png</normaloff>:/app/img/app/bin (2).png</iconset>
                    </property>
                   </widget>
+                 </item>
+                 <item>
+                  <widget class="QComboBox" name="hotkey16"/>
                  </item>
                  <item>
                   <widget class="QPushButton" name="delete17">
                    <property name="maximumSize">
                     <size>
                      <width>30</width>
-                     <height>30</height>
+                     <height>26</height>
                     </size>
                    </property>
                    <property name="text">
@@ -1642,13 +1959,16 @@ QPushButton:pressed {
                      <normaloff>:/app/img/app/bin (2).png</normaloff>:/app/img/app/bin (2).png</iconset>
                    </property>
                   </widget>
+                 </item>
+                 <item>
+                  <widget class="QComboBox" name="hotkey17"/>
                  </item>
                  <item>
                   <widget class="QPushButton" name="delete18">
                    <property name="maximumSize">
                     <size>
                      <width>30</width>
-                     <height>30</height>
+                     <height>26</height>
                     </size>
                    </property>
                    <property name="text">
@@ -1659,13 +1979,16 @@ QPushButton:pressed {
                      <normaloff>:/app/img/app/bin (2).png</normaloff>:/app/img/app/bin (2).png</iconset>
                    </property>
                   </widget>
+                 </item>
+                 <item>
+                  <widget class="QComboBox" name="hotkey18"/>
                  </item>
                  <item>
                   <widget class="QPushButton" name="delete19">
                    <property name="maximumSize">
                     <size>
                      <width>30</width>
-                     <height>30</height>
+                     <height>26</height>
                     </size>
                    </property>
                    <property name="text">
@@ -1678,11 +2001,14 @@ QPushButton:pressed {
                   </widget>
                  </item>
                  <item>
+                  <widget class="QComboBox" name="hotkey19"/>
+                 </item>
+                 <item>
                   <widget class="QPushButton" name="delete20">
                    <property name="maximumSize">
                     <size>
                      <width>30</width>
-                     <height>30</height>
+                     <height>26</height>
                     </size>
                    </property>
                    <property name="text">
@@ -1693,6 +2019,9 @@ QPushButton:pressed {
                      <normaloff>:/app/img/app/bin (2).png</normaloff>:/app/img/app/bin (2).png</iconset>
                    </property>
                   </widget>
+                 </item>
+                 <item>
+                  <widget class="QComboBox" name="hotkey20"/>
                  </item>
                 </layout>
                </widget>
@@ -1716,9 +2045,7 @@ QPushButton:pressed {
        </size>
       </property>
       <property name="styleSheet">
-       <string notr="true">QFrame{
-	background-color: rgb(172, 176, 155);
-}</string>
+       <string notr="true"/>
       </property>
       <property name="frameShape">
        <enum>QFrame::Shape::StyledPanel</enum>
@@ -1776,14 +2103,14 @@ QPushButton:pressed {
            <widget class="QPushButton" name="min">
             <property name="minimumSize">
              <size>
-              <width>0</width>
-              <height>20</height>
+              <width>60</width>
+              <height>24</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
               <width>50</width>
-              <height>16777215</height>
+              <height>26</height>
              </size>
             </property>
             <property name="text">
@@ -1860,8 +2187,8 @@ QPushButton:pressed {
               <widget class="QComboBox" name="inputcombobox">
                <property name="minimumSize">
                 <size>
-                 <width>300</width>
-                 <height>0</height>
+                 <width>90</width>
+                 <height>24</height>
                 </size>
                </property>
                <property name="currentIndex">
@@ -1916,30 +2243,7 @@ QPushButton:pressed {
              <item>
               <widget class="QSlider" name="inputslider">
                <property name="styleSheet">
-                <string notr="true">  QSlider::groove:horizontal {
-        height: 8px;
-        background: qradialgradient(
-            cx:0.5, cy:0.5, radius:0.7,
-            fx:0.5, fy:0.5,
-            stop:0 rgba(255, 255, 255, 0),
-            stop:1 rgba(100, 100, 255, 255)
-        );
-        border-radius: 40px;
-    }
-
-    QSlider::handle:horizontal {
-        background: qradialgradient(
-            cx:0.5, cy:0.5, radius:0.5,
-            fx:0.5, fy:0.5,
-            stop:0 rgba(255, 255, 255, 255),
-            stop:1 rgba(50, 50, 150, 255)
-        );
-        border: 1px solid #5c5c5c;
-        width: 18px;
-        height: 18px;
-        margin: -10px 0; /* Offset for centering */
-        border-radius: 9px;
-    }</string>
+                <string notr="true"/>
                </property>
                <property name="maximum">
                 <number>100</number>
@@ -1974,20 +2278,7 @@ QPushButton:pressed {
              <item>
               <widget class="QProgressBar" name="progressBar">
                <property name="styleSheet">
-                <string notr="true">QProgressBar {
-    border: 2px solid #4CAF50; /* Çerçeve rengi */
-    border-radius: 10px; /* Köşe yuvarlama */
-    background-color: #F0F0F0; /* Arka plan rengi */
-    text-align: center; /* Yüzdelik yazı hizalaması */
-    color: black; /* Yüzdelik yazı rengi */
-    font-size: 14px; /* Yazı boyutu */
-}
-
-QProgressBar::chunk {
-    background-color: #4CAF50; /* Dolum rengi */
-    border-radius: 10px; /* Dolum yuvarlama */
-    margin: 1px; /* Parçalar arasında boşluk */
-}</string>
+                <string notr="true"/>
                </property>
                <property name="value">
                 <number>0</number>
@@ -2069,14 +2360,14 @@ QProgressBar::chunk {
               <widget class="QComboBox" name="outputcombobox">
                <property name="minimumSize">
                 <size>
-                 <width>300</width>
-                 <height>0</height>
+                 <width>90</width>
+                 <height>24</height>
                 </size>
                </property>
                <property name="maximumSize">
                 <size>
                  <width>16777215</width>
-                 <height>16777215</height>
+                 <height>26</height>
                 </size>
                </property>
               </widget>
@@ -2085,8 +2376,8 @@ QProgressBar::chunk {
               <widget class="QPushButton" name="refreshOutput">
                <property name="minimumSize">
                 <size>
-                 <width>0</width>
-                 <height>0</height>
+                 <width>60</width>
+                 <height>24</height>
                 </size>
                </property>
                <property name="text">
@@ -2128,30 +2419,7 @@ QProgressBar::chunk {
              <item>
               <widget class="QSlider" name="outputslider">
                <property name="styleSheet">
-                <string notr="true">  QSlider::groove:horizontal {
-        height: 8px;
-        background: qradialgradient(
-            cx:0.5, cy:0.5, radius:0.7,
-            fx:0.5, fy:0.5,
-            stop:0 rgba(255, 255, 255, 0),
-            stop:1 rgba(100, 100, 255, 255)
-        );
-        border-radius: 40px;
-    }
-
-    QSlider::handle:horizontal {
-        background: qradialgradient(
-            cx:0.5, cy:0.5, radius:0.5,
-            fx:0.5, fy:0.5,
-            stop:0 rgba(255, 255, 255, 255),
-            stop:1 rgba(50, 50, 150, 255)
-        );
-        border: 1px solid #5c5c5c;
-        width: 18px;
-        height: 18px;
-        margin: -10px 0; /* Offset for centering */
-        border-radius: 9px;
-    }</string>
+                <string notr="true"/>
                </property>
                <property name="maximum">
                 <number>100</number>
@@ -2235,6 +2503,12 @@ QProgressBar::chunk {
     </item>
     <item>
      <widget class="QFrame" name="frame_2">
+      <property name="minimumSize">
+       <size>
+        <width>100</width>
+        <height>0</height>
+       </size>
+      </property>
       <property name="maximumSize">
        <size>
         <width>100</width>
@@ -2242,10 +2516,7 @@ QProgressBar::chunk {
        </size>
       </property>
       <property name="styleSheet">
-       <string notr="true">QFrame
-{	
-	background-color: rgb(172, 176, 155);
-}</string>
+       <string notr="true"/>
       </property>
       <property name="frameShape">
        <enum>QFrame::Shape::StyledPanel</enum>
@@ -2304,7 +2575,7 @@ QProgressBar::chunk {
             <property name="maximumSize">
              <size>
               <width>50</width>
-              <height>20</height>
+              <height>26</height>
              </size>
             </property>
             <property name="text">

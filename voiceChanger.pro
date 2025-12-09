@@ -12,6 +12,7 @@ CONFIG += c++17
 SOURCES += \
     deletesoundpack.cpp \
     effects.cpp \
+    hotkeys.cpp \
     loadouts.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -21,6 +22,7 @@ SOURCES += \
 HEADERS += \
     deletesoundpack.h \
     effects.h \
+    hotkeys.h \
     loadouts.h \
     mainwindow.h \
     recorder.h \
@@ -62,5 +64,9 @@ DEPENDPATH += $$PWD/../../ffmpeg-master-latest-win64-lgpl-shared/include
 
 RESOURCES += \
     Soundpack.qrc
+
+win32 {
+    LIBS += -luser32
+}
 
 

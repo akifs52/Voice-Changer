@@ -33,4 +33,7 @@
         <file>img/app/save-instagram.png</file>
         <file>img/app/woman.png</file>
     </qresource>
+    <qresource prefix="/">
+        <file>modern_styles.qss</file>
+    </qresource>
 </RCC>

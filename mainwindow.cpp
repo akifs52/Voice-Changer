@@ -1,5 +1,10 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QSettings>
+
+#ifdef Q_OS_WIN
+#include <windows.h>
+#endif
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -17,11 +22,38 @@ MainWindow::MainWindow(QWidget *parent)
     searchInputDevice();
     searchOutputDevice();
 
+    // Setup hotkeys
+    allinputKeys();
+    connectAllHotkeys();
 
+    // Populate hotkey dropdowns
+    for (int i = 1; i <= 20; ++i) {
+        QString name = QString("hotkey%1").arg(i);
+        QComboBox *combo = findChild<QComboBox*>(name);
+        if (combo) {
+            populateComboBox(combo);
+        }
+    }
+    
+    // Install event filter for hotkey handling
+    this->installEventFilter(this);
+    
+    // Load saved hotkeys
+    loadHotkeys();
 }
 
 MainWindow::~MainWindow()
 {
+    // Save hotkeys before cleanup
+    saveHotkeys();
+    
+    // Clean up global hotkeys
+#ifdef Q_OS_WIN
+    for (auto it = m_globalHotkeyIds.begin(); it != m_globalHotkeyIds.end(); ++it) {
+        UnregisterHotKey((HWND)this->winId(), it.value());
+    }
+    m_globalHotkeyIds.clear();
+#endif
 
     if (audioInput) {
         audioInput->stop();
@@ -38,9 +70,56 @@ MainWindow::~MainWindow()
     on_stopRecord_clicked();
 
     delete ui;
-
 }
 
+bool MainWindow::eventFilter(QObject *obj, QEvent *event)
+{
+    // Event filter is now handled by QShortcut and global hotkey system
+    // This can remain simple for any future custom event handling
+    return QMainWindow::eventFilter(obj, event);
+}
+
+#ifdef Q_OS_WIN
+bool MainWindow::nativeEvent(const QByteArray &eventType, void *message, qintptr *result)
+{
+    if (eventType == "windows_generic_MSG") {
+        MSG *msg = static_cast<MSG*>(message);
+        if (msg->message == WM_HOTKEY) {
+            int hotkeyId = msg->wParam;
+            int soundIndex = hotkeyId - GLOBAL_HOTKEY_BASE_ID;
+            
+            if (soundIndex >= 1 && soundIndex <= 20) {
+                // Trigger the corresponding sound button click
+                switch(soundIndex) {
+                    case 1: on_sound1_clicked(); break;
+                    case 2: on_sound2_clicked(); break;
+                    case 3: on_sound3_clicked(); break;
+                    case 4: on_sound4_clicked(); break;
+                    case 5: on_sound5_clicked(); break;
+                    case 6: on_sound6_clicked(); break;
+                    case 7: on_sound7_clicked(); break;
+                    case 8: on_sound8_clicked(); break;
+                    case 9: on_sound9_clicked(); break;
+                    case 10: on_sound10_clicked(); break;
+                    case 11: on_sound11_clicked(); break;
+                    case 12: on_sound12_clicked(); break;
+                    case 13: on_sound13_clicked(); break;
+                    case 14: on_sound14_clicked(); break;
+                    case 15: on_sound15_clicked(); break;
+                    case 16: on_sound16_clicked(); break;
+                    case 17: on_sound17_clicked(); break;
+                    case 18: on_sound18_clicked(); break;
+                    case 19: on_sound19_clicked(); break;
+                    case 20: on_sound20_clicked(); break;
+                }
+                *result = 0;
+                return true;
+            }
+        }
+    }
+    return QMainWindow::nativeEvent(eventType, message, result);
+}
+#endif
 
 void MainWindow::searchInputDevice()
 {
@@ -242,36 +321,36 @@ void MainWindow::on_testButton_clicked(bool checked)
         }
 
 
-            audioOutput->resume();
+        audioOutput->resume();
 
-            qDebug() << "Listening started.";
+        qDebug() << "Listening started.";
 
-            if(audioInput && audioOutput)
-            {
-                connect(inputDevice, &QIODevice::readyRead, this, [=]() {
+        if(audioInput && audioOutput)
+        {
+            connect(inputDevice, &QIODevice::readyRead, this, [=]() {
 
-                    if(usingEffects)
-                    {
-                        data = inputDevice->readAll();
-                        qDebug() << "ab";
-                    }
+                if(usingEffects)
+                {
+                    data = inputDevice->readAll();
+                    qDebug() << "ab";
+                }
 
-                    progressBarOutput(); // Progress bar işlemi
+                progressBarOutput(); // Progress bar işlemi
 
-                    // Output ver
-                    if (outputDevice) {
-                        outputDevice->write(data);
-                    }
+                // Output ver
+                if (outputDevice) {
+                    outputDevice->write(data);
+                }
 
 
-                });
-            }
-             else
-            {
+            });
+        }
+        else
+        {
             qWarning() << "Audio devices are not properly initialized.";
-            }
+        }
     }
-        else {
+    else {
         ui->testButton->setText("Test Device");
 
         // Dinlemeyi durdur
@@ -310,7 +389,7 @@ void MainWindow::progressBarOutput()
     int numSamples = data.size() / sizeof(qint16);
     qint16 maxAmplitude = 0;
 
-    for (int i = 0; i < numSamples; ++i) {
+for (int i = 0; i < numSamples; ++i) {
         maxAmplitude = qMax(maxAmplitude, qAbs(samples[i]));
     }
 
@@ -322,15 +401,4 @@ void MainWindow::progressBarOutput()
     qDebug() << "Volume Level:" << progressValue;
 
 }
-
-
-
-
-
-
-
-
-
-
-
 

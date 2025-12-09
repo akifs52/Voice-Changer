@@ -118,8 +118,14 @@ void MainWindow::on_startRecord_clicked()
         AVChannelLayout inputChannelLayoutStruct;
         AVChannelLayout outputChannelLayoutStruct;
 
-        av_channel_layout_default(&inputChannelLayoutStruct, 2); // Mono
+        av_channel_layout_default(&inputChannelLayoutStruct, 2); // Stereo
         av_channel_layout_default(&outputChannelLayoutStruct, 2); // Stereo
+
+        // Get actual input sample rate
+        int inputSampleRate = 48000;
+        if (audioInput && audioInput->format().sampleRate() > 0) {
+            inputSampleRate = audioInput->format().sampleRate();
+        }
 
         swrCtx = swr_alloc();
         if (!swrCtx) {
@@ -128,7 +134,7 @@ void MainWindow::on_startRecord_clicked()
         }
 
         if (swr_alloc_set_opts2(&swrCtx, &outputChannelLayoutStruct, AV_SAMPLE_FMT_FLTP, codecContext->sample_rate,
-                                &inputChannelLayoutStruct, AV_SAMPLE_FMT_S16, codecContext->sample_rate, 0, nullptr) < 0) {
+                                &inputChannelLayoutStruct, AV_SAMPLE_FMT_S16, inputSampleRate, 0, nullptr) < 0) {
             qCritical() << "Failed to allocate and set options for SwrContext.";
             return;
         }
@@ -146,6 +152,7 @@ void MainWindow::on_startRecord_clicked()
             return;
         }
 
+        // Set frame properties before allocating buffer
         frame->nb_samples = codecContext->frame_size;
         frame->format = codecContext->sample_fmt;
         av_channel_layout_default(&frame->ch_layout, codecContext->ch_layout.nb_channels);
@@ -165,70 +172,97 @@ void MainWindow::on_startRecord_clicked()
             return;
         }
 
-        audioInput->setBufferSize(16384);
+        audioInput->setBufferSize(4096);  // Reduce buffer size for real-time recording
+        
+        // Add recording status indicator
+        ui->startRecord->setText("Kaydediliyor...");
+        ui->startRecord->setStyleSheet("background-color: #ff4444; color: white;");
 
-        connect(inputDevice, &QIODevice::readyRead, this, [=]() {
+        // Buffer to accumulate audio data for proper frame size
+        QByteArray audioBuffer;
+        const int frameSize = codecContext->frame_size;
+        const int bytesPerSample = 4; // 16-bit stereo = 4 bytes
+        const int requiredBytes = frameSize * bytesPerSample;
+        
+        // Get actual input sample rate from audio input
+
+        if (audioInput && audioInput->format().sampleRate() > 0) {
+            inputSampleRate = audioInput->format().sampleRate();
+        }
+
+        connect(inputDevice, &QIODevice::readyRead, this, [=]() mutable {
             try {
-                if (usingEffects) {
-                    data = inputDevice->readAll();
+                if (!formatContext || !codecContext) {
+                    return;  // Recording not initialized
                 }
-
-                if (data.isEmpty()) {
-                    qWarning() << "No data received.";
+                
+                QByteArray newData = inputDevice->readAll();
+                if (newData.isEmpty()) {
                     return;
                 }
 
-                for (int i = 0; i < data.size(); ++i)
-                {
-                    data[i] = static_cast<char>(qMin(qMax(static_cast<int>(data[i]), -32768), 32767));
-                }
+                // Append new data to buffer
+                audioBuffer.append(newData);
 
-                const uint8_t *inData[AV_NUM_DATA_POINTERS] = { reinterpret_cast<const uint8_t *>(data.data()) };
-                uint8_t *outData[AV_NUM_DATA_POINTERS] = { nullptr };
+                // Process complete frames
+                while (audioBuffer.size() >= requiredBytes) {
+                    QByteArray frameData = audioBuffer.left(requiredBytes);
+                    audioBuffer = audioBuffer.mid(requiredBytes);
 
-                int outLinesize;
-                int outSamples = av_samples_alloc(outData, &outLinesize, codecContext->ch_layout.nb_channels,
-                                                  frame->nb_samples, codecContext->sample_fmt, 0);
+                    // Process frame data
+                    for (int i = 0; i < frameData.size(); ++i) {
+                        frameData[i] = static_cast<char>(qMin(qMax(static_cast<int>(frameData[i]), -32768), 32767));
+                    }
 
-                if (outSamples < 0) {
-                    qCritical() << "Failed to allocate output samples.";
-                    return;
-                }
+                    // Calculate input samples correctly
+                    int inputSamples = frameData.size() / bytesPerSample;
+                    
+                    const uint8_t *inData[AV_NUM_DATA_POINTERS] = { reinterpret_cast<const uint8_t *>(frameData.data()) };
+                    uint8_t *outData[AV_NUM_DATA_POINTERS] = { nullptr };
 
-                int convertedSamples = swr_convert(swrCtx, outData, frame->nb_samples, inData, frame->nb_samples);
+                    int outLinesize;
+                    int outSamples = av_samples_alloc(outData, &outLinesize, codecContext->ch_layout.nb_channels,
+                                                      frameSize, codecContext->sample_fmt, 0);
 
-                if (convertedSamples < 0) {
-                    qCritical() << "Failed to convert audio samples.";
+                    if (outSamples < 0) {
+                        continue;
+                    }
+
+                    // Use actual input sample rate for conversion
+                    int convertedSamples = swr_convert(swrCtx, outData, frameSize, inData, inputSamples);
+
+                    if (convertedSamples <= 0) {
+                        av_freep(&outData[0]);
+                        continue;
+                    }
+
+                    // Copy converted data to frame
+                    if (av_samples_fill_arrays(frame->data, frame->linesize, outData[0], codecContext->ch_layout.nb_channels,
+                                               convertedSamples, codecContext->sample_fmt, 0) < 0) {
+                        av_freep(&outData[0]);
+                        continue;
+                    }
+
+                    // Set correct PTS based on actual sample rate
+                    frame->pts = pts;
+                    pts += convertedSamples;
+
+                    if (avcodec_send_frame(codecContext, frame) < 0) {
+                        av_freep(&outData[0]);
+                        continue;
+                    }
+
+                    while (avcodec_receive_packet(codecContext, packet) == 0) {
+                        packet->stream_index = audioStream->index;
+                        av_packet_rescale_ts(packet, codecContext->time_base, audioStream->time_base);
+                        av_write_frame(formatContext, packet);
+                        av_packet_unref(packet);
+                    }
+
                     av_freep(&outData[0]);
-                    return;
                 }
-
-                if (av_samples_fill_arrays(frame->data, frame->linesize, outData[0], codecContext->ch_layout.nb_channels,
-                                           convertedSamples, codecContext->sample_fmt, 0) < 0) {
-                    qCritical() << "Failed to fill frame with converted data.";
-                    av_freep(&outData[0]);
-                    return;
-                }
-
-                frame->pts = pts;
-                pts += frame->nb_samples;
-
-                if (avcodec_send_frame(codecContext, frame) < 0) {
-                    qWarning() << "Failed to send frame to encoder.";
-                    av_freep(&outData[0]);
-                    return;
-                }
-
-                while (avcodec_receive_packet(codecContext, packet) == 0) {
-                    packet->stream_index = audioStream->index;
-                    av_packet_rescale_ts(packet, codecContext->time_base, audioStream->time_base);
-                    av_write_frame(formatContext, packet);
-                    av_packet_unref(packet);
-                }
-
-                av_freep(&outData[0]);
             } catch (const std::exception &e) {
-                qCritical() << "Error during processing input data: " << e.what();
+                qCritical() << "Error during recording: " << e.what();
             }
         });
     } catch (const std::runtime_error &e) {
@@ -241,31 +275,65 @@ void MainWindow::on_startRecord_clicked()
 void MainWindow::on_stopRecord_clicked()
 {
     if (formatContext) {
-        // Flush the encoder
+        // Flush the encoder with null frame
         if (codecContext) {
             avcodec_send_frame(codecContext, nullptr);
-            while (avcodec_receive_packet(codecContext, packet) == 0) {
-                av_write_frame(formatContext, packet);
-                av_packet_unref(packet);
+            
+            AVPacket *flushPacket = av_packet_alloc();
+            if (flushPacket) {
+                while (avcodec_receive_packet(codecContext, flushPacket) == 0) {
+                    flushPacket->stream_index = audioStream->index;
+                    av_packet_rescale_ts(flushPacket, codecContext->time_base, audioStream->time_base);
+                    av_write_frame(formatContext, flushPacket);
+                    av_packet_unref(flushPacket);
+                }
+                av_packet_free(&flushPacket);
             }
         }
 
         // Write trailer
-        av_write_trailer(formatContext);
+        if (av_write_trailer(formatContext) < 0) {
+            qCritical() << "Failed to write trailer";
+        }
 
-        if (!(formatContext->oformat->flags & AVFMT_NOFILE)) {
+        // Close output file
+        if (!(formatContext->oformat->flags & AVFMT_NOFILE) && formatContext->pb) {
             avio_closep(&formatContext->pb);
         }
 
-        avcodec_free_context(&codecContext);
-        avformat_free_context(formatContext);
-        av_frame_free(&frame);
-        av_packet_free(&packet);
+        // Clean up FFmpeg resources
+        if (codecContext) {
+            avcodec_free_context(&codecContext);
+        }
+        if (formatContext) {
+            avformat_free_context(formatContext);
+            formatContext = nullptr;
+        }
+        if (frame) {
+            av_frame_free(&frame);
+        }
+        if (packet) {
+            av_packet_free(&packet);
+        }
+        if (swrCtx) {
+            swr_free(&swrCtx);
+        }
 
-        qDebug() << " recording stop";
+        qDebug() << "Kayıt durduruldu";
+        
+        // Restore button state
+        ui->startRecord->setText("Kaydı Başlat");
+        ui->startRecord->setStyleSheet("");  // Reset to default style
+        
+        // Show status message
+        qDebug() << "Kayıt durdu - MP3 dosyası başarıyla kaydedildi";
 
         pts = 0;
-
-        disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
+        
+        // Don't stop audio input - keep it running for voice changer
+        if (audioInput && audioInput->state() == QAudio::SuspendedState) {
+            audioInput->resume();
+        }
     }
 }
+

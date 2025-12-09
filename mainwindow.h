@@ -9,10 +9,15 @@
 #include <QCoreApplication>
 #include "QAudioDecoder"
 #include "qpushbutton.h"
+#include <QComboBox>
+#include <QKeyEvent>
+#include <QMap>
+#include <QShortcut>
+#include <QSettings>
 
-
-
-
+#ifdef Q_OS_WIN
+#include <windows.h>
+#endif
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -28,155 +33,105 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-
+protected:
+    bool eventFilter(QObject *obj, QEvent *event) override;
 
 private slots:
-
+    // All the original slots...
     void on_outputslider_valueChanged(int value);
-
     void on_inputslider_valueChanged(int value);
-
     void on_refreshInput_clicked();
-
     void on_refreshOutput_clicked();
-
     void on_inputcombobox_currentIndexChanged(int index);
-
     void on_outputcombobox_currentIndexChanged(int index);
-
     void processToBananaVoice(QByteArray &data);
-
     void processToRobotVoice(QByteArray &data);
-
     void processToDevilVoice(QByteArray &data);
-
     void processToFemaleVoice(QByteArray &data);
-
     void processToCombineVoice(QByteArray &data);
-
     void processToEkoVoice(QByteArray &data);
-
     void on_bananaButton_clicked(bool checked);
-
     void on_testButton_clicked(bool checked);
-
     void on_robotButton_clicked(bool checked);
-
     void on_devilButton_clicked(bool checked);
-
     void on_ekoButton_clicked(bool checked);
-
     void on_boldButton_clicked(bool checked);
-
     void on_femaleButton_clicked(bool checked);
-
     void on_combineButton_clicked(bool checked);
-
     void on_startRecord_clicked();
-
     void on_stopRecord_clicked();
-
-
-
     void on_sound1_clicked();
-
     void on_sound2_clicked();
-
     void on_sound3_clicked();
-
     void on_sound4_clicked();
-
     void on_sound5_clicked();
-
     void on_sound6_clicked();
-
     void on_sound7_clicked();
-
     void on_sound8_clicked();
-
     void on_sound9_clicked();
-
     void on_sound10_clicked();
-
     void on_sound11_clicked();
-
     void on_sound12_clicked();
-
     void on_sound13_clicked();
-
     void on_sound14_clicked();
-
     void on_sound15_clicked();
-
     void on_sound16_clicked();
-
     void on_sound17_clicked();
-
     void on_sound18_clicked();
-
     void on_sound19_clicked();
-
     void on_sound20_clicked();
-
     void on_delete1_clicked();
-
     void on_delete2_clicked();
-
     void on_delete3_clicked();
-
     void on_delete4_clicked();
-
     void on_delete5_clicked();
-
     void on_delete6_clicked();
-
     void on_delete7_clicked();
-
     void on_delete8_clicked();
-
     void on_delete9_clicked();
-
     void on_delete10_clicked();
-
     void on_delete11_clicked();
-
     void on_delete12_clicked();
-
     void on_delete13_clicked();
-
     void on_delete14_clicked();
-
     void on_delete15_clicked();
-
     void on_delete16_clicked();
-
     void on_delete17_clicked();
-
     void on_delete18_clicked();
-
     void on_delete19_clicked();
-
     void on_delete20_clicked();
-
     void on_load1_clicked();
-
     void on_load2_clicked();
-
     void on_load3_clicked();
-
     void on_load4_clicked();
-
     void on_load5_clicked();
-
     void on_save1_clicked();
-
     void on_save2_clicked();
-
     void on_savee3_clicked();
-
     void on_save4_clicked();
-
     void on_save5_clicked();
+
+    // Slots for hotkeys
+    void on_comboBox1_currentTextChanged(const QString &key);
+    void on_comboBox2_currentTextChanged(const QString &key);
+    void on_comboBox3_currentTextChanged(const QString &key);
+    void on_comboBox4_currentTextChanged(const QString &key);
+    void on_comboBox5_currentTextChanged(const QString &key);
+    void on_comboBox6_currentTextChanged(const QString &key);
+    void on_comboBox7_currentTextChanged(const QString &key);
+    void on_comboBox8_currentTextChanged(const QString &key);
+    void on_comboBox9_currentTextChanged(const QString &key);
+    void on_comboBox10_currentTextChanged(const QString &key);
+    void on_comboBox11_currentTextChanged(const QString &key);
+    void on_comboBox12_currentTextChanged(const QString &key);
+    void on_comboBox13_currentTextChanged(const QString &key);
+    void on_comboBox14_currentTextChanged(const QString &key);
+    void on_comboBox15_currentTextChanged(const QString &key);
+    void on_comboBox16_currentTextChanged(const QString &key);
+    void on_comboBox17_currentTextChanged(const QString &key);
+    void on_comboBox18_currentTextChanged(const QString &key);
+    void on_comboBox19_currentTextChanged(const QString &key);
+    void on_comboBox20_currentTextChanged(const QString &key);
 
 private:
     Ui::MainWindow *ui;
@@ -187,11 +142,19 @@ private:
     QIODevice *inputDevice;
     QIODevice *outputDevice;
 
-
     bool usingEffects = true;
     QByteArray data;
 
+    // Hotkey assignments
+    QMap<QString, int> m_hotkeyAssignments; // KeySequence -> Sound Index (1-20)
+    QMap<int, QString> m_soundIndexToKey;   // Sound Index (1-20) -> KeySequence
+    QMap<QString, QShortcut*> m_shortcuts;    // KeySequence -> QShortcut
+    
+    // Global hotkey system for background operation
+    QMap<QString, int> m_globalHotkeyIds;    // KeySequence -> Hotkey ID
+    static const int GLOBAL_HOTKEY_BASE_ID = 1000;
 
+    // Original sound file variables
     QString filename1 = QCoreApplication::applicationDirPath() + ("/soundpack/YARRA.wav");
     QString pic1 = ":/img/img/yArra.jpg";
     QString filename2 = QCoreApplication::applicationDirPath() + ("/soundpack/YARRA-ULTRA-BASS-EARRAPE.wav");
@@ -233,26 +196,27 @@ private:
     QString filename20;
     QString pic20;
 
-
     QThread *decodeThread = nullptr;
     QThread *outputThread = nullptr;
     QAudioDecoder *audioDecoder = nullptr;
 
-
-
-
+    // Functions from other files
     void stopCurrentAudio();
-
     void playAudioNotInterrupt(const QString &filename, const QString &picPath, QPushButton *button);
-
     void searchInputDevice();
     void searchOutputDevice();
     void processAudioInput();
     void progressBarOutput();
     void saveLoadout(const QString &loadoutName);
     void loadLoadout(const QString &loadoutName);
-
-
-
+    void handleHotkeyChange(const QString &key, int soundIndex);
+    void populateComboBox(QComboBox *combo);
+    void allinputKeys();
+    void connectAllHotkeys();
+    void setupGlobalShortcuts();
+    void saveHotkeys();
+    void loadHotkeys();
+    bool winEventFilter(MSG *message, long *result);
+    bool nativeEvent(const QByteArray &eventType, void *message, qintptr *result) override;
 };
 #endif // MAINWINDOW_H

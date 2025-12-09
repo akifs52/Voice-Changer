@@ -7,11 +7,6 @@
 #include <QThread>
 
 
-bool isPlaying = false;
-
-std::atomic<bool> stopRequested = false;
-
-
 soundpack::soundpack(QWidget *parent)
     : QMainWindow{parent}
 {}
@@ -214,7 +209,7 @@ void MainWindow::on_sound6_clicked()
 {
     if (filename6.isEmpty()) {
         filename6= QFileDialog::getOpenFileName(this, tr("Open MP3 File"), "", tr("Audio Files (*.wav)"));
-        if (filename2.isEmpty()) {
+        if (filename6.isEmpty()) {
             qWarning() << "No file selected.";
             return;
         }
