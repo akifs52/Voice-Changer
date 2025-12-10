@@ -34,7 +34,16 @@ void MainWindow::stopAllEffects()
             // Test modu: output'a gönder
             connect(inputDevice, &QIODevice::readyRead, this, [=](){
                 data = inputDevice->readAll();
-                progressBarOutput(); // Progress bar'ı güncelle
+                progressBarOutput();
+                    // Emit signal for recording when recording is active
+                    if (isRecording) {
+                        emit audioDataReady(data);
+                    } // Progress bar'ı güncelle
+                // Emit signal for recording when recording is active
+                if (isRecording) {
+                    qDebug() << "EMITTING SIGNAL (EFFECT-TEST): Audio size:" << data.size() << "bytes";
+                    emit audioDataReady(data);
+                }
                 if (outputDevice && outputDevice->isOpen()) {
                     outputDevice->write(data);
                 }
@@ -43,7 +52,16 @@ void MainWindow::stopAllEffects()
             // Normal mod: KESİNLİKLE output'a gönderme - sadece progress bar
             connect(inputDevice, &QIODevice::readyRead, this, [=](){
                 data = inputDevice->readAll();
-                progressBarOutput(); // Progress bar'ı güncelle
+                progressBarOutput();
+                    // Emit signal for recording when recording is active
+                    if (isRecording) {
+                        emit audioDataReady(data);
+                    } // Progress bar'ı güncelle
+                // Emit signal for recording when recording is active
+                if (isRecording) {
+                    qDebug() << "EMITTING SIGNAL (EFFECT-NORMAL): Audio size:" << data.size() << "bytes";
+                    emit audioDataReady(data);
+                }
                 // HİÇBİR ŞEKİLDE output'a gönderme
             });
         }
@@ -324,7 +342,17 @@ void MainWindow::on_robotButton_clicked(bool checked)
             connect(inputDevice, &QIODevice::readyRead, this, [=](){
                 data = inputDevice->readAll();
                 processToRobotVoice(data);
-                progressBarOutput(); // Progress bar'ı güncelle
+                progressBarOutput();
+                    // Emit signal for recording when recording is active
+                    if (isRecording) {
+                        emit audioDataReady(data);
+                    } // Progress bar'ı güncelle
+                
+                // Emit signal for recording when recording is active (after effects)
+                if (isRecording) {
+                    qDebug() << "EMITTING SIGNAL (ROBOT): Processed audio size:" << data.size() << "bytes";
+                    emit audioDataReady(data);
+                }
                 
                 // SADECE test modunda output'a gönder
                 if (ui->testButton->isChecked()) {
@@ -356,6 +384,10 @@ void MainWindow::on_robotButton_clicked(bool checked)
                 connect(inputDevice, &QIODevice::readyRead, this, [=](){
                     data = inputDevice->readAll();
                     progressBarOutput();
+                    // Emit signal for recording when recording is active
+                    if (isRecording) {
+                        emit audioDataReady(data);
+                    }
                     if (outputDevice && outputDevice->isOpen()) {
                         outputDevice->write(data);
                     }
@@ -364,6 +396,10 @@ void MainWindow::on_robotButton_clicked(bool checked)
                 connect(inputDevice, &QIODevice::readyRead, this, [=](){
                     data = inputDevice->readAll();
                     progressBarOutput();
+                    // Emit signal for recording when recording is active
+                    if (isRecording) {
+                        emit audioDataReady(data);
+                    }
                     // KESİNLİKLE output'a gönderme
                 });
             }
@@ -394,7 +430,11 @@ void MainWindow::on_bananaButton_clicked(bool checked)
             connect(inputDevice, &QIODevice::readyRead, this, [=]() {
                 data = inputDevice->readAll();
                 processToBananaVoice(data);
-                progressBarOutput(); // Progress bar'ı güncelle
+                progressBarOutput();
+                    // Emit signal for recording when recording is active
+                    if (isRecording) {
+                        emit audioDataReady(data);
+                    } // Progress bar'ı güncelle
                 
                 // SADECE test modunda output'a gönder
                 if (ui->testButton->isChecked()) {
@@ -423,6 +463,10 @@ void MainWindow::on_bananaButton_clicked(bool checked)
                 connect(inputDevice, &QIODevice::readyRead, this, [=](){
                     data = inputDevice->readAll();
                     progressBarOutput();
+                    // Emit signal for recording when recording is active
+                    if (isRecording) {
+                        emit audioDataReady(data);
+                    }
                     if (outputDevice && outputDevice->isOpen()) {
                         outputDevice->write(data);
                     }
@@ -431,6 +475,10 @@ void MainWindow::on_bananaButton_clicked(bool checked)
                 connect(inputDevice, &QIODevice::readyRead, this, [=](){
                     data = inputDevice->readAll();
                     progressBarOutput();
+                    // Emit signal for recording when recording is active
+                    if (isRecording) {
+                        emit audioDataReady(data);
+                    }
                     // KESİNLİKLE output'a gönderme
                 });
             }
@@ -462,7 +510,11 @@ void MainWindow::on_devilButton_clicked(bool checked)
             connect(inputDevice, &QIODevice::readyRead, this, [=](){
                 data = inputDevice->readAll();
                 processToDevilVoice(data);
-                progressBarOutput(); // Progress bar'ı güncelle
+                progressBarOutput();
+                    // Emit signal for recording when recording is active
+                    if (isRecording) {
+                        emit audioDataReady(data);
+                    } // Progress bar'ı güncelle
                 
                 // SADECE test modunda output'a gönder
                 if (ui->testButton->isChecked()) {
@@ -494,6 +546,10 @@ void MainWindow::on_devilButton_clicked(bool checked)
                 connect(inputDevice, &QIODevice::readyRead, this, [=](){
                     data = inputDevice->readAll();
                     progressBarOutput();
+                    // Emit signal for recording when recording is active
+                    if (isRecording) {
+                        emit audioDataReady(data);
+                    }
                     if (outputDevice && outputDevice->isOpen()) {
                         outputDevice->write(data);
                     }
@@ -502,6 +558,10 @@ void MainWindow::on_devilButton_clicked(bool checked)
                 connect(inputDevice, &QIODevice::readyRead, this, [=](){
                     data = inputDevice->readAll();
                     progressBarOutput();
+                    // Emit signal for recording when recording is active
+                    if (isRecording) {
+                        emit audioDataReady(data);
+                    }
                     // KESİNLİKLE output'a gönderme
                 });
             }
@@ -533,7 +593,11 @@ void MainWindow::on_ekoButton_clicked(bool checked)
             connect(inputDevice, &QIODevice::readyRead, this, [=] {
                 data = inputDevice->readAll();
                 processToEkoVoice(data);
-                progressBarOutput(); // Progress bar'ı güncelle
+                progressBarOutput();
+                    // Emit signal for recording when recording is active
+                    if (isRecording) {
+                        emit audioDataReady(data);
+                    } // Progress bar'ı güncelle
                 
                 // SADECE test modunda output'a gönder
                 if (ui->testButton->isChecked()) {
@@ -565,6 +629,10 @@ void MainWindow::on_ekoButton_clicked(bool checked)
                 connect(inputDevice, &QIODevice::readyRead, this, [=](){
                     data = inputDevice->readAll();
                     progressBarOutput();
+                    // Emit signal for recording when recording is active
+                    if (isRecording) {
+                        emit audioDataReady(data);
+                    }
                     if (outputDevice && outputDevice->isOpen()) {
                         outputDevice->write(data);
                     }
@@ -573,6 +641,10 @@ void MainWindow::on_ekoButton_clicked(bool checked)
                 connect(inputDevice, &QIODevice::readyRead, this, [=](){
                     data = inputDevice->readAll();
                     progressBarOutput();
+                    // Emit signal for recording when recording is active
+                    if (isRecording) {
+                        emit audioDataReady(data);
+                    }
                     // KESİNLİKLE output'a gönderme
                 });
             }
@@ -582,13 +654,6 @@ void MainWindow::on_ekoButton_clicked(bool checked)
         usingEffects = true;
         qDebug() << "eko effect stopped.";
     }
-}
-
-
-void MainWindow::on_boldButton_clicked(bool checked)
-{
-
-
 }
 
 void MainWindow::on_femaleButton_clicked(bool checked)
@@ -611,7 +676,11 @@ void MainWindow::on_femaleButton_clicked(bool checked)
             connect(inputDevice, &QIODevice::readyRead, this, [=] {
                 data = inputDevice->readAll();
                 processToFemaleVoice(data);
-                progressBarOutput(); // Progress bar'ı güncelle
+                progressBarOutput();
+                    // Emit signal for recording when recording is active
+                    if (isRecording) {
+                        emit audioDataReady(data);
+                    } // Progress bar'ı güncelle
                 
                 // SADECE test modunda output'a gönder
                 if (ui->testButton->isChecked()) {
@@ -643,6 +712,10 @@ void MainWindow::on_femaleButton_clicked(bool checked)
                 connect(inputDevice, &QIODevice::readyRead, this, [=](){
                     data = inputDevice->readAll();
                     progressBarOutput();
+                    // Emit signal for recording when recording is active
+                    if (isRecording) {
+                        emit audioDataReady(data);
+                    }
                     if (outputDevice && outputDevice->isOpen()) {
                         outputDevice->write(data);
                     }
@@ -651,6 +724,10 @@ void MainWindow::on_femaleButton_clicked(bool checked)
                 connect(inputDevice, &QIODevice::readyRead, this, [=](){
                     data = inputDevice->readAll();
                     progressBarOutput();
+                    // Emit signal for recording when recording is active
+                    if (isRecording) {
+                        emit audioDataReady(data);
+                    }
                     // KESİNLİKLE output'a gönderme
                 });
             }
@@ -683,7 +760,11 @@ void MainWindow::on_combineButton_clicked(bool checked)
             connect(inputDevice, &QIODevice::readyRead, this, [=] {
                 data = inputDevice->readAll();
                 processToCombineVoice(data);
-                progressBarOutput(); // Progress bar'ı güncelle
+                progressBarOutput();
+                    // Emit signal for recording when recording is active
+                    if (isRecording) {
+                        emit audioDataReady(data);
+                    } // Progress bar'ı güncelle
                 
                 // SADECE test modunda output'a gönder
                 if (ui->testButton->isChecked()) {
@@ -715,6 +796,10 @@ void MainWindow::on_combineButton_clicked(bool checked)
                 connect(inputDevice, &QIODevice::readyRead, this, [=](){
                     data = inputDevice->readAll();
                     progressBarOutput();
+                    // Emit signal for recording when recording is active
+                    if (isRecording) {
+                        emit audioDataReady(data);
+                    }
                     if (outputDevice && outputDevice->isOpen()) {
                         outputDevice->write(data);
                     }
@@ -723,6 +808,10 @@ void MainWindow::on_combineButton_clicked(bool checked)
                 connect(inputDevice, &QIODevice::readyRead, this, [=](){
                     data = inputDevice->readAll();
                     progressBarOutput();
+                    // Emit signal for recording when recording is active
+                    if (isRecording) {
+                        emit audioDataReady(data);
+                    }
                     // KESİNLİKLE output'a gönderme
                 });
             }

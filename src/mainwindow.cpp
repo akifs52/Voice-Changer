@@ -16,7 +16,6 @@ MainWindow::MainWindow(QWidget *parent)
     , inputDevice(nullptr)
     , outputDevice(nullptr)
 
-
 {
     ui->setupUi(this);
     ui->frame_3->hide();
@@ -254,6 +253,11 @@ void MainWindow::on_inputcombobox_currentIndexChanged(int index)
         connect(inputDevice, &QIODevice::readyRead, this, [=](){
             data = inputDevice->readAll();
             progressBarOutput();
+            // Emit signal for recording when recording is active
+            if (isRecording) {
+                qDebug() << "EMITTING SIGNAL (INITIAL): Audio size:" << data.size() << "bytes";
+                emit audioDataReady(data);
+            }
             // Normal modda output'a gönderme
         });
         qDebug() << "Initial audio connection established.";
@@ -376,6 +380,12 @@ void MainWindow::on_testButton_clicked(bool checked)
                     // Progress bar'ı güncelle
                     progressBarOutput();
                     
+                    // Emit signal for recording when recording is active (after effects)
+                    if (isRecording) {
+                        qDebug() << "EMITTING SIGNAL: Processed audio size:" << data.size() << "bytes";
+                        emit audioDataReady(data);
+                    }
+                    
                     // SADECE test modunda output'a gönder
                     if (outputDevice && outputDevice->isOpen()) {
                         outputDevice->write(data);
@@ -404,7 +414,11 @@ void MainWindow::on_testButton_clicked(bool checked)
                 connect(inputDevice, &QIODevice::readyRead, this, [=]() {
                     data = inputDevice->readAll();
                     progressBarOutput();
-                    // KESİNLİKLE output'a gönderme - test butonuna basılana kadar sessiz
+                    // Emit signal for recording when recording is active
+                    if (isRecording) {
+                        qDebug() << "EMITTING SIGNAL (NORMAL): Audio size:" << data.size() << "bytes";
+                        emit audioDataReady(data);
+                    }
                 });
             }
         }

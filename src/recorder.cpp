@@ -1,5 +1,7 @@
 #include "recorder.h"
 #include <QFileDialog>
+#include <QTimer>
+#include <QElapsedTimer>
 #include "ui_mainwindow.h"
 #include "mainwindow.h"
 
@@ -31,11 +33,52 @@ recorder::recorder(QWidget *parent)
 
 void MainWindow::on_startRecord_clicked()
 {
+    // Prevent multiple recordings
+    if (isRecording) {
+        qWarning() << "Recording already in progress!";
+        return;
+    }
+
     try {
         // Clear previous audio data
         data.clear();
 
-        if (!audioInput) {
+        // Initialize circular buffer
+        circularBuffer.clear();
+        circularBuffer.resize(bufferSize * 2); // Stereo için 2 kanal
+        readPos = 0;
+        writePos = 0;
+        availableSamples = 0;
+
+        // Check if audio input is properly initialized
+        if (!audioInput || !inputDevice) {
+            qCritical() << "Audio input not initialized!";
+            return;
+        }
+
+        // Get actual input format
+        QAudioFormat inputFormat = audioInput->format();
+        bool isInputMono = (inputFormat.channelCount() == 1);
+        int inputSampleRate = inputFormat.sampleRate();
+
+        qDebug() << "=== RECORDING START ===";
+        qDebug() << "Input format - SampleRate:" << inputSampleRate
+                 << "Channels:" << inputFormat.channelCount()
+                 << "Mono:" << isInputMono
+                 << "SampleFormat:" << inputFormat.sampleFormat();
+        qDebug() << "Circular buffer size:" << circularBuffer.size()
+                 << "samples (" << (circularBuffer.size() / 44100.0) << "seconds at 44.1kHz)";
+
+        // Auto-enable test button if not already active
+        testButtonWasActive = ui->testButton->isChecked();
+        if (!testButtonWasActive) {
+            qDebug() << "Auto-enabling test button for recording";
+            ui->testButton->setChecked(true);
+            ui->testButton->setText("Stop");
+        }
+
+        // Resume audio input if suspended
+        if (audioInput->state() == QAudio::SuspendedState) {
             audioInput->resume();
         }
 
@@ -43,8 +86,19 @@ void MainWindow::on_startRecord_clicked()
         QString mp3FileName = QFileDialog::getSaveFileName(this, "Save MP3 File", "", "MP3 Files (*.mp3)");
         if (mp3FileName.isEmpty()) {
             qCritical() << "No file selected.";
+            if (!testButtonWasActive) {
+                ui->testButton->setChecked(false);
+                ui->testButton->setText("Test Device");
+            }
             return;
         }
+
+        // Ensure .mp3 extension
+        if (!mp3FileName.endsWith(".mp3", Qt::CaseInsensitive)) {
+            mp3FileName += ".mp3";
+        }
+
+        qDebug() << "Saving to file:" << mp3FileName;
 
         // Initialize FFmpeg
         avformat_network_init();
@@ -57,7 +111,7 @@ void MainWindow::on_startRecord_clicked()
         // Find MP3 codec
         const AVCodec *codec = avcodec_find_encoder(AV_CODEC_ID_MP3);
         if (!codec) {
-            qCritical() << "MP3 codec not found. Ensure FFmpeg is built with MP3 support.";
+            qCritical() << "MP3 codec not found. Ensure FFmpeg is built with libmp3lame.";
             return;
         }
 
@@ -68,19 +122,22 @@ void MainWindow::on_startRecord_clicked()
             return;
         }
 
-        codecContext->sample_fmt = AV_SAMPLE_FMT_FLTP; // Use floating point format for compatibility
-        codecContext->bit_rate = 192000; // MP3 bitrate
-        codecContext->sample_rate = 48000; // Sampling rate
+        codecContext->sample_fmt = AV_SAMPLE_FMT_FLTP;
+        codecContext->bit_rate = 128000;
+        codecContext->sample_rate = 44100;
         av_channel_layout_default(&codecContext->ch_layout, 2); // Stereo
+        codecContext->frame_size = 1152; // MP3 için sabit frame size
 
-
+        // MP3 için optimize ayarlar
+        codecContext->compression_level = 5;
+        av_opt_set_int(codecContext, "compression_level", 5, 0);
 
         if (formatContext->oformat->flags & AVFMT_GLOBALHEADER) {
             codecContext->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
         }
 
         if (avcodec_open2(codecContext, codec, nullptr) < 0) {
-            qCritical() << "Failed to open codec.";
+            qCritical() << "Failed to open MP3 codec.";
             avcodec_free_context(&codecContext);
             return;
         }
@@ -98,6 +155,12 @@ void MainWindow::on_startRecord_clicked()
             return;
         }
 
+        audioStream->time_base = {1, codecContext->sample_rate};
+
+        qDebug() << "Codec configured - Frame size:" << codecContext->frame_size
+                 << "Sample rate:" << codecContext->sample_rate
+                 << "Channels:" << codecContext->ch_layout.nb_channels;
+
         // Open output file
         if (!(formatContext->oformat->flags & AVFMT_NOFILE)) {
             if (avio_open(&formatContext->pb, mp3FileName.toStdString().c_str(), AVIO_FLAG_WRITE) < 0) {
@@ -113,31 +176,42 @@ void MainWindow::on_startRecord_clicked()
             return;
         }
 
-        qDebug() << "Recording started.";
-
+        // Configure resampler
         AVChannelLayout inputChannelLayoutStruct;
         AVChannelLayout outputChannelLayoutStruct;
 
-        av_channel_layout_default(&inputChannelLayoutStruct, 2); // Stereo
-        av_channel_layout_default(&outputChannelLayoutStruct, 2); // Stereo
+        // Input channel layout
+        if (isInputMono) {
+            av_channel_layout_default(&inputChannelLayoutStruct, 1);
+        } else {
+            av_channel_layout_default(&inputChannelLayoutStruct, 2);
+        }
+        av_channel_layout_default(&outputChannelLayoutStruct, 2); // Stereo output
 
-        // Get actual input sample rate
-        int inputSampleRate = 48000;
-        if (audioInput && audioInput->format().sampleRate() > 0) {
-            inputSampleRate = audioInput->format().sampleRate();
+        // Determine input format
+        AVSampleFormat ffmpegInputFormat = AV_SAMPLE_FMT_S16;
+        if (inputFormat.sampleFormat() == QAudioFormat::Float) {
+            ffmpegInputFormat = AV_SAMPLE_FMT_FLT;
+        } else if (inputFormat.sampleFormat() == QAudioFormat::UInt8) {
+            ffmpegInputFormat = AV_SAMPLE_FMT_U8;
         }
 
+        // Create and configure SwrContext
         swrCtx = swr_alloc();
-        if (!swrCtx) {
+
+        // Set resampler options with explicit settings
+        if (swr_alloc_set_opts2(&swrCtx,
+                                &outputChannelLayoutStruct, AV_SAMPLE_FMT_FLTP, codecContext->sample_rate,
+                                &inputChannelLayoutStruct, ffmpegInputFormat, inputSampleRate,
+                                0, nullptr) < 0) {
             qCritical() << "Failed to allocate SwrContext.";
             return;
         }
 
-        if (swr_alloc_set_opts2(&swrCtx, &outputChannelLayoutStruct, AV_SAMPLE_FMT_FLTP, codecContext->sample_rate,
-                                &inputChannelLayoutStruct, AV_SAMPLE_FMT_S16, inputSampleRate, 0, nullptr) < 0) {
-            qCritical() << "Failed to allocate and set options for SwrContext.";
-            return;
-        }
+        // Set additional resampler options for better MP3 compatibility
+        av_opt_set_int(swrCtx, "linear_interp", 1, 0);
+        av_opt_set_double(swrCtx, "cutoff", 0.97, 0);
+        av_opt_set_int(swrCtx, "async", 1, 0);
 
         if (swr_init(swrCtx) < 0) {
             qCritical() << "Failed to initialize SwrContext.";
@@ -145,140 +219,335 @@ void MainWindow::on_startRecord_clicked()
             return;
         }
 
+        // Calculate resampler delay
+        int64_t swrDelay = swr_get_delay(swrCtx, codecContext->sample_rate);
+        qDebug() << "SwrContext initialized. Delay:" << swrDelay << "samples";
+
+        // Allocate frame
         frame = av_frame_alloc();
         if (!frame) {
             qCritical() << "Failed to allocate frame.";
-            avcodec_free_context(&codecContext);
             return;
         }
 
-        // Set frame properties before allocating buffer
-        frame->nb_samples = codecContext->frame_size;
-        frame->format = codecContext->sample_fmt;
+        frame->nb_samples = codecContext->frame_size; // 1152 samples
+        frame->format = codecContext->sample_fmt;     // AV_SAMPLE_FMT_FLTP
         av_channel_layout_default(&frame->ch_layout, codecContext->ch_layout.nb_channels);
 
         if (av_frame_get_buffer(frame, 0) < 0) {
             qCritical() << "Failed to allocate audio frame buffer.";
             av_frame_free(&frame);
-            avcodec_free_context(&codecContext);
             return;
         }
 
+        // Allocate packet
         packet = av_packet_alloc();
         if (!packet) {
             qCritical() << "Failed to allocate packet.";
             av_frame_free(&frame);
-            avcodec_free_context(&codecContext);
             return;
         }
 
-        audioInput->setBufferSize(4096);  // Reduce buffer size for real-time recording
-        
-        // Add recording status indicator
+        // Set up recording state
+        isRecording = true;
+        recordingTimer.start();
+        pts = 0;
+
+        // Update UI
         ui->startRecord->setText("Kaydediliyor...");
-        ui->startRecord->setStyleSheet("background-color: #ff4444; color: white;");
+        ui->startRecord->setStyleSheet(
+            "QPushButton {"
+            "background-color: #ff4444;"
+            "color: white;"
+            "border: 2px solid #cc0000;"
+            "border-radius: 5px;"
+            "padding: 5px;"
+            "}"
+            "QPushButton:hover {"
+            "background-color: #ff6666;"
+            "}"
+            );
+        ui->startRecord->setEnabled(false);
 
-        // Buffer to accumulate audio data for proper frame size
-        QByteArray audioBuffer;
-        const int frameSize = codecContext->frame_size;
-        const int bytesPerSample = 4; // 16-bit stereo = 4 bytes
-        const int requiredBytes = frameSize * bytesPerSample;
-        
-        // Get actual input sample rate from audio input
+        // Create processing timer (every 40ms for smooth recording)
+        recordingProcessorTimer = new QTimer(this);
+        connect(recordingProcessorTimer, &QTimer::timeout, this, &MainWindow::processRecordedFrames);
+        recordingProcessorTimer->start(40); // 25 FPS processing
 
-        if (audioInput && audioInput->format().sampleRate() > 0) {
-            inputSampleRate = audioInput->format().sampleRate();
-        }
+        // Connect audio data signal to circular buffer
+        // First disconnect any existing connections
+        disconnect(this, &MainWindow::audioDataReady, this, nullptr);
 
-        connect(inputDevice, &QIODevice::readyRead, this, [=]() mutable {
-            try {
-                if (!formatContext || !codecContext) {
-                    return;  // Recording not initialized
-                }
-                
-                QByteArray newData = inputDevice->readAll();
-                if (newData.isEmpty()) {
-                    return;
-                }
+        // Connect to circular buffer writer
+        connect(this, &MainWindow::audioDataReady, this, [this, isInputMono](const QByteArray& audioData) {
+            if (!isRecording || audioData.isEmpty()) return;
 
-                // Append new data to buffer
-                audioBuffer.append(newData);
-
-                // Process complete frames
-                while (audioBuffer.size() >= requiredBytes) {
-                    QByteArray frameData = audioBuffer.left(requiredBytes);
-                    audioBuffer = audioBuffer.mid(requiredBytes);
-
-                    // Process frame data
-                    for (int i = 0; i < frameData.size(); ++i) {
-                        frameData[i] = static_cast<char>(qMin(qMax(static_cast<int>(frameData[i]), -32768), 32767));
-                    }
-
-                    // Calculate input samples correctly
-                    int inputSamples = frameData.size() / bytesPerSample;
-                    
-                    const uint8_t *inData[AV_NUM_DATA_POINTERS] = { reinterpret_cast<const uint8_t *>(frameData.data()) };
-                    uint8_t *outData[AV_NUM_DATA_POINTERS] = { nullptr };
-
-                    int outLinesize;
-                    int outSamples = av_samples_alloc(outData, &outLinesize, codecContext->ch_layout.nb_channels,
-                                                      frameSize, codecContext->sample_fmt, 0);
-
-                    if (outSamples < 0) {
-                        continue;
-                    }
-
-                    // Use actual input sample rate for conversion
-                    int convertedSamples = swr_convert(swrCtx, outData, frameSize, inData, inputSamples);
-
-                    if (convertedSamples <= 0) {
-                        av_freep(&outData[0]);
-                        continue;
-                    }
-
-                    // Copy converted data to frame
-                    if (av_samples_fill_arrays(frame->data, frame->linesize, outData[0], codecContext->ch_layout.nb_channels,
-                                               convertedSamples, codecContext->sample_fmt, 0) < 0) {
-                        av_freep(&outData[0]);
-                        continue;
-                    }
-
-                    // Set correct PTS based on actual sample rate
-                    frame->pts = pts;
-                    pts += convertedSamples;
-
-                    if (avcodec_send_frame(codecContext, frame) < 0) {
-                        av_freep(&outData[0]);
-                        continue;
-                    }
-
-                    while (avcodec_receive_packet(codecContext, packet) == 0) {
-                        packet->stream_index = audioStream->index;
-                        av_packet_rescale_ts(packet, codecContext->time_base, audioStream->time_base);
-                        av_write_frame(formatContext, packet);
-                        av_packet_unref(packet);
-                    }
-
-                    av_freep(&outData[0]);
-                }
-            } catch (const std::exception &e) {
-                qCritical() << "Error during recording: " << e.what();
-            }
+            // Write to circular buffer
+            writeToCircularBuffer(audioData, isInputMono);
         });
-    } catch (const std::runtime_error &e) {
-        qCritical() << "Error occurred: " << e.what();
-        avcodec_free_context(&codecContext);
+
+        qDebug() << "Recording system initialized successfully";
+        qDebug() << "Mono input:" << isInputMono
+                 << "Target frame size:" << codecContext->frame_size
+                 << "Processing interval: 40ms";
+
+    } catch (const std::exception &e) {
+        qCritical() << "Error during recording setup: " << e.what();
+        cleanupRecording();
+    }
+}
+
+
+void MainWindow::writeToCircularBuffer(const QByteArray& audioData, bool isMono)
+{
+    std::lock_guard<std::mutex> lock(bufferMutex);
+
+    const int16_t* sourceData = reinterpret_cast<const int16_t*>(audioData.constData());
+    size_t sourceSamples = audioData.size() / sizeof(int16_t);
+
+    if (isMono) {
+        // Mono to stereo conversion
+        for (size_t i = 0; i < sourceSamples; i++) {
+            int16_t sample = sourceData[i];
+
+            // Left channel
+            circularBuffer[writePos] = sample;
+            writePos = (writePos + 1) % circularBuffer.size();
+
+            // Right channel (same data)
+            circularBuffer[writePos] = sample;
+            writePos = (writePos + 1) % circularBuffer.size();
+
+            availableSamples += 2;
+
+            // Handle buffer overflow
+            if (availableSamples > bufferSize * 2) {
+                readPos = (readPos + 2) % circularBuffer.size();
+                availableSamples -= 2;
+            }
+        }
+    } else {
+        // Already stereo
+        for (size_t i = 0; i < sourceSamples; i++) {
+            circularBuffer[writePos] = sourceData[i];
+            writePos = (writePos + 1) % circularBuffer.size();
+            availableSamples++;
+
+            if (availableSamples > bufferSize * 2) {
+                readPos = (readPos + 1) % circularBuffer.size();
+                availableSamples--;
+            }
+        }
+    }
+
+    // Debug: Log buffer status occasionally
+    static int writeCount = 0;
+    if (++writeCount % 100 == 0) {
+        qDebug() << "Buffer write - Available:" << availableSamples
+                 << "samples, Write position:" << writePos;
+    }
+}
+
+QByteArray MainWindow::readFromCircularBuffer(size_t samplesNeeded)
+{
+    std::lock_guard<std::mutex> lock(bufferMutex);
+
+    if (availableSamples < samplesNeeded) {
+        return QByteArray(); // Not enough data
+    }
+
+    QByteArray result;
+    result.resize(samplesNeeded * sizeof(int16_t));
+    int16_t* destData = reinterpret_cast<int16_t*>(result.data());
+
+    for (size_t i = 0; i < samplesNeeded; i++) {
+        destData[i] = circularBuffer[readPos];
+        readPos = (readPos + 1) % circularBuffer.size();
+    }
+
+    availableSamples -= samplesNeeded;
+    return result;
+}
+
+void MainWindow::processRecordedFrames()
+{
+    if (!isRecording || !codecContext || !swrCtx || availableSamples == 0) {
         return;
     }
+
+    try {
+        // MP3 requires exactly 1152 samples per channel per frame
+        // For stereo: 1152 * 2 = 2304 int16_t samples
+        const size_t SAMPLES_PER_CHANNEL = 1152;
+        const size_t SAMPLES_PER_FRAME = SAMPLES_PER_CHANNEL * 2; // Stereo
+        const size_t BYTES_PER_FRAME = SAMPLES_PER_FRAME * sizeof(int16_t);
+
+        // Process as many frames as we have data for
+        while (availableSamples >= SAMPLES_PER_FRAME) {
+            // Read exactly one frame from circular buffer
+            QByteArray frameData = readFromCircularBuffer(SAMPLES_PER_FRAME);
+            if (frameData.size() != BYTES_PER_FRAME) {
+                qWarning() << "Frame data size mismatch:" << frameData.size()
+                << "expected:" << BYTES_PER_FRAME;
+                break;
+            }
+
+            // Prepare input for resampler
+            const uint8_t *inData[AV_NUM_DATA_POINTERS] = {
+                reinterpret_cast<const uint8_t*>(frameData.constData())
+        };
+
+        // Allocate output buffer for exactly 1152 samples
+        uint8_t *outData[AV_NUM_DATA_POINTERS] = { nullptr };
+        int outLinesize;
+
+        int allocateResult = av_samples_alloc(outData, &outLinesize,
+                                              codecContext->ch_layout.nb_channels,
+                                              SAMPLES_PER_CHANNEL,
+                                              AV_SAMPLE_FMT_FLTP, 0);
+
+        if (allocateResult < 0) {
+            qWarning() << "Failed to allocate output samples";
+            continue;
+        }
+
+        // Calculate input samples for resampler
+        int inputSamples = SAMPLES_PER_CHANNEL; // 1152 samples per channel
+
+        // Perform resampling - CRITICAL: Must produce exactly 1152 samples
+        int convertedSamples = swr_convert(swrCtx, outData, SAMPLES_PER_CHANNEL,
+                                           inData, inputSamples);
+
+        if (convertedSamples != SAMPLES_PER_CHANNEL) {
+            qWarning() << "Resampling produced" << convertedSamples
+                       << "samples, expected" << SAMPLES_PER_CHANNEL;
+
+            // Pad with zeros if necessary
+            if (convertedSamples > 0 && convertedSamples < SAMPLES_PER_CHANNEL) {
+                for (int ch = 0; ch < codecContext->ch_layout.nb_channels; ch++) {
+                    if (outData[ch]) {
+                        float* channelData = reinterpret_cast<float*>(outData[ch]);
+                        for (int i = convertedSamples; i < SAMPLES_PER_CHANNEL; i++) {
+                            channelData[i] = 0.0f;
+                        }
+                    }
+                }
+                convertedSamples = SAMPLES_PER_CHANNEL;
+            } else {
+                av_freep(&outData[0]);
+                continue;
+            }
+        }
+
+        // Copy to frame buffer (planar format)
+        for (int ch = 0; ch < codecContext->ch_layout.nb_channels; ch++) {
+            if (frame->data[ch] && outData[ch]) {
+                size_t bytesToCopy = SAMPLES_PER_CHANNEL * sizeof(float);
+                memcpy(frame->data[ch], outData[ch], bytesToCopy);
+            }
+        }
+
+        // Set frame properties
+        frame->nb_samples = SAMPLES_PER_CHANNEL;
+        frame->pts = pts;
+        pts += SAMPLES_PER_CHANNEL;
+
+        // Send frame to encoder
+        int sendResult = avcodec_send_frame(codecContext, frame);
+        if (sendResult < 0) {
+            char errorStr[256];
+            av_strerror(sendResult, errorStr, sizeof(errorStr));
+            qWarning() << "Failed to send frame:" << errorStr;
+            av_freep(&outData[0]);
+            continue;
+        }
+
+        // Receive encoded packets
+        while (avcodec_receive_packet(codecContext, packet) == 0) {
+            packet->stream_index = audioStream->index;
+            av_packet_rescale_ts(packet, codecContext->time_base, audioStream->time_base);
+
+            if (av_write_frame(formatContext, packet) < 0) {
+                qWarning() << "Failed to write packet";
+            }
+
+            av_packet_unref(packet);
+        }
+
+        // Cleanup
+        av_freep(&outData[0]);
+
+        // Debug output
+        static int totalFrames = 0;
+        if (++totalFrames % 100 == 0) {
+            qDebug() << "Processed" << totalFrames << "frames. Buffer:"
+                     << availableSamples << "samples remaining";
+        }
+    }
+
+} catch (const std::exception& e) {
+    qWarning() << "Error in processRecordedFrames:" << e.what();
+}
+}
+
+void MainWindow::cleanupRecording()
+{
+    if (recordingProcessorTimer) {
+        recordingProcessorTimer->stop();
+        recordingProcessorTimer->deleteLater();
+        recordingProcessorTimer = nullptr;
+    }
+
+    // Clear circular buffer
+    {
+        std::lock_guard<std::mutex> lock(bufferMutex);
+        circularBuffer.clear();
+        readPos = writePos = availableSamples = 0;
+    }
+
+    isRecording = false;
+    ui->startRecord->setText("Kaydı Başlat");
+    ui->startRecord->setStyleSheet("");
+    ui->startRecord->setEnabled(true);
+
+    if (!testButtonWasActive && ui->testButton) {
+        ui->testButton->setChecked(false);
+        ui->testButton->setText("Test Device");
+    }
+
+    qDebug() << "Recording cleanup completed";
 }
 
 void MainWindow::on_stopRecord_clicked()
 {
+    if (!isRecording) {
+        qDebug() << "No active recording to stop";
+        return;
+    }
+
+    qDebug() << "=== STOPPING RECORDING ===";
+    qDebug() << "Recording duration:" << recordingTimer.elapsed() << "ms";
+    qDebug() << "Available samples in buffer:" << availableSamples;
+
+    // Stop processing timer
+    if (recordingProcessorTimer) {
+        recordingProcessorTimer->stop();
+        recordingProcessorTimer->deleteLater();
+        recordingProcessorTimer = nullptr;
+    }
+
+    // Process any remaining frames in buffer
+    if (availableSamples > 0) {
+        qDebug() << "Processing remaining" << availableSamples << "samples...";
+        processRecordedFrames();
+    }
+
+    // FFmpeg cleanup
     if (formatContext) {
-        // Flush the encoder with null frame
+        // Flush encoder
         if (codecContext) {
             avcodec_send_frame(codecContext, nullptr);
-            
+
             AVPacket *flushPacket = av_packet_alloc();
             if (flushPacket) {
                 while (avcodec_receive_packet(codecContext, flushPacket) == 0) {
@@ -292,48 +561,38 @@ void MainWindow::on_stopRecord_clicked()
         }
 
         // Write trailer
-        if (av_write_trailer(formatContext) < 0) {
-            qCritical() << "Failed to write trailer";
-        }
+        av_write_trailer(formatContext);
 
-        // Close output file
+        // Close file
         if (!(formatContext->oformat->flags & AVFMT_NOFILE) && formatContext->pb) {
             avio_closep(&formatContext->pb);
         }
 
-        // Clean up FFmpeg resources
-        if (codecContext) {
-            avcodec_free_context(&codecContext);
-        }
-        if (formatContext) {
-            avformat_free_context(formatContext);
-            formatContext = nullptr;
-        }
+        // Free resources
+        avcodec_free_context(&codecContext);
+        avformat_free_context(formatContext);
+        formatContext = nullptr;
+
         if (frame) {
             av_frame_free(&frame);
+            frame = nullptr;
         }
         if (packet) {
             av_packet_free(&packet);
+            packet = nullptr;
         }
         if (swrCtx) {
             swr_free(&swrCtx);
-        }
-
-        qDebug() << "Kayıt durduruldu";
-        
-        // Restore button state
-        ui->startRecord->setText("Kaydı Başlat");
-        ui->startRecord->setStyleSheet("");  // Reset to default style
-        
-        // Show status message
-        qDebug() << "Kayıt durdu - MP3 dosyası başarıyla kaydedildi";
-
-        pts = 0;
-        
-        // Don't stop audio input - keep it running for voice changer
-        if (audioInput && audioInput->state() == QAudio::SuspendedState) {
-            audioInput->resume();
+            swrCtx = nullptr;
         }
     }
-}
 
+    // Disconnect recording signal
+    disconnect(this, &MainWindow::audioDataReady, this, nullptr);
+
+    // Cleanup and restore UI
+    cleanupRecording();
+
+    qDebug() << "=== RECORDING STOPPED SUCCESSFULLY ===";
+    qDebug() << "Total recording time:" << recordingTimer.elapsed() << "ms";
+}

@@ -2319,16 +2319,6 @@ QProgressBar::chunk {
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="boldButton">
-         <property name="text">
-          <string>Kalın ses</string>
-         </property>
-         <property name="checkable">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
         <widget class="QPushButton" name="femaleButton">
          <property name="text">
           <string>kadın </string>

@@ -14,6 +14,7 @@
 #include <QMap>
 #include <QShortcut>
 #include <QSettings>
+#include <mutex>
 
 #ifdef Q_OS_WIN
 #include <windows.h>
@@ -36,6 +37,9 @@ public:
 protected:
     bool eventFilter(QObject *obj, QEvent *event) override;
 
+signals:
+    void audioDataReady(const QByteArray &processedAudio);
+
 private slots:
     // All the original slots...
     void on_outputslider_valueChanged(int value);
@@ -55,7 +59,6 @@ private slots:
     void on_robotButton_clicked(bool checked);
     void on_devilButton_clicked(bool checked);
     void on_ekoButton_clicked(bool checked);
-    void on_boldButton_clicked(bool checked);
     void on_femaleButton_clicked(bool checked);
     void on_combineButton_clicked(bool checked);
     void on_startRecord_clicked();
@@ -142,8 +145,27 @@ private:
     QIODevice *inputDevice;
     QIODevice *outputDevice;
 
+    // Dairesel tampon için değişkenler
+    std::vector<int16_t> circularBuffer;
+    size_t bufferSize = 44100 * 30; // 10 saniyelik buffer (44.1kHz stereo)
+    size_t readPos = 0;
+    size_t writePos = 0;
+    size_t availableSamples = 0;
+    std::mutex bufferMutex;
+
+    QTimer* recordingProcessorTimer = nullptr;
+
+    // Yeni yardımcı fonksiyonlar
+    void writeToCircularBuffer(const QByteArray& audioData, bool isMono);
+    QByteArray readFromCircularBuffer(size_t samplesNeeded);
+    void processRecordedFrames();
+    void cleanupRecording();
+
     bool usingEffects = true;
     QByteArray data;
+    bool isRecording = false;
+    bool testButtonWasActive = false;
+    QElapsedTimer recordingTimer;
 
     // Hotkey assignments
     QMap<QString, int> m_hotkeyAssignments; // KeySequence -> Sound Index (1-20)
