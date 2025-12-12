@@ -5,11 +5,13 @@
 #include "QMediaPlayer"
 #include "QBuffer"
 #include <QThread>
+#include <QMutex>
 
 
 soundpack::soundpack(QWidget *parent)
     : QMainWindow{parent}
 {
+    
     QList<QPushButton*> buttons =
         parent->findChildren<QPushButton*>();
 
@@ -19,13 +21,162 @@ soundpack::soundpack(QWidget *parent)
     }
 }
 
-QByteArray *localData = new QByteArray;
+void MainWindow::preloadAudio(const QString &filename)
+{
+    if (audioCache.contains(filename) && audioCache[filename]->isLoaded) {
+        return; // Already loaded
+    }
 
+    if (!audioCache.contains(filename)) {
+        audioCache[filename] = new AudioCache();
+    }
+
+    AudioCache* cache = audioCache[filename];
+    
+    QAudioDecoder *preloadDecoder = new QAudioDecoder();
+    preloadDecoder->setAudioFormat(*format);
+    preloadDecoder->setSource(filename);
+
+    connect(preloadDecoder, &QAudioDecoder::bufferReady, this, [=]() {
+        const QAudioBuffer buffer = preloadDecoder->read();
+        QByteArray pcmData(reinterpret_cast<const char *>(buffer.data<void>()), buffer.byteCount());
+        
+        QMutexLocker locker(&cache->mutex);
+        cache->audioData.append(pcmData);
+    });
+
+    connect(preloadDecoder, &QAudioDecoder::finished, this, [=]() {
+        QMutexLocker locker(&cache->mutex);
+        cache->isLoaded = true;
+        qDebug() << "Preloaded audio:" << filename << "Size:" << cache->audioData.size() << "bytes";
+        preloadDecoder->deleteLater();
+    });
+
+    preloadDecoder->start();
+}
+
+void MainWindow::stopCurrentSound()
+{
+    std::lock_guard<std::mutex> lock(currentSoundMutex);
+    
+    // Set interruption flag to stop audio writing
+    soundInterrupted = true;
+    
+    if (currentPlayingButton) {
+        // Reset previous button state
+        currentPlayingButton->setProperty("playing", false);
+        currentPlayingButton->setProperty("selected", false);
+        currentPlayingButton->style()->polish(currentPlayingButton);
+        currentPlayingButton = nullptr;
+    }
+    
+    if (currentOutputThread) {
+        currentOutputThread->quit();
+        currentOutputThread->wait(100); // Wait max 100ms for thread to finish
+        currentOutputThread = nullptr;
+    }
+    
+    // Reset interruption flag after stopping
+    soundInterrupted = false;
+}
 
 void MainWindow::playAudioNotInterrupt(const QString &filename, const QString &picPath, QPushButton *button)
 {
+    // Stop currently playing sound first
+    stopCurrentSound();
+    // Check if audio is cached
+    if (audioCache.contains(filename) && audioCache[filename]->isLoaded) {
+        AudioCache* cache = audioCache[filename];
+        QMutexLocker locker(&cache->mutex);
+        
+        // Use cached data directly
+        QByteArray *localData = new QByteArray(cache->audioData);
+        
+        QPixmap icon(picPath);
+        QIcon buttonIcon = icon;
+        button->setIcon(buttonIcon);
+        QSize size(75,75);
+        button->setIconSize(size);
+        
+        button->setProperty("selected", true);
+        button->style()->polish(button);
+        button->setProperty("playing", true);
+        button->style()->polish(button);
 
-    localData->clear();
+        // Set current playing sound tracking
+        {
+            std::lock_guard<std::mutex> lock(currentSoundMutex);
+            currentPlayingButton = button;
+        }
+
+        // Play cached audio directly
+        QThread *outputThread = new QThread;
+        {
+            std::lock_guard<std::mutex> lock(currentSoundMutex);
+            currentOutputThread = outputThread;
+        }
+        
+        connect(outputThread, &QThread::started, [=, localData = localData]() {
+            std::lock_guard<std::mutex> lock(outputDeviceMutex);
+            if (outputDevice) {
+                qint64 written = 0;
+                // 48kHz stereo: 48000 samples/sec * 2 channels * 2 bytes = 192000 bytes/sec
+                // 10ms chunks: 1920 bytes for proper timing
+                const int chunkSize = 1920; // 10ms at 48kHz stereo
+                const int sleepMs = 10; // 10ms delay for real-time playback
+                
+                QElapsedTimer timer;
+                timer.start();
+                
+                while (written < localData->size() && !soundInterrupted) {
+                    QByteArray chunk = localData->mid(written, chunkSize);
+                    written += outputDevice->write(chunk);
+                    
+                    // Emit signal for recording if recording is active
+                    if (isRecording) {
+                        emit audioDataReady(chunk);
+                    }
+                    
+                    // Real-time timing control
+                    qint64 expectedTime = (written * 1000) / 192000; // ms elapsed
+                    qint64 actualTime = timer.elapsed();
+                    
+                    if (actualTime < expectedTime) {
+                        QThread::msleep(expectedTime - actualTime);
+                    }
+                }
+                
+                if (!soundInterrupted) {
+                    qDebug() << "Cached playback finished.";
+                } else {
+                    qDebug() << "Cached playback interrupted.";
+                }
+                
+                // Reset button state only if this is still the current playing sound
+                {
+                    std::lock_guard<std::mutex> currentLock(currentSoundMutex);
+                    if (currentPlayingButton == button) {
+                        button->setProperty("playing", false);
+                        button->style()->polish(button);
+                        currentPlayingButton = nullptr;
+                        currentOutputThread = nullptr;
+                    }
+                }
+            }
+            outputThread->quit();
+        });
+
+        connect(outputThread, &QThread::finished, this, [localData]() {
+            delete localData;
+        });
+        connect(outputThread, &QThread::finished, outputThread, &QThread::deleteLater);
+
+        outputThread->start();
+        return;
+    }
+
+    // Original decoding path for non-cached audio
+    QByteArray *localData = new QByteArray;
 
     QPixmap icon(picPath);
 
@@ -55,7 +206,7 @@ void MainWindow::playAudioNotInterrupt(const QString &filename, const QString &p
         audioDecoder->start();
     });
 
-    connect(audioDecoder, &QAudioDecoder::bufferReady, this, [=]() {
+    connect(audioDecoder, &QAudioDecoder::bufferReady, this, [=, localData = localData]() {
         const QAudioBuffer buffer = audioDecoder->read();
         QByteArray pcmData(reinterpret_cast<const char *>(buffer.data<void>()), buffer.byteCount());
         localData->append(pcmData);
@@ -66,33 +217,83 @@ void MainWindow::playAudioNotInterrupt(const QString &filename, const QString &p
         decodeThread->quit();
     });
 
+    connect(decodeThread, &QThread::finished, this, [localData]() {
+        delete localData;
+    });
     connect(decodeThread, &QThread::finished, audioDecoder, &QAudioDecoder::deleteLater);
     connect(decodeThread, &QThread::finished, decodeThread, &QThread::deleteLater);
 
     // Decode işlemi bittikten sonra ses çıkışını başlat
-    connect(audioDecoder, &QAudioDecoder::finished, this, [=]() {
+    connect(audioDecoder, &QAudioDecoder::finished, this, [=, localData = localData]() {
         // Ses çalmaya başla - playing durumunu işaretle
         button->setProperty("playing", true);
         button->style()->polish(button);
 
+        // Set current playing sound tracking
+        {
+            std::lock_guard<std::mutex> lock(currentSoundMutex);
+            currentPlayingButton = button;
+        }
+
         // Ses çıkış işlemini yeni bir thread'e taşıyoruz
         QThread *outputThread = new QThread;
+        {
+            std::lock_guard<std::mutex> lock(currentSoundMutex);
+            currentOutputThread = outputThread;
+        }
 
-        connect(outputThread, &QThread::started, [=]() {
+        connect(outputThread, &QThread::started, [=, localData = localData]() {
+            std::lock_guard<std::mutex> lock(outputDeviceMutex);
             if (outputDevice) {
                 qint64 written = 0;
-                while (written < localData->size()) {
-                    written += outputDevice->write(localData->mid(written));
-                }
-                qDebug() << "Playback finished.";
+                // 48kHz stereo: 48000 samples/sec * 2 channels * 2 bytes = 192000 bytes/sec
+                // 10ms chunks: 1920 bytes for proper timing
+                const int chunkSize = 1920; // 10ms at 48kHz stereo
                 
-                // Ses bitti - playing durumunu kaldır
-                button->setProperty("playing", false);
-                button->style()->polish(button);
+                QElapsedTimer timer;
+                timer.start();
+                
+                while (written < localData->size() && !soundInterrupted) {
+                    QByteArray chunk = localData->mid(written, chunkSize);
+                    written += outputDevice->write(chunk);
+                    
+                    // Emit signal for recording if recording is active
+                    if (isRecording) {
+                        emit audioDataReady(chunk);
+                    }
+                    
+                    // Real-time timing control
+                    qint64 expectedTime = (written * 1000) / 192000; // ms elapsed
+                    qint64 actualTime = timer.elapsed();
+                    
+                    if (actualTime < expectedTime) {
+                        QThread::msleep(expectedTime - actualTime);
+                    }
+                }
+                
+                if (!soundInterrupted) {
+                    qDebug() << "Playback finished.";
+                } else {
+                    qDebug() << "Playback interrupted.";
+                }
+                
+                // Reset button state only if this is still the current playing sound
+                {
+                    std::lock_guard<std::mutex> currentLock(currentSoundMutex);
+                    if (currentPlayingButton == button) {
+                        button->setProperty("playing", false);
+                        button->style()->polish(button);
+                        currentPlayingButton = nullptr;
+                        currentOutputThread = nullptr;
+                    }
+                }
             }
             outputThread->quit();
         });
 
+        connect(outputThread, &QThread::finished, this, [localData]() {
+            delete localData;
+        });
         connect(outputThread, &QThread::finished, outputThread, &QThread::deleteLater);
 
         // Ses çıkış thread'ini başlat
@@ -102,9 +303,6 @@ void MainWindow::playAudioNotInterrupt(const QString &filename, const QString &p
     // Decode thread'ini başlat
     decodeThread->start();
 
-    audioDecoder->start();
-
-    localData->clear();
 }
 
 

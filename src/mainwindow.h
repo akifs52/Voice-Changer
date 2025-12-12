@@ -15,6 +15,7 @@
 #include <QShortcut>
 #include <QSettings>
 #include <mutex>
+#include <QMutex>
 
 #ifdef Q_OS_WIN
 #include <windows.h>
@@ -152,6 +153,13 @@ private:
     size_t writePos = 0;
     size_t availableSamples = 0;
     std::mutex bufferMutex;
+    std::mutex outputDeviceMutex;  // Protect outputDevice access
+    
+    // Current playing sound tracking
+    QPushButton* currentPlayingButton = nullptr;
+    QThread* currentOutputThread = nullptr;
+    std::mutex currentSoundMutex;
+    bool soundInterrupted = false;  // Flag to stop current audio writing
 
     QTimer* recordingProcessorTimer = nullptr;
 
@@ -222,9 +230,20 @@ private:
     QThread *outputThread = nullptr;
     QAudioDecoder *audioDecoder = nullptr;
 
+    // Audio cache for preloading
+    struct AudioCache {
+        QByteArray audioData;
+        bool isLoaded;
+        QMutex mutex;
+        AudioCache() : isLoaded(false) {}
+    };
+    QMap<QString, AudioCache*> audioCache;
+
     // Functions from other files
     void stopCurrentAudio();
+    void stopCurrentSound();  // Stop currently playing sound
     void playAudioNotInterrupt(const QString &filename, const QString &picPath, QPushButton *button);
+    void preloadAudio(const QString &filename);
     void searchInputDevice();
     void searchOutputDevice();
     void processAudioInput();

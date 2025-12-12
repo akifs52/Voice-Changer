@@ -88,7 +88,6 @@ void MainWindow::on_startRecord_clicked()
             qCritical() << "No file selected.";
             if (!testButtonWasActive) {
                 ui->testButton->setChecked(false);
-                ui->testButton->setText("Test Device");
             }
             return;
         }
@@ -506,13 +505,13 @@ void MainWindow::cleanupRecording()
     }
 
     isRecording = false;
-    ui->startRecord->setText("Kaydı Başlat");
+
     ui->startRecord->setStyleSheet("");
     ui->startRecord->setEnabled(true);
 
     if (!testButtonWasActive && ui->testButton) {
         ui->testButton->setChecked(false);
-        ui->testButton->setText("Test Device");
+
     }
 
     qDebug() << "Recording cleanup completed";

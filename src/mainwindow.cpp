@@ -40,6 +40,21 @@ MainWindow::MainWindow(QWidget *parent)
     
     // Load saved hotkeys
     loadHotkeys();
+    
+    // Preload default sound files to prevent first-click delay
+    QTimer::singleShot(1000, this, [this]() {
+        preloadAudio(filename1);
+        preloadAudio(filename2);
+        preloadAudio(filename3);
+        preloadAudio(filename4);
+        preloadAudio(filename5);
+        preloadAudio(filename6);
+        preloadAudio(filename7);
+        preloadAudio(filename8);
+        preloadAudio(filename9);
+        preloadAudio(filename10);
+        qDebug() << "Default sound files preloading started";
+    });
 
 
 }
@@ -70,6 +85,12 @@ MainWindow::~MainWindow()
     delete format;
 
     on_stopRecord_clicked();
+    
+    // Clean up audio cache
+    for (auto it = audioCache.begin(); it != audioCache.end(); ++it) {
+        delete it.value();
+    }
+    audioCache.clear();
 
     delete ui;
 }
