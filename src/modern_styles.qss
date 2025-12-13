@@ -1,0 +1,249 @@
+/* ===== MODERN DARK TO LIGHT THEME ===== */
+
+/* Ana Pencere */
+QMainWindow {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                stop:0 #2b2b2b, stop:1 #3c3c3c);
+    color: #ffffff;
+}
+
+/* Merkez Widget */
+QWidget {
+    background: transparent;
+    color: #ffffff;
+}
+
+/* ===== BUTONLAR ===== */
+
+/* Ana Butonlar - Modern Gradient */
+QPushButton {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #4a4a4a, stop:1 #2a2a2a);
+    border: 1px solid #555555;
+    border-radius: 3px;
+    color: #ffffff;
+    font: 8pt "Segoe UI";
+    padding: 2px 4px;
+    min-width: 50px;
+    min-height: 18px;
+    max-height: 20px;
+}
+
+QPushButton:hover {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #5a5a5a, stop:1 #3a3a3a);
+    border-color: #00ff88;
+    transform: translateY(-2px);
+}
+
+QPushButton:pressed {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #3a3a3a, stop:1 #1a1a1a);
+    border-color: #00ff88;
+    transform: translateY(0px);
+}
+
+/* Ses Butonları - Grid Görünüm */
+QPushButton[class="soundButton"] {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                stop:0 #3a3a3a, stop:1 #2a2a2a);
+    border: 1px solid #444444;
+    border-radius: 4px;
+    color: #ffffff;
+    font: 7pt "Segoe UI";
+    padding: 4px;
+    min-width: 55px;
+    min-height: 40px;
+    max-width: 55px;
+    max-height: 40px;
+}
+
+QPushButton[class="soundButton"]:hover {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                stop:0 #4a4a4a, stop:1 #3a3a3a);
+    border-color: #00ff88;
+    box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3);
+}
+
+QPushButton[class="soundButton"]:pressed {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                stop:0 #2a2a2a, stop:1 #1a1a1a);
+    border-color: #00ff88;
+}
+
+/* Efekt Butonları */
+QPushButton[class="effectButton"] {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #ff6b35, stop:1 #d84315);
+    border: 1px solid #ff8a65;
+    border-radius: 6px;
+    color: #ffffff;
+    font: 8pt "Segoe UI";
+    padding: 4px 8px;
+    min-width: 65px;
+    min-height: 20px;
+    max-height: 22px;
+}
+
+QPushButton[class="effectButton"]:hover {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #ff8a65, stop:1 #ff6b35);
+    border-color: #ffffff;
+    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4);
+}
+
+QPushButton[class="effectButton"]:checked {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #00ff88, stop:1 #00cc6a);
+    border-color: #ffffff;
+}
+
+/* ===== COMBOBOXLAR - KARANMAKTAN AÇIĞA ===== */
+
+QComboBox {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #4a4a4a, stop:1 #2a2a2a);
+    border: 1px solid #555555;
+    border-radius: 3px;
+    color: #ffffff;
+    font: 8pt "Segoe UI";
+    padding: 2px 4px;
+    min-width: 80px;
+    min-height: 18px;
+    max-height: 20px;
+}
+
+QComboBox:hover {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #5a5a5a, stop:1 #3a3a3a);
+    border-color: #00ff88;
+}
+
+QComboBox:focus {
+    border-color: #00ff88;
+    outline: none;
+}
+
+QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 20px;
+    border-left: 1px solid #555555;
+    border-radius: 0 6px 6px 0;
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #5a5a5a, stop:1 #3a3a3a);
+}
+
+QComboBox::down-arrow {
+    image: url(:/icons/down_arrow.png);
+    width: 12px;
+    height: 12px;
+}
+
+QComboBox QAbstractItemView {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #5a5a5a, stop:1 #3a3a3a);
+    border: 2px solid #00ff88;
+    border-radius: 6px;
+    color: #ffffff;
+    selection-background-color: #00ff88;
+    selection-color: #000000;
+    outline: none;
+}
+
+QComboBox QAbstractItemView::item {
+    padding: 8px 12px;
+    border-bottom: 1px solid #444444;
+}
+
+QComboBox QAbstractItemView::item:selected {
+    background: #00ff88;
+    color: #000000;
+}
+
+QComboBox QAbstractItemView::item:hover {
+    background: #4a4a4a;
+}
+
+/* ===== SLIDERLAR ===== */
+
+QSlider::groove:horizontal {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                stop:0 #3a3a3a, stop:1 #2a2a2a);
+    border: 1px solid #555555;
+    border-radius: 4px;
+    height: 8px;
+}
+
+QSlider::handle:horizontal {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #00ff88, stop:1 #00cc6a);
+    border: 2px solid #ffffff;
+    border-radius: 8px;
+    width: 16px;
+    height: 16px;
+    margin: -4px 0;
+}
+
+QSlider::handle:horizontal:hover {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #4affaa, stop:1 #2aff88);
+    transform: scale(1.2);
+}
+
+/* ===== LABELLAR ===== */
+
+QLabel {
+    color: #ffffff;
+    font: 10pt "Segoe UI";
+    background: transparent;
+}
+
+QLabel[class="title"] {
+    font: bold 14pt "Segoe UI";
+    color: #00ff88;
+    margin: 5px 0;
+}
+
+QLabel[class="subtitle"] {
+    font: 11pt "Segoe UI";
+    color: #cccccc;
+    margin: 3px 0;
+}
+
+/* ===== FRAME'LAR ===== */
+
+QFrame {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                stop:0 #333333, stop:1 #2a2a2a);
+    border: none;
+    border-radius: 3px;
+    margin: 1px;
+    padding: 3px;
+}
+
+QFrame[class="soundFrame"] {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 #3a3a3a, stop:1 #2a2a2a);
+    border: none;
+    border-radius: 6px;
+}
+
+/* ===== PROGRESS BAR ===== */
+
+QProgressBar {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                stop:0 #2a2a2a, stop:1 #1a1a1a);
+    border: 2px solid #555555;
+    border-radius: 6px;
+    text-align: center;
+    color: #ffffff;
+    font: bold 9pt "Segoe UI";
+}
+
+QProgressBar::chunk {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                stop:0 #00ff88, stop:1 #00cc6a);
+    border-radius: 4px;
+    margin: 2px;
+}

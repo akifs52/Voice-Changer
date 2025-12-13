@@ -50,6 +50,11 @@ void MainWindow::preloadAudio(const QString &filename)
         cache->isLoaded = true;
         qDebug() << "Preloaded audio:" << filename << "Size:" << cache->audioData.size() << "bytes";
         preloadDecoder->deleteLater();
+        
+        preloadCount++;
+        if (preloadCount >= preloadTotal) {
+            emit preloadFinished();
+        }
     });
 
     preloadDecoder->start();

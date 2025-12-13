@@ -40,6 +40,7 @@ protected:
 
 signals:
     void audioDataReady(const QByteArray &processedAudio);
+    void preloadFinished();
 
 private slots:
     // All the original slots...
@@ -238,6 +239,8 @@ private:
         AudioCache() : isLoaded(false) {}
     };
     QMap<QString, AudioCache*> audioCache;
+    int preloadCount = 0;
+    int preloadTotal = 0;
 
     // Functions from other files
     void stopCurrentAudio();
