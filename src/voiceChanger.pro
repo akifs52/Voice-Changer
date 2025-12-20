@@ -10,6 +10,7 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    circularbuffer.cpp \
     deletesoundpack.cpp \
     effects.cpp \
     hotkeys.cpp \
@@ -17,16 +18,19 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     recorder.cpp \
-    soundpack.cpp
+    soundpack.cpp \
+    audiopipeline.cpp
 
 HEADERS += \
+    circularbuffer.h \
     deletesoundpack.h \
     effects.h \
     hotkeys.h \
     loadouts.h \
     mainwindow.h \
     recorder.h \
-    soundpack.h
+    soundpack.h \
+    audiopipeline.h
 
 FORMS += \
     mainwindow.ui

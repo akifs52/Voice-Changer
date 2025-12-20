@@ -1,7 +1,12 @@
 #include "mainwindow.h"
+#include "audiopipeline.h"
 #include "ui_mainwindow.h"
 #include <QSettings>
 #include <QTimer>
+#include <QMessageBox>
+#include <QDesktopServices>
+#include <QProcess>
+#include <QIcon>
 
 #ifdef Q_OS_WIN
 #include <windows.h>
@@ -15,12 +20,25 @@ MainWindow::MainWindow(QWidget *parent)
     , audioInput(nullptr)
     , inputDevice(nullptr)
     , outputDevice(nullptr)
+    , virtualAudioOutput(nullptr)
+    , virtualOutputDevice(nullptr)
+    , vbCableFound(false)
+    , cableInputSelected(false)
+    , testButtonActive(false)
+    , soundpackBuffer(new CircularBuffer(32768))
+    , effectsBuffer(new CircularBuffer(32768))
+    , audioPipeline(new AudioPipeline(this))
 
 {
     ui->setupUi(this);
     ui->frame_3->hide();
     searchInputDevice();
     searchOutputDevice();
+    
+    // Virtual ayarlar
+    searchVirtualDevices();
+    detectVBCable();
+    updateVirtualStatusLabel();
 
     // Setup hotkeys
     allinputKeys();
@@ -81,6 +99,15 @@ MainWindow::~MainWindow()
         audioOutput->stop();
         delete audioOutput;
     }
+    
+    if(virtualAudioOutput){
+        virtualAudioOutput->stop();
+        delete virtualAudioOutput;
+    }
+
+    delete soundpackBuffer;
+    delete effectsBuffer;
+    delete soundpackBuffer2;
 
     delete format;
 
@@ -269,20 +296,36 @@ void MainWindow::on_inputcombobox_currentIndexChanged(int index)
     // Ses kaynağını başlatma
     inputDevice = audioInput->start();
     
-    // Başlangıçta normal mod bağlantısı kur (progress bar için)
+    // Başlangıçta bağlantı kur - test butonundan bağımsız olarak cable input'a gönder
     if (inputDevice) {
         connect(inputDevice, &QIODevice::readyRead, this, [=](){
             data = inputDevice->readAll();
             progressBarOutput();
+            
             // Emit signal for recording when recording is active
             if (isRecording) {
                 qDebug() << "EMITTING SIGNAL (INITIAL): Audio size:" << data.size() << "bytes";
                 emit audioDataReady(data);
             }
-            // Normal modda output'a gönderme
+            
+            // Her zaman virtual output'a gönder (Cable Input)
+            if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
+                // Buffer doluluğunu kontrol et - overload önle
+                if (audioPipeline) {
+                    // Effects buffer'ın doluluk oranını kontrol et
+                    if (audioPipeline->getEffectsBufferBytesAvailable() < 32768) { // 32KB'den azsa yaz
+                        audioPipeline->writeEffectsAudio(data);
+                    }
+                }
+            }
+            
+            // Fiziksel output'a gönderme (test butonu aktif değilse)
         });
-        qDebug() << "Initial audio connection established.";
+        qDebug() << "Initial audio connection established with virtual output only.";
     }
+    
+    // Input değiştiğinde virtual output'u da yenile
+    setupVirtualOutput();
 }
 
 
@@ -345,6 +388,9 @@ void MainWindow::on_outputcombobox_currentIndexChanged(int index)
 
     // Ses kaynağını başlatma
     outputDevice = audioOutput->start();
+    
+    // Output değiştiğinde virtual output'u da yenile
+    setupVirtualOutput();
 
 }
 
@@ -352,6 +398,7 @@ void MainWindow::on_testButton_clicked(bool checked)
 {
     if (checked) {
         ui->testButton->setText("Stop");
+        testButtonActive = true;
 
         if(!audioInput)
         {
@@ -431,7 +478,7 @@ void MainWindow::on_testButton_clicked(bool checked)
                 // Bu stopAllEffects içinde handled olur
                 stopAllEffects();
             } else {
-                // Normal mod için bağlantı kur - HİÇBİR ZAMAN output'a gönderme
+                // Normal mod için bağlantı kur - virtual output'a her zaman gönder
                 connect(inputDevice, &QIODevice::readyRead, this, [=]() {
                     data = inputDevice->readAll();
                     progressBarOutput();
@@ -440,6 +487,13 @@ void MainWindow::on_testButton_clicked(bool checked)
                         qDebug() << "EMITTING SIGNAL (NORMAL): Audio size:" << data.size() << "bytes";
                         emit audioDataReady(data);
                     }
+                    
+                    // Her zaman virtual output'a gönder (Cable Input)
+                    if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
+                        virtualOutputDevice->write(data);
+                    }
+                    
+                    // Fiziksel output'a gönderme (sadece test butonu aktifken gönderilecek)
                 });
             }
         }
@@ -449,6 +503,7 @@ void MainWindow::on_testButton_clicked(bool checked)
         }
         
         qDebug() << "Test mode stopped.";
+        testButtonActive = false;
     }
 }
 
@@ -483,5 +538,154 @@ void MainWindow::progressBarOutput()
 
     ui->progressBar->setValue(progressValue); // Progress bar güncelle
     qDebug() << "Volume Level:" << progressValue;
+}
+
+// Virtual Audio fonksiyonları
+void MainWindow::searchVirtualDevices()
+{
+    // Virtual output cihazlarını ara
+    ui->virtualcombobox->clear();
+    
+    QList<QAudioDevice> outputDevices = QMediaDevices::audioOutputs();
+    for (const QAudioDevice &device : outputDevices) {
+        QString deviceName = device.description();
+        
+        // VB-CABLE cihazlarını kontrol et
+        if (deviceName.contains("VB-CABLE", Qt::CaseInsensitive) || 
+            deviceName.contains("Virtual", Qt::CaseInsensitive)) {
+            
+            ui->virtualcombobox->addItem(deviceName);
+            qDebug() << "Virtual device found:" << deviceName;
+        }
+    }
+    
+    // Eğer VB-CABLE bulunduysa otomatik seç
+    if (ui->virtualcombobox->count() > 0) {
+        ui->virtualcombobox->setCurrentIndex(0);
+        vbCableFound = true;
+    } else {
+        vbCableFound = false;
+    }
+}
+
+bool MainWindow::detectVBCable()
+{
+    QList<QAudioDevice> inputDevices = QMediaDevices::audioInputs();
+    for (const QAudioDevice &device : inputDevices) {
+        QString deviceName = device.description();
+        
+        if (deviceName.contains("VB-CABLE", Qt::CaseInsensitive)) {
+            // VB-CABLE Input'ı normal input combobox'a ekle
+            ui->inputcombobox->addItem(deviceName);
+            
+            // Otomatik seç ve kilitle
+            int index = ui->inputcombobox->findText(deviceName);
+            if (index >= 0) {
+                ui->inputcombobox->setCurrentIndex(index);
+                cableInputSelected = true;
+                ui->inputcombobox->setEnabled(false); // Değiştirilemez yap
+                return true;
+            }
+        }
+    }
+    
+    cableInputSelected = false;
+    ui->inputcombobox->setEnabled(true); // Normal kullanım için aktif
+
+    return false;
+}
+
+void MainWindow::updateVirtualStatusLabel()
+{
+    if (vbCableFound) {
+        ui->virtualStatusLabel->setText("VB-CABLE Bulundu - Aktif");
+
+    } else {
+        ui->virtualStatusLabel->setText("VB-CABLE Bulunamadı - İndirin");
+        ui->virtualStatusLabel->setStyleSheet("color: red; ");
+
+
+        // VB-CABLE bulunamadıysa indirme isteği göster
+        QMessageBox::StandardButton reply = QMessageBox::question(
+            this,
+            "VB-CABLE Driver Gerekli",
+            "VB-CABLE ses sürücüsü bulunamadı.\n\nVB-CABLE, sanal ses cihazları oluşturmak için gereklidir.\n\nŞimdi VB-CABLE kurulumunu başlatmak ister misiniz?",
+            QMessageBox::Yes | QMessageBox::No,
+            QMessageBox::Yes
+            );
+
+        if (reply == QMessageBox::Yes) {
+            // VB-CABLE kurulum betiğini çalıştır
+            QString batchPath = QCoreApplication::applicationDirPath() + "/install_vbcable.bat";
+            qDebug() << "Running VB-CABLE installer:" << batchPath;
+
+            // Batch dosyasını yönetici olarak çalıştır
+            QStringList arguments;
+            arguments << "/c" << QString("cmd /c \"%1\"").arg(batchPath);
+
+            bool success = QProcess::startDetached("powershell", arguments);
+            if (success) {
+                qDebug() << "VB-CABLE installer started successfully";
+                QMessageBox::information(this, "Kurulum Başlatıldı",
+                                         "VB-CABLE kurulum betiği başlatıldı.\n\nKurulum penceresini takip edin ve talimatlara uyun.");
+            } else {
+                qWarning() << "Failed to start VB-CABLE installer";
+                QMessageBox::warning(this, "Kurulum Hatası",
+                                     "VB-CABLE kurulum betiği başlatılamadı.\n\nManuel olarak kurulum dosyasını çalıştırın:\n" + batchPath);
+            }
+        }
+
+
+    }
+}
+
+void MainWindow::setupVirtualOutput()
+{
+    if (virtualAudioOutput) {
+        virtualAudioOutput->stop();
+        delete virtualAudioOutput;
+        virtualAudioOutput = nullptr;
+    }
+    
+    if (ui->virtualcombobox->count() == 0) {
+        return;
+    }
+    
+    QList<QAudioDevice> outputDevices = QMediaDevices::audioOutputs();
+    for (const QAudioDevice &device : outputDevices) {
+        if (device.description() == ui->virtualcombobox->currentText()) {
+            format->setSampleRate(48000);
+            format->setChannelCount(2);
+            format->setSampleFormat(QAudioFormat::Int16);
+            
+            if (device.isFormatSupported(*format)) {
+                virtualAudioOutput = new QAudioSink(device, *format);
+                virtualOutputDevice = virtualAudioOutput->start();
+                
+                // Audio pipeline'ı virtual output device ile bağla
+                audioPipeline->setVirtualOutputDevice(virtualOutputDevice);
+                audioPipeline->start();
+                
+                qDebug() << "Virtual output setup completed for:" << device.description();
+            } else {
+                qWarning() << "Format not supported for virtual device:" << device.description();
+            }
+            break;
+        }
+    }
+}
+
+void MainWindow::on_virtualcombobox_currentIndexChanged(int index)
+{
+    Q_UNUSED(index);
+    setupVirtualOutput();
+}
+
+void MainWindow::on_virtualslider_valueChanged(int value)
+{
+    if (virtualAudioOutput) {
+        float volume = static_cast<float>(value) / 100.0f;
+        virtualAudioOutput->setVolume(volume);
+    }
 }
 

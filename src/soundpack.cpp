@@ -6,6 +6,7 @@
 #include "QBuffer"
 #include <QThread>
 #include <QMutex>
+#include "circularbuffer.h"
 
 
 soundpack::soundpack(QWidget *parent)
@@ -68,18 +69,24 @@ void MainWindow::stopCurrentSound()
     soundInterrupted = true;
     
     if (currentPlayingButton) {
-        // Reset previous button state
-        currentPlayingButton->setProperty("playing", false);
-        currentPlayingButton->setProperty("selected", false);
-        currentPlayingButton->style()->polish(currentPlayingButton);
+        // Reset previous button state - move UI updates to main thread
+        QPushButton* buttonToUpdate = currentPlayingButton;
+        QMetaObject::invokeMethod(buttonToUpdate, [buttonToUpdate]() {
+            buttonToUpdate->setProperty("playing", false);
+            buttonToUpdate->setProperty("selected", false);
+            buttonToUpdate->style()->polish(buttonToUpdate);
+        }, Qt::QueuedConnection);
         currentPlayingButton = nullptr;
     }
     
     if (currentOutputThread) {
         currentOutputThread->quit();
-        currentOutputThread->wait(100); // Wait max 100ms for thread to finish
+        currentOutputThread->wait(200); // Wait longer for thread to finish
         currentOutputThread = nullptr;
     }
+    
+    // Small delay to ensure resources are fully cleaned up
+    QThread::msleep(50);
     
     // Reset interruption flag after stopping
     soundInterrupted = false;
@@ -87,8 +94,20 @@ void MainWindow::stopCurrentSound()
 
 void MainWindow::playAudioNotInterrupt(const QString &filename, const QString &picPath, QPushButton *button)
 {
+    // Prevent rapid successive presses
+    static QDateTime lastPressTime;
+    QDateTime currentTime = QDateTime::currentDateTime();
+    if (lastPressTime.isValid() && lastPressTime.msecsTo(currentTime) < 100) {
+        return; // Ignore presses less than 100ms apart
+    }
+    lastPressTime = currentTime;
+    
     // Stop currently playing sound first
     stopCurrentSound();
+    
+    // Clear any residual data
+    data.clear();
+    
     // Check if audio is cached
     if (audioCache.contains(filename) && audioCache[filename]->isLoaded) {
         AudioCache* cache = audioCache[filename];
@@ -121,33 +140,64 @@ void MainWindow::playAudioNotInterrupt(const QString &filename, const QString &p
             currentOutputThread = outputThread;
         }
         
+        // Thread önceliğini artır - UI thread'i ile çakışmayı önle
+        outputThread->setPriority(QThread::HighPriority);
+        
+        // Capture test button state before starting thread (thread safety)
+        bool isTestButtonChecked = ui->testButton->isChecked();
+        
         connect(outputThread, &QThread::started, [=, localData = localData]() {
             std::lock_guard<std::mutex> lock(outputDeviceMutex);
             if (outputDevice) {
                 qint64 written = 0;
                 // 48kHz stereo: 48000 samples/sec * 2 channels * 2 bytes = 192000 bytes/sec
-                // 10ms chunks: 1920 bytes for proper timing
-                const int chunkSize = 1920; // 10ms at 48kHz stereo
-                const int sleepMs = 10; // 10ms delay for real-time playback
+                // 256 samples chunks: 1024 bytes for optimal balance
+                const int chunkSize = 1024; // 256 samples at 48kHz stereo
+                const int sleepMs = 5; // 5ms delay for optimal playback
                 
                 QElapsedTimer timer;
                 timer.start();
                 
                 while (written < localData->size() && !soundInterrupted) {
                     QByteArray chunk = localData->mid(written, chunkSize);
-                    written += outputDevice->write(chunk);
+                    
+                    // Always increment written by chunk size for timing
+                    written += chunkSize;
+                    
+                    // Write to outputDevice only if test button was checked when thread started
+                    if (isTestButtonChecked && outputDevice && outputDevice->isOpen()) {
+                        outputDevice->write(chunk);
+                    }
+                    
+                    // Paralel pipeline: Soundpack sesini AudioPipeline'a gönder
+                    // Buffer doluluğunu kontrol et, overflows önle
+                    if (audioPipeline) {
+                        audioPipeline->writeSoundpackAudio(chunk);
+                    }
                     
                     // Emit signal for recording if recording is active
                     if (isRecording) {
                         emit audioDataReady(chunk);
                     }
                     
-                    // Real-time timing control
+                    // Real-time timing control - 256 samples için optimal balance
                     qint64 expectedTime = (written * 1000) / 192000; // ms elapsed
                     qint64 actualTime = timer.elapsed();
                     
                     if (actualTime < expectedTime) {
-                        QThread::msleep(expectedTime - actualTime);
+                        // 256 samples için optimal timing
+                        int sleepTime = expectedTime - actualTime;
+                        if (sleepTime > 2) {
+                            QThread::msleep(sleepTime / 2); // Yarı zaman uyku
+                            QThread::yieldCurrentThread();
+                        } else if (sleepTime > 0) {
+                            QThread::usleep(sleepTime * 150); // Mikrosaniye uyku
+                        } else {
+                            QThread::yieldCurrentThread(); // CPU'ya zaman bırak
+                        }
+                    } else {
+                        // Geri kalmışsak, buffer'ı temizle ve devam et
+                        QThread::yieldCurrentThread();
                     }
                 }
                 
@@ -161,8 +211,11 @@ void MainWindow::playAudioNotInterrupt(const QString &filename, const QString &p
                 {
                     std::lock_guard<std::mutex> currentLock(currentSoundMutex);
                     if (currentPlayingButton == button) {
-                        button->setProperty("playing", false);
-                        button->style()->polish(button);
+                        // Move UI updates to main thread to avoid timer errors
+                        QMetaObject::invokeMethod(button, [button]() {
+                            button->setProperty("playing", false);
+                            button->style()->polish(button);
+                        }, Qt::QueuedConnection);
                         currentPlayingButton = nullptr;
                         currentOutputThread = nullptr;
                     }
@@ -246,33 +299,64 @@ void MainWindow::playAudioNotInterrupt(const QString &filename, const QString &p
             std::lock_guard<std::mutex> lock(currentSoundMutex);
             currentOutputThread = outputThread;
         }
+        
+        // Thread önceliğini artır - UI thread'i ile çakışmayı önle
+        outputThread->setPriority(QThread::HighPriority);
+
+        // Capture test button state before starting thread (thread safety)
+        bool isTestButtonChecked = ui->testButton->isChecked();
 
         connect(outputThread, &QThread::started, [=, localData = localData]() {
             std::lock_guard<std::mutex> lock(outputDeviceMutex);
             if (outputDevice) {
                 qint64 written = 0;
                 // 48kHz stereo: 48000 samples/sec * 2 channels * 2 bytes = 192000 bytes/sec
-                // 10ms chunks: 1920 bytes for proper timing
-                const int chunkSize = 1920; // 10ms at 48kHz stereo
+                // 256 samples chunks: 1024 bytes for optimal balance
+                const int chunkSize = 1024; // 256 samples at 48kHz stereo
                 
                 QElapsedTimer timer;
                 timer.start();
                 
                 while (written < localData->size() && !soundInterrupted) {
                     QByteArray chunk = localData->mid(written, chunkSize);
-                    written += outputDevice->write(chunk);
+                    
+                    // Always increment written by chunk size for timing
+                    written += chunkSize;
+                    
+                    // Write to outputDevice only if test button was checked when thread started
+                    if (isTestButtonChecked && outputDevice && outputDevice->isOpen()) {
+                        outputDevice->write(chunk);
+                    }
+                    
+                    // Paralel pipeline: Soundpack sesini AudioPipeline'a gönder
+                    // Buffer doluluğunu kontrol et, overflows önle
+                    if (audioPipeline) {
+                        audioPipeline->writeSoundpackAudio(chunk);
+                    }
                     
                     // Emit signal for recording if recording is active
                     if (isRecording) {
                         emit audioDataReady(chunk);
                     }
                     
-                    // Real-time timing control
+                    // Real-time timing control - 256 samples için optimal balance
                     qint64 expectedTime = (written * 1000) / 192000; // ms elapsed
                     qint64 actualTime = timer.elapsed();
                     
                     if (actualTime < expectedTime) {
-                        QThread::msleep(expectedTime - actualTime);
+                        // 256 samples için optimal timing
+                        int sleepTime = expectedTime - actualTime;
+                        if (sleepTime > 2) {
+                            QThread::msleep(sleepTime / 2); // Yarı zaman uyku
+                            QThread::yieldCurrentThread();
+                        } else if (sleepTime > 0) {
+                            QThread::usleep(sleepTime * 150); // Mikrosaniye uyku
+                        } else {
+                            QThread::yieldCurrentThread(); // CPU'ya zaman bırak
+                        }
+                    } else {
+                        // Geri kalmışsak, buffer'ı temizle ve devam et
+                        QThread::yieldCurrentThread();
                     }
                 }
                 
@@ -286,8 +370,11 @@ void MainWindow::playAudioNotInterrupt(const QString &filename, const QString &p
                 {
                     std::lock_guard<std::mutex> currentLock(currentSoundMutex);
                     if (currentPlayingButton == button) {
-                        button->setProperty("playing", false);
-                        button->style()->polish(button);
+                        // Move UI updates to main thread to avoid timer errors
+                        QMetaObject::invokeMethod(button, [button]() {
+                            button->setProperty("playing", false);
+                            button->style()->polish(button);
+                        }, Qt::QueuedConnection);
                         currentPlayingButton = nullptr;
                         currentOutputThread = nullptr;
                     }
@@ -313,6 +400,10 @@ void MainWindow::playAudioNotInterrupt(const QString &filename, const QString &p
 
 void MainWindow::on_sound1_clicked()
 {
+    // SoundPack başlamadan önce buffer temizliği - mix kalitesi için
+    if (audioPipeline) {
+        audioPipeline->clearSoundpackBuffer();
+    }
 
 
     if (filename1.isEmpty()) {
@@ -337,6 +428,10 @@ void MainWindow::on_sound1_clicked()
 
 void MainWindow::on_sound2_clicked()
 {
+    // SoundPack başlamadan önce buffer temizliği - mix kalitesi için
+    if (audioPipeline) {
+        audioPipeline->clearSoundpackBuffer();
+    }
 
     if (filename2.isEmpty()) {
         filename2 = QFileDialog::getOpenFileName(this, tr("Open MP3 File"), "", tr("Audio Files (*.wav)"));
@@ -360,6 +455,10 @@ void MainWindow::on_sound2_clicked()
 
 void MainWindow::on_sound3_clicked()
 {
+    // SoundPack başlamadan önce buffer temizliği - mix kalitesi için
+    if (audioPipeline) {
+        audioPipeline->clearSoundpackBuffer();
+    }
 
     if (filename3.isEmpty()) {
         filename3 = QFileDialog::getOpenFileName(this, tr("Open MP3 File"), "", tr("Audio Files (*.wav)"));
@@ -383,6 +482,10 @@ void MainWindow::on_sound3_clicked()
 
 void MainWindow::on_sound4_clicked()
 {
+    // SoundPack başlamadan önce buffer temizliği - mix kalitesi için
+    if (audioPipeline) {
+        audioPipeline->clearSoundpackBuffer();
+    }
 
     if (filename4.isEmpty()) {
         filename4 = QFileDialog::getOpenFileName(this, tr("Open MP3 File"), "", tr("Audio Files (*.wav)"));
@@ -406,6 +509,11 @@ void MainWindow::on_sound4_clicked()
 
 void MainWindow::on_sound5_clicked()
 {
+    // SoundPack başlamadan önce buffer temizliği - mix kalitesi için
+    if (audioPipeline) {
+        audioPipeline->clearSoundpackBuffer();
+    }
+
     if (filename5.isEmpty()) {
         filename5 = QFileDialog::getOpenFileName(this, tr("Open MP3 File"), "", tr("Audio Files (*.wav)"));
         if (filename5.isEmpty()) {
@@ -429,6 +537,11 @@ void MainWindow::on_sound5_clicked()
 
 void MainWindow::on_sound6_clicked()
 {
+    // SoundPack başlamadan önce buffer temizliği - mix kalitesi için
+    if (audioPipeline) {
+        audioPipeline->clearSoundpackBuffer();
+    }
+
     if (filename6.isEmpty()) {
         filename6= QFileDialog::getOpenFileName(this, tr("Open MP3 File"), "", tr("Audio Files (*.wav)"));
         if (filename6.isEmpty()) {
@@ -452,6 +565,11 @@ void MainWindow::on_sound6_clicked()
 
 void MainWindow::on_sound7_clicked()
 {
+    // SoundPack başlamadan önce buffer temizliği - mix kalitesi için
+    if (audioPipeline) {
+        audioPipeline->clearSoundpackBuffer();
+    }
+
     if (filename7.isEmpty()) {
         filename7 = QFileDialog::getOpenFileName(this, tr("Open MP3 File"), "", tr("Audio Files (*.wav)"));
         if (filename7.isEmpty()) {
@@ -474,6 +592,11 @@ void MainWindow::on_sound7_clicked()
 
 void MainWindow::on_sound8_clicked()
 {
+    // SoundPack başlamadan önce buffer temizliği - mix kalitesi için
+    if (audioPipeline) {
+        audioPipeline->clearSoundpackBuffer();
+    }
+
     if (filename8.isEmpty()) {
         filename8 = QFileDialog::getOpenFileName(this, tr("Open MP3 File"), "", tr("Audio Files (*.wav)"));
         if (filename8.isEmpty()) {
@@ -497,6 +620,11 @@ void MainWindow::on_sound8_clicked()
 
 void MainWindow::on_sound9_clicked()
 {
+    // SoundPack başlamadan önce buffer temizliği - mix kalitesi için
+    if (audioPipeline) {
+        audioPipeline->clearSoundpackBuffer();
+    }
+
     if (filename9.isEmpty()) {
         filename9 = QFileDialog::getOpenFileName(this, tr("Open MP3 File"), "", tr("Audio Files (*.wav)"));
         if (filename9.isEmpty()) {
@@ -519,6 +647,11 @@ void MainWindow::on_sound9_clicked()
 
 void MainWindow::on_sound10_clicked()
 {
+    // SoundPack başlamadan önce buffer temizliği - mix kalitesi için
+    if (audioPipeline) {
+        audioPipeline->clearSoundpackBuffer();
+    }
+
     if (filename10.isEmpty()) {
         filename10 = QFileDialog::getOpenFileName(this, tr("Open MP3 File"), "", tr("Audio Files (*.wav)"));
         if (filename10.isEmpty()) {
@@ -541,6 +674,11 @@ void MainWindow::on_sound10_clicked()
 
 void MainWindow::on_sound11_clicked()
 {
+    // SoundPack başlamadan önce buffer temizliği - mix kalitesi için
+    if (audioPipeline) {
+        audioPipeline->clearSoundpackBuffer();
+    }
+
     if (filename11.isEmpty()) {
         filename11 = QFileDialog::getOpenFileName(this, tr("Open MP3 File"), "", tr("Audio Files (*.wav)"));
         if (filename11.isEmpty()) {
@@ -563,6 +701,11 @@ void MainWindow::on_sound11_clicked()
 
 void MainWindow::on_sound12_clicked()
 {
+    // SoundPack başlamadan önce buffer temizliği - mix kalitesi için
+    if (audioPipeline) {
+        audioPipeline->clearSoundpackBuffer();
+    }
+
     if (filename12.isEmpty()) {
         filename12 = QFileDialog::getOpenFileName(this, tr("Open MP3 File"), "", tr("Audio Files (*.wav)"));
         if (filename12.isEmpty()) {
@@ -585,6 +728,11 @@ void MainWindow::on_sound12_clicked()
 
 void MainWindow::on_sound13_clicked()
 {
+    // SoundPack başlamadan önce buffer temizliği - mix kalitesi için
+    if (audioPipeline) {
+        audioPipeline->clearSoundpackBuffer();
+    }
+
     if (filename13.isEmpty()) {
         filename13 = QFileDialog::getOpenFileName(this, tr("Open MP3 File"), "", tr("Audio Files (*.wav)"));
         if (filename13.isEmpty()) {
@@ -607,6 +755,11 @@ void MainWindow::on_sound13_clicked()
 
 void MainWindow::on_sound14_clicked()
 {
+    // SoundPack başlamadan önce buffer temizliği - mix kalitesi için
+    if (audioPipeline) {
+        audioPipeline->clearSoundpackBuffer();
+    }
+
     if (filename14.isEmpty()) {
         filename14 = QFileDialog::getOpenFileName(this, tr("Open MP3 File"), "", tr("Audio Files (*.wav)"));
         if (filename14.isEmpty()) {
@@ -629,6 +782,11 @@ void MainWindow::on_sound14_clicked()
 
 void MainWindow::on_sound15_clicked()
 {
+    // SoundPack başlamadan önce buffer temizliği - mix kalitesi için
+    if (audioPipeline) {
+        audioPipeline->clearSoundpackBuffer();
+    }
+
     if (filename15.isEmpty()) {
         filename15 = QFileDialog::getOpenFileName(this, tr("Open MP3 File"), "", tr("Audio Files (*.wav)"));
         if (filename15.isEmpty()) {
@@ -651,6 +809,11 @@ void MainWindow::on_sound15_clicked()
 
 void MainWindow::on_sound16_clicked()
 {
+    // SoundPack başlamadan önce buffer temizliği - mix kalitesi için
+    if (audioPipeline) {
+        audioPipeline->clearSoundpackBuffer();
+    }
+
     if (filename16.isEmpty()) {
         filename16 = QFileDialog::getOpenFileName(this, tr("Open MP3 File"), "", tr("Audio Files (*.wav)"));
         if (filename16.isEmpty()) {
@@ -673,6 +836,11 @@ void MainWindow::on_sound16_clicked()
 
 void MainWindow::on_sound17_clicked()
 {
+    // SoundPack başlamadan önce buffer temizliği - mix kalitesi için
+    if (audioPipeline) {
+        audioPipeline->clearSoundpackBuffer();
+    }
+
     if (filename17.isEmpty()) {
         filename17 = QFileDialog::getOpenFileName(this, tr("Open MP3 File"), "", tr("Audio Files (*.wav)"));
         if (filename17.isEmpty()) {
@@ -695,6 +863,11 @@ void MainWindow::on_sound17_clicked()
 
 void MainWindow::on_sound18_clicked()
 {
+    // SoundPack başlamadan önce buffer temizliği - mix kalitesi için
+    if (audioPipeline) {
+        audioPipeline->clearSoundpackBuffer();
+    }
+
     if (filename18.isEmpty()) {
         filename18 = QFileDialog::getOpenFileName(this, tr("Open MP3 File"), "", tr("Audio Files (*.wav)"));
         if (filename18.isEmpty()) {
@@ -717,6 +890,11 @@ void MainWindow::on_sound18_clicked()
 
 void MainWindow::on_sound19_clicked()
 {
+    // SoundPack başlamadan önce buffer temizliği - mix kalitesi için
+    if (audioPipeline) {
+        audioPipeline->clearSoundpackBuffer();
+    }
+
     if (filename19.isEmpty()) {
         filename19 = QFileDialog::getOpenFileName(this, tr("Open MP3 File"), "", tr("Audio Files (*.wav)"));
         if (filename19.isEmpty()) {
@@ -739,6 +917,11 @@ void MainWindow::on_sound19_clicked()
 
 void MainWindow::on_sound20_clicked()
 {
+    // SoundPack başlamadan önce buffer temizliği - mix kalitesi için
+    if (audioPipeline) {
+        audioPipeline->clearSoundpackBuffer();
+    }
+
     if (filename20.isEmpty()) {
         filename20 = QFileDialog::getOpenFileName(this, tr("Open MP3 File"), "", tr("Audio Files (*.wav)"));
         if (filename20.isEmpty()) {

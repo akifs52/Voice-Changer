@@ -2,21 +2,26 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QAudioSink>
+#include <QAudioDecoder>
+#include <QAudioSource>
+#include <QIODevice>
+#include <QAudioFormat>
+#include <QMediaPlayer>
+#include <QTimer>
+#include <QElapsedTimer>
+#include <QCoreApplication>
+#include <QShortcut>
 #include <QAudioDevice>
 #include <QMediaDevices>
-#include <QAudioSource> //input mic
-#include <QAudioSink> //output
-#include <QCoreApplication>
-#include "QAudioDecoder"
-#include "qpushbutton.h"
-#include <QComboBox>
-#include <QKeyEvent>
-#include <QMap>
-#include <QShortcut>
-#include <QSettings>
-#include <mutex>
+#include <QAudioBuffer>
 #include <QMutex>
-
+#include <memory>
+#include <mutex>
+#include "audiopipeline.h"
+#include "circularbuffer.h"
+#include "qcombobox.h"
+#include "qpushbutton.h"
 #ifdef Q_OS_WIN
 #include <windows.h>
 #endif
@@ -50,6 +55,8 @@ private slots:
     void on_refreshOutput_clicked();
     void on_inputcombobox_currentIndexChanged(int index);
     void on_outputcombobox_currentIndexChanged(int index);
+    void on_virtualcombobox_currentIndexChanged(int index);
+    void on_virtualslider_valueChanged(int value);
     void processToBananaVoice(QByteArray &data);
     void processToRobotVoice(QByteArray &data);
     void processToDevilVoice(QByteArray &data);
@@ -147,6 +154,23 @@ private:
     QIODevice *inputDevice;
     QIODevice *outputDevice;
 
+    // Virtual audio output için yeni değişkenler
+    QAudioSink *virtualAudioOutput;
+    QIODevice *virtualOutputDevice;
+    bool vbCableFound;
+    bool cableInputSelected;
+    bool testButtonActive;
+
+    // Soundpack buffer for audio processing
+    CircularBuffer *soundpackBuffer;
+    
+    // Paralel pipeline için ayrı buffer'lar
+    CircularBuffer *effectsBuffer;     // Efektli ses için
+    CircularBuffer *soundpackBuffer2;  // Soundpack sesleri için
+    
+    // Audio pipeline for parallel processing
+    AudioPipeline *audioPipeline;
+
     // Dairesel tampon için değişkenler
     std::vector<int16_t> circularBuffer;
     size_t bufferSize = 44100 * 30; // 10 saniyelik buffer (44.1kHz stereo)
@@ -155,7 +179,7 @@ private:
     size_t availableSamples = 0;
     std::mutex bufferMutex;
     std::mutex outputDeviceMutex;  // Protect outputDevice access
-    
+
     // Current playing sound tracking
     QPushButton* currentPlayingButton = nullptr;
     QThread* currentOutputThread = nullptr;
@@ -180,7 +204,7 @@ private:
     QMap<QString, int> m_hotkeyAssignments; // KeySequence -> Sound Index (1-20)
     QMap<int, QString> m_soundIndexToKey;   // Sound Index (1-20) -> KeySequence
     QMap<QString, QShortcut*> m_shortcuts;    // KeySequence -> QShortcut
-    
+
     // Global hotkey system for background operation
     QMap<QString, int> m_globalHotkeyIds;    // KeySequence -> Hotkey ID
     static const int GLOBAL_HOTKEY_BASE_ID = 1000;
@@ -252,6 +276,12 @@ private:
     void processAudioInput();
     void progressBarOutput();
     void saveLoadout(const QString &loadoutName);
+
+    // Virtual audio fonksiyonları
+    void searchVirtualDevices();
+    void setupVirtualOutput();
+    bool detectVBCable();
+    void updateVirtualStatusLabel();
     void loadLoadout(const QString &loadoutName);
     void handleHotkeyChange(const QString &key, int soundIndex);
     void populateComboBox(QComboBox *combo);

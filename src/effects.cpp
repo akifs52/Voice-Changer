@@ -46,23 +46,49 @@ void MainWindow::stopAllEffects()
                 }
                 if (outputDevice && outputDevice->isOpen()) {
                     outputDevice->write(data);
+                    // Virtual output'a da gönder
+                    if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
+                        // AudioPipeline kullanarak gönder
+                        if (audioPipeline) {
+                            audioPipeline->writeEffectsAudio(data);
+                        } else {
+                            virtualOutputDevice->write(data);
+                        }
+                        qDebug() << "Effects stopped (test mode): Writing effect-free audio to virtual output, size:" << data.size() << "bytes";
+                    } else {
+                        qWarning() << "Effects stopped (test mode): Virtual output device not available!";
+                    }
                 }
             });
         } else {
-            // Normal mod: KESİNLİKLE output'a gönderme - sadece progress bar
+            // Normal mod: Her zaman output'a gönder
             connect(inputDevice, &QIODevice::readyRead, this, [=](){
                 data = inputDevice->readAll();
                 progressBarOutput();
-                    // Emit signal for recording when recording is active
-                    if (isRecording) {
-                        emit audioDataReady(data);
-                    } // Progress bar'ı güncelle
+                
                 // Emit signal for recording when recording is active
                 if (isRecording) {
                     qDebug() << "EMITTING SIGNAL (EFFECT-NORMAL): Audio size:" << data.size() << "bytes";
                     emit audioDataReady(data);
                 }
-                // HİÇBİR ŞEKİLDE output'a gönderme
+                
+                // Her zaman output'a gönder
+                if (outputDevice && outputDevice->isOpen()) {
+                    outputDevice->write(data);
+                }
+                
+                // Virtual output'a da gönder
+                if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
+                    // AudioPipeline kullanarak gönder
+                    if (audioPipeline) {
+                        audioPipeline->writeEffectsAudio(data);
+                    } else {
+                        virtualOutputDevice->write(data);
+                    }
+                    qDebug() << "Effects stopped: Writing effect-free audio to virtual output, size:" << data.size() << "bytes";
+                } else {
+                    qWarning() << "Effects stopped: Virtual output device not available!";
+                }
             });
         }
     }
@@ -348,19 +374,28 @@ void MainWindow::on_robotButton_clicked(bool checked)
                         emit audioDataReady(data);
                     } // Progress bar'ı güncelle
                 
-                // Emit signal for recording when recording is active (after effects)
+                 // Emit signal for recording when recording is active (after effects)
                 if (isRecording) {
                     qDebug() << "EMITTING SIGNAL (ROBOT): Processed audio size:" << data.size() << "bytes";
                     emit audioDataReady(data);
                 }
+                 
+                // Her zaman virtual output'a gönder (Cable Input)
+                if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
+                    // AudioPipeline kullanarak gönder
+                    if (audioPipeline) {
+                        audioPipeline->writeEffectsAudio(data);
+                    } else {
+                        virtualOutputDevice->write(data);
+                    }
+                }
                 
-                // SADECE test modunda output'a gönder
+                // SADECE test modunda fiziksel output'a gönder
                 if (ui->testButton->isChecked()) {
                     if (outputDevice && outputDevice->isOpen()) {
                         outputDevice->write(data);
                     }
                 }
-                // Test kapalıysa KESİNLİKLE output'a gönderme
             });
         }
         else {
@@ -390,6 +425,15 @@ void MainWindow::on_robotButton_clicked(bool checked)
                     }
                     if (outputDevice && outputDevice->isOpen()) {
                         outputDevice->write(data);
+                        // Virtual output'a da gönder
+                        if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
+                            // AudioPipeline kullanarak gönder
+                            if (audioPipeline) {
+                                audioPipeline->writeEffectsAudio(data);
+                            } else {
+                                virtualOutputDevice->write(data);
+                            }
+                        }
                     }
                 });
             } else {
@@ -436,13 +480,22 @@ void MainWindow::on_bananaButton_clicked(bool checked)
                         emit audioDataReady(data);
                     } // Progress bar'ı güncelle
                 
-                // SADECE test modunda output'a gönder
+                // Her zaman virtual output'a gönder (Cable Input)
+                if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
+                    // AudioPipeline kullanarak gönder
+                    if (audioPipeline) {
+                        audioPipeline->writeEffectsAudio(data);
+                    } else {
+                        virtualOutputDevice->write(data);
+                    }
+                }
+                
+                // SADECE test modunda fiziksel output'a gönder
                 if (ui->testButton->isChecked()) {
                     if (outputDevice && outputDevice->isOpen()) {
                         outputDevice->write(data);
                     }
                 }
-                // Test kapalıysa KESİNLİKLE output'a gönderme
             });
 
             usingEffects = false;
@@ -469,6 +522,15 @@ void MainWindow::on_bananaButton_clicked(bool checked)
                     }
                     if (outputDevice && outputDevice->isOpen()) {
                         outputDevice->write(data);
+                        // Virtual output'a da gönder
+                        if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
+                            // AudioPipeline kullanarak gönder
+                            if (audioPipeline) {
+                                audioPipeline->writeEffectsAudio(data);
+                            } else {
+                                virtualOutputDevice->write(data);
+                            }
+                        }
                     }
                 });
             } else {
@@ -516,13 +578,22 @@ void MainWindow::on_devilButton_clicked(bool checked)
                         emit audioDataReady(data);
                     } // Progress bar'ı güncelle
                 
-                // SADECE test modunda output'a gönder
+                // Her zaman virtual output'a gönder (Cable Input)
+                if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
+                    // AudioPipeline kullanarak gönder
+                    if (audioPipeline) {
+                        audioPipeline->writeEffectsAudio(data);
+                    } else {
+                        virtualOutputDevice->write(data);
+                    }
+                }
+                
+                // SADECE test modunda fiziksel output'a gönder
                 if (ui->testButton->isChecked()) {
                     if (outputDevice && outputDevice->isOpen()) {
                         outputDevice->write(data);
                     }
                 }
-                // Test kapalıysa KESİNLİKLE output'a gönderme
             });
 
             usingEffects = false;
@@ -552,6 +623,15 @@ void MainWindow::on_devilButton_clicked(bool checked)
                     }
                     if (outputDevice && outputDevice->isOpen()) {
                         outputDevice->write(data);
+                        // Virtual output'a da gönder
+                        if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
+                            // AudioPipeline kullanarak gönder
+                            if (audioPipeline) {
+                                audioPipeline->writeEffectsAudio(data);
+                            } else {
+                                virtualOutputDevice->write(data);
+                            }
+                        }
                     }
                 });
             } else {
@@ -599,13 +679,22 @@ void MainWindow::on_ekoButton_clicked(bool checked)
                         emit audioDataReady(data);
                     } // Progress bar'ı güncelle
                 
-                // SADECE test modunda output'a gönder
+                // Her zaman virtual output'a gönder (Cable Input)
+                if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
+                    // AudioPipeline kullanarak gönder
+                    if (audioPipeline) {
+                        audioPipeline->writeEffectsAudio(data);
+                    } else {
+                        virtualOutputDevice->write(data);
+                    }
+                }
+                
+                // SADECE test modunda fiziksel output'a gönder
                 if (ui->testButton->isChecked()) {
                     if (outputDevice && outputDevice->isOpen()) {
                         outputDevice->write(data);
                     }
                 }
-                // Test kapalıysa KESİNLİKLE output'a gönderme
             });
 
             usingEffects = false;
@@ -635,6 +724,15 @@ void MainWindow::on_ekoButton_clicked(bool checked)
                     }
                     if (outputDevice && outputDevice->isOpen()) {
                         outputDevice->write(data);
+                        // Virtual output'a da gönder
+                        if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
+                            // AudioPipeline kullanarak gönder
+                            if (audioPipeline) {
+                                audioPipeline->writeEffectsAudio(data);
+                            } else {
+                                virtualOutputDevice->write(data);
+                            }
+                        }
                     }
                 });
             } else {
@@ -682,13 +780,22 @@ void MainWindow::on_femaleButton_clicked(bool checked)
                         emit audioDataReady(data);
                     } // Progress bar'ı güncelle
                 
-                // SADECE test modunda output'a gönder
+                // Her zaman virtual output'a gönder (Cable Input)
+                if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
+                    // AudioPipeline kullanarak gönder
+                    if (audioPipeline) {
+                        audioPipeline->writeEffectsAudio(data);
+                    } else {
+                        virtualOutputDevice->write(data);
+                    }
+                }
+                
+                // SADECE test modunda fiziksel output'a gönder
                 if (ui->testButton->isChecked()) {
                     if (outputDevice && outputDevice->isOpen()) {
                         outputDevice->write(data);
                     }
                 }
-                // Test kapalıysa KESİNLİKLE output'a gönderme
             });
 
             usingEffects = false;
@@ -718,6 +825,15 @@ void MainWindow::on_femaleButton_clicked(bool checked)
                     }
                     if (outputDevice && outputDevice->isOpen()) {
                         outputDevice->write(data);
+                        // Virtual output'a da gönder
+                        if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
+                            // AudioPipeline kullanarak gönder
+                            if (audioPipeline) {
+                                audioPipeline->writeEffectsAudio(data);
+                            } else {
+                                virtualOutputDevice->write(data);
+                            }
+                        }
                     }
                 });
             } else {
@@ -766,13 +882,22 @@ void MainWindow::on_combineButton_clicked(bool checked)
                         emit audioDataReady(data);
                     } // Progress bar'ı güncelle
                 
-                // SADECE test modunda output'a gönder
+                // Her zaman virtual output'a gönder (Cable Input)
+                if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
+                    // AudioPipeline kullanarak gönder
+                    if (audioPipeline) {
+                        audioPipeline->writeEffectsAudio(data);
+                    } else {
+                        virtualOutputDevice->write(data);
+                    }
+                }
+                
+                // SADECE test modunda fiziksel output'a gönder
                 if (ui->testButton->isChecked()) {
                     if (outputDevice && outputDevice->isOpen()) {
                         outputDevice->write(data);
                     }
                 }
-                // Test kapalıysa KESİNLİKLE output'a gönderme
             });
 
             usingEffects = false;
@@ -802,6 +927,15 @@ void MainWindow::on_combineButton_clicked(bool checked)
                     }
                     if (outputDevice && outputDevice->isOpen()) {
                         outputDevice->write(data);
+                        // Virtual output'a da gönder
+                        if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
+                            // AudioPipeline kullanarak gönder
+                            if (audioPipeline) {
+                                audioPipeline->writeEffectsAudio(data);
+                            } else {
+                                virtualOutputDevice->write(data);
+                            }
+                        }
                     }
                 });
             } else {

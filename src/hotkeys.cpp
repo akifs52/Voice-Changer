@@ -1,6 +1,7 @@
 #include "hotkeys.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QSettings>
 
 #ifdef Q_OS_WIN
 #include <windows.h>

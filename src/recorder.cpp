@@ -69,22 +69,25 @@ void MainWindow::on_startRecord_clicked()
         qDebug() << "Circular buffer size:" << circularBuffer.size()
                  << "samples (" << (circularBuffer.size() / 44100.0) << "seconds at 44.1kHz)";
 
-        // Auto-enable test button if not already active
+        // Don't auto-enable test button - use Cable Input output instead
         testButtonWasActive = ui->testButton->isChecked();
-        if (!testButtonWasActive) {
-            qDebug() << "Auto-enabling test button for recording";
-            ui->testButton->setChecked(true);
-            ui->testButton->setText("Stop");
-        }
+        qDebug() << "Recording using Cable Input output without enabling test button";
 
-        // Resume audio input if suspended
-        if (audioInput->state() == QAudio::SuspendedState) {
+        // Ensure audio input is active and resume if needed
+        if (audioInput->state() == QAudio::SuspendedState || audioInput->state() == QAudio::StoppedState) {
             audioInput->resume();
+            qDebug() << "Audio input resumed for recording. State:" << audioInput->state();
         }
 
-        // Select file to save MP3
-        QString mp3FileName = QFileDialog::getSaveFileName(this, "Save MP3 File", "", "MP3 Files (*.mp3)");
-        if (mp3FileName.isEmpty()) {
+        // Ensure virtual audio output is also active
+        if (virtualAudioOutput && virtualAudioOutput->state() == QAudio::SuspendedState) {
+            virtualAudioOutput->resume();
+            qDebug() << "Virtual audio output resumed for recording";
+        }
+
+        // Try MP3 first, fallback to WAV if MP3 codec not available
+        QString fileName = QFileDialog::getSaveFileName(this, "Save Audio File", "", "Audio Files (*.mp3 *.wav)");
+        if (fileName.isEmpty()) {
             qCritical() << "No file selected.";
             if (!testButtonWasActive) {
                 ui->testButton->setChecked(false);
@@ -92,26 +95,57 @@ void MainWindow::on_startRecord_clicked()
             return;
         }
 
-        // Ensure .mp3 extension
-        if (!mp3FileName.endsWith(".mp3", Qt::CaseInsensitive)) {
-            mp3FileName += ".mp3";
+        // Determine format and ensure proper extension
+        bool useMP3 = false;
+        if (fileName.endsWith(".mp3", Qt::CaseInsensitive)) {
+            useMP3 = true;
+        } else if (fileName.endsWith(".wav", Qt::CaseInsensitive)) {
+            useMP3 = false;
+        } else {
+            // Default to MP3, add extension
+            fileName += ".mp3";
+            useMP3 = true;
         }
 
-        qDebug() << "Saving to file:" << mp3FileName;
+        QString formatName = useMP3 ? "mp3" : "wav";
+        QString codecName = useMP3 ? "MP3" : "WAV";
+
+        qDebug() << "Saving to file:" << fileName << "as" << formatName << "format";
 
         // Initialize FFmpeg
         avformat_network_init();
 
-        if (avformat_alloc_output_context2(&formatContext, nullptr, "mp3", mp3FileName.toStdString().c_str()) < 0) {
-            qCritical() << "Failed to allocate format context.";
+        if (avformat_alloc_output_context2(&formatContext, nullptr, formatName.toStdString().c_str(), fileName.toStdString().c_str()) < 0) {
+            qCritical() << "Failed to allocate format context for" << formatName;
             return;
         }
 
-        // Find MP3 codec
-        const AVCodec *codec = avcodec_find_encoder(AV_CODEC_ID_MP3);
+        // Find appropriate codec
+        AVCodecID codecId = useMP3 ? AV_CODEC_ID_MP3 : AV_CODEC_ID_PCM_S16LE;
+        const AVCodec *codec = avcodec_find_encoder(codecId);
         if (!codec) {
-            qCritical() << "MP3 codec not found. Ensure FFmpeg is built with libmp3lame.";
-            return;
+            qCritical() << codecName << "codec not found. Trying fallback format...";
+
+            // Try fallback to WAV
+            if (useMP3) {
+                codecId = AV_CODEC_ID_PCM_S16LE;
+                codec = avcodec_find_encoder(codecId);
+                if (codec) {
+                    qDebug() << "Using WAV format as fallback";
+                    avformat_free_context(formatContext);
+                    if (avformat_alloc_output_context2(&formatContext, nullptr, "wav", fileName.toStdString().c_str()) < 0) {
+                        qCritical() << "Failed to allocate WAV format context.";
+                        return;
+                    }
+                    useMP3 = false;
+                }
+            }
+
+            if (!codec) {
+                qCritical() << "No suitable audio codec found.";
+                avformat_free_context(formatContext);
+                return;
+            }
         }
 
         // Configure codec parameters
@@ -121,22 +155,29 @@ void MainWindow::on_startRecord_clicked()
             return;
         }
 
-        codecContext->sample_fmt = AV_SAMPLE_FMT_FLTP;
-        codecContext->bit_rate = 128000;
-        codecContext->sample_rate = 44100;
-        av_channel_layout_default(&codecContext->ch_layout, 2); // Stereo
-        codecContext->frame_size = 1152; // MP3 için sabit frame size
-
-        // MP3 için optimize ayarlar
-        codecContext->compression_level = 5;
-        av_opt_set_int(codecContext, "compression_level", 5, 0);
+        if (useMP3) {
+            // MP3 specific settings
+            codecContext->sample_fmt = AV_SAMPLE_FMT_FLTP;
+            codecContext->bit_rate = 128000;
+            codecContext->sample_rate = 44100;
+            av_channel_layout_default(&codecContext->ch_layout, 2); // Stereo
+            codecContext->frame_size = 1152; // MP3 için sabit frame size
+            codecContext->compression_level = 5;
+            av_opt_set_int(codecContext, "compression_level", 5, 0);
+        } else {
+            // WAV specific settings
+            codecContext->sample_fmt = AV_SAMPLE_FMT_S16;
+            codecContext->sample_rate = 44100;
+            av_channel_layout_default(&codecContext->ch_layout, 2); // Stereo
+            // WAV doesn't need frame_size or compression settings
+        }
 
         if (formatContext->oformat->flags & AVFMT_GLOBALHEADER) {
             codecContext->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
         }
 
         if (avcodec_open2(codecContext, codec, nullptr) < 0) {
-            qCritical() << "Failed to open MP3 codec.";
+            qCritical() << "Failed to open" << (useMP3 ? "MP3" : "WAV") << "codec.";
             avcodec_free_context(&codecContext);
             return;
         }
@@ -162,7 +203,7 @@ void MainWindow::on_startRecord_clicked()
 
         // Open output file
         if (!(formatContext->oformat->flags & AVFMT_NOFILE)) {
-            if (avio_open(&formatContext->pb, mp3FileName.toStdString().c_str(), AVIO_FLAG_WRITE) < 0) {
+            if (avio_open(&formatContext->pb, fileName.toStdString().c_str(), AVIO_FLAG_WRITE) < 0) {
                 qCritical() << "Failed to open output file.";
                 avcodec_free_context(&codecContext);
                 return;
@@ -175,52 +216,57 @@ void MainWindow::on_startRecord_clicked()
             return;
         }
 
-        // Configure resampler
-        AVChannelLayout inputChannelLayoutStruct;
-        AVChannelLayout outputChannelLayoutStruct;
+        // Configure resampler only for MP3 (WAV doesn't need resampling)
+        if (useMP3) {
+            AVChannelLayout inputChannelLayoutStruct;
+            AVChannelLayout outputChannelLayoutStruct;
 
-        // Input channel layout
-        if (isInputMono) {
-            av_channel_layout_default(&inputChannelLayoutStruct, 1);
+            // Input channel layout
+            if (isInputMono) {
+                av_channel_layout_default(&inputChannelLayoutStruct, 1);
+            } else {
+                av_channel_layout_default(&inputChannelLayoutStruct, 2);
+            }
+            av_channel_layout_default(&outputChannelLayoutStruct, 2); // Stereo output
+
+            // Determine input format
+            AVSampleFormat ffmpegInputFormat = AV_SAMPLE_FMT_S16;
+            if (inputFormat.sampleFormat() == QAudioFormat::Float) {
+                ffmpegInputFormat = AV_SAMPLE_FMT_FLT;
+            } else if (inputFormat.sampleFormat() == QAudioFormat::UInt8) {
+                ffmpegInputFormat = AV_SAMPLE_FMT_U8;
+            }
+
+            // Create and configure SwrContext
+            swrCtx = swr_alloc();
+
+            // Set resampler options with explicit settings
+            if (swr_alloc_set_opts2(&swrCtx,
+                                    &outputChannelLayoutStruct, AV_SAMPLE_FMT_FLTP, codecContext->sample_rate,
+                                    &inputChannelLayoutStruct, ffmpegInputFormat, inputSampleRate,
+                                    0, nullptr) < 0) {
+                qCritical() << "Failed to allocate SwrContext.";
+                return;
+            }
+
+            // Set additional resampler options for better MP3 compatibility
+            av_opt_set_int(swrCtx, "linear_interp", 1, 0);
+            av_opt_set_double(swrCtx, "cutoff", 0.97, 0);
+            av_opt_set_int(swrCtx, "async", 1, 0);
+
+            if (swr_init(swrCtx) < 0) {
+                qCritical() << "Failed to initialize SwrContext.";
+                swr_free(&swrCtx);
+                return;
+            }
+
+            // Calculate resampler delay
+            int64_t swrDelay = swr_get_delay(swrCtx, codecContext->sample_rate);
+            qDebug() << "SwrContext initialized. Delay:" << swrDelay << "samples";
         } else {
-            av_channel_layout_default(&inputChannelLayoutStruct, 2);
+            qDebug() << "WAV format - no resampling needed";
+            swrCtx = nullptr;
         }
-        av_channel_layout_default(&outputChannelLayoutStruct, 2); // Stereo output
-
-        // Determine input format
-        AVSampleFormat ffmpegInputFormat = AV_SAMPLE_FMT_S16;
-        if (inputFormat.sampleFormat() == QAudioFormat::Float) {
-            ffmpegInputFormat = AV_SAMPLE_FMT_FLT;
-        } else if (inputFormat.sampleFormat() == QAudioFormat::UInt8) {
-            ffmpegInputFormat = AV_SAMPLE_FMT_U8;
-        }
-
-        // Create and configure SwrContext
-        swrCtx = swr_alloc();
-
-        // Set resampler options with explicit settings
-        if (swr_alloc_set_opts2(&swrCtx,
-                                &outputChannelLayoutStruct, AV_SAMPLE_FMT_FLTP, codecContext->sample_rate,
-                                &inputChannelLayoutStruct, ffmpegInputFormat, inputSampleRate,
-                                0, nullptr) < 0) {
-            qCritical() << "Failed to allocate SwrContext.";
-            return;
-        }
-
-        // Set additional resampler options for better MP3 compatibility
-        av_opt_set_int(swrCtx, "linear_interp", 1, 0);
-        av_opt_set_double(swrCtx, "cutoff", 0.97, 0);
-        av_opt_set_int(swrCtx, "async", 1, 0);
-
-        if (swr_init(swrCtx) < 0) {
-            qCritical() << "Failed to initialize SwrContext.";
-            swr_free(&swrCtx);
-            return;
-        }
-
-        // Calculate resampler delay
-        int64_t swrDelay = swr_get_delay(swrCtx, codecContext->sample_rate);
-        qDebug() << "SwrContext initialized. Delay:" << swrDelay << "samples";
 
         // Allocate frame
         frame = av_frame_alloc();
@@ -252,6 +298,57 @@ void MainWindow::on_startRecord_clicked()
         recordingTimer.start();
         pts = 0;
 
+        qDebug() << "Recording state set to TRUE. Timer started.";
+        qDebug() << "Using format:" << (useMP3 ? "MP3" : "WAV") << "with codec:" << codec->name;
+
+        // Setup proper audio connection for recording with Cable Input AFTER all preparations
+        if (inputDevice) {
+            // Disconnect existing connections to avoid conflicts
+            disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
+            
+            // Create recording-specific connection that handles effects and Cable Input output
+            connect(inputDevice, &QIODevice::readyRead, this, [=]() {
+                data = inputDevice->readAll();
+                progressBarOutput();
+                
+                // Apply effects if active
+                if (!usingEffects) {
+                    if (ui->robotButton->isChecked()) {
+                        processToRobotVoice(data);
+                    } else if (ui->bananaButton->isChecked()) {
+                        processToBananaVoice(data);
+                    } else if (ui->devilButton->isChecked()) {
+                        processToDevilVoice(data);
+                    } else if (ui->femaleButton->isChecked()) {
+                        processToFemaleVoice(data);
+                    } else if (ui->combineButton->isChecked()) {
+                        processToCombineVoice(data);
+                    } else if (ui->ekoButton->isChecked()) {
+                        processToEkoVoice(data);
+                    }
+                }
+                
+                // Send to Cable Input (virtual output)
+                if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
+                    // AudioPipeline kullanarak gönder
+                    if (audioPipeline) {
+                        audioPipeline->writeEffectsAudio(data);
+                    } else {
+                        virtualOutputDevice->write(data);
+                    }
+                }
+                
+                // Fiziksel output'a gönderme (sadece test butonu aktifken)
+                
+                // Emit signal for recording
+                if (isRecording) {
+                    qDebug() << "RECORDING CONNECTION: Processed audio size:" << data.size() << "bytes";
+                    emit audioDataReady(data);
+                }
+            });
+            qDebug() << "Recording audio connection established AFTER file dialog closed";
+        }
+
         // Update UI
         ui->startRecord->setText("Kaydediliyor...");
         ui->startRecord->setStyleSheet(
@@ -274,13 +371,14 @@ void MainWindow::on_startRecord_clicked()
         recordingProcessorTimer->start(40); // 25 FPS processing
 
         // Connect audio data signal to circular buffer
-        // First disconnect any existing connections
+        // First disconnect any existing recording-specific connections
         disconnect(this, &MainWindow::audioDataReady, this, nullptr);
 
-        // Connect to circular buffer writer
+        // Connect to circular buffer writer for recording
         connect(this, &MainWindow::audioDataReady, this, [this, isInputMono](const QByteArray& audioData) {
             if (!isRecording || audioData.isEmpty()) return;
 
+            qDebug() << "RECORDING: Received audio data size:" << audioData.size() << "bytes";
             // Write to circular buffer
             writeToCircularBuffer(audioData, isInputMono);
         });
@@ -375,11 +473,11 @@ void MainWindow::processRecordedFrames()
     }
 
     try {
-        // MP3 requires exactly 1152 samples per channel per frame
-        // For stereo: 1152 * 2 = 2304 int16_t samples
-        const size_t SAMPLES_PER_CHANNEL = 1152;
-        const size_t SAMPLES_PER_FRAME = SAMPLES_PER_CHANNEL * 2; // Stereo
-        const size_t BYTES_PER_FRAME = SAMPLES_PER_FRAME * sizeof(int16_t);
+        // Determine frame size based on codec
+        bool isMP3 = (codecContext->codec_id == AV_CODEC_ID_MP3);
+        size_t SAMPLES_PER_CHANNEL = isMP3 ? 1152 : 1024; // MP3: 1152, WAV: flexible
+        size_t SAMPLES_PER_FRAME = SAMPLES_PER_CHANNEL * 2; // Stereo
+        size_t BYTES_PER_FRAME = SAMPLES_PER_FRAME * sizeof(int16_t);
 
         // Process as many frames as we have data for
         while (availableSamples >= SAMPLES_PER_FRAME) {
@@ -400,10 +498,11 @@ void MainWindow::processRecordedFrames()
         uint8_t *outData[AV_NUM_DATA_POINTERS] = { nullptr };
         int outLinesize;
 
+        AVSampleFormat targetFormat = isMP3 ? AV_SAMPLE_FMT_FLTP : AV_SAMPLE_FMT_S16;
         int allocateResult = av_samples_alloc(outData, &outLinesize,
                                               codecContext->ch_layout.nb_channels,
                                               SAMPLES_PER_CHANNEL,
-                                              AV_SAMPLE_FMT_FLTP, 0);
+                                              targetFormat, 0);
 
         if (allocateResult < 0) {
             qWarning() << "Failed to allocate output samples";
@@ -413,9 +512,26 @@ void MainWindow::processRecordedFrames()
         // Calculate input samples for resampler
         int inputSamples = SAMPLES_PER_CHANNEL; // 1152 samples per channel
 
-        // Perform resampling - CRITICAL: Must produce exactly 1152 samples
-        int convertedSamples = swr_convert(swrCtx, outData, SAMPLES_PER_CHANNEL,
-                                           inData, inputSamples);
+        int convertedSamples;
+        if (isMP3) {
+            // MP3 needs resampling to planar float
+            convertedSamples = swr_convert(swrCtx, outData, SAMPLES_PER_CHANNEL,
+                                          inData, inputSamples);
+        } else {
+            // WAV can use the data directly (already S16 format)
+            // Copy directly to output buffer
+            for (int ch = 0; ch < codecContext->ch_layout.nb_channels; ch++) {
+                if (outData[ch]) {
+                    int16_t* channelData = reinterpret_cast<int16_t*>(outData[ch]);
+                    const int16_t* sourceData = reinterpret_cast<const int16_t*>(frameData.constData());
+
+                    for (size_t i = 0; i < SAMPLES_PER_CHANNEL; i++) {
+                        channelData[i] = sourceData[i * codecContext->ch_layout.nb_channels + ch];
+                    }
+                }
+            }
+            convertedSamples = SAMPLES_PER_CHANNEL;
+        }
 
         if (convertedSamples != SAMPLES_PER_CHANNEL) {
             qWarning() << "Resampling produced" << convertedSamples
@@ -438,10 +554,10 @@ void MainWindow::processRecordedFrames()
             }
         }
 
-        // Copy to frame buffer (planar format)
+        // Copy to frame buffer
         for (int ch = 0; ch < codecContext->ch_layout.nb_channels; ch++) {
             if (frame->data[ch] && outData[ch]) {
-                size_t bytesToCopy = SAMPLES_PER_CHANNEL * sizeof(float);
+                size_t bytesToCopy = SAMPLES_PER_CHANNEL * (isMP3 ? sizeof(float) : sizeof(int16_t));
                 memcpy(frame->data[ch], outData[ch], bytesToCopy);
             }
         }
@@ -506,13 +622,12 @@ void MainWindow::cleanupRecording()
 
     isRecording = false;
 
+    ui->startRecord->setText("Start Record");
     ui->startRecord->setStyleSheet("");
     ui->startRecord->setEnabled(true);
 
-    if (!testButtonWasActive && ui->testButton) {
-        ui->testButton->setChecked(false);
-
-    }
+    // Don't restore test button state since we don't auto-enable it anymore
+    Q_UNUSED(testButtonWasActive);
 
     qDebug() << "Recording cleanup completed";
 }
@@ -588,6 +703,36 @@ void MainWindow::on_stopRecord_clicked()
 
     // Disconnect recording signal
     disconnect(this, &MainWindow::audioDataReady, this, nullptr);
+
+    // Restore original audio connection
+    if (inputDevice) {
+        disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
+
+        // Restore the initial connection (like in on_inputcombobox_currentIndexChanged)
+        connect(inputDevice, &QIODevice::readyRead, this, [=](){
+            data = inputDevice->readAll();
+            progressBarOutput();
+
+            // Emit signal for any future recordings
+            if (isRecording) {
+                qDebug() << "EMITTING SIGNAL (RESTORED): Audio size:" << data.size() << "bytes";
+                emit audioDataReady(data);
+            }
+
+            // Send to virtual output (Cable Input)
+            if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
+                // AudioPipeline kullanarak gönder
+                if (audioPipeline) {
+                    audioPipeline->writeEffectsAudio(data);
+                } else {
+                    virtualOutputDevice->write(data);
+                }
+            }
+
+            // Fiziksel output'a gönderme (sadece test butonu aktifken)
+        });
+        qDebug() << "Original audio connection restored after recording";
+    }
 
     // Cleanup and restore UI
     cleanupRecording();
