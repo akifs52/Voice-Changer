@@ -71,6 +71,11 @@ RESOURCES += \
 
 win32 {
     LIBS += -luser32
+    LIBS += -lmf
+    LIBS += -lmfplat
+    LIBS += -lmfreadwrite
+    LIBS += -lole32
+    LIBS += -lksuser
 }
 
 

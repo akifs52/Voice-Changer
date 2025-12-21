@@ -170,8 +170,9 @@ void MainWindow::playAudioNotInterrupt(const QString &filename, const QString &p
                     }
                     
                     // Paralel pipeline: Soundpack sesini AudioPipeline'a gönder
-                    // Buffer doluluğunu kontrol et, overflows önle
+                    // HIGH-QUALITY MODE: Soundpack verilerini ignore et ama buffer temizle
                     if (audioPipeline) {
+                        // Sadece buffer temizliği için gönder - asıl ses işlenmeyecek
                         audioPipeline->writeSoundpackAudio(chunk);
                     }
                     
@@ -329,8 +330,9 @@ void MainWindow::playAudioNotInterrupt(const QString &filename, const QString &p
                     }
                     
                     // Paralel pipeline: Soundpack sesini AudioPipeline'a gönder
-                    // Buffer doluluğunu kontrol et, overflows önle
+                    // HIGH-QUALITY MODE: Soundpack verilerini ignore et ama buffer temizle
                     if (audioPipeline) {
+                        // Sadece buffer temizliği için gönder - asıl ses işlenmeyecek
                         audioPipeline->writeSoundpackAudio(chunk);
                     }
                     

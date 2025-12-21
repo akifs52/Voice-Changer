@@ -1,7 +1,7 @@
 #include "audiopipeline.h"
 #include "mainwindow.h"
-#include "QDebug"
-#include "QTimer"
+#include <QDebug>
+#include <QTimer>
 
 AudioPipeline::AudioPipeline(QObject *parent)
     : QObject(parent)
@@ -11,7 +11,7 @@ AudioPipeline::AudioPipeline(QObject *parent)
     , m_virtualOutputDevice(nullptr)
     , m_inputChunkSize(1024) // 256 samples at 48kHz stereo - optimal balance
     , m_soundpackChunkSize(1024) // 256 samples for soundpack - optimal balance
-    , m_mixChunkSize(2048) // 512 samples for mix - daha hassas processing
+    , m_mixChunkSize(1024) // 512 samples for mix - daha hassas processing
     , m_isRunning(false)
 {
     m_inputAudioBuffer = new CircularBuffer(65536);  // 64KB buffer for input audio
@@ -91,74 +91,41 @@ void AudioPipeline::processBuffers()
 {
     if (!m_virtualOutputDevice || !m_virtualOutputDevice->isOpen()) {
         return;
-    }
+}
     
-    // ÖNCELİK 1: Mix buffer'ındaki verileri output'a gönder (BUFFER OVERFLOW ÖNLE)
-    if (m_mixAudioBuffer->bytesAvailable() >= m_mixChunkSize) {
-        QByteArray mixedData = m_mixAudioBuffer->read(m_mixChunkSize);
-        m_virtualOutputDevice->write(mixedData);
-        qDebug() << "OUTPUT: Sent" << mixedData.size() << "bytes from mix buffer";
-        return; // Mix buffer'dan gönderdik, diğer buffer'ları bekle
-    }
-    
-    // TEST: Mix buffer durumunu göster
-    static int testCounter = 0;
-    if (++testCounter % 1000 == 0) { // Her 1000 çağrıda bir göster
-        qDebug() << "=== MIX BUFFER TEST ===";
-        qDebug() << "Mix Buffer Available:" << (m_mixAudioBuffer ? m_mixAudioBuffer->bytesAvailable() : 0) << "bytes";
-        qDebug() << "Input Audio Buffer Available:" << getInputBufferBytesAvailable() << "bytes";
-        qDebug() << "Soundpack Buffer Available:" << getSoundpackBufferBytesAvailable() << "bytes";
-        qDebug() << "Mix Chunk Size:" << m_mixChunkSize << "bytes";
-        qDebug() << "Input Chunk Size:" << m_inputChunkSize << "bytes";
-        qDebug() << "Soundpack Chunk Size:" << m_soundpackChunkSize << "bytes";
+    if (m_inputAudioBuffer->bytesAvailable() >= m_inputChunkSize) {
+        QByteArray inputData = m_inputAudioBuffer->read(m_inputChunkSize);
         
-        // DEBUG: Mix koşullarını göster
-        bool hasInput = m_inputAudioBuffer->bytesAvailable() >= m_mixChunkSize;
-        bool hasSoundpack = m_soundpackBuffer->bytesAvailable() >= m_mixChunkSize;
-        qDebug() << "Has Input (>=2048):" << hasInput;
-        qDebug() << "Has Soundpack (>=2048):" << hasSoundpack;
-        qDebug() << "Should Mix:" << (hasInput && hasSoundpack);
-    }
-    
-    // ÖNCELİK 2: Buffer durumlarını kontrol et
-    bool hasInput = m_inputAudioBuffer->bytesAvailable() >= m_mixChunkSize;
-    bool hasSoundpack = m_soundpackBuffer->bytesAvailable() >= m_mixChunkSize;
-    
-    if (hasInput && hasSoundpack) {
-        // İkisi de aynı andaysa mix yap ve mix buffer'ına yaz
-        qDebug() << "MIXING: Both buffers have enough data!";
-        QByteArray inputData = m_inputAudioBuffer->read(m_mixChunkSize);
-        QByteArray soundpackData = m_soundpackBuffer->read(m_mixChunkSize);
-        
-        // Normalize buffer sizes (güvenlik için)
-        if (inputData.size() != soundpackData.size()) {
-            int minSize = std::min(inputData.size(), soundpackData.size());
-            if (minSize > 0) {
-                inputData.resize(minSize);
-                soundpackData.resize(minSize);
-            } else {
-                return; // Geçersiz boyut
+        // Soundpack kontrolü - sadece ses varsa mix yap
+        if (m_soundpackBuffer->bytesAvailable() >= m_soundpackChunkSize) {
+            // Soundpack var - her iki sesi karıştır
+            QByteArray soundpackData = m_soundpackBuffer->read(m_soundpackChunkSize);
+            
+            // Boyutları normalize et
+            if (inputData.size() != soundpackData.size()) {
+                soundpackData.resize(inputData.size());
+            }
+            
+            // Sadece soundpack varken mix yap
+            QByteArray mixedData = mixAudioData(inputData, soundpackData);
+            m_virtualOutputDevice->write(mixedData);
+            
+            // Debug mesajlarını azalt
+            static int counter = 0;
+            if (++counter % 500 == 0) {
+                qDebug() << "MIXED: Input + Soundpack =" << inputData.size() << "bytes";
+            }
+        } else {
+            // Soundpack yok - temiz sesi doğrudan geçir (efektsiz veya etkili aynı şekilde)
+            m_virtualOutputDevice->write(inputData);
+            
+            // Debug mesajlarını azalt
+            static int counter = 0;
+            if (++counter % 500 == 0) {
+                qDebug() << "CLEAN PASS: No soundpack, passing through" << inputData.size() << "bytes";
             }
         }
-        
-        // Mix yap ve özel buffer'a yaz
-        QByteArray mixedData = mixAudioData(inputData, soundpackData);
-        m_mixAudioBuffer->write(mixedData);
-        qDebug() << "MIXED: Wrote" << mixedData.size() << "bytes to mix buffer";
-        
-    } else if (hasInput && !hasSoundpack) {
-        // Sadece input varsa doğrudan output'a yaz
-        QByteArray inputData = m_inputAudioBuffer->read(m_inputChunkSize);
-        m_virtualOutputDevice->write(inputData);
-        qDebug() << "OUTPUT: Sent" << inputData.size() << "bytes from input buffer";
-        
-    } else if (!hasInput && hasSoundpack) {
-        // Sadece soundpack varsa doğrudan output'a yaz
-        QByteArray soundpackData = m_soundpackBuffer->read(m_soundpackChunkSize);
-        m_virtualOutputDevice->write(soundpackData);
-        qDebug() << "OUTPUT: Sent" << soundpackData.size() << "bytes from soundpack buffer";
     }
-    // Hiçbiri yoksa hiçbir şey yapma
 }
 
 void AudioPipeline::clearBuffers()
