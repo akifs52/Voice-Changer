@@ -9,7 +9,7 @@
 class CircularBuffer
 {
 public:
-    explicit CircularBuffer(int bufferSize = 8192);
+    explicit CircularBuffer(int bufferSize = 65536);
     ~CircularBuffer();
     
     // Veri yazma - producer thread'ler için

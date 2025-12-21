@@ -50,7 +50,7 @@ void MainWindow::stopAllEffects()
                     if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
                         // AudioPipeline kullanarak gönder
                         if (audioPipeline) {
-                            audioPipeline->writeEffectsAudio(data);
+                            audioPipeline->writeInputAudio(data);
                         } else {
                             virtualOutputDevice->write(data);
                         }
@@ -81,7 +81,7 @@ void MainWindow::stopAllEffects()
                 if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
                     // AudioPipeline kullanarak gönder
                     if (audioPipeline) {
-                        audioPipeline->writeEffectsAudio(data);
+                        audioPipeline->writeInputAudio(data);
                     } else {
                         virtualOutputDevice->write(data);
                     }
@@ -384,7 +384,7 @@ void MainWindow::on_robotButton_clicked(bool checked)
                 if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
                     // AudioPipeline kullanarak gönder
                     if (audioPipeline) {
-                        audioPipeline->writeEffectsAudio(data);
+                        audioPipeline->writeInputAudio(data);
                     } else {
                         virtualOutputDevice->write(data);
                     }
@@ -429,7 +429,7 @@ void MainWindow::on_robotButton_clicked(bool checked)
                         if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
                             // AudioPipeline kullanarak gönder
                             if (audioPipeline) {
-                                audioPipeline->writeEffectsAudio(data);
+                                audioPipeline->writeInputAudio(data);
                             } else {
                                 virtualOutputDevice->write(data);
                             }
@@ -484,7 +484,7 @@ void MainWindow::on_bananaButton_clicked(bool checked)
                 if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
                     // AudioPipeline kullanarak gönder
                     if (audioPipeline) {
-                        audioPipeline->writeEffectsAudio(data);
+                        audioPipeline->writeInputAudio(data);
                     } else {
                         virtualOutputDevice->write(data);
                     }
@@ -526,7 +526,7 @@ void MainWindow::on_bananaButton_clicked(bool checked)
                         if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
                             // AudioPipeline kullanarak gönder
                             if (audioPipeline) {
-                                audioPipeline->writeEffectsAudio(data);
+                                audioPipeline->writeInputAudio(data);
                             } else {
                                 virtualOutputDevice->write(data);
                             }
@@ -582,7 +582,7 @@ void MainWindow::on_devilButton_clicked(bool checked)
                 if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
                     // AudioPipeline kullanarak gönder
                     if (audioPipeline) {
-                        audioPipeline->writeEffectsAudio(data);
+                        audioPipeline->writeInputAudio(data);
                     } else {
                         virtualOutputDevice->write(data);
                     }
@@ -627,7 +627,7 @@ void MainWindow::on_devilButton_clicked(bool checked)
                         if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
                             // AudioPipeline kullanarak gönder
                             if (audioPipeline) {
-                                audioPipeline->writeEffectsAudio(data);
+                                audioPipeline->writeInputAudio(data);
                             } else {
                                 virtualOutputDevice->write(data);
                             }
@@ -683,7 +683,7 @@ void MainWindow::on_ekoButton_clicked(bool checked)
                 if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
                     // AudioPipeline kullanarak gönder
                     if (audioPipeline) {
-                        audioPipeline->writeEffectsAudio(data);
+                        audioPipeline->writeInputAudio(data);
                     } else {
                         virtualOutputDevice->write(data);
                     }
@@ -728,7 +728,7 @@ void MainWindow::on_ekoButton_clicked(bool checked)
                         if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
                             // AudioPipeline kullanarak gönder
                             if (audioPipeline) {
-                                audioPipeline->writeEffectsAudio(data);
+                                audioPipeline->writeInputAudio(data);
                             } else {
                                 virtualOutputDevice->write(data);
                             }
@@ -784,7 +784,7 @@ void MainWindow::on_femaleButton_clicked(bool checked)
                 if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
                     // AudioPipeline kullanarak gönder
                     if (audioPipeline) {
-                        audioPipeline->writeEffectsAudio(data);
+                        audioPipeline->writeInputAudio(data);
                     } else {
                         virtualOutputDevice->write(data);
                     }
@@ -829,7 +829,7 @@ void MainWindow::on_femaleButton_clicked(bool checked)
                         if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
                             // AudioPipeline kullanarak gönder
                             if (audioPipeline) {
-                                audioPipeline->writeEffectsAudio(data);
+                                audioPipeline->writeInputAudio(data);
                             } else {
                                 virtualOutputDevice->write(data);
                             }
@@ -886,7 +886,7 @@ void MainWindow::on_combineButton_clicked(bool checked)
                 if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
                     // AudioPipeline kullanarak gönder
                     if (audioPipeline) {
-                        audioPipeline->writeEffectsAudio(data);
+                        audioPipeline->writeInputAudio(data);
                     } else {
                         virtualOutputDevice->write(data);
                     }
@@ -931,7 +931,7 @@ void MainWindow::on_combineButton_clicked(bool checked)
                         if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
                             // AudioPipeline kullanarak gönder
                             if (audioPipeline) {
-                                audioPipeline->writeEffectsAudio(data);
+                                audioPipeline->writeInputAudio(data);
                             } else {
                                 virtualOutputDevice->write(data);
                             }

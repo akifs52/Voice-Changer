@@ -18,6 +18,9 @@
 #include <QMutex>
 #include <memory>
 #include <mutex>
+#include <QSystemTrayIcon>
+#include <QMenu>
+#include <QAction>
 #include "audiopipeline.h"
 #include "circularbuffer.h"
 #include "qcombobox.h"

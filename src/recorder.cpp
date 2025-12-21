@@ -332,7 +332,7 @@ void MainWindow::on_startRecord_clicked()
                 if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
                     // AudioPipeline kullanarak gönder
                     if (audioPipeline) {
-                        audioPipeline->writeEffectsAudio(data);
+                        audioPipeline->writeInputAudio(data);
                     } else {
                         virtualOutputDevice->write(data);
                     }
@@ -723,7 +723,7 @@ void MainWindow::on_stopRecord_clicked()
             if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
                 // AudioPipeline kullanarak gönder
                 if (audioPipeline) {
-                    audioPipeline->writeEffectsAudio(data);
+                    audioPipeline->writeInputAudio(data);
                 } else {
                     virtualOutputDevice->write(data);
                 }

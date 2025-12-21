@@ -19,7 +19,7 @@ public:
     void setVirtualOutputDevice(QIODevice *device);
 
     // Write audio to respective buffers
-    void writeEffectsAudio(const QByteArray &data);
+    void writeInputAudio(const QByteArray &data);
     void writeSoundpackAudio(const QByteArray &data);
 
     // Control pipeline
@@ -32,22 +32,26 @@ public:
     void printStatus() const;
 
     // Buffer status queries
-    int getEffectsBufferBytesAvailable() const;
+    int getInputBufferBytesAvailable() const;
     int getSoundpackBufferBytesAvailable() const;
+    int getMixBufferBytesAvailable() const;
 
 private slots:
     void processBuffers();
 
 private:
-    CircularBuffer *m_effectsBuffer;     // Efektli ses için buffer
+    // Separate buffers for different audio types
+    CircularBuffer *m_inputAudioBuffer;  // Input sesleri için buffer
     CircularBuffer *m_soundpackBuffer;  // Soundpack sesleri için buffer
-    CircularBuffer *m_mixBuffer; // Özel mix buffer'ı
-    QIODevice *m_virtualOutputDevice;    // Virtual output device
-    QTimer *m_timer;                     // Buffer processing timer
+    CircularBuffer *m_mixAudioBuffer;    // Mix edilmiş sesler için buffer
+    QIODevice *m_virtualOutputDevice;     // Virtual output device
+    QTimer *m_timer;                      // Buffer processing timer
 
-    int m_chunkSize;                     // Buffer chunk size (normal streams)
+    // Separate chunk sizes for each buffer type
+    int m_inputChunkSize;                // Input audio için chunk size
+    int m_soundpackChunkSize;            // Soundpack için chunk size
     int m_mixChunkSize;                  // Mix işlemleri için özel chunk size
-    bool m_isRunning;                    // Pipeline status
+    bool m_isRunning;                     // Pipeline status
 
     // Audio mixing helper
     QByteArray mixAudioData(const QByteArray &data1, const QByteArray &data2);

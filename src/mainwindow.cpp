@@ -313,8 +313,8 @@ void MainWindow::on_inputcombobox_currentIndexChanged(int index)
                 // Buffer doluluğunu kontrol et - overload önle
                 if (audioPipeline) {
                     // Effects buffer'ın doluluk oranını kontrol et
-                    if (audioPipeline->getEffectsBufferBytesAvailable() < 32768) { // 32KB'den azsa yaz
-                        audioPipeline->writeEffectsAudio(data);
+                    if (audioPipeline->getInputBufferBytesAvailable() < 32768) { // 32KB'den azsa yaz
+                        audioPipeline->writeInputAudio(data);
                     }
                 }
             }
