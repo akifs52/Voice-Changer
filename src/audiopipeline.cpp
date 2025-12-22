@@ -7,15 +7,18 @@ AudioPipeline::AudioPipeline(QObject *parent)
     : QObject(parent)
     , m_inputAudioBuffer(nullptr)
     , m_soundpackBuffer(nullptr)
+    , m_effectsAudioBuffer(nullptr)
     , m_mixAudioBuffer(nullptr)
     , m_virtualOutputDevice(nullptr)
     , m_inputChunkSize(1024) // 256 samples at 48kHz stereo - optimal balance
     , m_soundpackChunkSize(1024) // 256 samples for soundpack - optimal balance
+    , m_effectsChunkSize(1024) // 256 samples for effects - optimal balance
     , m_mixChunkSize(1024) // 512 samples for mix - daha hassas processing
     , m_isRunning(false)
 {
-    m_inputAudioBuffer = new CircularBuffer(65536);  // 64KB buffer for input audio
+m_inputAudioBuffer = new CircularBuffer(65536);  // 64KB buffer for input audio
     m_soundpackBuffer = new CircularBuffer(65536); // 64KB buffer for soundpack
+    m_effectsAudioBuffer = new CircularBuffer(65536); // 64KB buffer for effects
     m_mixAudioBuffer = new CircularBuffer(65536); // 64KB buffer for mixed audio
     
     // Timer for periodic buffer processing - 2ms for optimal balance
@@ -31,6 +34,7 @@ AudioPipeline::~AudioPipeline()
     stop();
     delete m_inputAudioBuffer;
     delete m_soundpackBuffer;
+    delete m_effectsAudioBuffer;
     delete m_mixAudioBuffer;
 }
 
@@ -65,6 +69,19 @@ void AudioPipeline::writeSoundpackAudio(const QByteArray &data)
     }
 }
 
+void AudioPipeline::writeEffectsAudio(const QByteArray &data)
+{
+    if (m_effectsAudioBuffer) {
+        // UI thread'i ile çakışmayı önlemek için lock-free yazım
+        m_effectsAudioBuffer->write(data);
+        // Debug mesajlarını azalt - her 500 yazmada bir göster
+        static int counter = 0;
+        if (++counter % 500 == 0) { // Her 500 yazmada bir göster
+            qDebug() << "Effects Buffer:" << m_effectsAudioBuffer->bytesAvailable() << "bytes";
+        }
+    }
+}
+
 void AudioPipeline::start()
 {
     if (!m_isRunning) {
@@ -91,14 +108,51 @@ void AudioPipeline::processBuffers()
 {
     if (!m_virtualOutputDevice || !m_virtualOutputDevice->isOpen()) {
         return;
-}
+    }
     
+    // ÖNCELİKLİ: Efektli sesi işle (daha yüksek öncelik)
+    if (m_effectsAudioBuffer->bytesAvailable() >= m_effectsChunkSize) {
+        QByteArray effectsData = m_effectsAudioBuffer->read(m_effectsChunkSize);
+        
+        // Soundpack kontrolü - sadece ses varsa mix yap
+        if (m_soundpackBuffer->bytesAvailable() >= m_soundpackChunkSize) {
+            // Soundpack var - efektli ses ile karıştır
+            QByteArray soundpackData = m_soundpackBuffer->read(m_soundpackChunkSize);
+            
+            // Boyutları normalize et
+            if (effectsData.size() != soundpackData.size()) {
+                soundpackData.resize(effectsData.size());
+            }
+            
+            // Efektli ses + soundpack mix yap
+            QByteArray mixedData = mixAudioData(effectsData, soundpackData);
+            m_virtualOutputDevice->write(mixedData);
+            
+            // Debug mesajlarını azalt
+            static int counter = 0;
+            if (++counter % 500 == 0) {
+                qDebug() << "EFFECTS MIXED: Effects + Soundpack =" << effectsData.size() << "bytes";
+            }
+        } else {
+            // Soundpack yok - efektli sesi doğrudan geçir
+            m_virtualOutputDevice->write(effectsData);
+            
+            // Debug mesajlarını azalt
+            static int counter = 0;
+            if (++counter % 500 == 0) {
+                qDebug() << "EFFECTS CLEAN PASS: No soundpack, passing through effects" << effectsData.size() << "bytes";
+            }
+        }
+        return; // Efektli ses işlendiği için temiz sesi atla
+    }
+    
+    // İKİNCİ ÖNCELİK: Temiz sesi işle (sadece efektli ses yoksa)
     if (m_inputAudioBuffer->bytesAvailable() >= m_inputChunkSize) {
         QByteArray inputData = m_inputAudioBuffer->read(m_inputChunkSize);
         
         // Soundpack kontrolü - sadece ses varsa mix yap
         if (m_soundpackBuffer->bytesAvailable() >= m_soundpackChunkSize) {
-            // Soundpack var - her iki sesi karıştır
+            // Soundpack var - temiz ses ile karıştır
             QByteArray soundpackData = m_soundpackBuffer->read(m_soundpackChunkSize);
             
             // Boyutları normalize et
@@ -106,23 +160,23 @@ void AudioPipeline::processBuffers()
                 soundpackData.resize(inputData.size());
             }
             
-            // Sadece soundpack varken mix yap
+            // Temiz ses + soundpack mix yap
             QByteArray mixedData = mixAudioData(inputData, soundpackData);
             m_virtualOutputDevice->write(mixedData);
             
             // Debug mesajlarını azalt
             static int counter = 0;
             if (++counter % 500 == 0) {
-                qDebug() << "MIXED: Input + Soundpack =" << inputData.size() << "bytes";
+                qDebug() << "CLEAN MIXED: Input + Soundpack =" << inputData.size() << "bytes";
             }
         } else {
-            // Soundpack yok - temiz sesi doğrudan geçir (efektsiz veya etkili aynı şekilde)
+            // Soundpack yok - temiz sesi doğrudan geçir
             m_virtualOutputDevice->write(inputData);
             
             // Debug mesajlarını azalt
             static int counter = 0;
             if (++counter % 500 == 0) {
-                qDebug() << "CLEAN PASS: No soundpack, passing through" << inputData.size() << "bytes";
+                qDebug() << "CLEAN ONLY PASS: No soundpack, passing through clean" << inputData.size() << "bytes";
             }
         }
     }
@@ -135,6 +189,9 @@ void AudioPipeline::clearBuffers()
     }
     if (m_soundpackBuffer) {
         m_soundpackBuffer->clear();
+    }
+    if (m_effectsAudioBuffer) {
+        m_effectsAudioBuffer->clear();
     }
     if (m_mixAudioBuffer) {
         m_mixAudioBuffer->clear();
@@ -169,6 +226,14 @@ int AudioPipeline::getSoundpackBufferBytesAvailable() const
     return 0;
 }
 
+int AudioPipeline::getEffectsBufferBytesAvailable() const
+{
+    if (m_effectsAudioBuffer) {
+        return m_effectsAudioBuffer->bytesAvailable();
+    }
+    return 0;
+}
+
 int AudioPipeline::getMixBufferBytesAvailable() const
 {
     if (m_mixAudioBuffer) {
@@ -181,9 +246,11 @@ void AudioPipeline::printStatus() const
 {
     qDebug() << "AudioPipeline Status:";
     qDebug() << "  Input Audio Buffer Available:" << getInputBufferBytesAvailable() << "bytes";
+    qDebug() << "  Effects Buffer Available:" << getEffectsBufferBytesAvailable() << "bytes";
     qDebug() << "  Soundpack Buffer Available:" << getSoundpackBufferBytesAvailable() << "bytes";
     qDebug() << "  Mix Buffer Available:" << (m_mixAudioBuffer ? m_mixAudioBuffer->bytesAvailable() : 0) << "bytes";
     qDebug() << "  Input Chunk Size:" << m_inputChunkSize << "bytes (" << (m_inputChunkSize/4) << " samples)";
+    qDebug() << "  Effects Chunk Size:" << m_effectsChunkSize << "bytes (" << (m_effectsChunkSize/4) << " samples)";
     qDebug() << "  Soundpack Chunk Size:" << m_soundpackChunkSize << "bytes (" << (m_soundpackChunkSize/4) << " samples)";
     qDebug() << "  Mix Chunk Size:" << m_mixChunkSize << "bytes (" << (m_mixChunkSize/4) << " samples)";
     qDebug() << "  Is Running:" << m_isRunning;

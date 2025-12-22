@@ -9,75 +9,71 @@ void MainWindow::stopAllEffects()
     // Tüm efekt butonlarını durdur ve text'lerini geri getir
     ui->robotButton->setChecked(false);
     ui->robotButton->setText("Robot sesi");
-    
+
     ui->bananaButton->setChecked(false);
     ui->bananaButton->setText("Çocuk Sesi");
-    
+
     ui->devilButton->setChecked(false);
     ui->devilButton->setText("Canavar sesi");
-    
+
     ui->femaleButton->setChecked(false);
     ui->femaleButton->setText("Kadın sesi");
-    
+
     ui->combineButton->setChecked(false);
     ui->combineButton->setText("Birleşik ses");
-    
+
     ui->ekoButton->setChecked(false);
     ui->ekoButton->setText("Eko");
-    
+
     // Mevcut bağlantıları kopar
     if (inputDevice) {
         disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
-        
+
         // Test durumuna göre bağlantı kur
         if (ui->testButton->isChecked()) {
-            // Test modu: output'a gönder
+            // Test modu: Efektli sesi hem virtual output'a (mix için) hem normal output'a gönder
             connect(inputDevice, &QIODevice::readyRead, this, [=](){
                 data = inputDevice->readAll();
                 progressBarOutput();
-                    // Emit signal for recording when recording is active
-                    if (isRecording) {
-                        emit audioDataReady(data);
-                    } // Progress bar'ı güncelle
+
                 // Emit signal for recording when recording is active
                 if (isRecording) {
                     qDebug() << "EMITTING SIGNAL (EFFECT-TEST): Audio size:" << data.size() << "bytes";
                     emit audioDataReady(data);
                 }
+
+                // Virtual output'a efektli ses olarak gönder (soundpack ile mix için)
+                if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
+                    if (audioPipeline) {
+                        audioPipeline->writeEffectsAudio(data);
+                    } else {
+                        virtualOutputDevice->write(data);
+                    }
+                    qDebug() << "Effects stopped (test mode): Writing effect-free audio to virtual output, size:" << data.size() << "bytes";
+                } else {
+                    qWarning() << "Effects stopped (test mode): Virtual output device not available!";
+                }
+
+                // Test modunda normal output'a da doğrudan gönder (kullanıcı duymalı)
                 if (outputDevice && outputDevice->isOpen()) {
                     outputDevice->write(data);
-                    // Virtual output'a da gönder
-                    if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
-                        // AudioPipeline kullanarak gönder
-                        if (audioPipeline) {
-                            audioPipeline->writeInputAudio(data);
-                        } else {
-                            virtualOutputDevice->write(data);
-                        }
-                        qDebug() << "Effects stopped (test mode): Writing effect-free audio to virtual output, size:" << data.size() << "bytes";
-                    } else {
-                        qWarning() << "Effects stopped (test mode): Virtual output device not available!";
-                    }
                 }
             });
         } else {
-            // Normal mod: Her zaman output'a gönder
+            // Normal mod: Sadece virtual output'a gönder (normal output'a gönderme)
             connect(inputDevice, &QIODevice::readyRead, this, [=](){
                 data = inputDevice->readAll();
                 progressBarOutput();
-                
+
                 // Emit signal for recording when recording is active
                 if (isRecording) {
                     qDebug() << "EMITTING SIGNAL (EFFECT-NORMAL): Audio size:" << data.size() << "bytes";
                     emit audioDataReady(data);
                 }
-                
-                // Her zaman output'a gönder
-                if (outputDevice && outputDevice->isOpen()) {
-                    outputDevice->write(data);
-                }
-                
-                // Virtual output'a da gönder
+
+                // Normal output'a gönderme (test modu kapalı olduğu için)
+
+                // Sadece virtual output'a gönder
                 if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
                     // AudioPipeline kullanarak gönder
                     if (audioPipeline) {
@@ -92,10 +88,11 @@ void MainWindow::stopAllEffects()
             });
         }
     }
-    
+
     data.clear();
     usingEffects = true; // Normal voice changer'a geri dön
 }
+
 
 effects::effects(QWidget *parent)
     : QMainWindow{parent}
@@ -353,7 +350,7 @@ void MainWindow::on_robotButton_clicked(bool checked)
     {
         // Diğer tüm efektleri durdur
         stopAllEffects();
-        
+
         // Robot efektini başlat
         ui->robotButton->setChecked(true);
         ui->robotButton->setText("Stop");
@@ -363,33 +360,33 @@ void MainWindow::on_robotButton_clicked(bool checked)
         {
             // Mevcut bağlantıyı kopar
             disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
-            
+
             // Yeni efekt bağlantısı kur
             connect(inputDevice, &QIODevice::readyRead, this, [=](){
                 data = inputDevice->readAll();
                 processToRobotVoice(data);
                 progressBarOutput();
-                    // Emit signal for recording when recording is active
-                    if (isRecording) {
-                        emit audioDataReady(data);
-                    } // Progress bar'ı güncelle
-                
-                 // Emit signal for recording when recording is active (after effects)
+                // Emit signal for recording when recording is active
+                if (isRecording) {
+                    emit audioDataReady(data);
+                } // Progress bar'ı güncelle
+
+                // Emit signal for recording when recording is active (after effects)
                 if (isRecording) {
                     qDebug() << "EMITTING SIGNAL (ROBOT): Processed audio size:" << data.size() << "bytes";
                     emit audioDataReady(data);
                 }
-                 
+
                 // Her zaman virtual output'a gönder (Cable Input)
                 if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
-                    // AudioPipeline kullanarak gönder
+                    // AudioPipeline kullanarak efekti sesi gönder
                     if (audioPipeline) {
-                        audioPipeline->writeInputAudio(data);
+                        audioPipeline->writeEffectsAudio(data);
                     } else {
                         virtualOutputDevice->write(data);
                     }
                 }
-                
+
                 // SADECE test modunda fiziksel output'a gönder
                 if (ui->testButton->isChecked()) {
                     if (outputDevice && outputDevice->isOpen()) {
@@ -423,17 +420,18 @@ void MainWindow::on_robotButton_clicked(bool checked)
                     if (isRecording) {
                         emit audioDataReady(data);
                     }
+                    // Önce virtual output'a gönder (mix için)
+                    if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
+                        // AudioPipeline kullanarak gönder
+                        if (audioPipeline) {
+                            audioPipeline->writeInputAudio(data);
+                        } else {
+                            virtualOutputDevice->write(data);
+                        }
+                    }
+                    // Sonra normal output'a gönder
                     if (outputDevice && outputDevice->isOpen()) {
                         outputDevice->write(data);
-                        // Virtual output'a da gönder
-                        if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
-                            // AudioPipeline kullanarak gönder
-                            if (audioPipeline) {
-                                audioPipeline->writeInputAudio(data);
-                            } else {
-                                virtualOutputDevice->write(data);
-                            }
-                        }
                     }
                 });
             } else {
@@ -444,7 +442,16 @@ void MainWindow::on_robotButton_clicked(bool checked)
                     if (isRecording) {
                         emit audioDataReady(data);
                     }
-                    // KESİNLİKLE output'a gönderme
+                    // Test modu kapalı: Sadece virtual output'a efektli ses gönder
+                    if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
+                        // AudioPipeline kullanarak efekti sesi gönder (mix için)
+                        if (audioPipeline) {
+                            audioPipeline->writeInputAudio(data);
+                        } else {
+                            virtualOutputDevice->write(data);
+                        }
+                    }
+                    // Normal output'a gönderme (test modu kapalı)
                 });
             }
         }
@@ -461,7 +468,7 @@ void MainWindow::on_bananaButton_clicked(bool checked)
     if (checked) {
         // Diğer tüm efektleri durdur
         stopAllEffects();
-        
+
         // Banana efektini başlat
         ui->bananaButton->setChecked(true);
         ui->bananaButton->setText("Stop");
@@ -469,27 +476,27 @@ void MainWindow::on_bananaButton_clicked(bool checked)
         if (audioInput) {
             // Mevcut bağlantıyı kopar
             disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
-            
+
             // Yeni efekt bağlantısı kur
             connect(inputDevice, &QIODevice::readyRead, this, [=]() {
                 data = inputDevice->readAll();
                 processToBananaVoice(data);
                 progressBarOutput();
-                    // Emit signal for recording when recording is active
-                    if (isRecording) {
-                        emit audioDataReady(data);
-                    } // Progress bar'ı güncelle
-                
+                // Emit signal for recording when recording is active
+                if (isRecording) {
+                    emit audioDataReady(data);
+                } // Progress bar'ı güncelle
+
                 // Her zaman virtual output'a gönder (Cable Input)
                 if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
                     // AudioPipeline kullanarak gönder
                     if (audioPipeline) {
-                        audioPipeline->writeInputAudio(data);
+                        audioPipeline->writeEffectsAudio(data);
                     } else {
                         virtualOutputDevice->write(data);
                     }
                 }
-                
+
                 // SADECE test modunda fiziksel output'a gönder
                 if (ui->testButton->isChecked()) {
                     if (outputDevice && outputDevice->isOpen()) {
@@ -520,17 +527,18 @@ void MainWindow::on_bananaButton_clicked(bool checked)
                     if (isRecording) {
                         emit audioDataReady(data);
                     }
+                    // Önce virtual output'a gönder (mix için)
+                    if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
+                        // AudioPipeline kullanarak gönder
+                        if (audioPipeline) {
+                            audioPipeline->writeInputAudio(data);
+                        } else {
+                            virtualOutputDevice->write(data);
+                        }
+                    }
+                    // Sonra normal output'a gönder
                     if (outputDevice && outputDevice->isOpen()) {
                         outputDevice->write(data);
-                        // Virtual output'a da gönder
-                        if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
-                            // AudioPipeline kullanarak gönder
-                            if (audioPipeline) {
-                                audioPipeline->writeInputAudio(data);
-                            } else {
-                                virtualOutputDevice->write(data);
-                            }
-                        }
                     }
                 });
             } else {
@@ -541,7 +549,16 @@ void MainWindow::on_bananaButton_clicked(bool checked)
                     if (isRecording) {
                         emit audioDataReady(data);
                     }
-                    // KESİNLİKLE output'a gönderme
+                    // Test modu kapalı: Sadece virtual output'a temiz ses gönder
+                    if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
+                        // AudioPipeline kullanarak temiz sesi gönder (mix için)
+                        if (audioPipeline) {
+                            audioPipeline->writeInputAudio(data);
+                        } else {
+                            virtualOutputDevice->write(data);
+                        }
+                    }
+                    // Normal output'a gönderme (test modu kapalı)
                 });
             }
         }
@@ -582,7 +599,7 @@ void MainWindow::on_devilButton_clicked(bool checked)
                 if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
                     // AudioPipeline kullanarak gönder
                     if (audioPipeline) {
-                        audioPipeline->writeInputAudio(data);
+                        audioPipeline->writeEffectsAudio(data);
                     } else {
                         virtualOutputDevice->write(data);
                     }
@@ -621,17 +638,18 @@ void MainWindow::on_devilButton_clicked(bool checked)
                     if (isRecording) {
                         emit audioDataReady(data);
                     }
+                    // Önce virtual output'a gönder (mix için)
+                    if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
+                        // AudioPipeline kullanarak gönder
+                        if (audioPipeline) {
+                            audioPipeline->writeInputAudio(data);
+                        } else {
+                            virtualOutputDevice->write(data);
+                        }
+                    }
+                    // Sonra normal output'a gönder
                     if (outputDevice && outputDevice->isOpen()) {
                         outputDevice->write(data);
-                        // Virtual output'a da gönder
-                        if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
-                            // AudioPipeline kullanarak gönder
-                            if (audioPipeline) {
-                                audioPipeline->writeInputAudio(data);
-                            } else {
-                                virtualOutputDevice->write(data);
-                            }
-                        }
                     }
                 });
             } else {
@@ -642,7 +660,16 @@ void MainWindow::on_devilButton_clicked(bool checked)
                     if (isRecording) {
                         emit audioDataReady(data);
                     }
-                    // KESİNLİKLE output'a gönderme
+                    // Test modu kapalı: Sadece virtual output'a efektli ses gönder
+                    if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
+                        // AudioPipeline kullanarak efekti sesi gönder (mix için)
+                        if (audioPipeline) {
+                            audioPipeline->writeInputAudio(data);
+                        } else {
+                            virtualOutputDevice->write(data);
+                        }
+                    }
+                    // Normal output'a gönderme (test modu kapalı)
                 });
             }
         }
@@ -683,7 +710,7 @@ void MainWindow::on_ekoButton_clicked(bool checked)
                 if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
                     // AudioPipeline kullanarak gönder
                     if (audioPipeline) {
-                        audioPipeline->writeInputAudio(data);
+                        audioPipeline->writeEffectsAudio(data);
                     } else {
                         virtualOutputDevice->write(data);
                     }
@@ -722,17 +749,18 @@ void MainWindow::on_ekoButton_clicked(bool checked)
                     if (isRecording) {
                         emit audioDataReady(data);
                     }
+                    // Önce virtual output'a gönder (mix için)
+                    if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
+                        // AudioPipeline kullanarak gönder
+                        if (audioPipeline) {
+                            audioPipeline->writeInputAudio(data);
+                        } else {
+                            virtualOutputDevice->write(data);
+                        }
+                    }
+                    // Sonra normal output'a gönder
                     if (outputDevice && outputDevice->isOpen()) {
                         outputDevice->write(data);
-                        // Virtual output'a da gönder
-                        if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
-                            // AudioPipeline kullanarak gönder
-                            if (audioPipeline) {
-                                audioPipeline->writeInputAudio(data);
-                            } else {
-                                virtualOutputDevice->write(data);
-                            }
-                        }
                     }
                 });
             } else {
@@ -743,7 +771,16 @@ void MainWindow::on_ekoButton_clicked(bool checked)
                     if (isRecording) {
                         emit audioDataReady(data);
                     }
-                    // KESİNLİKLE output'a gönderme
+                    // Test modu kapalı: Sadece virtual output'a efektli ses gönder
+                    if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
+                        // AudioPipeline kullanarak efekti sesi gönder (mix için)
+                        if (audioPipeline) {
+                            audioPipeline->writeInputAudio(data);
+                        } else {
+                            virtualOutputDevice->write(data);
+                        }
+                    }
+                    // Normal output'a gönderme (test modu kapalı)
                 });
             }
         }
@@ -784,7 +821,7 @@ void MainWindow::on_femaleButton_clicked(bool checked)
                 if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
                     // AudioPipeline kullanarak gönder
                     if (audioPipeline) {
-                        audioPipeline->writeInputAudio(data);
+                        audioPipeline->writeEffectsAudio(data);
                     } else {
                         virtualOutputDevice->write(data);
                     }
@@ -823,17 +860,18 @@ void MainWindow::on_femaleButton_clicked(bool checked)
                     if (isRecording) {
                         emit audioDataReady(data);
                     }
+                    // Önce virtual output'a gönder (mix için)
+                    if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
+                        // AudioPipeline kullanarak gönder
+                        if (audioPipeline) {
+                            audioPipeline->writeInputAudio(data);
+                        } else {
+                            virtualOutputDevice->write(data);
+                        }
+                    }
+                    // Sonra normal output'a gönder
                     if (outputDevice && outputDevice->isOpen()) {
                         outputDevice->write(data);
-                        // Virtual output'a da gönder
-                        if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
-                            // AudioPipeline kullanarak gönder
-                            if (audioPipeline) {
-                                audioPipeline->writeInputAudio(data);
-                            } else {
-                                virtualOutputDevice->write(data);
-                            }
-                        }
                     }
                 });
             } else {
@@ -844,7 +882,16 @@ void MainWindow::on_femaleButton_clicked(bool checked)
                     if (isRecording) {
                         emit audioDataReady(data);
                     }
-                    // KESİNLİKLE output'a gönderme
+                    // Test modu kapalı: Sadece virtual output'a efektli ses gönder
+                    if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
+                        // AudioPipeline kullanarak efekti sesi gönder (mix için)
+                        if (audioPipeline) {
+                            audioPipeline->writeInputAudio(data);
+                        } else {
+                            virtualOutputDevice->write(data);
+                        }
+                    }
+                    // Normal output'a gönderme (test modu kapalı)
                 });
             }
         }
@@ -886,7 +933,7 @@ void MainWindow::on_combineButton_clicked(bool checked)
                 if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
                     // AudioPipeline kullanarak gönder
                     if (audioPipeline) {
-                        audioPipeline->writeInputAudio(data);
+                        audioPipeline->writeEffectsAudio(data);
                     } else {
                         virtualOutputDevice->write(data);
                     }
@@ -925,17 +972,18 @@ void MainWindow::on_combineButton_clicked(bool checked)
                     if (isRecording) {
                         emit audioDataReady(data);
                     }
+                    // Önce virtual output'a gönder (mix için)
+                    if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
+                        // AudioPipeline kullanarak gönder
+                        if (audioPipeline) {
+                            audioPipeline->writeInputAudio(data);
+                        } else {
+                            virtualOutputDevice->write(data);
+                        }
+                    }
+                    // Sonra normal output'a gönder
                     if (outputDevice && outputDevice->isOpen()) {
                         outputDevice->write(data);
-                        // Virtual output'a da gönder
-                        if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
-                            // AudioPipeline kullanarak gönder
-                            if (audioPipeline) {
-                                audioPipeline->writeInputAudio(data);
-                            } else {
-                                virtualOutputDevice->write(data);
-                            }
-                        }
                     }
                 });
             } else {
@@ -946,7 +994,16 @@ void MainWindow::on_combineButton_clicked(bool checked)
                     if (isRecording) {
                         emit audioDataReady(data);
                     }
-                    // KESİNLİKLE output'a gönderme
+                    // Test modu kapalı: Sadece virtual output'a efektli ses gönder
+                    if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
+                        // AudioPipeline kullanarak efekti sesi gönder (mix için)
+                        if (audioPipeline) {
+                            audioPipeline->writeInputAudio(data);
+                        } else {
+                            virtualOutputDevice->write(data);
+                        }
+                    }
+                    // Normal output'a gönderme (test modu kapalı)
                 });
             }
         }
