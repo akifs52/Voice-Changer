@@ -23,11 +23,17 @@
 #include <QAction>
 #include "audiopipeline.h"
 #include "circularbuffer.h"
+#include "psola.h"
 #include "qcombobox.h"
 #include "qpushbutton.h"
 #ifdef Q_OS_WIN
 #include <windows.h>
 #endif
+
+extern "C"{
+#include <libavformat/avformat.h>
+#include <libavcodec/avcodec.h>
+}
 
 QT_BEGIN_NAMESPACE
 namespace Ui {

@@ -16,6 +16,8 @@ extern "C"{
 #include <libavutil/channel_layout.h>
 }
 
+
+
 AVFormatContext *formatContext = nullptr;
 AVStream *audioStream = nullptr;
 AVCodecContext *codecContext = nullptr;
@@ -24,6 +26,10 @@ AVPacket *packet = nullptr;
 SwrContext *swrCtx = nullptr; // Örnekleme dönüştürücü
 
 int64_t pts = 0;
+
+// Recording state variables
+QTimer* recordingMixedAudioTimer = nullptr;
+const AVCodec* recordingCodec = nullptr;
 
 recorder::recorder(QWidget *parent)
     : QMainWindow{parent}
@@ -85,7 +91,7 @@ void MainWindow::on_startRecord_clicked()
             qDebug() << "Virtual audio output resumed for recording";
         }
 
-        // Try MP3 first, fallback to WAV if MP3 codec not available
+        // Default to MP3 (now supported with GPL FFmpeg)
         QString fileName = QFileDialog::getSaveFileName(this, "Save Audio File", "", "Audio Files (*.mp3 *.wav)");
         if (fileName.isEmpty()) {
             qCritical() << "No file selected.";
@@ -120,32 +126,53 @@ void MainWindow::on_startRecord_clicked()
             return;
         }
 
-        // Find appropriate codec
-        AVCodecID codecId = useMP3 ? AV_CODEC_ID_MP3 : AV_CODEC_ID_PCM_S16LE;
-        const AVCodec *codec = avcodec_find_encoder(codecId);
-        if (!codec) {
-            qCritical() << codecName << "codec not found. Trying fallback format...";
-
-            // Try fallback to WAV
-            if (useMP3) {
-                codecId = AV_CODEC_ID_PCM_S16LE;
-                codec = avcodec_find_encoder(codecId);
-                if (codec) {
-                    qDebug() << "Using WAV format as fallback";
-                    avformat_free_context(formatContext);
-                    if (avformat_alloc_output_context2(&formatContext, nullptr, "wav", fileName.toStdString().c_str()) < 0) {
-                        qCritical() << "Failed to allocate WAV format context.";
-                        return;
-                    }
-                    useMP3 = false;
-                }
+        // Find appropriate codec - Use mp3_mf since libmp3lame is not available
+        const AVCodec *codec = nullptr;
+        
+        if (useMP3) {
+            qDebug() << "=== USING MP3_MF ENCODER ===";
+            // Try mp3_mf first (Media Foundation - Windows built-in)
+            codec = avcodec_find_encoder_by_name("mp3_mf");
+            if (codec) {
+                qDebug() << "SUCCESS: Using mp3_mf encoder:" << codec->name;
+            } else {
+                qWarning() << "FAILED: mp3_mf not available, falling back to WAV";
+                useMP3 = false;
             }
-
+        }
+        
+        if (!codec && useMP3) {
+            // Fallback to generic MP3
+            codec = avcodec_find_encoder(AV_CODEC_ID_MP3);
+            if (codec) {
+                qDebug() << "SUCCESS: Using generic MP3 encoder:" << codec->name;
+            } else {
+                qWarning() << "FAILED: No MP3 encoder found, falling back to WAV";
+                useMP3 = false;
+            }
+        }
+        
+        if (!useMP3) {
+            // Use WAV as fallback
+            codec = avcodec_find_encoder(AV_CODEC_ID_PCM_S16LE);
             if (!codec) {
-                qCritical() << "No suitable audio codec found.";
+                qCritical() << "FAILED: Could not find even WAV encoder!";
                 avformat_free_context(formatContext);
                 return;
             }
+            qDebug() << "SUCCESS: Using WAV encoder:" << codec->name;
+            
+            // Update format context for WAV
+            avformat_free_context(formatContext);
+            QString wavFileName = fileName;
+            if (wavFileName.endsWith(".mp3", Qt::CaseInsensitive)) {
+                wavFileName = wavFileName.left(wavFileName.length() - 4) + ".wav";
+            }
+            if (avformat_alloc_output_context2(&formatContext, nullptr, "wav", wavFileName.toStdString().c_str()) < 0) {
+                qCritical() << "Failed to allocate WAV format context.";
+                return;
+            }
+            fileName = wavFileName;
         }
 
         // Configure codec parameters
@@ -156,14 +183,36 @@ void MainWindow::on_startRecord_clicked()
         }
 
         if (useMP3) {
-            // MP3 specific settings
-            codecContext->sample_fmt = AV_SAMPLE_FMT_FLTP;
-            codecContext->bit_rate = 128000;
-            codecContext->sample_rate = 44100;
-            av_channel_layout_default(&codecContext->ch_layout, 2); // Stereo
-            codecContext->frame_size = 1152; // MP3 için sabit frame size
-            codecContext->compression_level = 5;
-            av_opt_set_int(codecContext, "compression_level", 5, 0);
+            // MP3 specific settings - OPTIMIZED FOR mp3_mf
+            if (QString(codec->name) == "mp3_mf") {
+                qDebug() << "Using mp3_mf specific settings";
+                // mp3_mf (Media Foundation) optimized settings
+                codecContext->sample_fmt = AV_SAMPLE_FMT_FLT;  // Float works better with Media Foundation
+                codecContext->bit_rate = 128000;
+                codecContext->sample_rate = 48000;  // 48kHz standard for Media Foundation
+                av_channel_layout_default(&codecContext->ch_layout, 2); // Stereo
+                codecContext->frame_size = 0;  // Let mp3_mf decide frame size
+                codecContext->strict_std_compliance = FF_COMPLIANCE_NORMAL;  // Standard compliance
+                qDebug() << "mp3_mf configured with FLT format, 48kHz";
+            } else if (QString(codec->name) == "libmp3lame") {
+                // Standard libmp3lame settings
+                codecContext->sample_fmt = AV_SAMPLE_FMT_FLTP;
+                codecContext->bit_rate = 128000;
+                codecContext->sample_rate = 44100;
+                av_channel_layout_default(&codecContext->ch_layout, 2); // Stereo
+                codecContext->frame_size = 1152;
+                codecContext->compression_level = 5;
+                av_opt_set_int(codecContext, "compression_level", 5, 0);
+                qDebug() << "libmp3lame configured with FLTP format, 44.1kHz";
+            } else {
+                // Generic MP3 fallback settings
+                codecContext->sample_fmt = AV_SAMPLE_FMT_S16;  // Most compatible
+                codecContext->bit_rate = 128000;
+                codecContext->sample_rate = 44100;
+                av_channel_layout_default(&codecContext->ch_layout, 2); // Stereo
+                codecContext->frame_size = 1152;
+                qDebug() << "Generic MP3 configured with S16 format, 44.1kHz";
+            }
         } else {
             // WAV specific settings
             codecContext->sample_fmt = AV_SAMPLE_FMT_S16;
@@ -176,11 +225,120 @@ void MainWindow::on_startRecord_clicked()
             codecContext->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
         }
 
-        if (avcodec_open2(codecContext, codec, nullptr) < 0) {
-            qCritical() << "Failed to open" << (useMP3 ? "MP3" : "WAV") << "codec.";
-            avcodec_free_context(&codecContext);
-            return;
+        qDebug() << "=== ATTEMPTING TO OPEN CODEC ===";
+        qDebug() << "Codec name:" << codec->name;
+        qDebug() << "Codec long name:" << (codec->long_name ? codec->long_name : "N/A");
+        qDebug() << "Sample format:" << codecContext->sample_fmt;
+        qDebug() << "Sample rate:" << codecContext->sample_rate;
+        qDebug() << "Bit rate:" << codecContext->bit_rate;
+        qDebug() << "Channels:" << codecContext->ch_layout.nb_channels;
+        qDebug() << "Frame size:" << codecContext->frame_size;
+        
+        // Try opening codec with specific options for mp3_mf
+        AVDictionary *opts = nullptr;
+        if (useMP3 && QString(codec->name) == "mp3_mf") {
+            // Media Foundation specific options - try minimal first
+            qDebug() << "Setting mp3_mf options...";
+            av_dict_set(&opts, "abr", "true", 0);  // Average bit rate
         }
+        
+        int openResult = avcodec_open2(codecContext, codec, &opts);
+        if (opts) av_dict_free(&opts);
+        
+        qDebug() << "avcodec_open2 result:" << openResult;
+        
+        if (openResult < 0) {
+            char errorBuf[256];
+            av_strerror(openResult, errorBuf, sizeof(errorBuf));
+            qCritical() << "Failed to open" << (useMP3 ? "MP3" : "WAV") << "codec.";
+            qCritical() << "Error code:" << openResult << "-" << errorBuf;
+            
+            // For MP3 failure, try different approach before fallback
+            if (useMP3) {
+                qCritical() << "=== MP3 FAILED, TRYING ALTERNATIVE SETTINGS ===";
+                
+                // Try with different settings for mp3_mf
+                if (QString(codec->name) == "mp3_mf") {
+                    qDebug() << "Retrying mp3_mf with S16 format...";
+                    
+                    // Reset and try again with S16 format as fallback
+                    avcodec_free_context(&codecContext);
+                    codecContext = avcodec_alloc_context3(codec);
+                    if (codecContext) {
+                        codecContext->sample_fmt = AV_SAMPLE_FMT_S16;  // Try S16 as fallback
+                        codecContext->bit_rate = 128000;
+                        codecContext->sample_rate = 44100;  // Try 44.1kHz as fallback
+                        av_channel_layout_default(&codecContext->ch_layout, 2);
+                        codecContext->frame_size = 0;
+                        codecContext->strict_std_compliance = FF_COMPLIANCE_EXPERIMENTAL;
+                        
+                        int retryResult = avcodec_open2(codecContext, codec, nullptr);
+                        qDebug() << "mp3_mf retry result:" << retryResult;
+                        
+                        if (retryResult >= 0) {
+                            qDebug() << "SUCCESS: mp3_mf opened with S16 fallback settings!";
+                            goto codec_opened;  // Skip the fallback
+                        }
+                    }
+                }
+                
+                qCritical() << "=== MP3 FAILED, FALLING BACK TO WAV ===";
+                
+                // Clean up current context
+                avcodec_free_context(&codecContext);
+                avformat_free_context(formatContext);
+                
+                // Switch to WAV
+                useMP3 = false;
+                QString wavFileName = fileName;
+                if (wavFileName.endsWith(".mp3", Qt::CaseInsensitive)) {
+                    wavFileName = wavFileName.left(wavFileName.length() - 4) + ".wav";
+                }
+                fileName = wavFileName;
+                
+                // Reinitialize format context for WAV
+                if (avformat_alloc_output_context2(&formatContext, nullptr, "wav", fileName.toStdString().c_str()) < 0) {
+                    qCritical() << "Failed to allocate WAV format context during fallback";
+                    return;
+                }
+                
+                // Get WAV codec
+                codec = avcodec_find_encoder(AV_CODEC_ID_PCM_S16LE);
+                if (!codec) {
+                    qCritical() << "Failed to find WAV codec during fallback";
+                    return;
+                }
+                
+                // Configure WAV codec
+                codecContext = avcodec_alloc_context3(codec);
+                if (!codecContext) {
+                    qCritical() << "Failed to allocate WAV codec context during fallback";
+                    return;
+                }
+                
+                codecContext->sample_fmt = AV_SAMPLE_FMT_S16;
+                codecContext->sample_rate = 44100;
+                av_channel_layout_default(&codecContext->ch_layout, 2);
+                
+                // Try to open WAV codec
+                int wavResult = avcodec_open2(codecContext, codec, nullptr);
+                if (wavResult < 0) {
+                    av_strerror(wavResult, errorBuf, sizeof(errorBuf));
+                    qCritical() << "Even WAV codec failed:" << wavResult << "-" << errorBuf;
+                    avcodec_free_context(&codecContext);
+                    return;
+                }
+                
+                qDebug() << "SUCCESS: Switched to WAV format:" << fileName;
+                qDebug() << "WAV codec opened successfully";
+            } else {
+                avcodec_free_context(&codecContext);
+                return;
+            }
+        }
+        
+codec_opened:
+        qDebug() << "SUCCESS: Codec opened successfully!";
 
         audioStream = avformat_new_stream(formatContext, nullptr);
         if (!audioStream) {
@@ -237,12 +395,19 @@ void MainWindow::on_startRecord_clicked()
                 ffmpegInputFormat = AV_SAMPLE_FMT_U8;
             }
 
+            // Choose target format based on codec
+            AVSampleFormat targetFormat = AV_SAMPLE_FMT_FLTP;
+            if (QString(codec->name) == "mp3_mf") {
+                targetFormat = AV_SAMPLE_FMT_S16;  // mp3_mf uses S16
+                qDebug() << "Using S16 format for mp3_mf resampling";
+            }
+
             // Create and configure SwrContext
             swrCtx = swr_alloc();
 
             // Set resampler options with explicit settings
             if (swr_alloc_set_opts2(&swrCtx,
-                                    &outputChannelLayoutStruct, AV_SAMPLE_FMT_FLTP, codecContext->sample_rate,
+                                    &outputChannelLayoutStruct, targetFormat, codecContext->sample_rate,
                                     &inputChannelLayoutStruct, ffmpegInputFormat, inputSampleRate,
                                     0, nullptr) < 0) {
                 qCritical() << "Failed to allocate SwrContext.";
@@ -262,7 +427,7 @@ void MainWindow::on_startRecord_clicked()
 
             // Calculate resampler delay
             int64_t swrDelay = swr_get_delay(swrCtx, codecContext->sample_rate);
-            qDebug() << "SwrContext initialized. Delay:" << swrDelay << "samples";
+            qDebug() << "SwrContext initialized. Target format:" << av_get_sample_fmt_name(targetFormat) << "Delay:" << swrDelay << "samples";
         } else {
             qDebug() << "WAV format - no resampling needed";
             swrCtx = nullptr;
@@ -275,9 +440,24 @@ void MainWindow::on_startRecord_clicked()
             return;
         }
 
-        frame->nb_samples = codecContext->frame_size; // 1152 samples
-        frame->format = codecContext->sample_fmt;     // AV_SAMPLE_FMT_FLTP
+        // mp3_mf doesn't require frame_size, use 1024 for it
+        int frameSamples;
+        if (codecContext->frame_size > 0) {
+            frameSamples = codecContext->frame_size;
+        } else {
+            // For codecs like mp3_mf that don't specify frame_size
+            if (QString(codec->name) == "mp3_mf") {
+                frameSamples = 1024;  // Standard for Media Foundation
+            } else {
+                frameSamples = 1024;  // Default fallback
+            }
+        }
+        
+        frame->nb_samples = frameSamples;
+        frame->format = codecContext->sample_fmt;
         av_channel_layout_default(&frame->ch_layout, codecContext->ch_layout.nb_channels);
+        
+        qDebug() << "Frame allocated - samples:" << frameSamples << "format:" << av_get_sample_fmt_name(codecContext->sample_fmt);
 
         if (av_frame_get_buffer(frame, 0) < 0) {
             qCritical() << "Failed to allocate audio frame buffer.";
@@ -332,7 +512,21 @@ void MainWindow::on_startRecord_clicked()
                 if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
                     // AudioPipeline kullanarak gönder
                     if (audioPipeline) {
-                        audioPipeline->writeInputAudio(data);
+                        // Write processed audio to appropriate pipeline buffer
+                        if (!usingEffects) {
+                            if (ui->robotButton->isChecked() || ui->bananaButton->isChecked() || 
+                                ui->devilButton->isChecked() || ui->femaleButton->isChecked() || 
+                                ui->combineButton->isChecked() || ui->ekoButton->isChecked()) {
+                                // Send to effects buffer
+                                audioPipeline->writeEffectsAudio(data);
+                            } else {
+                                // Send to clean input buffer
+                                audioPipeline->writeInputAudio(data);
+                            }
+                        } else {
+                            // Already processed audio, send to effects buffer
+                            audioPipeline->writeEffectsAudio(data);
+                        }
                     } else {
                         virtualOutputDevice->write(data);
                     }
@@ -374,16 +568,29 @@ void MainWindow::on_startRecord_clicked()
         // First disconnect any existing recording-specific connections
         disconnect(this, &MainWindow::audioDataReady, this, nullptr);
 
-        // Connect to circular buffer writer for recording
-        connect(this, &MainWindow::audioDataReady, this, [this, isInputMono](const QByteArray& audioData) {
-            if (!isRecording || audioData.isEmpty()) return;
-
-            qDebug() << "RECORDING: Received audio data size:" << audioData.size() << "bytes";
-            // Write to circular buffer
-            writeToCircularBuffer(audioData, isInputMono);
+        // Create a timer to capture mixed audio from AudioPipeline for recording
+        QTimer* mixedAudioCaptureTimer = new QTimer(this);
+        connect(mixedAudioCaptureTimer, &QTimer::timeout, this, [this, isInputMono, mixedAudioCaptureTimer]() {
+            if (!isRecording || !audioPipeline) return;
+            
+            // Get mixed audio from AudioPipeline (this includes input + effects + soundpack)
+            QByteArray mixedAudio = audioPipeline->getMixedAudioData(4096); // 4KB chunks
+            
+            if (!mixedAudio.isEmpty()) {
+                qDebug() << "RECORDING: Mixed audio captured size:" << mixedAudio.size() << "bytes";
+                // Write mixed audio to circular buffer for recording
+                writeToCircularBuffer(mixedAudio, false); // Mixed audio is always stereo
+            }
         });
+        
+        // Start capturing mixed audio every 20ms for high quality recording
+        mixedAudioCaptureTimer->start(20);
+        
+        // Store timer reference for cleanup
+        recordingMixedAudioTimer = mixedAudioCaptureTimer;
 
-        qDebug() << "Recording system initialized successfully";
+        // Store codec info for use in processRecordedFrames
+        recordingCodec = codec;
         qDebug() << "Mono input:" << isInputMono
                  << "Target frame size:" << codecContext->frame_size
                  << "Processing interval: 40ms";
@@ -468,16 +675,34 @@ QByteArray MainWindow::readFromCircularBuffer(size_t samplesNeeded)
 
 void MainWindow::processRecordedFrames()
 {
-    if (!isRecording || !codecContext || !swrCtx || availableSamples == 0) {
+    if (!isRecording || !codecContext || availableSamples == 0) {
+        return;
+    }
+    
+    // For MP3, swrCtx is required; for WAV, it's optional
+    bool isMP3 = (codecContext->codec_id == AV_CODEC_ID_MP3);
+    if (isMP3 && !swrCtx) {
         return;
     }
 
     try {
         // Determine frame size based on codec
-        bool isMP3 = (codecContext->codec_id == AV_CODEC_ID_MP3);
-        size_t SAMPLES_PER_CHANNEL = isMP3 ? 1152 : 1024; // MP3: 1152, WAV: flexible
+        bool isMP3MF = recordingCodec && (QString(recordingCodec->name) == "mp3_mf");
+        
+        // Frame size: mp3_mf uses 1024, other MP3 uses 1152, WAV is flexible
+        size_t SAMPLES_PER_CHANNEL;
+        if (isMP3MF) {
+            SAMPLES_PER_CHANNEL = 1024;
+        } else if (isMP3) {
+            SAMPLES_PER_CHANNEL = 1152;
+        } else {
+            SAMPLES_PER_CHANNEL = 1024; // WAV flexible
+        }
+        
         size_t SAMPLES_PER_FRAME = SAMPLES_PER_CHANNEL * 2; // Stereo
         size_t BYTES_PER_FRAME = SAMPLES_PER_FRAME * sizeof(int16_t);
+        
+        qDebug() << "Frame processing - isMP3:" << isMP3 << "isMP3MF:" << isMP3MF << "samplesPerChannel:" << SAMPLES_PER_CHANNEL;
 
         // Process as many frames as we have data for
         while (availableSamples >= SAMPLES_PER_FRAME) {
@@ -494,11 +719,24 @@ void MainWindow::processRecordedFrames()
                 reinterpret_cast<const uint8_t*>(frameData.constData())
         };
 
-        // Allocate output buffer for exactly 1152 samples
+        // Allocate output buffer for exactly the right number of samples
         uint8_t *outData[AV_NUM_DATA_POINTERS] = { nullptr };
         int outLinesize;
 
-        AVSampleFormat targetFormat = isMP3 ? AV_SAMPLE_FMT_FLTP : AV_SAMPLE_FMT_S16;
+        AVSampleFormat targetFormat;
+        if (isMP3MF) {
+            // Check what format mp3_mf actually opened with
+            if (codecContext->sample_fmt == AV_SAMPLE_FMT_FLT) {
+                targetFormat = AV_SAMPLE_FMT_FLT;  // mp3_mf with FLT
+            } else {
+                targetFormat = AV_SAMPLE_FMT_S16;  // mp3_mf with S16 fallback
+            }
+        } else if (isMP3) {
+            targetFormat = AV_SAMPLE_FMT_FLTP;  // Other MP3 uses FLTP
+        } else {
+            targetFormat = AV_SAMPLE_FMT_S16;  // WAV uses S16
+        }
+        
         int allocateResult = av_samples_alloc(outData, &outLinesize,
                                               codecContext->ch_layout.nb_channels,
                                               SAMPLES_PER_CHANNEL,
@@ -510,11 +748,15 @@ void MainWindow::processRecordedFrames()
         }
 
         // Calculate input samples for resampler
-        int inputSamples = SAMPLES_PER_CHANNEL; // 1152 samples per channel
+        int inputSamples = SAMPLES_PER_CHANNEL;
 
         int convertedSamples;
-        if (isMP3) {
-            // MP3 needs resampling to planar float
+        if (isMP3MF) {
+            // mp3_mf needs resampling but stays S16 (non-planar)
+            convertedSamples = swr_convert(swrCtx, outData, SAMPLES_PER_CHANNEL,
+                                          inData, inputSamples);
+        } else if (isMP3) {
+            // Other MP3 needs resampling to planar float
             convertedSamples = swr_convert(swrCtx, outData, SAMPLES_PER_CHANNEL,
                                           inData, inputSamples);
         } else {
@@ -557,7 +799,18 @@ void MainWindow::processRecordedFrames()
         // Copy to frame buffer
         for (int ch = 0; ch < codecContext->ch_layout.nb_channels; ch++) {
             if (frame->data[ch] && outData[ch]) {
-                size_t bytesToCopy = SAMPLES_PER_CHANNEL * (isMP3 ? sizeof(float) : sizeof(int16_t));
+                size_t bytesToCopy;
+                if (isMP3MF) {
+                    if (codecContext->sample_fmt == AV_SAMPLE_FMT_FLT) {
+                        bytesToCopy = SAMPLES_PER_CHANNEL * sizeof(float);  // mp3_mf with FLT
+                    } else {
+                        bytesToCopy = SAMPLES_PER_CHANNEL * sizeof(int16_t);  // mp3_mf with S16
+                    }
+                } else if (isMP3) {
+                    bytesToCopy = SAMPLES_PER_CHANNEL * sizeof(float);    // Other MP3 uses FLTP
+                } else {
+                    bytesToCopy = SAMPLES_PER_CHANNEL * sizeof(int16_t); // WAV uses S16
+                }
                 memcpy(frame->data[ch], outData[ch], bytesToCopy);
             }
         }
@@ -613,6 +866,12 @@ void MainWindow::cleanupRecording()
         recordingProcessorTimer = nullptr;
     }
 
+    if (recordingMixedAudioTimer) {
+        recordingMixedAudioTimer->stop();
+        recordingMixedAudioTimer->deleteLater();
+        recordingMixedAudioTimer = nullptr;
+    }
+
     // Clear circular buffer
     {
         std::lock_guard<std::mutex> lock(bufferMutex);
@@ -648,6 +907,13 @@ void MainWindow::on_stopRecord_clicked()
         recordingProcessorTimer->stop();
         recordingProcessorTimer->deleteLater();
         recordingProcessorTimer = nullptr;
+    }
+
+    // Stop mixed audio capture timer
+    if (recordingMixedAudioTimer) {
+        recordingMixedAudioTimer->stop();
+        recordingMixedAudioTimer->deleteLater();
+        recordingMixedAudioTimer = nullptr;
     }
 
     // Process any remaining frames in buffer
@@ -719,12 +985,47 @@ void MainWindow::on_stopRecord_clicked()
                 emit audioDataReady(data);
             }
 
-            // Send to virtual output (Cable Input)
+            // Send to virtual output (Cable Input) - use proper AudioPipeline routing
             if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
-                // AudioPipeline kullanarak gönder
-                if (audioPipeline) {
-                    audioPipeline->writeInputAudio(data);
-                } else {
+                if (audioPipeline && !isRecording) {
+                    // Check what type of audio we have and route appropriately
+                    bool hasEffects = false;
+                    bool hasSoundpack = false;
+                    
+                    // Check if any effect is active
+                    if (ui->robotButton->isChecked() || ui->bananaButton->isChecked() || 
+                        ui->devilButton->isChecked() || ui->femaleButton->isChecked() || 
+                        ui->combineButton->isChecked() || ui->ekoButton->isChecked()) {
+                        hasEffects = true;
+                    }
+                    
+                    // Check if soundpack is playing (you might need to add this check)
+                    // For now, assume soundpack is detected by currentPlayingButton
+                    if (currentPlayingButton != nullptr) {
+                        hasSoundpack = true;
+                    }
+                    
+                    // Route audio based on what's active
+                    if (hasEffects) {
+                        // Effects audio - highest priority
+                        audioPipeline->writeEffectsAudio(data);
+                        qDebug() << "Routing to effects audio (effects active)";
+                    } else if (hasSoundpack) {
+                        // Soundpack audio
+                        audioPipeline->writeSoundpackAudio(data);
+                        qDebug() << "Routing to soundpack audio (soundpack active)";
+                    } else {
+                        // Clean input audio
+                        audioPipeline->writeInputAudio(data);
+                        qDebug() << "Routing to input audio (clean voice)";
+                    }
+                    
+                    // Trigger audio mixing if needed
+                    if (hasEffects || hasSoundpack) {
+                        audioPipeline->processBuffers();
+                    }
+                } else if (!audioPipeline) {
+                    // Fallback to direct write if AudioPipeline not available
                     virtualOutputDevice->write(data);
                 }
             }

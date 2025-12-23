@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include <QTime>
 #include "mainwindow.h"
+#include "psola.h"
 
 // Efekt yönetimi için yardımcı fonksiyon
 void MainWindow::stopAllEffects()
@@ -103,244 +104,219 @@ effects::effects(QWidget *parent)
 
 void MainWindow::processToBananaVoice(QByteArray &data)
 {
+    // Safety checks
+    if (data.isEmpty() || data.size() < sizeof(int16_t)) {
+        return;
+    }
+    
+    if (!format) {
+        qWarning() << "Audio format is null in processToBananaVoice";
+        return;
+    }
+    
     int16_t *samples = reinterpret_cast<int16_t *>(data.data());
     int sampleCount = data.size() / sizeof(int16_t);
 
-    // Yeni boyutu hesapla (örneğin, frekansı 1.5x artırmak için)
-    int newSampleCount = sampleCount / 1.5; // Ses frekansını artırıyoruz
-    QByteArray newData(newSampleCount * sizeof(int16_t), Qt::Uninitialized);
-    int16_t *newSamples = reinterpret_cast<int16_t *>(newData.data());
-
-    // Lineer interpolasyon ile frekansı artır
-    for (int i = 0; i < newSampleCount; ++i) {
-        double srcIndex = i * 1.5; // Oranına göre örnek seç
-        int index1 = static_cast<int>(srcIndex);
-        int index2 = qMin(index1 + 1, sampleCount - 1);
-
-        // İki örnek arasında ağırlıklı ortalama al
-        double weight = srcIndex - index1;
-        newSamples[i] = static_cast<int16_t>((1 - weight) * samples[index1] + weight * samples[index2]);
+    // Ensure we have enough samples for PSOLA processing
+    if (sampleCount < 100) {
+        return;
     }
 
-    // Yeni veriyi kullan
-    data = newData;
-
-
+    // PSOLA ile bebek sesi efekti (BANANA effect type)
+    PSOLA psola;
+    psola.process(samples, sampleCount, format->sampleRate(), 
+                 PSOLA::getDefaultPitchFactor(PSOLA::BANANA),
+                 PSOLA::BANANA);
 }
 
 void MainWindow::processToRobotVoice(QByteArray &data)
 {
-    // Ses verisini 16-bit PCM olarak yorumlayın
+    // Safety checks
+    if (data.isEmpty() || data.size() < sizeof(int16_t)) {
+        return;
+    }
+    
+    if (!format) {
+        qWarning() << "Audio format is null in processToRobotVoice";
+        return;
+    }
+    
     int16_t *samples = reinterpret_cast<int16_t *>(data.data());
-
-    // Örnek sayısını hesaplayın
     int sampleCount = data.size() / sizeof(int16_t);
 
-    // Echo gecikmesi için tampon boyutunu hesaplayın
-    int delaySamples = format->sampleRate() / 200; // 5ms gecikme (daha kısa)
+    // Ensure we have enough samples for PSOLA processing
+    if (sampleCount < 100) {
+        return;
+    }
 
-    // Echo için bir tampon oluşturun
-    QVector<int16_t> echoBuffer(delaySamples, 0);
-
+    // PSOLA ile robot sesi efekti (ROBOT effect type)
+    PSOLA psola;
+    psola.process(samples, sampleCount, format->sampleRate(), 
+                 PSOLA::getDefaultPitchFactor(PSOLA::ROBOT),
+                 PSOLA::ROBOT);
+    
+    // Add robot-specific characteristics (light square wave modulation)
     for (int i = 0; i < sampleCount; ++i) {
-        // Daha yumuşak kare dalga (daha düşük genlik)
-        int16_t robotSample = samples[i] > 0 ? 4000 : -4000; // Genlik yarıya indirildi
-        
-        // Çok hafif modülasyon (pıt pıt önlemek için)
-        double modulator = 0.02 * sin(2.0 * M_PI * 30 * i / format->sampleRate()); // 30Hz, çok düşük amplitude
-        robotSample = static_cast<int16_t>(robotSample * (1.0 + modulator));
-
-        // Çok hafif echo efekti
-        if (i >= delaySamples) {
-            int16_t echoSample = static_cast<int16_t>(0.02 * echoBuffer[i % delaySamples]); // Çok düşük echo
-            robotSample = static_cast<int16_t>(robotSample + echoSample);
-        }
-
-        // Echo tamponunu güncelle
-        echoBuffer[i % delaySamples] = robotSample;
-
-        // Genliği daha yumuşak sınırlandır
-        samples[i] = static_cast<int16_t>(qBound(-8000, robotSample, 8000));
+        // Very light square wave modulation for robotic feel
+        double modulator = 0.05 * sin(2.0 * M_PI * 50 * i / format->sampleRate()); // 50Hz
+        samples[i] = static_cast<int16_t>(samples[i] * (1.0 + modulator));
     }
 }
 
 void MainWindow::processToDevilVoice(QByteArray &data)
 {
+    // Safety checks
+    if (data.isEmpty() || data.size() < sizeof(int16_t)) {
+        return;
+    }
+    
+    if (!format) {
+        qWarning() << "Audio format is null in processToDevilVoice";
+        return;
+    }
+    
     int16_t *samples = reinterpret_cast<int16_t *>(data.data());
     int sampleCount = data.size() / sizeof(int16_t);
 
-    // Yeni boyutu hesapla (örneğin, frekansı 1.5x artırmak için)
-    int newSampleCount = sampleCount * 1.5;
-    QByteArray newData(newSampleCount * sizeof(int16_t), Qt::Uninitialized);
-    int16_t *newSamples = reinterpret_cast<int16_t *>(newData.data());
-
-    // Cubic interpolasyon
-    for (int i = 0; i < newSampleCount; ++i) {
-        double srcIndex = i / 1.5;
-        int index1 = static_cast<int>(srcIndex);
-        int index2 = qMin(index1 + 1, sampleCount - 1);
-        int index3 = qMin(index1 + 2, sampleCount - 1);
-        int index4 = qMin(index1 + 3, sampleCount - 1);
-
-        // Cubic interpolasyon hesaplama
-        double t = srcIndex - index1;
-        double a0 = samples[index4] - samples[index3] - samples[index1] + samples[index2];
-        double a1 = samples[index1] - samples[index2] - a0;
-        double a2 = samples[index3] - samples[index1];
-        double a3 = samples[index2];
-
-        // Yumuşak geçiş için cubic interpolasyon kullanılıyor
-        newSamples[i] = static_cast<int16_t>(a0 * t * t * t + a1 * t * t + a2 * t + a3);
+    // Ensure we have enough samples for PSOLA processing
+    if (sampleCount < 100) {
+        return;
     }
 
-    // Yeni veriyi kullan
-    data = newData;
+    // PSOLA ile şeytan sesi efekti (DEVIL effect type)
+    PSOLA psola;
+    psola.process(samples, sampleCount, format->sampleRate(), 
+                 PSOLA::getDefaultPitchFactor(PSOLA::DEVIL),
+                 PSOLA::DEVIL);
 }
 
 void MainWindow::processToFemaleVoice(QByteArray &data)
 {
+    // Safety checks
+    if (data.isEmpty() || data.size() < sizeof(int16_t)) {
+        return;
+    }
+    
+    if (!format) {
+        qWarning() << "Audio format is null in processToFemaleVoice";
+        return;
+    }
+    
     int16_t *samples = reinterpret_cast<int16_t *>(data.data());
     int sampleCount = data.size() / sizeof(int16_t);
 
-    // Frekansı artırmak için yeni örnek sayısını belirleyin
-    double pitchFactor = 1.15; // Daha az frekans artırımı
-    int newSampleCount = sampleCount / pitchFactor;
-
-    QByteArray newData(newSampleCount * sizeof(int16_t), Qt::Uninitialized);
-    int16_t *newSamples = reinterpret_cast<int16_t *>(newData.data());
-
-    // Frekans artırımı için interpolasyon işlemi
-    for (int i = 0; i < newSampleCount; ++i) {
-        double srcIndex = i * pitchFactor;
-        int index1 = static_cast<int>(srcIndex);
-        int index2 = qMin(index1 + 1, sampleCount - 1);
-
-        double weight = srcIndex - index1; // İki örnek arasındaki ağırlık
-        newSamples[i] = static_cast<int16_t>((1 - weight) * samples[index1] + weight * samples[index2]);
+    // Ensure we have enough samples for PSOLA processing
+    if (sampleCount < 100) {
+        return;
     }
 
-    // Çok hafif modülasyon (pıt pıt önlemek için)
-    double modFrequency = 80.0; // Daha düşük modülasyon frekansı
-    double modAmplitude = 0.03;   // Çok düşük modülasyon genliği
-    double sampleRate = format->sampleRate();
-
-    for (int i = 0; i < newSampleCount; ++i) {
-        double modulator = modAmplitude * sin(2.0 * M_PI * modFrequency * i / sampleRate);
-        newSamples[i] = static_cast<int16_t>(newSamples[i] * (1.0 + modulator));
-    }
-
-    // Yeni işlenmiş veriyi kullan
-    data = newData;
+    // PSOLA ile kadın sesi efekti (FEMALE effect type)
+    PSOLA psola;
+    psola.process(samples, sampleCount, format->sampleRate(), 
+                 PSOLA::getDefaultPitchFactor(PSOLA::FEMALE),
+                 PSOLA::FEMALE);
 }
 
 void MainWindow::processToCombineVoice(QByteArray &data)
 {
+    // Safety checks
+    if (data.isEmpty() || data.size() < sizeof(int16_t)) {
+        return;
+    }
+    
+    if (!format) {
+        qWarning() << "Audio format is null in processToCombineVoice";
+        return;
+    }
+    
     int16_t *samples = reinterpret_cast<int16_t *>(data.data());
     int sampleCount = data.size() / sizeof(int16_t);
 
-    // 1. Dar Bant Filtreleme (300 Hz - 3000 Hz band geçiren filtre)
-    double lowCutoff = 300.0;  // Alt frekans sınırı
-    double highCutoff = 3000.0; // Üst frekans sınırı
-    double sampleRate = 44100.0; // Örnekleme frekansı (değiştirilebilir)
-    QVector<double> filteredSamples(sampleCount, 0);
-
-    for (int i = 0; i < sampleCount; ++i) {
-        double t = i / sampleRate;
-        filteredSamples[i] = samples[i] * (qSin(2 * M_PI * highCutoff * t) - qSin(2 * M_PI * lowCutoff * t));
+    // Ensure we have enough samples for PSOLA processing
+    if (sampleCount < 100) {
+        return;
     }
 
-    // 2. Hafif Gürültü Ekleme (Beyaz gürültü)
-    srand(QTime::currentTime().msec());
+    // PSOLA ile birleşik ses efekti (COMBINE effect type)
+    PSOLA psola;
+    psola.process(samples, sampleCount, format->sampleRate(), 
+                 PSOLA::getDefaultPitchFactor(PSOLA::COMBINE),
+                 PSOLA::COMBINE);
+    
+    // Add combine-specific characteristics (light distortion and noise)
     for (int i = 0; i < sampleCount; ++i) {
-        double noise = (rand() % 200 - 100) / 1000.0; // Hafif rastgele gürültü
-        filteredSamples[i] += noise;
-    }
-
-    // 3. Hafif Distorsiyon
-    for (int i = 0; i < sampleCount; ++i) {
-        if (filteredSamples[i] > 30000) {
-            filteredSamples[i] = 30000; // Pozitif klipleme
-        } else if (filteredSamples[i] < -30000) {
-            filteredSamples[i] = -30000; // Negatif klipleme
+        // Very light distortion
+        if (samples[i] > 30000) {
+            samples[i] = 30000;
+        } else if (samples[i] < -30000) {
+            samples[i] = -30000;
         }
+        
+        // Very light noise for texture
+        double noise = (rand() % 200 - 100) / 1000.0;
+        samples[i] = static_cast<int16_t>(samples[i] + noise);
     }
-
-    // 4. Cubic Interpolasyon ile Frekans Değiştirme
-    int newSampleCount = sampleCount * 1.2; // Frekansı artırmak için
-    QByteArray newData(newSampleCount * sizeof(int16_t), Qt::Uninitialized);
-    int16_t *newSamples = reinterpret_cast<int16_t *>(newData.data());
-
-    for (int i = 0; i < newSampleCount; ++i) {
-        double srcIndex = i / 1.2;
-        int index1 = static_cast<int>(srcIndex);
-        int index2 = qMin(index1 + 1, sampleCount - 1);
-        int index3 = qMin(index1 + 2, sampleCount - 1);
-        int index4 = qMin(index1 + 3, sampleCount - 1);
-
-        double t = srcIndex - index1;
-        double a0 = filteredSamples[index4] - filteredSamples[index3] - filteredSamples[index1] + filteredSamples[index2];
-        double a1 = filteredSamples[index1] - filteredSamples[index2] - a0;
-        double a2 = filteredSamples[index3] - filteredSamples[index1];
-        double a3 = filteredSamples[index2];
-
-        newSamples[i] = static_cast<int16_t>(a0 * t * t * t + a1 * t * t + a2 * t + a3);
-    }
-
-    // Yeni veriyi kullan
-    data = newData;
 }
 
 void MainWindow::processToEkoVoice(QByteArray &data)
 {
+    // Safety checks
+    if (data.isEmpty() || data.size() < sizeof(int16_t)) {
+        return;
+    }
+    
+    if (!format) {
+        qWarning() << "Audio format is null in processToEkoVoice";
+        return;
+    }
+    
     int16_t *samples = reinterpret_cast<int16_t *>(data.data());
     int sampleCount = data.size() / sizeof(int16_t);
 
-    // Mağara ekosu parametreleri
-    double decay1 = 0.4;  // İlk yankı gücü
-    double decay2 = 0.25; // İkinci yankı gücü  
-    double decay3 = 0.15; // Üçüncü yankı gücü
-    int delay1 = format->sampleRate() / 5;   // 200ms - ilk yankı
-    int delay2 = format->sampleRate() / 3;   // 333ms - ikinci yankı
-    int delay3 = format->sampleRate() / 2;   // 500ms - üçüncü yankı
-
-    // Yeni boyut: Orijinal + en uzun yankı alanı
-    int newSampleCount = sampleCount + delay3;
-    QByteArray newData(newSampleCount * sizeof(int16_t), Qt::Uninitialized);
-    int16_t *newSamples = reinterpret_cast<int16_t *>(newData.data());
-    
-    // Başlangıçta sıfırla
-    memset(newSamples, 0, newSampleCount * sizeof(int16_t));
-
-    // Orijinal sesi kopyala
-    for (int i = 0; i < sampleCount; ++i) {
-        newSamples[i] = samples[i];
+    // Ensure we have enough samples for PSOLA processing
+    if (sampleCount < 100) {
+        return;
     }
 
-    // Çoklu yankı ekle (mağara efekti)
+    // PSOLA ile eko ses efekti (EKO effect type)
+    PSOLA psola;
+    psola.process(samples, sampleCount, format->sampleRate(), 
+                 PSOLA::getDefaultPitchFactor(PSOLA::EKO),
+                 PSOLA::EKO);
+    
+    // Add echo-specific characteristics (light cave echo)
+    double decay1 = 0.3;  // İlk yankı gücü
+    double decay2 = 0.2;   // İkinci yankı gücü  
+    int delay1 = format->sampleRate() / 10;  // 100ms - ilk yankı
+    int delay2 = format->sampleRate() / 6;   // 166ms - ikinci yankı
+
+    // Create echo buffer
+    QVector<int16_t> echoBuffer(sampleCount + delay2, 0);
+    
+    // Copy original samples
+    for (int i = 0; i < sampleCount; ++i) {
+        echoBuffer[i] = samples[i];
+    }
+
+    // Add echo effects
     for (int i = 0; i < sampleCount; ++i) {
         // İlk yankı
-        if (i + delay1 < newSampleCount) {
-            newSamples[i + delay1] += static_cast<int16_t>(samples[i] * decay1);
+        if (i + delay1 < echoBuffer.size()) {
+            echoBuffer[i + delay1] += static_cast<int16_t>(samples[i] * decay1);
         }
         
         // İkinci yankı
-        if (i + delay2 < newSampleCount) {
-            newSamples[i + delay2] += static_cast<int16_t>(samples[i] * decay2);
-        }
-        
-        // Üçüncü yankı
-        if (i + delay3 < newSampleCount) {
-            newSamples[i + delay3] += static_cast<int16_t>(samples[i] * decay3);
+        if (i + delay2 < echoBuffer.size()) {
+            echoBuffer[i + delay2] += static_cast<int16_t>(samples[i] * decay2);
         }
     }
 
-    // Sınırlama (clipping önlemek için)
-    for (int i = 0; i < newSampleCount; ++i) {
-        newSamples[i] = static_cast<int16_t>(qBound(-15000, newSamples[i], 15000));
+    // Copy back with limiting
+    data.resize(echoBuffer.size() * sizeof(int16_t));
+    int16_t *newSamples = reinterpret_cast<int16_t *>(data.data());
+    for (int i = 0; i < echoBuffer.size(); ++i) {
+        newSamples[i] = static_cast<int16_t>(qBound(-15000, echoBuffer[i], 15000));
     }
-
-    // Yeni veriyi geri ata
-    data = newData;
 }
 
 

@@ -32,14 +32,19 @@ public:
     void clearSoundpackBuffer(); // SoundPack buffer temizliği için
     void printStatus() const;
 
-// Buffer status queries
+    void processBuffers();
+
+    // Buffer status queries
     int getInputBufferBytesAvailable() const;
     int getSoundpackBufferBytesAvailable() const;
     int getEffectsBufferBytesAvailable() const;  // Efektli ses buffer durumu
     int getMixBufferBytesAvailable() const;
 
+    // Get mixed audio data for recording
+    QByteArray getMixedAudioData(int maxSize);
+
 private slots:
-    void processBuffers();
+
 
 private:
 // Separate buffers for different audio types
