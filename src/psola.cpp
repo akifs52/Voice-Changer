@@ -24,9 +24,9 @@ PSOLA::~PSOLA()
 float PSOLA::getDefaultPitchFactor(EffectType effect)
 {
     switch (effect) {
-        case BANANA:   return 1.6f;
+        case BANANA:   return 1.35f;
         case ROBOT:    return 0.95f;  // Sadece hafif pitch shift
-        case DEVIL:    return 0.75f;  // Increased from 0.65f (less aggressive)
+        case DEVIL:    return 0.82f;
         case FEMALE:   return 1.3f;
         case COMBINE:  return 1.2f;
         case EKO:      return 1.0f;   // Echo için pitch değişimi yok
@@ -37,9 +37,9 @@ float PSOLA::getDefaultPitchFactor(EffectType effect)
 float PSOLA::getDefaultFilterStrength(EffectType effect)
 {
     switch (effect) {
-        case BANANA:   return 0.4f;
+        case BANANA:   return 0.25f;
         case ROBOT:    return 0.6f;   // Daha güçlü filtering
-        case DEVIL:    return 0.1f;   // Düşük frekansları korumak için
+        case DEVIL:    return 0.15f;
         case FEMALE:   return 0.3f;
         case COMBINE:  return 0.2f;
         case EKO:      return 0.05f;  // Minimal filtering for echo
@@ -76,16 +76,16 @@ void PSOLA::process(int16_t* pcm, int sampleCount, int sampleRate,
     const float noiseGateThreshold = 0.010f;
     const float silenceThreshold = 0.005f;
 
-    // Eko için noise gate devre dışı (echo tail'leri korunur)
+    // Eko ve DEVIL için noise gate devre dışı
     std::vector<float> inputFloat(sampleCount);
-    bool hasSignal = (effect == EKO) ? true :
-        inputLevel > (effect == DEVIL ? 0.004f : noiseGateThreshold);
+    bool hasSignal = (effect == EKO || effect == DEVIL) ? true :
+        inputLevel > noiseGateThreshold;
 
     for (int i = 0; i < sampleCount; i++) {
         float sample = pcm[i] / 32768.0f;
 
-        // Noise gate: attenuate very quiet signals - DEVIL & EKO FRIENDLY
-        if (!hasSignal && effect != EKO) {
+        // Noise gate: attenuate very quiet signals - DEVIL, EKO & BANANA FRIENDLY
+        if (!hasSignal && effect != EKO && effect != BANANA) {
             sample *= (effect == DEVIL ? 0.95f : 0.85f);
         } else if (hasSignal && effect != EKO) {
             float absSample = std::abs(sample);
@@ -139,17 +139,17 @@ void PSOLA::process(int16_t* pcm, int sampleCount, int sampleRate,
         applyCaveEcho(buffer, sampleCount, sampleRate);
     }
     
-    // DEVIL makeup gain (EN KRİTİK)
+    // DEVIL transient yumuşatma (distortion değil)
     if (effect == DEVIL) {
         for (int i = 16; i < sampleCount + 16; i++) {
-            buffer[i] *= 1.8f;  // Devil makeup gain
+            buffer[i] = tanh(buffer[i] * 1.1f);
         }
     }
-    
-    // DEVIL growl distortion
-    if (effect == DEVIL) {
+
+    // BANANA transient yumuşatma (bebek hissi için)
+    if (effect == BANANA) {
         for (int i = 16; i < sampleCount + 16; i++) {
-            buffer[i] = tanh(buffer[i] * 2.5f);
+            buffer[i] = tanh(buffer[i] * 1.2f);
         }
     }
 
@@ -484,7 +484,7 @@ void PSOLA::applyCaveEcho(std::vector<float>& buffer, int sampleCount, int sampl
         float echo2 = m_echoBuffer2[m_echoIndex2];
         float echo3 = m_echoBuffer3[m_echoIndex3];
 
-        if (i == 16) qDebug() << "Echo: dry=" << dry << " e1=" << echo1 << " e2=" << echo2 << " e3=" << echo3;
+
 
         float totalEcho = echo1 * 0.5f + echo2 * 0.3f + echo3 * 0.2f;
         buffer[i] = dry + totalEcho * mix;
@@ -530,13 +530,13 @@ void PSOLA::applyEffectFilter(std::vector<float>& buffer, EffectType effect,
 {
     switch (effect) {
         case BANANA:
-            applyHighPassFilter(buffer, strength * 0.8f, 300.0f, sampleRate);
+            applyHighPassFilter(buffer, strength * 0.5f, 140.0f, sampleRate);
             break;
         case ROBOT:
             // Robot already has its own filtering
             break;
         case DEVIL:
-            applyLowPassFilter(buffer, strength * 0.4f, 900.0f, sampleRate);
+            applyLowPassFilter(buffer, strength * 0.3f, 1600.0f, sampleRate);
             break;
         case FEMALE:
             applyHighPassFilter(buffer, strength * 0.6f, 200.0f, sampleRate);
@@ -601,8 +601,14 @@ void PSOLA::applyOutputLimiting(std::vector<float>& buffer, int sampleCount, Eff
     float threshold = 0.8f;   // Default threshold
     float ratio = 1.8f;       // Default ratio
     
-    // DEVIL limiter relaxation
+    // DEVIL limiter - yumuşak, patlamasız
     if (effect == DEVIL) {
+        threshold = 0.95f;
+        ratio = 1.05f;
+    }
+
+    // BANANA için yumuşak limiter (bebek hissi için)
+    if (effect == BANANA) {
         threshold = 0.9f;
         ratio = 1.2f;
     }
@@ -651,8 +657,9 @@ void PSOLA::applyOutputLimiting(std::vector<float>& buffer, int sampleCount, Eff
         // High-frequency roll-off for tiz patlamaları - GENTLER
         if (i > 16) {
             float diff = buffer[i] - buffer[i-1];
-            if (std::abs(diff) > 0.15f) {  // Increased from 0.1f
-                buffer[i] = buffer[i-1] + (diff > 0 ? 0.15f : -0.15f);
+            float hfThreshold = (effect == BANANA) ? 0.12f : 0.15f;
+            if (std::abs(diff) > hfThreshold) {
+                buffer[i] = buffer[i-1] + (diff > 0 ? hfThreshold : -hfThreshold);
             }
         }
     }

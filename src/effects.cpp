@@ -151,12 +151,6 @@ void MainWindow::processToRobotVoice(QByteArray &data)
                  PSOLA::getDefaultPitchFactor(PSOLA::ROBOT),
                  PSOLA::ROBOT);
 
-    // Add robot-specific characteristics (light square wave modulation)
-    for (int i = 0; i < sampleCount; ++i) {
-        // Very light square wave modulation for robotic feel
-        double modulator = 0.05 * sin(2.0 * M_PI * 50 * i / format->sampleRate()); // 50Hz
-        samples[i] = static_cast<int16_t>(samples[i] * (1.0 + modulator));
-    }
 }
 
 void MainWindow::processToDevilVoice(QByteArray &data)
