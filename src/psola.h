@@ -65,6 +65,15 @@ private:
     float m_ringPhase = 0.0f;
     float m_vibratoPhase = 0.0f;
     
+    // Cave echo effect variables
+    std::vector<float> m_echoBuffer1;
+    std::vector<float> m_echoBuffer2;
+    std::vector<float> m_echoBuffer3;
+    int m_echoIndex1 = 0;
+    int m_echoIndex2 = 0;
+    int m_echoIndex3 = 0;
+    float m_lowPassState = 0.0f;
+    
     // Constants
     static constexpr int MIN_PITCH_HZ = 80;
     static constexpr int MAX_PITCH_HZ = 400;

@@ -286,6 +286,9 @@ private:
     void progressBarOutput();
     void saveLoadout(const QString &loadoutName);
 
+    // PSOLA instance for effects (persistent to preserve echo buffers)
+    PSOLA m_psola;
+
     // Virtual audio fonksiyonları
     void searchVirtualDevices();
     void setupVirtualOutput();

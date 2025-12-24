@@ -1,4 +1,5 @@
 #include "psola.h"
+#include "qdebug.h"
 #include <cmath>
 #include <algorithm>
 #include <iostream>
@@ -11,7 +12,8 @@ using namespace std;
 #define M_PI 3.14159265358979323846
 #endif
 
-PSOLA::PSOLA() : m_lastSample(0.0f), m_hpPrev(0.0f), m_lastInput(0.0f)
+PSOLA::PSOLA() : m_lastSample(0.0f), m_hpPrev(0.0f), m_lastInput(0.0f),
+                   m_echoIndex1(0), m_echoIndex2(0), m_echoIndex3(0), m_lowPassState(0.0f)
 {
 }
 
@@ -27,7 +29,7 @@ float PSOLA::getDefaultPitchFactor(EffectType effect)
         case DEVIL:    return 0.75f;  // Increased from 0.65f (less aggressive)
         case FEMALE:   return 1.3f;
         case COMBINE:  return 1.2f;
-        case EKO:      return 0.0f;   // Echo için pitch değişimi yok
+        case EKO:      return 1.0f;   // Echo için pitch değişimi yok
         default:       return 1.0f;
     }
 }
@@ -71,32 +73,30 @@ void PSOLA::process(int16_t* pcm, int sampleCount, int sampleRate,
     inputLevel = sqrt(inputLevel / sampleCount);
     
     // Noise gate threshold - HAFİF ARTTIRILDI
-    const float noiseGateThreshold = 0.010f;  // Increased from 0.007f
-    const float silenceThreshold = 0.005f;    // Increased from 0.003f
-    
-    // Apply noise gate
+    const float noiseGateThreshold = 0.010f;
+    const float silenceThreshold = 0.005f;
+
+    // Eko için noise gate devre dışı (echo tail'leri korunur)
     std::vector<float> inputFloat(sampleCount);
-    bool hasSignal = inputLevel > 
-        (effect == DEVIL ? 0.004f : noiseGateThreshold);
-    
+    bool hasSignal = (effect == EKO) ? true :
+        inputLevel > (effect == DEVIL ? 0.004f : noiseGateThreshold);
+
     for (int i = 0; i < sampleCount; i++) {
         float sample = pcm[i] / 32768.0f;
-        
-        // Noise gate: attenuate very quiet signals - DEVIL FRIENDLY
-        if (!hasSignal) {
+
+        // Noise gate: attenuate very quiet signals - DEVIL & EKO FRIENDLY
+        if (!hasSignal && effect != EKO) {
             sample *= (effect == DEVIL ? 0.95f : 0.85f);
-        } else {
-            // Soft gate for low-level signals
+        } else if (hasSignal && effect != EKO) {
             float absSample = std::abs(sample);
             if (absSample < silenceThreshold) {
                 sample *= 0.7f;
             }
         }
-        
-        // Soft clip input to prevent extreme values
+
         if (sample > 0.9f) sample = 0.9f + (sample - 0.9f) * 0.3f;
         if (sample < -0.9f) sample = -0.9f + (sample + 0.9f) * 0.3f;
-        
+
         inputFloat[i] = sample;
     }
 
@@ -135,6 +135,7 @@ void PSOLA::process(int16_t* pcm, int sampleCount, int sampleRate,
     
     // ---- MAĞARA EKO ----
     if (effect == EKO) {
+        qDebug() << "Applying cave echo effect";
         applyCaveEcho(buffer, sampleCount, sampleRate);
     }
     
@@ -455,39 +456,46 @@ void PSOLA::applyVibrato(std::vector<float>& buffer, int sampleCount, int sample
 
 void PSOLA::applyCaveEcho(std::vector<float>& buffer, int sampleCount, int sampleRate)
 {
-    // ---- PARAMETRELER ----
-    float delayMs = 120.0f;        // Yankı gecikmesi (mağara hissi)
-    float feedback = 0.55f;        // Yankı tekrar oranı
-    float mix = 0.45f;             // Islak / kuru karışım
-    float damping = 0.6f;          // Boğuklaşma (yüksek frekans kırpma)
+    float delayMs1 = 300.0f;
+    float delayMs2 = 500.0f;
+    float delayMs3 = 750.0f;
+    float feedback1 = 0.7f;
+    float feedback2 = 0.6f;
+    float feedback3 = 0.5f;
+    float mix = 0.8f;
 
-    int delaySamples = static_cast<int>(delayMs * sampleRate / 1000.0f);
-    if (delaySamples <= 0 || delaySamples >= sampleCount)
+    int delaySamples1 = static_cast<int>(delayMs1 * sampleRate / 1000.0f);
+    int delaySamples2 = static_cast<int>(delayMs2 * sampleRate / 1000.0f);
+    int delaySamples3 = static_cast<int>(delayMs3 * sampleRate / 1000.0f);
+
+    if (delaySamples1 <= 0 || delaySamples2 <= 0 || delaySamples3 <= 0)
         return;
 
-    std::vector<float> delayBuffer(sampleCount + delaySamples, 0.0f);
+    if ((int)m_echoBuffer1.size() != delaySamples1)
+        m_echoBuffer1.assign(delaySamples1, 0.0f);
+    if ((int)m_echoBuffer2.size() != delaySamples2)
+        m_echoBuffer2.assign(delaySamples2, 0.0f);
+    if ((int)m_echoBuffer3.size() != delaySamples3)
+        m_echoBuffer3.assign(delaySamples3, 0.0f);
 
-    // Copy original
-    for (int i = 0; i < sampleCount; i++) {
-        delayBuffer[i] = buffer[i + 16];
-    }
+    for (int i = 16; i < sampleCount + 16; i++) {
+        float dry = buffer[i];
+        float echo1 = m_echoBuffer1[m_echoIndex1];
+        float echo2 = m_echoBuffer2[m_echoIndex2];
+        float echo3 = m_echoBuffer3[m_echoIndex3];
 
-    // Echo processing
-    for (int i = delaySamples; i < sampleCount; i++) {
-        float dry = delayBuffer[i];
-        float echo = delayBuffer[i - delaySamples] * feedback;
+        if (i == 16) qDebug() << "Echo: dry=" << dry << " e1=" << echo1 << " e2=" << echo2 << " e3=" << echo3;
 
-        // Low-pass damping → mağara boğukluğu
-        echo = echo * damping + (1.0f - damping) * dry;
+        float totalEcho = echo1 * 0.5f + echo2 * 0.3f + echo3 * 0.2f;
+        buffer[i] = dry + totalEcho * mix;
 
-        delayBuffer[i] = dry + echo;
-    }
+        m_echoBuffer1[m_echoIndex1] = dry + echo1 * feedback1;
+        m_echoBuffer2[m_echoIndex2] = dry + echo2 * feedback2;
+        m_echoBuffer3[m_echoIndex3] = dry + echo3 * feedback3;
 
-    // Mix back
-    for (int i = 0; i < sampleCount; i++) {
-        buffer[i + 16] =
-            buffer[i + 16] * (1.0f - mix) +
-            delayBuffer[i] * mix;
+        m_echoIndex1 = (m_echoIndex1 + 1) % delaySamples1;
+        m_echoIndex2 = (m_echoIndex2 + 1) % delaySamples2;
+        m_echoIndex3 = (m_echoIndex3 + 1) % delaySamples3;
     }
 }
 
@@ -597,6 +605,12 @@ void PSOLA::applyOutputLimiting(std::vector<float>& buffer, int sampleCount, Eff
     if (effect == DEVIL) {
         threshold = 0.9f;
         ratio = 1.2f;
+    }
+
+    // EKO için daha yumuşak limiter (echo tail'leri korunur)
+    if (effect == EKO) {
+        threshold = 0.95f;
+        ratio = 1.05f;
     }
     
     const float attack = 0.995f;    // Softer attack

@@ -13,10 +13,6 @@
   <property name="windowTitle">
    <string>Voice Changer</string>
   </property>
-  <property name="windowIcon">
-   <iconset resource="Soundpack.qrc">
-    <normaloff>:/img/img/app/WhatsApp Image 2024-11-26 at 22.59.00_27fe18d8.jpg</normaloff>:/img/img/app/WhatsApp Image 2024-11-26 at 22.59.00_27fe18d8.jpg</iconset>
-  </property>
   <widget class="QWidget" name="centralwidget">
    <property name="styleSheet">
     <string notr="true">QMainWindow {
@@ -316,7 +312,7 @@ QProgressBar::chunk {
                    <string>s1</string>
                   </property>
                   <property name="icon">
-                   <iconset resource="Soundpack.qrc">
+                   <iconset>
                     <normaloff>:/app/img/app/diskette.png</normaloff>:/app/img/app/diskette.png</iconset>
                   </property>
                  </widget>
@@ -327,7 +323,7 @@ QProgressBar::chunk {
                    <string>l1</string>
                   </property>
                   <property name="icon">
-                   <iconset resource="Soundpack.qrc">
+                   <iconset>
                     <normaloff>:/app/img/app/save-instagram.png</normaloff>:/app/img/app/save-instagram.png</iconset>
                   </property>
                  </widget>
@@ -350,7 +346,7 @@ QProgressBar::chunk {
                    <string>s2</string>
                   </property>
                   <property name="icon">
-                   <iconset resource="Soundpack.qrc">
+                   <iconset>
                     <normaloff>:/app/img/app/diskette.png</normaloff>:/app/img/app/diskette.png</iconset>
                   </property>
                  </widget>
@@ -361,7 +357,7 @@ QProgressBar::chunk {
                    <string>l2</string>
                   </property>
                   <property name="icon">
-                   <iconset resource="Soundpack.qrc">
+                   <iconset>
                     <normaloff>:/app/img/app/save-instagram.png</normaloff>:/app/img/app/save-instagram.png</iconset>
                   </property>
                  </widget>
@@ -384,7 +380,7 @@ QProgressBar::chunk {
                    <string>s3</string>
                   </property>
                   <property name="icon">
-                   <iconset resource="Soundpack.qrc">
+                   <iconset>
                     <normaloff>:/app/img/app/diskette.png</normaloff>:/app/img/app/diskette.png</iconset>
                   </property>
                  </widget>
@@ -395,7 +391,7 @@ QProgressBar::chunk {
                    <string>l3</string>
                   </property>
                   <property name="icon">
-                   <iconset resource="Soundpack.qrc">
+                   <iconset>
                     <normaloff>:/app/img/app/save-instagram.png</normaloff>:/app/img/app/save-instagram.png</iconset>
                   </property>
                  </widget>
@@ -418,7 +414,7 @@ QProgressBar::chunk {
                    <string>s4</string>
                   </property>
                   <property name="icon">
-                   <iconset resource="Soundpack.qrc">
+                   <iconset>
                     <normaloff>:/app/img/app/diskette.png</normaloff>:/app/img/app/diskette.png</iconset>
                   </property>
                  </widget>
@@ -429,7 +425,7 @@ QProgressBar::chunk {
                    <string>l4</string>
                   </property>
                   <property name="icon">
-                   <iconset resource="Soundpack.qrc">
+                   <iconset>
                     <normaloff>:/app/img/app/save-instagram.png</normaloff>:/app/img/app/save-instagram.png</iconset>
                   </property>
                  </widget>
@@ -452,7 +448,7 @@ QProgressBar::chunk {
                    <string>s5</string>
                   </property>
                   <property name="icon">
-                   <iconset resource="Soundpack.qrc">
+                   <iconset>
                     <normaloff>:/app/img/app/diskette.png</normaloff>:/app/img/app/diskette.png</iconset>
                   </property>
                  </widget>
@@ -463,7 +459,7 @@ QProgressBar::chunk {
                    <string>l5</string>
                   </property>
                   <property name="icon">
-                   <iconset resource="Soundpack.qrc">
+                   <iconset>
                     <normaloff>:/app/img/app/save-instagram.png</normaloff>:/app/img/app/save-instagram.png</iconset>
                   </property>
                  </widget>
@@ -611,7 +607,7 @@ QProgressBar::chunk {
                     <string/>
                    </property>
                    <property name="icon">
-                    <iconset resource="Soundpack.qrc">
+                    <iconset>
                      <normaloff>:/img/img/yArra.jpg</normaloff>:/img/img/yArra.jpg</iconset>
                    </property>
                    <property name="iconSize">
@@ -643,7 +639,7 @@ QProgressBar::chunk {
                     <string/>
                    </property>
                    <property name="icon">
-                    <iconset resource="Soundpack.qrc">
+                    <iconset>
                      <normaloff>:/img/img/yArra-Earrape.jpg</normaloff>:/img/img/yArra-Earrape.jpg</iconset>
                    </property>
                    <property name="iconSize">
@@ -675,7 +671,7 @@ QProgressBar::chunk {
                     <string/>
                    </property>
                    <property name="icon">
-                    <iconset resource="Soundpack.qrc">
+                    <iconset>
                      <normaloff>:/img/img/chineseRap.jpeg</normaloff>:/img/img/chineseRap.jpeg</iconset>
                    </property>
                    <property name="iconSize">
@@ -707,7 +703,7 @@ QProgressBar::chunk {
                     <string/>
                    </property>
                    <property name="icon">
-                    <iconset resource="Soundpack.qrc">
+                    <iconset>
                      <normaloff>:/img/img/ohacet.jpg</normaloff>:/img/img/ohacet.jpg</iconset>
                    </property>
                    <property name="iconSize">
@@ -739,7 +735,7 @@ QProgressBar::chunk {
                     <string/>
                    </property>
                    <property name="icon">
-                    <iconset resource="Soundpack.qrc">
+                    <iconset>
                      <normaloff>:/img/img/talisca.jpeg</normaloff>:/img/img/talisca.jpeg</iconset>
                    </property>
                    <property name="iconSize">
@@ -795,7 +791,7 @@ QProgressBar::chunk {
                     <string/>
                    </property>
                    <property name="icon">
-                    <iconset resource="Soundpack.qrc">
+                    <iconset>
                      <normaloff>:/app/img/app/bin (2).png</normaloff>:/app/img/app/bin (2).png</iconset>
                    </property>
                   </widget>
@@ -815,7 +811,7 @@ QProgressBar::chunk {
                     <string/>
                    </property>
                    <property name="icon">
-                    <iconset resource="Soundpack.qrc">
+                    <iconset>
                      <normaloff>:/app/img/app/bin (2).png</normaloff>:/app/img/app/bin (2).png</iconset>
                    </property>
                   </widget>
@@ -835,7 +831,7 @@ QProgressBar::chunk {
                     <string/>
                    </property>
                    <property name="icon">
-                    <iconset resource="Soundpack.qrc">
+                    <iconset>
                      <normaloff>:/app/img/app/bin (2).png</normaloff>:/app/img/app/bin (2).png</iconset>
                    </property>
                   </widget>
@@ -855,7 +851,7 @@ QProgressBar::chunk {
                     <string/>
                    </property>
                    <property name="icon">
-                    <iconset resource="Soundpack.qrc">
+                    <iconset>
                      <normaloff>:/app/img/app/bin (2).png</normaloff>:/app/img/app/bin (2).png</iconset>
                    </property>
                   </widget>
@@ -875,7 +871,7 @@ QProgressBar::chunk {
                     <string/>
                    </property>
                    <property name="icon">
-                    <iconset resource="Soundpack.qrc">
+                    <iconset>
                      <normaloff>:/app/img/app/bin (2).png</normaloff>:/app/img/app/bin (2).png</iconset>
                    </property>
                   </widget>
@@ -931,7 +927,7 @@ QProgressBar::chunk {
                     <string/>
                    </property>
                    <property name="icon">
-                    <iconset resource="Soundpack.qrc">
+                    <iconset>
                      <normaloff>:/img/img/trollface.jpg</normaloff>:/img/img/trollface.jpg</iconset>
                    </property>
                    <property name="iconSize">
@@ -957,7 +953,7 @@ QProgressBar::chunk {
                     <string/>
                    </property>
                    <property name="icon">
-                    <iconset resource="Soundpack.qrc">
+                    <iconset>
                      <normaloff>:/img/img/sus.jpg</normaloff>:/img/img/sus.jpg</iconset>
                    </property>
                    <property name="iconSize">
@@ -983,7 +979,7 @@ QProgressBar::chunk {
                     <string/>
                    </property>
                    <property name="icon">
-                    <iconset resource="Soundpack.qrc">
+                    <iconset>
                      <normaloff>:/img/img/osuruk1.jpg</normaloff>:/img/img/osuruk1.jpg</iconset>
                    </property>
                    <property name="iconSize">
@@ -1009,7 +1005,7 @@ QProgressBar::chunk {
                     <string/>
                    </property>
                    <property name="icon">
-                    <iconset resource="Soundpack.qrc">
+                    <iconset>
                      <normaloff>:/img/img/osuruk.jpg</normaloff>:/img/img/osuruk.jpg</iconset>
                    </property>
                    <property name="iconSize">
@@ -1035,7 +1031,7 @@ QProgressBar::chunk {
                     <string/>
                    </property>
                    <property name="icon">
-                    <iconset resource="Soundpack.qrc">
+                    <iconset>
                      <normaloff>:/img/img/osuru2.jpg</normaloff>:/img/img/osuru2.jpg</iconset>
                    </property>
                    <property name="iconSize">
@@ -1091,7 +1087,7 @@ QProgressBar::chunk {
                     <string/>
                    </property>
                    <property name="icon">
-                    <iconset resource="Soundpack.qrc">
+                    <iconset>
                      <normaloff>:/app/img/app/bin (2).png</normaloff>:/app/img/app/bin (2).png</iconset>
                    </property>
                   </widget>
@@ -1111,7 +1107,7 @@ QProgressBar::chunk {
                     <string/>
                    </property>
                    <property name="icon">
-                    <iconset resource="Soundpack.qrc">
+                    <iconset>
                      <normaloff>:/app/img/app/bin (2).png</normaloff>:/app/img/app/bin (2).png</iconset>
                    </property>
                   </widget>
@@ -1131,7 +1127,7 @@ QProgressBar::chunk {
                     <string/>
                    </property>
                    <property name="icon">
-                    <iconset resource="Soundpack.qrc">
+                    <iconset>
                      <normaloff>:/app/img/app/bin (2).png</normaloff>:/app/img/app/bin (2).png</iconset>
                    </property>
                   </widget>
@@ -1151,7 +1147,7 @@ QProgressBar::chunk {
                     <string/>
                    </property>
                    <property name="icon">
-                    <iconset resource="Soundpack.qrc">
+                    <iconset>
                      <normaloff>:/app/img/app/bin (2).png</normaloff>:/app/img/app/bin (2).png</iconset>
                    </property>
                   </widget>
@@ -1171,7 +1167,7 @@ QProgressBar::chunk {
                     <string/>
                    </property>
                    <property name="icon">
-                    <iconset resource="Soundpack.qrc">
+                    <iconset>
                      <normaloff>:/app/img/app/bin (2).png</normaloff>:/app/img/app/bin (2).png</iconset>
                    </property>
                   </widget>
@@ -1337,7 +1333,7 @@ QProgressBar::chunk {
                     <string/>
                    </property>
                    <property name="icon">
-                    <iconset resource="Soundpack.qrc">
+                    <iconset>
                      <normaloff>:/app/img/app/bin (2).png</normaloff>:/app/img/app/bin (2).png</iconset>
                    </property>
                   </widget>
@@ -1357,7 +1353,7 @@ QProgressBar::chunk {
                     <string/>
                    </property>
                    <property name="icon">
-                    <iconset resource="Soundpack.qrc">
+                    <iconset>
                      <normaloff>:/app/img/app/bin (2).png</normaloff>:/app/img/app/bin (2).png</iconset>
                    </property>
                   </widget>
@@ -1377,7 +1373,7 @@ QProgressBar::chunk {
                     <string/>
                    </property>
                    <property name="icon">
-                    <iconset resource="Soundpack.qrc">
+                    <iconset>
                      <normaloff>:/app/img/app/bin (2).png</normaloff>:/app/img/app/bin (2).png</iconset>
                    </property>
                   </widget>
@@ -1397,7 +1393,7 @@ QProgressBar::chunk {
                     <string/>
                    </property>
                    <property name="icon">
-                    <iconset resource="Soundpack.qrc">
+                    <iconset>
                      <normaloff>:/app/img/app/bin (2).png</normaloff>:/app/img/app/bin (2).png</iconset>
                    </property>
                   </widget>
@@ -1417,7 +1413,7 @@ QProgressBar::chunk {
                     <string/>
                    </property>
                    <property name="icon">
-                    <iconset resource="Soundpack.qrc">
+                    <iconset>
                      <normaloff>:/app/img/app/bin (2).png</normaloff>:/app/img/app/bin (2).png</iconset>
                    </property>
                   </widget>
@@ -1583,7 +1579,7 @@ QProgressBar::chunk {
                     <string/>
                    </property>
                    <property name="icon">
-                    <iconset resource="Soundpack.qrc">
+                    <iconset>
                      <normaloff>:/app/img/app/bin (2).png</normaloff>:/app/img/app/bin (2).png</iconset>
                    </property>
                   </widget>
@@ -1603,7 +1599,7 @@ QProgressBar::chunk {
                     <string/>
                    </property>
                    <property name="icon">
-                    <iconset resource="Soundpack.qrc">
+                    <iconset>
                      <normaloff>:/app/img/app/bin (2).png</normaloff>:/app/img/app/bin (2).png</iconset>
                    </property>
                   </widget>
@@ -1623,7 +1619,7 @@ QProgressBar::chunk {
                     <string/>
                    </property>
                    <property name="icon">
-                    <iconset resource="Soundpack.qrc">
+                    <iconset>
                      <normaloff>:/app/img/app/bin (2).png</normaloff>:/app/img/app/bin (2).png</iconset>
                    </property>
                   </widget>
@@ -1643,7 +1639,7 @@ QProgressBar::chunk {
                     <string/>
                    </property>
                    <property name="icon">
-                    <iconset resource="Soundpack.qrc">
+                    <iconset>
                      <normaloff>:/app/img/app/bin (2).png</normaloff>:/app/img/app/bin (2).png</iconset>
                    </property>
                   </widget>
@@ -1663,7 +1659,7 @@ QProgressBar::chunk {
                     <string/>
                    </property>
                    <property name="icon">
-                    <iconset resource="Soundpack.qrc">
+                    <iconset>
                      <normaloff>:/app/img/app/bin (2).png</normaloff>:/app/img/app/bin (2).png</iconset>
                    </property>
                   </widget>
@@ -1765,7 +1761,7 @@ QProgressBar::chunk {
              <string/>
             </property>
             <property name="icon">
-             <iconset resource="Soundpack.qrc">
+             <iconset>
               <normaloff>:/app/img/app/menu.png</normaloff>:/app/img/app/menu.png</iconset>
             </property>
            </widget>
@@ -1856,7 +1852,7 @@ QProgressBar::chunk {
                 <string/>
                </property>
                <property name="icon">
-                <iconset resource="Soundpack.qrc">
+                <iconset>
                  <normaloff>:/app/img/app/refresh.png</normaloff>:/app/img/app/refresh.png</iconset>
                </property>
               </widget>
@@ -1939,7 +1935,7 @@ QProgressBar::chunk {
                 <string/>
                </property>
                <property name="icon">
-                <iconset resource="Soundpack.qrc">
+                <iconset>
                  <normaloff>:/app/img/app/microphone.png</normaloff>:/app/img/app/microphone.png</iconset>
                </property>
                <property name="iconSize">
@@ -2032,7 +2028,7 @@ QProgressBar::chunk {
                 <string/>
                </property>
                <property name="icon">
-                <iconset resource="Soundpack.qrc">
+                <iconset>
                  <normaloff>:/app/img/app/refresh.png</normaloff>:/app/img/app/refresh.png</iconset>
                </property>
               </widget>
@@ -2255,7 +2251,7 @@ QProgressBar::chunk {
                 <string/>
                </property>
                <property name="icon">
-                <iconset resource="Soundpack.qrc">
+                <iconset>
                  <normaloff>:/app/img/app/record.png</normaloff>:/app/img/app/record.png</iconset>
                </property>
               </widget>
@@ -2266,7 +2262,7 @@ QProgressBar::chunk {
                 <string/>
                </property>
                <property name="icon">
-                <iconset resource="Soundpack.qrc">
+                <iconset>
                  <normaloff>:/app/img/app/stop-button.png</normaloff>:/app/img/app/stop-button.png</iconset>
                </property>
               </widget>
@@ -2361,7 +2357,7 @@ QProgressBar::chunk {
              <string/>
             </property>
             <property name="icon">
-             <iconset resource="Soundpack.qrc">
+             <iconset>
               <normaloff>:/app/img/app/menu.png</normaloff>:/app/img/app/menu.png</iconset>
             </property>
            </widget>
@@ -2375,7 +2371,7 @@ QProgressBar::chunk {
           <string>Çocuk</string>
          </property>
          <property name="icon">
-          <iconset resource="Soundpack.qrc">
+          <iconset>
            <normaloff>:/app/img/app/children.png</normaloff>:/app/img/app/children.png</iconset>
          </property>
          <property name="iconSize">
@@ -2395,7 +2391,7 @@ QProgressBar::chunk {
           <string>eko</string>
          </property>
          <property name="icon">
-          <iconset resource="Soundpack.qrc">
+          <iconset>
            <normaloff>:/app/img/app/cave.png</normaloff>:/app/img/app/cave.png</iconset>
          </property>
          <property name="iconSize">
@@ -2415,7 +2411,7 @@ QProgressBar::chunk {
           <string>Robot</string>
          </property>
          <property name="icon">
-          <iconset resource="Soundpack.qrc">
+          <iconset>
            <normaloff>:/app/img/app/robot.png</normaloff>:/app/img/app/robot.png</iconset>
          </property>
          <property name="iconSize">
@@ -2435,7 +2431,7 @@ QProgressBar::chunk {
           <string>Canavar </string>
          </property>
          <property name="icon">
-          <iconset resource="Soundpack.qrc">
+          <iconset>
            <normaloff>:/app/img/app/ogre.png</normaloff>:/app/img/app/ogre.png</iconset>
          </property>
          <property name="iconSize">
@@ -2455,7 +2451,7 @@ QProgressBar::chunk {
           <string>kadın </string>
          </property>
          <property name="icon">
-          <iconset resource="Soundpack.qrc">
+          <iconset>
            <normaloff>:/app/img/app/woman.png</normaloff>:/app/img/app/woman.png</iconset>
          </property>
          <property name="iconSize">
@@ -2475,7 +2471,7 @@ QProgressBar::chunk {
           <string>overwatch</string>
          </property>
          <property name="icon">
-          <iconset resource="Soundpack.qrc">
+          <iconset>
            <normaloff>:/app/img/app/lambda.png</normaloff>:/app/img/app/lambda.png</iconset>
          </property>
          <property name="iconSize">
@@ -2511,9 +2507,7 @@ QProgressBar::chunk {
    </layout>
   </widget>
  </widget>
- <resources>
-  <include location="Soundpack.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>max</sender>

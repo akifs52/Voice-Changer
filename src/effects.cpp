@@ -108,12 +108,12 @@ void MainWindow::processToBananaVoice(QByteArray &data)
     if (data.isEmpty() || data.size() < sizeof(int16_t)) {
         return;
     }
-    
+
     if (!format) {
         qWarning() << "Audio format is null in processToBananaVoice";
         return;
     }
-    
+
     int16_t *samples = reinterpret_cast<int16_t *>(data.data());
     int sampleCount = data.size() / sizeof(int16_t);
 
@@ -122,9 +122,7 @@ void MainWindow::processToBananaVoice(QByteArray &data)
         return;
     }
 
-    // PSOLA ile bebek sesi efekti (BANANA effect type)
-    PSOLA psola;
-    psola.process(samples, sampleCount, format->sampleRate(), 
+    m_psola.process(samples, sampleCount, format->sampleRate(),
                  PSOLA::getDefaultPitchFactor(PSOLA::BANANA),
                  PSOLA::BANANA);
 }
@@ -135,12 +133,12 @@ void MainWindow::processToRobotVoice(QByteArray &data)
     if (data.isEmpty() || data.size() < sizeof(int16_t)) {
         return;
     }
-    
+
     if (!format) {
         qWarning() << "Audio format is null in processToRobotVoice";
         return;
     }
-    
+
     int16_t *samples = reinterpret_cast<int16_t *>(data.data());
     int sampleCount = data.size() / sizeof(int16_t);
 
@@ -149,12 +147,10 @@ void MainWindow::processToRobotVoice(QByteArray &data)
         return;
     }
 
-    // PSOLA ile robot sesi efekti (ROBOT effect type)
-    PSOLA psola;
-    psola.process(samples, sampleCount, format->sampleRate(), 
+    m_psola.process(samples, sampleCount, format->sampleRate(),
                  PSOLA::getDefaultPitchFactor(PSOLA::ROBOT),
                  PSOLA::ROBOT);
-    
+
     // Add robot-specific characteristics (light square wave modulation)
     for (int i = 0; i < sampleCount; ++i) {
         // Very light square wave modulation for robotic feel
@@ -169,12 +165,12 @@ void MainWindow::processToDevilVoice(QByteArray &data)
     if (data.isEmpty() || data.size() < sizeof(int16_t)) {
         return;
     }
-    
+
     if (!format) {
         qWarning() << "Audio format is null in processToDevilVoice";
         return;
     }
-    
+
     int16_t *samples = reinterpret_cast<int16_t *>(data.data());
     int sampleCount = data.size() / sizeof(int16_t);
 
@@ -183,9 +179,7 @@ void MainWindow::processToDevilVoice(QByteArray &data)
         return;
     }
 
-    // PSOLA ile şeytan sesi efekti (DEVIL effect type)
-    PSOLA psola;
-    psola.process(samples, sampleCount, format->sampleRate(), 
+    m_psola.process(samples, sampleCount, format->sampleRate(),
                  PSOLA::getDefaultPitchFactor(PSOLA::DEVIL),
                  PSOLA::DEVIL);
 }
@@ -196,12 +190,12 @@ void MainWindow::processToFemaleVoice(QByteArray &data)
     if (data.isEmpty() || data.size() < sizeof(int16_t)) {
         return;
     }
-    
+
     if (!format) {
         qWarning() << "Audio format is null in processToFemaleVoice";
         return;
     }
-    
+
     int16_t *samples = reinterpret_cast<int16_t *>(data.data());
     int sampleCount = data.size() / sizeof(int16_t);
 
@@ -210,9 +204,7 @@ void MainWindow::processToFemaleVoice(QByteArray &data)
         return;
     }
 
-    // PSOLA ile kadın sesi efekti (FEMALE effect type)
-    PSOLA psola;
-    psola.process(samples, sampleCount, format->sampleRate(), 
+    m_psola.process(samples, sampleCount, format->sampleRate(),
                  PSOLA::getDefaultPitchFactor(PSOLA::FEMALE),
                  PSOLA::FEMALE);
 }
@@ -223,12 +215,12 @@ void MainWindow::processToCombineVoice(QByteArray &data)
     if (data.isEmpty() || data.size() < sizeof(int16_t)) {
         return;
     }
-    
+
     if (!format) {
         qWarning() << "Audio format is null in processToCombineVoice";
         return;
     }
-    
+
     int16_t *samples = reinterpret_cast<int16_t *>(data.data());
     int sampleCount = data.size() / sizeof(int16_t);
 
@@ -237,25 +229,9 @@ void MainWindow::processToCombineVoice(QByteArray &data)
         return;
     }
 
-    // PSOLA ile birleşik ses efekti (COMBINE effect type)
-    PSOLA psola;
-    psola.process(samples, sampleCount, format->sampleRate(), 
+    m_psola.process(samples, sampleCount, format->sampleRate(),
                  PSOLA::getDefaultPitchFactor(PSOLA::COMBINE),
                  PSOLA::COMBINE);
-    
-    // Add combine-specific characteristics (light distortion and noise)
-    for (int i = 0; i < sampleCount; ++i) {
-        // Very light distortion
-        if (samples[i] > 30000) {
-            samples[i] = 30000;
-        } else if (samples[i] < -30000) {
-            samples[i] = -30000;
-        }
-        
-        // Very light noise for texture
-        double noise = (rand() % 200 - 100) / 1000.0;
-        samples[i] = static_cast<int16_t>(samples[i] + noise);
-    }
 }
 
 void MainWindow::processToEkoVoice(QByteArray &data)
@@ -264,12 +240,12 @@ void MainWindow::processToEkoVoice(QByteArray &data)
     if (data.isEmpty() || data.size() < sizeof(int16_t)) {
         return;
     }
-    
+
     if (!format) {
         qWarning() << "Audio format is null in processToEkoVoice";
         return;
     }
-    
+
     int16_t *samples = reinterpret_cast<int16_t *>(data.data());
     int sampleCount = data.size() / sizeof(int16_t);
 
@@ -278,45 +254,9 @@ void MainWindow::processToEkoVoice(QByteArray &data)
         return;
     }
 
-    // PSOLA ile eko ses efekti (EKO effect type)
-    PSOLA psola;
-    psola.process(samples, sampleCount, format->sampleRate(), 
-                 PSOLA::getDefaultPitchFactor(PSOLA::EKO),
-                 PSOLA::EKO);
-    
-    // Add echo-specific characteristics (light cave echo)
-    double decay1 = 0.3;  // İlk yankı gücü
-    double decay2 = 0.2;   // İkinci yankı gücü  
-    int delay1 = format->sampleRate() / 10;  // 100ms - ilk yankı
-    int delay2 = format->sampleRate() / 6;   // 166ms - ikinci yankı
-
-    // Create echo buffer
-    QVector<int16_t> echoBuffer(sampleCount + delay2, 0);
-    
-    // Copy original samples
-    for (int i = 0; i < sampleCount; ++i) {
-        echoBuffer[i] = samples[i];
-    }
-
-    // Add echo effects
-    for (int i = 0; i < sampleCount; ++i) {
-        // İlk yankı
-        if (i + delay1 < echoBuffer.size()) {
-            echoBuffer[i + delay1] += static_cast<int16_t>(samples[i] * decay1);
-        }
-        
-        // İkinci yankı
-        if (i + delay2 < echoBuffer.size()) {
-            echoBuffer[i + delay2] += static_cast<int16_t>(samples[i] * decay2);
-        }
-    }
-
-    // Copy back with limiting
-    data.resize(echoBuffer.size() * sizeof(int16_t));
-    int16_t *newSamples = reinterpret_cast<int16_t *>(data.data());
-    for (int i = 0; i < echoBuffer.size(); ++i) {
-        newSamples[i] = static_cast<int16_t>(qBound(-15000, echoBuffer[i], 15000));
-    }
+    m_psola.process(samples, sampleCount, format->sampleRate(),
+                  PSOLA::getDefaultPitchFactor(PSOLA::EKO),
+                  PSOLA::EKO);
 }
 
 

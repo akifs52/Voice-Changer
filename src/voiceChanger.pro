@@ -17,6 +17,7 @@ SOURCES += \
     loadouts.cpp \
     main.cpp \
     mainwindow.cpp \
+    psola.cpp \
     recorder.cpp \
     soundpack.cpp \
     audiopipeline.cpp
@@ -28,6 +29,7 @@ HEADERS += \
     hotkeys.h \
     loadouts.h \
     mainwindow.h \
+    psola.h \
     recorder.h \
     soundpack.h \
     audiopipeline.h
