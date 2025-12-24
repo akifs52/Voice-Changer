@@ -537,7 +537,7 @@ void MainWindow::progressBarOutput()
     int progressValue = static_cast<int>(normalizedAmplitude * 100); // 0-100 arası değer
 
     ui->progressBar->setValue(progressValue); // Progress bar güncelle
-    qDebug() << "Volume Level:" << progressValue;
+    //qDebug() << "Volume Level:" << progressValue;
 }
 
 // Virtual Audio fonksiyonları
