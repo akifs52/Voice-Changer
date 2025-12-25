@@ -24,8 +24,7 @@ public:
     void process(int16_t* pcm, int sampleCount, int sampleRate, 
                  float pitchFactor = 1.0f, 
                  EffectType effect = BANANA,
-                 float filterStrength = 0.0f,
-                 bool enableSmoothing = true);
+                 float filterStrength = 0.0f);
     
     // Get default parameters for each effect type
     static float getDefaultPitchFactor(EffectType effect);
@@ -47,23 +46,21 @@ private:
                            float cutoff, int sampleRate);
     void applyLowPassFilter(std::vector<float>& buffer, float strength,
                           float cutoff, int sampleRate);
-    void applyOutputLimiting(std::vector<float>& buffer, int sampleCount, EffectType effect, bool hasSignal);
+    void applyOutputLimiting(std::vector<float>& buffer, int sampleCount);
     
     // Effect enhancement functions
     void applyRingModulation(std::vector<float>& buffer, int sampleCount, int sampleRate, float modFreq);
-    void applyVibrato(std::vector<float>& buffer, int sampleCount, int sampleRate, 
-                      float rate, float depth);
     void applyCaveEcho(std::vector<float>& buffer, int sampleCount, int sampleRate);
     
     // Utility functions
     float hanningWindow(int n, int N);
+    
     
     // Member variables for continuity
     float m_lastSample;
     float m_hpPrev;
     float m_lastInput;
     float m_ringPhase = 0.0f;
-    float m_vibratoPhase = 0.0f;
     
     // Cave echo effect variables
     std::vector<float> m_echoBuffer1;
