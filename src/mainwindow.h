@@ -55,6 +55,7 @@ protected:
 signals:
     void audioDataReady(const QByteArray &processedAudio);
     void preloadFinished();
+    void writeSoundpackToOutput(const QByteArray &data);
 
 private slots:
     // All the original slots...
@@ -154,6 +155,7 @@ private slots:
     void on_comboBox19_currentTextChanged(const QString &key);
     void on_comboBox20_currentTextChanged(const QString &key);
 
+
 private:
     Ui::MainWindow *ui;
 
@@ -208,6 +210,11 @@ private:
     bool isRecording = false;
     bool testButtonWasActive = false;
     QElapsedTimer recordingTimer;
+    QElapsedTimer recordingDurationTimer;
+    qint64 recordingStartTime = 0;
+    qint64 totalRecordedBytes = 0;
+    int recordBufferThreshold = 1024 * 10;
+    QString currentRecordingFile;
 
     // Hotkey assignments
     QMap<QString, int> m_hotkeyAssignments; // KeySequence -> Sound Index (1-20)

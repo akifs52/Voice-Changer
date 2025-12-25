@@ -7,6 +7,7 @@
 #include <QDesktopServices>
 #include <QProcess>
 #include <QIcon>
+#include <QThread>
 
 #ifdef Q_OS_WIN
 #include <windows.h>
@@ -74,6 +75,8 @@ MainWindow::MainWindow(QWidget *parent)
     preloadAudio(filename10);
     qDebug() << "Default sound files preloading started";
 
+    // Connect signal for main thread output device writing - DISABLED
+    // connect(this, &MainWindow::writeSoundpackToOutput, this, &MainWindow::handleSoundpackOutput);
 
 }
 
@@ -193,7 +196,7 @@ void MainWindow::searchOutputDevice()
 
 void MainWindow::on_inputslider_valueChanged(int value)
 {
-    ui->inputlabel->setText(QString::number(value).arg("%0"));
+    ui->inputlabel->setText(QString::number(value));
 
     if (audioInput) {
         ui->inputslider->setValue(static_cast<int>(audioInput->volume() * 100));
@@ -207,9 +210,7 @@ void MainWindow::on_inputslider_valueChanged(int value)
 
 void MainWindow::on_outputslider_valueChanged(int value)
 {
-
-
-    ui->outputlabel->setText(QString::number(value).arg("%0"));
+    ui->outputlabel->setText(QString::number(value));
 
     if (audioOutput) {
         ui->outputslider->setValue(static_cast<int>(audioOutput->volume() * 100));
@@ -422,7 +423,7 @@ void MainWindow::on_testButton_clicked(bool checked)
             }
             
             // Test modu bağlantısı kur - efekt durumunu kontrol et
-            if (inputDevice) {
+            if (inputDevice && !isRecording) {
                 connect(inputDevice, &QIODevice::readyRead, this, [=]() {
                     data = inputDevice->readAll();
                     
@@ -477,7 +478,7 @@ void MainWindow::on_testButton_clicked(bool checked)
                 // Bir efekt aktifse, onun bağlantısını kur
                 // Bu stopAllEffects içinde handled olur
                 stopAllEffects();
-            } else {
+            } else if (!isRecording) {
                 // Normal mod için bağlantı kur - virtual output'a her zaman gönder
                 connect(inputDevice, &QIODevice::readyRead, this, [=]() {
                     data = inputDevice->readAll();
@@ -510,16 +511,44 @@ void MainWindow::on_testButton_clicked(bool checked)
 
 void MainWindow::progressBarOutput()
 {
+    // During recording, inputDevice might be disconnected for effect switching
+    // Handle this case gracefully
     if(!inputDevice || !outputDevice)
     {
-        qCritical() << "Input or output device is null.";
+        // Only show critical error when not recording
+        if (!isRecording) {
+            qCritical() << "Input or output device is null.";
+        }
         return;
     }
 
     // data değişkeni zaten efekt tarafından doldurulmuş olmalı
     if(data.isEmpty())
     {
-        qWarning() << "No data available for progress bar.";
+        // During recording, try to get data from AudioPipeline if input data is empty
+        if (isRecording && audioPipeline) {
+            QByteArray mixedData = audioPipeline->getMixedAudioData(1024);
+            if (!mixedData.isEmpty()) {
+                // Use mixed data for progress bar during recording
+                qint16 *samples = reinterpret_cast<qint16 *>(mixedData.data());
+                int numSamples = mixedData.size() / sizeof(qint16);
+                qint16 maxAmplitude = 0;
+
+                for (int i = 0; i < numSamples; ++i) {
+                    maxAmplitude = qMax(maxAmplitude, qAbs(samples[i]));
+                }
+
+                // Progress bar'ı güncelle (0-100 arası)
+                int progress = (maxAmplitude * 100) / 32768;
+                ui->inputslider->setValue(progress);
+                return;
+            }
+        }
+        
+        // During recording, data might be temporarily empty during effect switching
+        if (!isRecording) {
+            qWarning() << "No data available for progress bar.";
+        }
         return;
     }
 
@@ -688,4 +717,5 @@ void MainWindow::on_virtualslider_valueChanged(int value)
         virtualAudioOutput->setVolume(volume);
     }
 }
+
 

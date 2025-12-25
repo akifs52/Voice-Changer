@@ -4,6 +4,14 @@
 #include "mainwindow.h"
 #include "psola.h"
 
+
+effects::effects(QWidget *parent)
+    : QMainWindow{parent}
+
+{
+
+}
+
 // Efekt yönetimi için yardımcı fonksiyon
 void MainWindow::stopAllEffects()
 {
@@ -56,7 +64,7 @@ void MainWindow::stopAllEffects()
                 }
 
                 // Test modunda normal output'a da doğrudan gönder (kullanıcı duymalı)
-                if (outputDevice && outputDevice->isOpen()) {
+                if (ui->testButton->isChecked() && outputDevice && outputDevice->isOpen()) {
                     outputDevice->write(data);
                 }
             });
@@ -66,25 +74,12 @@ void MainWindow::stopAllEffects()
                 data = inputDevice->readAll();
                 progressBarOutput();
 
-                // Emit signal for recording when recording is active
-                if (isRecording) {
-                    qDebug() << "EMITTING SIGNAL (EFFECT-NORMAL): Audio size:" << data.size() << "bytes";
-                    emit audioDataReady(data);
-                }
-
-                // Normal output'a gönderme (test modu kapalı olduğu için)
-
-                // Sadece virtual output'a gönder
                 if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
-                    // AudioPipeline kullanarak gönder
                     if (audioPipeline) {
                         audioPipeline->writeInputAudio(data);
                     } else {
                         virtualOutputDevice->write(data);
                     }
-                    qDebug() << "Effects stopped: Writing effect-free audio to virtual output, size:" << data.size() << "bytes";
-                } else {
-                    qWarning() << "Effects stopped: Virtual output device not available!";
                 }
             });
         }
@@ -95,12 +90,7 @@ void MainWindow::stopAllEffects()
 }
 
 
-effects::effects(QWidget *parent)
-    : QMainWindow{parent}
 
-{
-
-}
 
 void MainWindow::processToBananaVoice(QByteArray &data)
 {
@@ -265,39 +255,27 @@ void MainWindow::on_robotButton_clicked(bool checked)
         ui->robotButton->setChecked(true);
         ui->robotButton->setText("Stop");
 
-        // Audio input'u kontrol et ama kapatma
         if(audioInput)
         {
-            // Mevcut bağlantıyı kopar
-            disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
+            if (!isRecording) {
+                disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
+            }
 
-            // Yeni efekt bağlantısı kur
             connect(inputDevice, &QIODevice::readyRead, this, [=](){
                 data = inputDevice->readAll();
                 processToRobotVoice(data);
                 progressBarOutput();
-                // Emit signal for recording when recording is active
-                if (isRecording) {
-                    emit audioDataReady(data);
-                } // Progress bar'ı güncelle
 
-                // Emit signal for recording when recording is active (after effects)
-                if (isRecording) {
-                    qDebug() << "EMITTING SIGNAL (ROBOT): Processed audio size:" << data.size() << "bytes";
-                    emit audioDataReady(data);
-                }
-
-                // Her zaman virtual output'a gönder (Cable Input)
                 if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
-                    // AudioPipeline kullanarak efekti sesi gönder
                     if (audioPipeline) {
                         audioPipeline->writeEffectsAudio(data);
+
+                        audioPipeline->processBuffers();
                     } else {
                         virtualOutputDevice->write(data);
                     }
                 }
 
-                // SADECE test modunda fiziksel output'a gönder
                 if (ui->testButton->isChecked()) {
                     if (outputDevice && outputDevice->isOpen()) {
                         outputDevice->write(data);
@@ -309,7 +287,7 @@ void MainWindow::on_robotButton_clicked(bool checked)
             qWarning() << "Audio devices are not properly initialized.";
         }
 
-        usingEffects = false; // Efekt modu
+        usingEffects = false;
         qDebug() << "robot effect started.";
     }
     else
@@ -340,7 +318,7 @@ void MainWindow::on_robotButton_clicked(bool checked)
                         }
                     }
                     // Sonra normal output'a gönder
-                    if (outputDevice && outputDevice->isOpen()) {
+                    if (ui->testButton->isChecked() && outputDevice && outputDevice->isOpen()) {
                         outputDevice->write(data);
                     }
                 });
@@ -384,24 +362,20 @@ void MainWindow::on_bananaButton_clicked(bool checked)
         ui->bananaButton->setText("Stop");
 
         if (audioInput) {
-            // Mevcut bağlantıyı kopar
-            disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
+            if (!isRecording) {
+                disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
+            }
 
-            // Yeni efekt bağlantısı kur
             connect(inputDevice, &QIODevice::readyRead, this, [=]() {
                 data = inputDevice->readAll();
                 processToBananaVoice(data);
                 progressBarOutput();
-                // Emit signal for recording when recording is active
-                if (isRecording) {
-                    emit audioDataReady(data);
-                } // Progress bar'ı güncelle
 
-                // Her zaman virtual output'a gönder (Cable Input)
                 if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
-                    // AudioPipeline kullanarak gönder
                     if (audioPipeline) {
                         audioPipeline->writeEffectsAudio(data);
+
+                        audioPipeline->processBuffers();
                     } else {
                         virtualOutputDevice->write(data);
                     }
@@ -447,7 +421,7 @@ void MainWindow::on_bananaButton_clicked(bool checked)
                         }
                     }
                     // Sonra normal output'a gönder
-                    if (outputDevice && outputDevice->isOpen()) {
+                    if (ui->testButton->isChecked() && outputDevice && outputDevice->isOpen()) {
                         outputDevice->write(data);
                     }
                 });
@@ -492,30 +466,25 @@ void MainWindow::on_devilButton_clicked(bool checked)
 
         if(audioInput)
         {
-            // Mevcut bağlantıyı kopar
-            disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
-            
-            // Yeni efekt bağlantısı kur
+            if (!isRecording) {
+                disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
+            }
+
             connect(inputDevice, &QIODevice::readyRead, this, [=](){
                 data = inputDevice->readAll();
                 processToDevilVoice(data);
                 progressBarOutput();
-                    // Emit signal for recording when recording is active
-                    if (isRecording) {
-                        emit audioDataReady(data);
-                    } // Progress bar'ı güncelle
-                
-                // Her zaman virtual output'a gönder (Cable Input)
+
                 if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
-                    // AudioPipeline kullanarak gönder
                     if (audioPipeline) {
                         audioPipeline->writeEffectsAudio(data);
+
+                        audioPipeline->processBuffers();
                     } else {
                         virtualOutputDevice->write(data);
                     }
                 }
-                
-                // SADECE test modunda fiziksel output'a gönder
+
                 if (ui->testButton->isChecked()) {
                     if (outputDevice && outputDevice->isOpen()) {
                         outputDevice->write(data);
@@ -558,7 +527,7 @@ void MainWindow::on_devilButton_clicked(bool checked)
                         }
                     }
                     // Sonra normal output'a gönder
-                    if (outputDevice && outputDevice->isOpen()) {
+                    if (ui->testButton->isChecked() && outputDevice && outputDevice->isOpen()) {
                         outputDevice->write(data);
                     }
                 });
@@ -603,24 +572,20 @@ void MainWindow::on_ekoButton_clicked(bool checked)
 
         if(audioInput)
         {
-            // Mevcut bağlantıyı kopar
-            disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
-            
-            // Yeni efekt bağlantısı kur
-            connect(inputDevice, &QIODevice::readyRead, this, [=] {
+            if (!isRecording) {
+                disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
+            }
+
+            connect(inputDevice, &QIODevice::readyRead, this, [=](){
                 data = inputDevice->readAll();
                 processToEkoVoice(data);
                 progressBarOutput();
-                    // Emit signal for recording when recording is active
-                    if (isRecording) {
-                        emit audioDataReady(data);
-                    } // Progress bar'ı güncelle
-                
-                // Her zaman virtual output'a gönder (Cable Input)
+
                 if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
-                    // AudioPipeline kullanarak gönder
                     if (audioPipeline) {
                         audioPipeline->writeEffectsAudio(data);
+
+                        audioPipeline->processBuffers();
                     } else {
                         virtualOutputDevice->write(data);
                     }
@@ -669,7 +634,7 @@ void MainWindow::on_ekoButton_clicked(bool checked)
                         }
                     }
                     // Sonra normal output'a gönder
-                    if (outputDevice && outputDevice->isOpen()) {
+                    if (ui->testButton->isChecked() && outputDevice && outputDevice->isOpen()) {
                         outputDevice->write(data);
                     }
                 });
@@ -714,24 +679,20 @@ void MainWindow::on_femaleButton_clicked(bool checked)
 
         if(audioInput)
         {
-            // Mevcut bağlantıyı kopar
-            disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
-            
-            // Yeni efekt bağlantısı kur
-            connect(inputDevice, &QIODevice::readyRead, this, [=] {
+            if (!isRecording) {
+                disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
+            }
+
+            connect(inputDevice, &QIODevice::readyRead, this, [=](){
                 data = inputDevice->readAll();
                 processToFemaleVoice(data);
                 progressBarOutput();
-                    // Emit signal for recording when recording is active
-                    if (isRecording) {
-                        emit audioDataReady(data);
-                    } // Progress bar'ı güncelle
-                
-                // Her zaman virtual output'a gönder (Cable Input)
+
                 if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
-                    // AudioPipeline kullanarak gönder
                     if (audioPipeline) {
                         audioPipeline->writeEffectsAudio(data);
+
+                        audioPipeline->processBuffers();
                     } else {
                         virtualOutputDevice->write(data);
                     }
@@ -780,7 +741,7 @@ void MainWindow::on_femaleButton_clicked(bool checked)
                         }
                     }
                     // Sonra normal output'a gönder
-                    if (outputDevice && outputDevice->isOpen()) {
+                    if (ui->testButton->isChecked() && outputDevice && outputDevice->isOpen()) {
                         outputDevice->write(data);
                     }
                 });
@@ -826,24 +787,20 @@ void MainWindow::on_combineButton_clicked(bool checked)
 
         if(audioInput)
         {
-            // Mevcut bağlantıyı kopar
-            disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
-            
-            // Yeni efekt bağlantısı kur
-            connect(inputDevice, &QIODevice::readyRead, this, [=] {
+            if (!isRecording) {
+                disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
+            }
+
+            connect(inputDevice, &QIODevice::readyRead, this, [=](){
                 data = inputDevice->readAll();
                 processToCombineVoice(data);
                 progressBarOutput();
-                    // Emit signal for recording when recording is active
-                    if (isRecording) {
-                        emit audioDataReady(data);
-                    } // Progress bar'ı güncelle
-                
-                // Her zaman virtual output'a gönder (Cable Input)
+
                 if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
-                    // AudioPipeline kullanarak gönder
                     if (audioPipeline) {
                         audioPipeline->writeEffectsAudio(data);
+
+                        audioPipeline->processBuffers();
                     } else {
                         virtualOutputDevice->write(data);
                     }
@@ -892,7 +849,7 @@ void MainWindow::on_combineButton_clicked(bool checked)
                         }
                     }
                     // Sonra normal output'a gönder
-                    if (outputDevice && outputDevice->isOpen()) {
+                    if (ui->testButton->isChecked() && outputDevice && outputDevice->isOpen()) {
                         outputDevice->write(data);
                     }
                 });

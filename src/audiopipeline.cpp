@@ -126,17 +126,19 @@ void AudioPipeline::processBuffers()
             
             // Efektli ses + soundpack mix yap
             QByteArray mixedData = mixAudioData(effectsData, soundpackData);
+            m_mixAudioBuffer->write(mixedData);
             m_virtualOutputDevice->write(mixedData);
-            
+
             // Debug mesajlarını azalt
             static int counter = 0;
-            if (++counter % 100 == 0) { // Her 100'de bir göster (daha sık)
+            if (++counter % 100 == 0) {
                 qDebug() << "EFFECTS MIXED: Effects + Soundpack =" << effectsData.size() << "bytes";
             }
         } else {
             // Soundpack yok - efektli sesi doğrudan geçir
+            m_mixAudioBuffer->write(effectsData);
             m_virtualOutputDevice->write(effectsData);
-            
+
             // Debug mesajlarını azalt
             static int counter = 0;
             if (++counter % 500 == 0) {
@@ -162,8 +164,9 @@ void AudioPipeline::processBuffers()
             
             // Temiz ses + soundpack mix yap
             QByteArray mixedData = mixAudioData(inputData, soundpackData);
+            m_mixAudioBuffer->write(mixedData);
             m_virtualOutputDevice->write(mixedData);
-            
+
             // Debug mesajlarını azalt
             static int counter = 0;
             if (++counter % 500 == 0) {
@@ -171,6 +174,7 @@ void AudioPipeline::processBuffers()
             }
         } else {
             // Soundpack yok - temiz sesi doğrudan geçir
+            m_mixAudioBuffer->write(inputData);
             m_virtualOutputDevice->write(inputData);
             
             // Debug mesajlarını azalt
@@ -318,52 +322,16 @@ QByteArray AudioPipeline::mixAudioData(const QByteArray &data1, const QByteArray
 
 QByteArray AudioPipeline::getMixedAudioData(int maxSize)
 {
-    // This method returns the current mixed audio output for recording
-    // We'll capture what would normally go to virtualOutputDevice
-    
-    QByteArray mixedData;
-    
-    // Priority 1: Check if we have effects + soundpack mix
-    if (m_effectsAudioBuffer->bytesAvailable() >= m_effectsChunkSize &&
-        m_soundpackBuffer->bytesAvailable() >= m_soundpackChunkSize) {
-        
-        QByteArray effectsData = m_effectsAudioBuffer->read(m_effectsChunkSize);
-        QByteArray soundpackData = m_soundpackBuffer->read(m_soundpackChunkSize);
-        
-        // Normalize sizes
-        if (effectsData.size() != soundpackData.size()) {
-            soundpackData.resize(effectsData.size());
-        }
-        
-        mixedData = mixAudioData(effectsData, soundpackData);
+    if (!m_mixAudioBuffer) {
+        return QByteArray();
     }
-    // Priority 2: Check if we have input + soundpack mix
-    else if (m_inputAudioBuffer->bytesAvailable() >= m_inputChunkSize &&
-             m_soundpackBuffer->bytesAvailable() >= m_soundpackChunkSize) {
-        
-        QByteArray inputData = m_inputAudioBuffer->read(m_inputChunkSize);
-        QByteArray soundpackData = m_soundpackBuffer->read(m_soundpackChunkSize);
-        
-        // Normalize sizes
-        if (inputData.size() != soundpackData.size()) {
-            soundpackData.resize(inputData.size());
-        }
-        
-        mixedData = mixAudioData(inputData, soundpackData);
+
+    int available = m_mixAudioBuffer->bytesAvailable();
+
+    if (available <= 0) {
+        return QByteArray();
     }
-    // Priority 3: Just effects (no soundpack)
-    else if (m_effectsAudioBuffer->bytesAvailable() >= m_effectsChunkSize) {
-        mixedData = m_effectsAudioBuffer->read(m_effectsChunkSize);
-    }
-    // Priority 4: Just clean input (no effects, no soundpack)
-    else if (m_inputAudioBuffer->bytesAvailable() >= m_inputChunkSize) {
-        mixedData = m_inputAudioBuffer->read(m_inputChunkSize);
-    }
-    
-    // Limit the size to requested maxSize
-    if (mixedData.size() > maxSize && maxSize > 0) {
-        mixedData = mixedData.left(maxSize);
-    }
-    
-    return mixedData;
+
+    int bytesToRead = qMin(available, maxSize);
+    return m_mixAudioBuffer->read(bytesToRead);
 }

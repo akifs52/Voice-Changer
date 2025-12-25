@@ -116,16 +116,19 @@ void MainWindow::playAudioNotInterrupt(const QString &filename, const QString &p
         // Use cached data directly
         QByteArray *localData = new QByteArray(cache->audioData);
         
-        QPixmap icon(picPath);
-        QIcon buttonIcon = icon;
-        button->setIcon(buttonIcon);
-        QSize size(75,75);
-        button->setIconSize(size);
-        
-        button->setProperty("selected", true);
-        button->style()->polish(button);
-        button->setProperty("playing", true);
-        button->style()->polish(button);
+        // Move UI updates to main thread
+        QMetaObject::invokeMethod(button, [button, picPath]() {
+            QPixmap icon(picPath);
+            QIcon buttonIcon = icon;
+            button->setIcon(buttonIcon);
+            QSize size(75,75);
+            button->setIconSize(size);
+            
+            button->setProperty("selected", true);
+            button->style()->polish(button);
+            button->setProperty("playing", true);
+            button->style()->polish(button);
+        }, Qt::QueuedConnection);
 
         // Set current playing sound tracking
         {
@@ -141,14 +144,23 @@ void MainWindow::playAudioNotInterrupt(const QString &filename, const QString &p
         }
         
         // Thread önceliğini artır - UI thread'i ile çakışmayı önle
-        outputThread->setPriority(QThread::HighPriority);
+        // setPriority thread başlatıldıktan sonra çağrılmalı
+        // outputThread->setPriority(QThread::HighPriority);
         
         // Capture test button state before starting thread (thread safety)
         bool isTestButtonChecked = ui->testButton->isChecked();
         
         connect(outputThread, &QThread::started, [=, localData = localData]() {
+            // Thread başladıktan sonra önceliği ayarla
+            QThread::currentThread()->setPriority(QThread::HighPriority);
+            
             std::lock_guard<std::mutex> lock(outputDeviceMutex);
             if (outputDevice) {
+                qDebug() << "Soundpack: Output device is available, starting playback...";
+                qDebug() << "Soundpack: Test button state:" << isTestButtonChecked;
+                qDebug() << "Soundpack: Output device open:" << outputDevice->isOpen();
+                qDebug() << "Soundpack: Output device type:" << outputDevice->metaObject()->className();
+                
                 qint64 written = 0;
                 // 48kHz stereo: 48000 samples/sec * 2 channels * 2 bytes = 192000 bytes/sec
                 // 256 samples chunks: 1024 bytes for optimal balance
@@ -164,16 +176,56 @@ void MainWindow::playAudioNotInterrupt(const QString &filename, const QString &p
                     // Always increment written by chunk size for timing
                     written += chunkSize;
                     
-                    // Write to outputDevice only if test button was checked when thread started
-                    if (isTestButtonChecked && outputDevice && outputDevice->isOpen()) {
-                        outputDevice->write(chunk);
-                    }
+
                     
                     // Paralel pipeline: Soundpack sesini AudioPipeline'a gönder
                     // HIGH-QUALITY MODE: Soundpack verilerini ignore et ama buffer temizle
                     if (audioPipeline) {
                         // Sadece buffer temizliği için gönder - asıl ses işlenmeyecek
                         audioPipeline->writeSoundpackAudio(chunk);
+                    }
+
+
+                    // Write to outputDevice only if test button was checked when thread started
+                    if (isTestButtonChecked) {
+                        // Direct audio writing with retry logic in worker thread
+                        if (outputDevice && outputDevice->isOpen()) {
+                            qint64 bytesAvailable = outputDevice->bytesToWrite();
+                            
+                            // If too much data is pending, skip this chunk
+                            if (bytesAvailable > 2048) {
+                                qDebug() << "Soundpack: Skipping chunk - buffer full (" << bytesAvailable << "bytes pending)";
+                            } else {
+                                // Try to write the data with multiple attempts
+                                qint64 totalWritten = 0;
+                                qint64 remaining = chunk.size();
+                                int attempts = 0;
+                                const int maxAttempts = 3;
+                                
+                                while (remaining > 0 && attempts < maxAttempts) {
+                                    qint64 bytesWritten = outputDevice->write(chunk.data() + totalWritten, remaining);
+                                    
+                                    if (bytesWritten > 0) {
+                                        totalWritten += bytesWritten;
+                                        remaining -= bytesWritten;
+                                        qDebug() << "Soundpack: Attempt" << (attempts + 1) << "wrote" << bytesWritten << "bytes (total:" << totalWritten << "/" << chunk.size() << ")";
+                                    } else {
+                                        // If write failed, wait briefly and retry
+                                        QThread::usleep(100 * (attempts + 1));
+                                        qDebug() << "Soundpack: Attempt" << (attempts + 1) << "failed, retrying...";
+                                    }
+                                    attempts++;
+                                }
+                                
+                                if (totalWritten < chunk.size()) {
+                                    qDebug() << "Soundpack: Write incomplete after" << maxAttempts << "attempts - expected" << chunk.size() << "bytes, wrote" << totalWritten;
+                                } else {
+                                    qDebug() << "Soundpack: Worker thread actually written bytes:" << totalWritten;
+                                }
+                            }
+                        } else {
+                            qDebug() << "Soundpack: Worker thread - device not available";
+                        }
                     }
                     
                     // Emit signal for recording if recording is active
@@ -233,23 +285,21 @@ void MainWindow::playAudioNotInterrupt(const QString &filename, const QString &p
         outputThread->start();
         return;
     }
-
     // Original decoding path for non-cached audio
     QByteArray *localData = new QByteArray;
 
-    QPixmap icon(picPath);
-
-    QIcon buttonIcon = icon;
-
-    button->setIcon(buttonIcon);
-
-    QSize size(75,75);
-
-    button->setIconSize(size);
-
-    // Seçili slot olarak işaretle
-    button->setProperty("selected", true);
-    button->style()->polish(button);
+    // Move UI updates to main thread
+    QMetaObject::invokeMethod(button, [button, picPath]() {
+        QPixmap icon(picPath);
+        QIcon buttonIcon = icon;
+        button->setIcon(buttonIcon);
+        QSize size(75,75);
+        button->setIconSize(size);
+        
+        // Seçili slot olarak işaretle
+        button->setProperty("selected", true);
+        button->style()->polish(button);
+    }, Qt::QueuedConnection);
 
     // QThread oluşturuluyor
     QThread *decodeThread = new QThread;
@@ -284,9 +334,11 @@ void MainWindow::playAudioNotInterrupt(const QString &filename, const QString &p
 
     // Decode işlemi bittikten sonra ses çıkışını başlat
     connect(audioDecoder, &QAudioDecoder::finished, this, [=, localData = localData]() {
-        // Ses çalmaya başla - playing durumunu işaretle
-        button->setProperty("playing", true);
-        button->style()->polish(button);
+        // Move UI updates to main thread
+        QMetaObject::invokeMethod(button, [button]() {
+            button->setProperty("playing", true);
+            button->style()->polish(button);
+        }, Qt::QueuedConnection);
 
         // Set current playing sound tracking
         {
@@ -302,14 +354,22 @@ void MainWindow::playAudioNotInterrupt(const QString &filename, const QString &p
         }
         
         // Thread önceliğini artır - UI thread'i ile çakışmayı önle
-        outputThread->setPriority(QThread::HighPriority);
+        // setPriority thread başlatıldıktan sonra çağrılmalı
+        // outputThread->setPriority(QThread::HighPriority);
 
         // Capture test button state before starting thread (thread safety)
         bool isTestButtonChecked = ui->testButton->isChecked();
 
         connect(outputThread, &QThread::started, [=, localData = localData]() {
-            std::lock_guard<std::mutex> lock(outputDeviceMutex);
+            // Thread başladıktan sonra önceliği ayarla
+            QThread::currentThread()->setPriority(QThread::HighPriority);
+            
             if (outputDevice) {
+                qDebug() << "Soundpack: Output device is available, starting playback...";
+                qDebug() << "Soundpack: Test button state:" << isTestButtonChecked;
+                qDebug() << "Soundpack: Output device open:" << outputDevice->isOpen();
+                qDebug() << "Soundpack: Output device type:" << outputDevice->metaObject()->className();
+                
                 qint64 written = 0;
                 // 48kHz stereo: 48000 samples/sec * 2 channels * 2 bytes = 192000 bytes/sec
                 // 256 samples chunks: 1024 bytes for optimal balance
@@ -324,17 +384,57 @@ void MainWindow::playAudioNotInterrupt(const QString &filename, const QString &p
                     // Always increment written by chunk size for timing
                     written += chunkSize;
                     
-                    // Write to outputDevice only if test button was checked when thread started
-                    if (isTestButtonChecked && outputDevice && outputDevice->isOpen()) {
-                        outputDevice->write(chunk);
-                    }
-                    
+
                     // Paralel pipeline: Soundpack sesini AudioPipeline'a gönder
                     // HIGH-QUALITY MODE: Soundpack verilerini ignore et ama buffer temizle
                     if (audioPipeline) {
                         // Sadece buffer temizliği için gönder - asıl ses işlenmeyecek
                         audioPipeline->writeSoundpackAudio(chunk);
                     }
+
+
+                    // Write to outputDevice only if test button was checked when thread started
+                    if (isTestButtonChecked) {
+                        // Direct audio writing with retry logic in worker thread
+                        if (outputDevice && outputDevice->isOpen()) {
+                            qint64 bytesAvailable = outputDevice->bytesToWrite();
+                            
+                            // If too much data is pending, skip this chunk
+                            if (bytesAvailable > 2048) {
+                                qDebug() << "Soundpack: Skipping chunk - buffer full (" << bytesAvailable << "bytes pending)";
+                            } else {
+                                // Try to write the data with multiple attempts
+                                qint64 totalWritten = 0;
+                                qint64 remaining = chunk.size();
+                                int attempts = 0;
+                                const int maxAttempts = 3;
+                                
+                                while (remaining > 0 && attempts < maxAttempts) {
+                                    qint64 bytesWritten = outputDevice->write(chunk.data() + totalWritten, remaining);
+                                    
+                                    if (bytesWritten > 0) {
+                                        totalWritten += bytesWritten;
+                                        remaining -= bytesWritten;
+                                        qDebug() << "Soundpack: Attempt" << (attempts + 1) << "wrote" << bytesWritten << "bytes (total:" << totalWritten << "/" << chunk.size() << ")";
+                                    } else {
+                                        // If write failed, wait briefly and retry
+                                        QThread::usleep(100 * (attempts + 1));
+                                        qDebug() << "Soundpack: Attempt" << (attempts + 1) << "failed, retrying...";
+                                    }
+                                    attempts++;
+                                }
+                                
+                                if (totalWritten < chunk.size()) {
+                                    qDebug() << "Soundpack: Write incomplete after" << maxAttempts << "attempts - expected" << chunk.size() << "bytes, wrote" << totalWritten;
+                                } else {
+                                    qDebug() << "Soundpack: Worker thread actually written bytes:" << totalWritten;
+                                }
+                            }
+                        } else {
+                            qDebug() << "Soundpack: Worker thread - device not available";
+                        }
+                    }
+
                     
                     // Emit signal for recording if recording is active
                     if (isRecording) {

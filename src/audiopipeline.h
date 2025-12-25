@@ -42,6 +42,7 @@ public:
 
     // Get mixed audio data for recording
     QByteArray getMixedAudioData(int maxSize);
+    QByteArray readMixBufferDirectly(int maxSize); // Direct read without chunk check
 
 private slots:
 
