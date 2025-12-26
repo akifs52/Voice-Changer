@@ -43,6 +43,10 @@ public:
     // Get mixed audio data for recording
     QByteArray getMixedAudioData(int maxSize);
     QByteArray readMixBufferDirectly(int maxSize); // Direct read without chunk check
+    
+    // Test mode control
+    void setTestMode(bool enabled);
+    void setNormalOutputDevice(QIODevice *device);
 
 private slots:
 
@@ -54,7 +58,9 @@ private:
     CircularBuffer *m_effectsAudioBuffer; // Efektli sesler için özel buffer
     CircularBuffer *m_mixAudioBuffer;    // Mix edilmiş sesler için buffer
     QIODevice *m_virtualOutputDevice;     // Virtual output device
+    QIODevice *m_normalOutputDevice;      // Normal output device (test mode)
     QTimer *m_timer;                      // Buffer processing timer
+    bool m_testMode;                      // Test mode state
 
     // Separate chunk sizes for each buffer type
     int m_inputChunkSize;                // Input audio için chunk size

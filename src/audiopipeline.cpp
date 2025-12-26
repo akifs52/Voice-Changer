@@ -10,11 +10,13 @@ AudioPipeline::AudioPipeline(QObject *parent)
     , m_effectsAudioBuffer(nullptr)
     , m_mixAudioBuffer(nullptr)
     , m_virtualOutputDevice(nullptr)
+    , m_normalOutputDevice(nullptr)
     , m_inputChunkSize(1024) // 256 samples at 48kHz stereo - optimal balance
     , m_soundpackChunkSize(1024) // 256 samples for soundpack - optimal balance
     , m_effectsChunkSize(1024) // 256 samples for effects - optimal balance
     , m_mixChunkSize(1024) // 512 samples for mix - daha hassas processing
     , m_isRunning(false)
+    , m_testMode(false)
 {
 m_inputAudioBuffer = new CircularBuffer(65536);  // 64KB buffer for input audio
     m_soundpackBuffer = new CircularBuffer(65536); // 64KB buffer for soundpack
@@ -128,6 +130,11 @@ void AudioPipeline::processBuffers()
             QByteArray mixedData = mixAudioData(effectsData, soundpackData);
             m_mixAudioBuffer->write(mixedData);
             m_virtualOutputDevice->write(mixedData);
+            
+            // Test modunda normal output'a da yaz
+            if (m_testMode && m_normalOutputDevice && m_normalOutputDevice->isOpen()) {
+                m_normalOutputDevice->write(mixedData);
+            }
 
             // Debug mesajlarını azalt
             static int counter = 0;
@@ -138,6 +145,11 @@ void AudioPipeline::processBuffers()
             // Soundpack yok - efektli sesi doğrudan geçir
             m_mixAudioBuffer->write(effectsData);
             m_virtualOutputDevice->write(effectsData);
+            
+            // Test modunda normal output'a da yaz
+            if (m_testMode && m_normalOutputDevice && m_normalOutputDevice->isOpen()) {
+                m_normalOutputDevice->write(effectsData);
+            }
 
             // Debug mesajlarını azalt
             static int counter = 0;
@@ -166,6 +178,11 @@ void AudioPipeline::processBuffers()
             QByteArray mixedData = mixAudioData(inputData, soundpackData);
             m_mixAudioBuffer->write(mixedData);
             m_virtualOutputDevice->write(mixedData);
+            
+            // Test modunda normal output'a da yaz
+            if (m_testMode && m_normalOutputDevice && m_normalOutputDevice->isOpen()) {
+                m_normalOutputDevice->write(mixedData);
+            }
 
             // Debug mesajlarını azalt
             static int counter = 0;
@@ -176,6 +193,11 @@ void AudioPipeline::processBuffers()
             // Soundpack yok - temiz sesi doğrudan geçir
             m_mixAudioBuffer->write(inputData);
             m_virtualOutputDevice->write(inputData);
+            
+            // Test modunda normal output'a da yaz
+            if (m_testMode && m_normalOutputDevice && m_normalOutputDevice->isOpen()) {
+                m_normalOutputDevice->write(inputData);
+            }
             
             // Debug mesajlarını azalt
             static int counter = 0;
@@ -334,4 +356,16 @@ QByteArray AudioPipeline::getMixedAudioData(int maxSize)
 
     int bytesToRead = qMin(available, maxSize);
     return m_mixAudioBuffer->read(bytesToRead);
+}
+
+void AudioPipeline::setTestMode(bool enabled)
+{
+    m_testMode = enabled;
+    qDebug() << "AudioPipeline: Test mode" << (enabled ? "enabled" : "disabled");
+}
+
+void AudioPipeline::setNormalOutputDevice(QIODevice *device)
+{
+    m_normalOutputDevice = device;
+    qDebug() << "AudioPipeline: Normal output device" << (device ? "set" : "cleared");
 }

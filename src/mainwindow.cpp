@@ -75,9 +75,6 @@ MainWindow::MainWindow(QWidget *parent)
     preloadAudio(filename10);
     qDebug() << "Default sound files preloading started";
 
-    // Connect signal for main thread output device writing - DISABLED
-    // connect(this, &MainWindow::writeSoundpackToOutput, this, &MainWindow::handleSoundpackOutput);
-
 }
 
 MainWindow::~MainWindow()
@@ -401,6 +398,12 @@ void MainWindow::on_testButton_clicked(bool checked)
         ui->testButton->setText("Stop");
         testButtonActive = true;
 
+        // AudioPipeline test modunu ayarla
+        if (audioPipeline) {
+            audioPipeline->setTestMode(true);
+            audioPipeline->setNormalOutputDevice(outputDevice);
+        }
+
         if(!audioInput)
         {
             qWarning() << "Audio input is not initialized";
@@ -469,6 +472,12 @@ void MainWindow::on_testButton_clicked(bool checked)
     } 
     else {
         ui->testButton->setText("Test Device");
+
+        // AudioPipeline test modunu kapat
+        if (audioPipeline) {
+            audioPipeline->setTestMode(false);
+            audioPipeline->setNormalOutputDevice(nullptr);
+        }
 
         // Test bağlantısını kopar
         if (inputDevice) {

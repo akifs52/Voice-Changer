@@ -55,7 +55,6 @@ protected:
 signals:
     void audioDataReady(const QByteArray &processedAudio);
     void preloadFinished();
-    void writeSoundpackToOutput(const QByteArray &data);
 
 private slots:
     // All the original slots...

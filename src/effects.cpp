@@ -34,46 +34,23 @@ void MainWindow::stopAllEffects()
     ui->ekoButton->setChecked(false);
     ui->ekoButton->setText("Eko");
 
-    // Mevcut bağlantıları kopar
+    // Mevcut bağlantıları kopar - AMA kayıt sinyali bağlantısını koparma!
     if (inputDevice) {
         disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
 
-        // Test durumuna göre bağlantı kur
-        if (ui->testButton->isChecked()) {
-            // Test modu: Efektli sesi hem virtual output'a (mix için) hem normal output'a gönder
-            connect(inputDevice, &QIODevice::readyRead, this, [=](){
-                data = inputDevice->readAll();
-                progressBarOutput();
+        // Yeni bağlantıyı kur - kayıt sinyalini HER ZAMAN emit et
+        connect(inputDevice, &QIODevice::readyRead, this, [=](){
+            data = inputDevice->readAll();
+            progressBarOutput();
 
-                // Emit signal for recording when recording is active
-                if (isRecording) {
-                    qDebug() << "EMITTING SIGNAL (EFFECT-TEST): Audio size:" << data.size() << "bytes";
-                    emit audioDataReady(data);
-                }
+            // KAYIT İÇİN SİNYALİ HER DURUMDA EMIT ET
+            if (isRecording) {
+                qDebug() << "EMITTING SIGNAL (NO EFFECT): Audio size:" << data.size() << "bytes";
+                emit audioDataReady(data);
+            }
 
-                // Virtual output'a efektli ses olarak gönder (soundpack ile mix için)
-                if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
-                    if (audioPipeline) {
-                        audioPipeline->writeEffectsAudio(data);
-                    } else {
-                        virtualOutputDevice->write(data);
-                    }
-                    qDebug() << "Effects stopped (test mode): Writing effect-free audio to virtual output, size:" << data.size() << "bytes";
-                } else {
-                    qWarning() << "Effects stopped (test mode): Virtual output device not available!";
-                }
-
-                // Test modunda normal output'a da doğrudan gönder (kullanıcı duymalı)
-                if (ui->testButton->isChecked() && outputDevice && outputDevice->isOpen()) {
-                    outputDevice->write(data);
-                }
-            });
-        } else {
-            // Normal mod: Sadece virtual output'a gönder (normal output'a gönderme)
-            connect(inputDevice, &QIODevice::readyRead, this, [=](){
-                data = inputDevice->readAll();
-                progressBarOutput();
-
+            if (ui->testButton->isChecked()) {
+                // Test modu: virtual output ve normal output'a gönder
                 if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
                     if (audioPipeline) {
                         audioPipeline->writeInputAudio(data);
@@ -81,8 +58,21 @@ void MainWindow::stopAllEffects()
                         virtualOutputDevice->write(data);
                     }
                 }
-            });
-        }
+                
+                if (outputDevice && outputDevice->isOpen()) {
+                    outputDevice->write(data);
+                }
+            } else {
+                // Normal mod: sadece virtual output'a gönder
+                if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
+                    if (audioPipeline) {
+                        audioPipeline->writeInputAudio(data);
+                    } else {
+                        virtualOutputDevice->write(data);
+                    }
+                }
+            }
+        });
     }
 
     data.clear();
@@ -257,30 +247,8 @@ void MainWindow::on_robotButton_clicked(bool checked)
 
         if(audioInput)
         {
-            if (!isRecording) {
-                disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
-            }
-
-            connect(inputDevice, &QIODevice::readyRead, this, [=](){
-                data = inputDevice->readAll();
+            setupEffectConnection("ROBOT", [this](QByteArray &data) {
                 processToRobotVoice(data);
-                progressBarOutput();
-
-                if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
-                    if (audioPipeline) {
-                        audioPipeline->writeEffectsAudio(data);
-
-                        audioPipeline->processBuffers();
-                    } else {
-                        virtualOutputDevice->write(data);
-                    }
-                }
-
-                if (ui->testButton->isChecked()) {
-                    if (outputDevice && outputDevice->isOpen()) {
-                        outputDevice->write(data);
-                    }
-                }
             });
         }
         else {
@@ -362,39 +330,16 @@ void MainWindow::on_bananaButton_clicked(bool checked)
         ui->bananaButton->setText("Stop");
 
         if (audioInput) {
-            if (!isRecording) {
-                disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
-            }
-
-            connect(inputDevice, &QIODevice::readyRead, this, [=]() {
-                data = inputDevice->readAll();
+            setupEffectConnection("BANANA", [this](QByteArray &data) {
                 processToBananaVoice(data);
-                progressBarOutput();
-
-                if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
-                    if (audioPipeline) {
-                        audioPipeline->writeEffectsAudio(data);
-
-                        audioPipeline->processBuffers();
-                    } else {
-                        virtualOutputDevice->write(data);
-                    }
-                }
-
-                // SADECE test modunda fiziksel output'a gönder
-                if (ui->testButton->isChecked()) {
-                    if (outputDevice && outputDevice->isOpen()) {
-                        outputDevice->write(data);
-                    }
-                }
             });
-
-            usingEffects = false;
-            qDebug() << "Child voice effect started.";
         }
         else {
             qWarning() << "Audio devices are not properly initialized.";
         }
+
+        usingEffects = false;
+        qDebug() << "Child voice effect started.";
     } else {
         ui->bananaButton->setText("Çocuk Sesi");
 
@@ -466,39 +411,17 @@ void MainWindow::on_devilButton_clicked(bool checked)
 
         if(audioInput)
         {
-            if (!isRecording) {
-                disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
-            }
-
-            connect(inputDevice, &QIODevice::readyRead, this, [=](){
-                data = inputDevice->readAll();
+            setupEffectConnection("DEVIL", [this](QByteArray &data) {
                 processToDevilVoice(data);
-                progressBarOutput();
-
-                if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
-                    if (audioPipeline) {
-                        audioPipeline->writeEffectsAudio(data);
-
-                        audioPipeline->processBuffers();
-                    } else {
-                        virtualOutputDevice->write(data);
-                    }
-                }
-
-                if (ui->testButton->isChecked()) {
-                    if (outputDevice && outputDevice->isOpen()) {
-                        outputDevice->write(data);
-                    }
-                }
             });
-
-            usingEffects = false;
-            qDebug() << "Devil voice effect started.";
         }
         else
         {
             qWarning() << "Audio devices are not properly initialized.";
         }
+
+        usingEffects = false;
+        qDebug() << "Devil voice effect started.";
     }
     else
     {
@@ -572,40 +495,17 @@ void MainWindow::on_ekoButton_clicked(bool checked)
 
         if(audioInput)
         {
-            if (!isRecording) {
-                disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
-            }
-
-            connect(inputDevice, &QIODevice::readyRead, this, [=](){
-                data = inputDevice->readAll();
+            setupEffectConnection("EKO", [this](QByteArray &data) {
                 processToEkoVoice(data);
-                progressBarOutput();
-
-                if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
-                    if (audioPipeline) {
-                        audioPipeline->writeEffectsAudio(data);
-
-                        audioPipeline->processBuffers();
-                    } else {
-                        virtualOutputDevice->write(data);
-                    }
-                }
-                
-                // SADECE test modunda fiziksel output'a gönder
-                if (ui->testButton->isChecked()) {
-                    if (outputDevice && outputDevice->isOpen()) {
-                        outputDevice->write(data);
-                    }
-                }
             });
-
-            usingEffects = false;
-            qDebug() << "eko voice effect started.";
         }
         else
         {
             qWarning() << "Audio devices are not properly initialized.";
         }
+
+        usingEffects = false;
+        qDebug() << "eko voice effect started.";
     }
     else
     {
@@ -679,35 +579,9 @@ void MainWindow::on_femaleButton_clicked(bool checked)
 
         if(audioInput)
         {
-            if (!isRecording) {
-                disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
-            }
-
-            connect(inputDevice, &QIODevice::readyRead, this, [=](){
-                data = inputDevice->readAll();
+            setupEffectConnection("FEMALE", [this](QByteArray &data) {
                 processToFemaleVoice(data);
-                progressBarOutput();
-
-                if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
-                    if (audioPipeline) {
-                        audioPipeline->writeEffectsAudio(data);
-
-                        audioPipeline->processBuffers();
-                    } else {
-                        virtualOutputDevice->write(data);
-                    }
-                }
-                
-                // SADECE test modunda fiziksel output'a gönder
-                if (ui->testButton->isChecked()) {
-                    if (outputDevice && outputDevice->isOpen()) {
-                        outputDevice->write(data);
-                    }
-                }
             });
-
-            usingEffects = false;
-            qDebug() << "female voice effect started.";
         }
         else
         {
@@ -787,40 +661,17 @@ void MainWindow::on_combineButton_clicked(bool checked)
 
         if(audioInput)
         {
-            if (!isRecording) {
-                disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
-            }
-
-            connect(inputDevice, &QIODevice::readyRead, this, [=](){
-                data = inputDevice->readAll();
+            setupEffectConnection("COMBINE", [this](QByteArray &data) {
                 processToCombineVoice(data);
-                progressBarOutput();
-
-                if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
-                    if (audioPipeline) {
-                        audioPipeline->writeEffectsAudio(data);
-
-                        audioPipeline->processBuffers();
-                    } else {
-                        virtualOutputDevice->write(data);
-                    }
-                }
-                
-                // SADECE test modunda fiziksel output'a gönder
-                if (ui->testButton->isChecked()) {
-                    if (outputDevice && outputDevice->isOpen()) {
-                        outputDevice->write(data);
-                    }
-                }
             });
-
-            usingEffects = false;
-            qDebug() << "combine voice effect started.";
         }
         else
         {
             qWarning() << "Audio devices are not properly initialized.";
         }
+
+        usingEffects = false;
+        qDebug() << "combine voice effect started.";
     }
     else
     {
