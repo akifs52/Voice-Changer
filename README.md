@@ -49,7 +49,7 @@ A professional voice changer application built with Qt 6, featuring real-time vo
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/Voice-Changer.git
+git clone https://github.com/akifs52/Voice-Changer.git
 cd Voice-Changer
 
 # Install dependencies
