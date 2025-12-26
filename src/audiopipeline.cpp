@@ -11,12 +11,14 @@ AudioPipeline::AudioPipeline(QObject *parent)
     , m_mixAudioBuffer(nullptr)
     , m_virtualOutputDevice(nullptr)
     , m_normalOutputDevice(nullptr)
-    , m_inputChunkSize(1024) // 256 samples at 48kHz stereo - optimal balance
-    , m_soundpackChunkSize(1024) // 256 samples for soundpack - optimal balance
-    , m_effectsChunkSize(1024) // 256 samples for effects - optimal balance
-    , m_mixChunkSize(1024) // 512 samples for mix - daha hassas processing
+    , m_testMode(false) // 256 samples at 48kHz stereo - optimal balance
+    , m_isRecording(false) // 256 samples for soundpack - optimal balance
+    , m_recordingCounter(0) // 256 samples for effects - optimal balance
+    , m_inputChunkSize(1024) // 512 samples for mix - daha hassas processing
+    , m_soundpackChunkSize(1024)
+    , m_effectsChunkSize(1024)
+    , m_mixChunkSize(1024)
     , m_isRunning(false)
-    , m_testMode(false)
 {
 m_inputAudioBuffer = new CircularBuffer(65536);  // 64KB buffer for input audio
     m_soundpackBuffer = new CircularBuffer(65536); // 64KB buffer for soundpack
@@ -141,6 +143,11 @@ void AudioPipeline::processBuffers()
             if (++counter % 100 == 0) {
                 qDebug() << "EFFECTS MIXED: Effects + Soundpack =" << effectsData.size() << "bytes";
             }
+            
+            // Recording için sinyal emit et - frekansı azaltmak için counter kontrolü
+            if (m_isRecording && (++m_recordingCounter % 25 == 0)) {
+                emit processedAudioReady(mixedData);
+            }
         } else {
             // Soundpack yok - efektli sesi doğrudan geçir
             m_mixAudioBuffer->write(effectsData);
@@ -155,6 +162,11 @@ void AudioPipeline::processBuffers()
             static int counter = 0;
             if (++counter % 500 == 0) {
                 qDebug() << "EFFECTS CLEAN PASS: No soundpack, passing through effects" << effectsData.size() << "bytes";
+            }
+            
+            // Recording için sinyal emit et - frekansı azaltmak için counter kontrolü
+            if (m_isRecording && (++m_recordingCounter % 25 == 0)) {
+                emit processedAudioReady(effectsData);
             }
         }
         return; // Efektli ses işlendiği için temiz sesi atla
@@ -189,6 +201,11 @@ void AudioPipeline::processBuffers()
             if (++counter % 500 == 0) {
                 qDebug() << "CLEAN MIXED: Input + Soundpack =" << inputData.size() << "bytes";
             }
+            
+            // Recording için sinyal emit et - frekansı azaltmak için counter kontrolü
+            if (m_isRecording && (++m_recordingCounter % 25 == 0)) {
+                emit processedAudioReady(mixedData);
+            }
         } else {
             // Soundpack yok - temiz sesi doğrudan geçir
             m_mixAudioBuffer->write(inputData);
@@ -203,6 +220,11 @@ void AudioPipeline::processBuffers()
             static int counter = 0;
             if (++counter % 500 == 0) {
                 qDebug() << "CLEAN ONLY PASS: No soundpack, passing through clean" << inputData.size() << "bytes";
+            }
+            
+            // Recording için sinyal emit et - frekansı azaltmak için counter kontrolü
+            if (m_isRecording && (++m_recordingCounter % 25 == 0)) {
+                emit processedAudioReady(inputData);
             }
         }
     }
@@ -368,4 +390,10 @@ void AudioPipeline::setNormalOutputDevice(QIODevice *device)
 {
     m_normalOutputDevice = device;
     qDebug() << "AudioPipeline: Normal output device" << (device ? "set" : "cleared");
+}
+
+void AudioPipeline::setRecordingState(bool isRecording)
+{
+    m_isRecording = isRecording;
+    qDebug() << "AudioPipeline: Recording state" << (isRecording ? "enabled" : "disabled");
 }

@@ -734,6 +734,9 @@ void MainWindow::setupVirtualOutput()
                 audioPipeline->setVirtualOutputDevice(virtualOutputDevice);
                 audioPipeline->start();
                 
+                // AudioPipeline recording sinyalini bağla
+                connect(audioPipeline, &AudioPipeline::processedAudioReady, this, &MainWindow::audioDataReady);
+                
                 qDebug() << "Virtual output setup completed for:" << device.description();
             } else {
                 qWarning() << "Format not supported for virtual device:" << device.description();

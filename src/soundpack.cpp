@@ -202,9 +202,12 @@ void MainWindow::playAudioNotInterrupt(const QString &filename, const QString &p
                         }
                     }
 
-                    // Emit signal for recording if recording is active
-                    if (isRecording) {
-                        emit audioDataReady(chunk);
+                    // Recording için soundpack sesini AudioPipeline üzerinden gönder
+                    // Bu, takılmayı önler ve proper mixing sağlar
+                    if (isRecording && audioPipeline) {
+                        // Soundpack sesini AudioPipeline'a gönder, recording sinyali oradan emit edilir
+                        audioPipeline->writeSoundpackAudio(chunk);
+                        audioPipeline->processBuffers();
                     }
 
                     // Real-time timing control - 256 samples için optimal balance
@@ -385,9 +388,12 @@ void MainWindow::playAudioNotInterrupt(const QString &filename, const QString &p
                         }
                     }
 
-                    // Emit signal for recording if recording is active
-                    if (isRecording) {
-                        emit audioDataReady(chunk);
+                    // Recording için soundpack sesini AudioPipeline üzerinden gönder
+                    // Bu, takılmayı önler ve proper mixing sağlar
+                    if (isRecording && audioPipeline) {
+                        // Soundpack sesini AudioPipeline'a gönder, recording sinyali oradan emit edilir
+                        audioPipeline->writeSoundpackAudio(chunk);
+                        audioPipeline->processBuffers();
                     }
 
                     // Real-time timing control - 256 samples için optimal balance

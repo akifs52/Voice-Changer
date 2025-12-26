@@ -47,6 +47,13 @@ public:
     // Test mode control
     void setTestMode(bool enabled);
     void setNormalOutputDevice(QIODevice *device);
+    
+    // Recording state control
+    void setRecordingState(bool isRecording);
+
+signals:
+    // Signal for recording processed audio
+    void processedAudioReady(const QByteArray &audioData);
 
 private slots:
 
@@ -61,6 +68,8 @@ private:
     QIODevice *m_normalOutputDevice;      // Normal output device (test mode)
     QTimer *m_timer;                      // Buffer processing timer
     bool m_testMode;                      // Test mode state
+    bool m_isRecording;                   // Recording state
+    int m_recordingCounter;               // Recording signal frequency control
 
     // Separate chunk sizes for each buffer type
     int m_inputChunkSize;                // Input audio için chunk size

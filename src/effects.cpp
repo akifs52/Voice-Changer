@@ -84,7 +84,7 @@ void MainWindow::stopAllEffects()
 void MainWindow::processToBananaVoice(QByteArray &data)
 {
     // Safety checks
-    if (data.isEmpty() || data.size() < sizeof(int16_t)) {
+    if (data.isEmpty() || data.size() < static_cast<qsizetype>(sizeof(int16_t))) {
         return;
     }
 
@@ -109,7 +109,7 @@ void MainWindow::processToBananaVoice(QByteArray &data)
 void MainWindow::processToRobotVoice(QByteArray &data)
 {
     // Safety checks
-    if (data.isEmpty() || data.size() < sizeof(int16_t)) {
+    if (data.isEmpty() || data.size() < static_cast<qsizetype>(sizeof(int16_t))) {
         return;
     }
 
@@ -135,7 +135,7 @@ void MainWindow::processToRobotVoice(QByteArray &data)
 void MainWindow::processToDevilVoice(QByteArray &data)
 {
     // Safety checks
-    if (data.isEmpty() || data.size() < sizeof(int16_t)) {
+    if (data.isEmpty() || data.size() < static_cast<qsizetype>(sizeof(int16_t))) {
         return;
     }
 
@@ -160,7 +160,7 @@ void MainWindow::processToDevilVoice(QByteArray &data)
 void MainWindow::processToFemaleVoice(QByteArray &data)
 {
     // Safety checks
-    if (data.isEmpty() || data.size() < sizeof(int16_t)) {
+    if (data.isEmpty() || data.size() < static_cast<qsizetype>(sizeof(int16_t))) {
         return;
     }
 
@@ -185,7 +185,7 @@ void MainWindow::processToFemaleVoice(QByteArray &data)
 void MainWindow::processToCombineVoice(QByteArray &data)
 {
     // Safety checks
-    if (data.isEmpty() || data.size() < sizeof(int16_t)) {
+    if (data.isEmpty() || data.size() < static_cast<qsizetype>(sizeof(int16_t))) {
         return;
     }
 
@@ -210,7 +210,7 @@ void MainWindow::processToCombineVoice(QByteArray &data)
 void MainWindow::processToEkoVoice(QByteArray &data)
 {
     // Safety checks
-    if (data.isEmpty() || data.size() < sizeof(int16_t)) {
+    if (data.isEmpty() || data.size() < static_cast<qsizetype>(sizeof(int16_t))) {
         return;
     }
 

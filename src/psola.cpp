@@ -9,8 +9,8 @@ using namespace std;
 #define M_PI 3.14159265358979323846
 #endif
 
-PSOLA::PSOLA() : m_lastSample(0.0f), m_hpPrev(0.0f), m_lastInput(0.0f),
-                   m_echoIndex1(0), m_echoIndex2(0), m_echoIndex3(0), m_lowPassState(0.0f)
+PSOLA::PSOLA() : m_lastSample(0.0f),
+                   m_echoIndex1(0), m_echoIndex2(0)
 {
 }
 
@@ -21,12 +21,12 @@ PSOLA::~PSOLA()
 float PSOLA::getDefaultPitchFactor(EffectType effect)
 {
     switch (effect) {
-        case BANANA:   return 1.35f;
-        case ROBOT:    return 0.95f;  // Sadece hafif pitch shift
-        case DEVIL:    return 0.82f;
-        case FEMALE:   return 1.3f;
-        case COMBINE:  return 1.2f;
-        case EKO:      return 1.0f;   // Echo için pitch değişimi yok
+        case BANANA:   return 1.50f;  // Çok hafif
+        case ROBOT:    return 0.98f;  // Neredeyse aynı
+        case DEVIL:    return 0.75;  // Hafif düşük
+        case FEMALE:   return 1.20f;  // Hafif yüksek
+        case COMBINE:  return 1.0f;
+        case EKO:      return 1.0f;
         default:       return 1.0f;
     }
 }
@@ -34,101 +34,340 @@ float PSOLA::getDefaultPitchFactor(EffectType effect)
 float PSOLA::getDefaultFilterStrength(EffectType effect)
 {
     switch (effect) {
-        case BANANA:   return 0.25f;
-        case ROBOT:    return 0.6f;   // Daha güçlü filtering
-        case DEVIL:    return 0.15f;
-        case FEMALE:   return 0.3f;
-        case COMBINE:  return 0.2f;
-        case EKO:      return 0.05f;  // Minimal filtering for echo
+        case BANANA:   return 0.1f;   // Çok hafif filtering
+        case ROBOT:    return 0.6f;
+        case DEVIL:    return 0.08f;  // Minimum filtering
+        case FEMALE:   return 0.12f;  // Hafif filtering
+        case COMBINE:  return 0.15f;
+        case EKO:      return 0.0f;   // No filtering for echo
         default:       return 0.0f;
+    }
+}
+
+void PSOLA::applyPureEchoOnly(std::vector<float>& buffer, int sampleCount, int sampleRate)
+{
+    // SADECE echo, pitch shift YOK
+    applyCaveEcho(buffer, sampleCount, sampleRate);
+    
+    // Çok hafif output limiting
+    for (int i = 0; i < sampleCount; i++) {
+        float sample = buffer[i];
+        if (sample > 0.95f) sample = 0.95f;
+        if (sample < -0.95f) sample = -0.95f;
+        buffer[i] = sample;
     }
 }
 
 void PSOLA::process(int16_t* pcm, int sampleCount, int sampleRate, 
                    float pitchFactor, EffectType effect,
-                   float filterStrength)
+                   float)
 {
     if (!pcm || sampleCount <= 0 || sampleRate <= 0) return;
-    if (pitchFactor <= 0.1f || pitchFactor > 5.0f) return;
-    if (sampleCount < 200) return;
-
-    // Use defaults if not specified
-    if (filterStrength < 0.0f) {
-        filterStrength = getDefaultFilterStrength(effect);
-    }
-
-    // -----------------------------
-    // NEW: Noise gate and signal detection
-    // -----------------------------
     
-    // Convert to float without noise gate for cleaner sound
-    std::vector<float> inputFloat(sampleCount);
+    // 1. Convert to float
+    std::vector<float> buffer(sampleCount);
     for (int i = 0; i < sampleCount; i++) {
-        float sample = pcm[i] / 32768.0f;
-
-        // Simple hard limiting only - no noise gate
-        if (sample > 0.9f) sample = 0.9f + (sample - 0.9f) * 0.3f;
-        if (sample < -0.9f) sample = -0.9f + (sample + 0.9f) * 0.3f;
-
-        inputFloat[i] = sample;
-    }
-
-    // NO input high-pass - causes dual voice effect
-    
-    // Minimal buffering for real-time processing
-    std::vector<float> buffer(sampleCount, 0.0f);
-    for (int i = 0; i < sampleCount; i++) {
-        buffer[i] = inputFloat[i];
+        buffer[i] = pcm[i] / 32768.0f;
     }
     
-    // NO edge smoothing - causes delay
-
-    // Apply effect-specific processing
-    if (effect == ROBOT) {
-        applyRobotEffect(buffer, sampleCount, sampleRate, pitchFactor);
-    } else {
-        // Normal pitch shifting for other effects
-        applyPitchShift(buffer, sampleCount, pitchFactor);
-    }
-
-    // Apply filtering if needed
-    if (filterStrength > 0.0f) {
-        applyEffectFilter(buffer, effect, filterStrength, sampleRate);
-    }
-    
-    // ---- MAĞARA EKO ----
-    if (effect == EKO) {
-
-        applyCaveEcho(buffer, sampleCount, sampleRate);
-    }
-    
-    // Enhanced output limiting with noise gate - SOFTER SETTINGS
-    applyOutputLimiting(buffer, sampleCount);
-
-    // Convert back to int16_t with careful scaling
-    float maxVal = 0.0001f; // Avoid division by zero
-    for (int i = 0; i < sampleCount; i++) {
-        float val = std::abs(buffer[i]);
-        if (val > maxVal) maxVal = val;
-    }
-    
-    // Normalize and convert - ONLY WHEN NEEDED
-    float gain = (maxVal > 0.6f) ? (0.95f / maxVal) : 1.0f;
-    for (int i = 0; i < sampleCount; i++) {
-        float sample = buffer[i] * gain;
+    // 2. PITCH SHIFT - use Hermite interpolation instead of linear
+    if (pitchFactor != 1.0f && effect != EKO) {
+        // Pitch faktörünü sınırla (dar aralık daha stabil)
+        pitchFactor = std::clamp(pitchFactor, 0.85f, 1.15f);
         
-        // Gentle qbound clamping - yüksek tizleri sınırla
-        if (sample > 0.85f) {
-            sample = 0.85f + (sample - 0.85f) * 0.3f;  // Yumuşak clamp
-        } else if (sample < -0.85f) {
-            sample = -0.85f + (sample + 0.85f) * 0.3f;  // Yumuşak clamp
-        }
+        // Noise gate (gürültüyü sustur)
+        applyNoiseGate(buffer);
+        
+        // Önce hafif low-pass (anti-alias)
+        applyGentleLowPass(buffer, sampleCount, 0.0f);
+        
+        // Hermite interpolation (daha stabil)
+        applySimplePitchShift(buffer, sampleCount, pitchFactor);
+        
+        // DC blocker (dip gürültüsünü keser)
+        applyDCBlocker(buffer);
+        
+        // RMS normalize (patlamayı keser)
+        normalizeRMS(buffer);
+        
+        // Edge fade (çıtlamayı keser)
+        applyEdgeFade(buffer);
+    }
+    
+    // 3. Efektlere göre ÇOK HAFİF işlemler
+    switch (effect) {
+        case EKO:
+            applyPureEchoOnly(buffer, sampleCount, sampleRate);
+            break;
+            
+        case ROBOT:
+            // Robot için sadece autotune
+            applyAutotune(buffer, sampleCount, sampleRate);
+            break;
+            
+        case DEVIL:
+            // Devil için hafif distortion
+            for (int i = 0; i < sampleCount; i++) {
+                float x = buffer[i];
+                // Cubic soft clipping
+                if (x > 0.5f) {
+                    x = 0.5f + (x - 0.5f) * 0.7f;
+                } else if (x < -0.5f) {
+                    x = -0.5f + (x + 0.5f) * 0.7f;
+                }
+                buffer[i] = x;
+            }
+            break;
+            
+        case BANANA:
+        case FEMALE:
+        case COMBINE:
+            // Sadece pitch shift yeterli, başka işlem yok
+            break;
+    }
+    
+    // 4. Geliştirmiş limiter (daha erken devreye girer)
+    for (int i = 0; i < sampleCount; i++) {
+        float sample = buffer[i];
+        
+        // Daha agresif soft clipping
+        sample = tanhf(sample * 1.2f);
         
         pcm[i] = static_cast<int16_t>(sample * 32767.0f);
     }
+}
+
+void PSOLA::applyUltraCleanPitchShift(std::vector<float>& buffer, int sampleCount, 
+                                     float pitchFactor)
+{
+    if (pitchFactor == 1.0f) return;
     
-    // Update last sample for continuity
-    m_lastSample = buffer[sampleCount - 1];
+    // 1. Önce anti-aliasing filtresi UYGULA
+    if (pitchFactor > 1.05f) {
+        applyStrongAntiAliasFilter(buffer, sampleCount, pitchFactor);
+    }
+    
+    // 2. Çok basit ama stabil linear interpolation
+    std::vector<float> original = buffer;
+    
+    for (int i = 0; i < sampleCount; i++) {
+        float srcPos = i * pitchFactor;
+        int idx = static_cast<int>(srcPos);
+        
+        if (idx < 0) {
+            buffer[i] = 0.0f;
+            continue;
+        }
+        
+        if (idx >= sampleCount - 1) {
+            if (idx < sampleCount) {
+                buffer[i] = original[idx];
+            } else {
+                buffer[i] = 0.0f;
+            }
+            continue;
+        }
+        
+        float frac = srcPos - idx;
+        buffer[i] = original[idx] * (1.0f - frac) + original[idx + 1] * frac;
+    }
+}
+
+void PSOLA::applyStrongAntiAliasFilter(std::vector<float>& buffer, int sampleCount, 
+                                      float)
+{
+    // Simple two-pass moving average filter (çok temiz)
+    std::vector<float> temp(sampleCount);
+    
+    // İlk pass
+    for (int i = 1; i < sampleCount - 1; i++) {
+        temp[i] = (buffer[i-1] + buffer[i] + buffer[i+1]) / 3.0f;
+    }
+    temp[0] = buffer[0];
+    temp[sampleCount-1] = buffer[sampleCount-1];
+    
+    // İkinci pass
+    for (int i = 1; i < sampleCount - 1; i++) {
+        buffer[i] = (temp[i-1] + temp[i] + temp[i+1]) / 3.0f;
+    }
+}
+
+void PSOLA::applyGentleLowPass(std::vector<float>& buffer, int sampleCount, float)
+{
+    // One-pole low-pass filter (çok yumuşak)
+    static float prev = 0.0f;
+    float alpha = 0.1f; // Sabit, basit filtre
+    
+    for (int i = 0; i < sampleCount; i++) {
+        float x = buffer[i];
+        float y = prev + alpha * (x - prev);
+        buffer[i] = y;
+        prev = y;
+    }
+}
+
+void PSOLA::applyCleanPitchShift(std::vector<float>& buffer, int sampleCount, 
+                                 float pitchFactor, EffectType)
+{
+    if (pitchFactor == 1.0f || pitchFactor <= 0.0f) return;
+    
+    // OLA (Overlap-Add) tabanlı pitch shifting - daha temiz
+    const int windowSize = 512;
+    const int hopSize = 256;
+    
+    if (sampleCount < windowSize * 2) {
+        // Küçük buffer için basit interpolation
+        applySimplePitchShift(buffer, sampleCount, pitchFactor);
+        return;
+    }
+    
+    std::vector<float> output(sampleCount, 0.0f);
+    std::vector<float> window(windowSize);
+    
+    // Hanning window oluştur
+    for (int i = 0; i < windowSize; i++) {
+        window[i] = 0.5f * (1.0f - cosf(2.0f * M_PI * i / (windowSize - 1)));
+    }
+    
+    int inputHop = hopSize;
+    // int outputHop = static_cast<int>(hopSize * pitchFactor); // Unused variable
+    
+    // Overlap-Add ile pitch shifting
+    for (int pos = 0; pos + windowSize <= sampleCount; pos += inputHop) {
+        int outputPos = static_cast<int>(pos * pitchFactor);
+        
+        if (outputPos + windowSize > sampleCount) break;
+        
+        // Window uygula
+        for (int i = 0; i < windowSize; i++) {
+            int srcIdx = pos + i;
+            int dstIdx = outputPos + i;
+            
+            if (srcIdx < sampleCount && dstIdx < sampleCount) {
+                float windowedSample = buffer[srcIdx] * window[i];
+                output[dstIdx] += windowedSample;
+            }
+        }
+    }
+    
+    // Normalizasyon uygula
+    float maxVal = 0.001f;
+    for (int i = 0; i < sampleCount; i++) {
+        if (fabs(output[i]) > maxVal) maxVal = fabs(output[i]);
+    }
+    
+    if (maxVal > 1.0f) {
+        float gain = 0.95f / maxVal;
+        for (int i = 0; i < sampleCount; i++) {
+            buffer[i] = output[i] * gain;
+        }
+    } else {
+        buffer = output;
+    }
+}
+
+void PSOLA::applySimplePitchShift(std::vector<float>& buffer, int sampleCount, 
+                                  float pitchFactor)
+{
+    std::vector<float> original = buffer;
+    
+    for (int i = 0; i < sampleCount; i++) {
+        float srcPos = i * pitchFactor;
+        int idx0 = static_cast<int>(srcPos);
+        
+        if (idx0 < 0 || idx0 >= sampleCount - 3) {
+            buffer[i] = 0.0f;
+            continue;
+        }
+        
+        float frac = srcPos - idx0;
+        
+        // 4-point, 3rd-order Hermite interpolation (daha stabil)
+        float xm1 = (idx0 > 0) ? original[idx0 - 1] : original[idx0];
+        float x0 = original[idx0];
+        float x1 = original[idx0 + 1];
+        float x2 = (idx0 + 2 < sampleCount) ? original[idx0 + 2] : original[idx0 + 1];
+        
+        float c0 = x0;
+        float c1 = 0.5f * (x1 - xm1);
+        float c2 = xm1 - 2.5f * x0 + 2.0f * x1 - 0.5f * x2;
+        float c3 = 0.5f * (x2 - xm1) + 1.5f * (x0 - x1);
+        
+        buffer[i] = ((c3 * frac + c2) * frac + c1) * frac + c0;
+    }
+}
+
+void PSOLA::applyAntiAliasFilter(std::vector<float>& buffer, int sampleCount, 
+                                 int sampleRate, float pitchFactor)
+{
+    if (pitchFactor > 1.0f) {
+        // Pitch yükseltiliyorsa, low-pass filter uygula
+        float nyquist = sampleRate / 2.0f;
+        float cutoff = nyquist / pitchFactor * 0.9f; // Güvenlik marjı
+        
+        applySimpleLowPass(buffer, sampleCount, sampleRate, cutoff);
+    }
+}
+
+void PSOLA::applySimpleLowPass(std::vector<float>& buffer, int sampleCount,
+                               int sampleRate, float cutoff)
+{
+    if (cutoff <= 0.0f || cutoff >= sampleRate/2.0f) return;
+    
+    // Simple one-pole low-pass filter
+    float dt = 1.0f / sampleRate;
+    float rc = 1.0f / (2.0f * M_PI * cutoff);
+    float alpha = dt / (rc + dt);
+    
+    float prev = buffer[0];
+    
+    for (int i = 0; i < sampleCount; i++) {
+        float x = buffer[i];
+        float y = prev + alpha * (x - prev);
+        buffer[i] = y;
+        prev = y;
+    }
+}
+
+void PSOLA::applyMinimalEffect(std::vector<float>& buffer, EffectType effect,
+                              float, int)
+{
+    // Çok minimal efekt işlemleri
+    switch (effect) {
+        case BANANA: {
+            // Sadece hafif ton ayarı
+            for (int i = 0; i < (int)buffer.size(); i++) {
+                buffer[i] *= 1.05f; // Hafif gain
+            }
+            break;
+        }
+        case DEVIL: {
+            // Çok hafif distortion
+            for (int i = 0; i < (int)buffer.size(); i++) {
+                float x = buffer[i];
+                if (x > 0.3f) x = 0.3f + (x - 0.3f) * 0.7f;
+                if (x < -0.3f) x = -0.3f + (x + 0.3f) * 0.7f;
+                buffer[i] = x;
+            }
+            break;
+        }
+        case FEMALE: {
+            // Hafif high-pass
+            float prev = buffer[0];
+            for (int i = 1; i < (int)buffer.size(); i++) {
+                float x = buffer[i];
+                float y = x - prev * 0.1f;
+                prev = x;
+                buffer[i] = y;
+            }
+            break;
+        }
+        case ROBOT:
+        case COMBINE:
+        case EKO:
+            // Bu efektler için minimal işlem yok
+            break;
+    }
 }
 
 void PSOLA::applyPitchShift(std::vector<float>& buffer, int sampleCount, float pitchFactor)
@@ -279,17 +518,82 @@ float PSOLA::estimatePitchFrequency(const std::vector<float>& frame, int sampleR
     return 0.0f;
 }
 
-void PSOLA::applyRobotEffect(std::vector<float>& buffer, int sampleCount, int sampleRate, float pitchFactor)
+void PSOLA::applyMinimalFiltering(std::vector<float>& buffer, EffectType effect,
+                                 float strength, int sampleRate)
 {
-    // 1. Önce pitch shift uygula
+    if (strength <= 0.0f) return;
+    
+    switch (effect) {
+        case BANANA: {
+            // Banana: Çok hafif high-pass + hafif formant
+            float formantFreq = 800.0f;
+            
+            // Apply very light high-pass
+            for (int i = 1; i < (int)buffer.size(); i++) {
+                float alpha = 0.01f * strength;
+                buffer[i] = buffer[i] - buffer[i-1] * (1.0f - alpha);
+            }
+            
+            // Ultra light formant enhancement
+            static float phase = 0.0f;
+            float phaseInc = 2.0f * M_PI * formantFreq / sampleRate;
+            
+            for (int i = 0; i < (int)buffer.size(); i++) {
+                float formant = 1.0f + 0.1f * strength * sin(phase);
+                buffer[i] *= formant;
+                phase += phaseInc;
+                if (phase > 2.0f * M_PI) phase -= 2.0f * M_PI;
+            }
+            break;
+        }
+        
+        case DEVIL: {
+            // Devil: Minimal distortion + pitch variation
+            float distortion = 0.15f * strength;
+            
+            for (int i = 0; i < (int)buffer.size(); i++) {
+                float sample = buffer[i];
+                
+                // Very subtle distortion
+                if (sample > 0) {
+                    sample = 1.0f - expf(-sample * (1.0f + distortion));
+                } else {
+                    sample = -1.0f + expf(sample * (1.0f + distortion));
+                }
+                
+                buffer[i] = buffer[i] * (1.0f - distortion) + sample * distortion;
+            }
+            break;
+        }
+        
+        case FEMALE: {
+            // Female: Clean pitch shift only, minimal formant
+            for (int i = 1; i < (int)buffer.size(); i++) {
+                // Very subtle high-pass
+                float alpha = 0.02f * strength;
+                buffer[i] = buffer[i] * (1.0f - alpha) + (buffer[i] - buffer[i-1]) * alpha;
+            }
+            break;
+        }
+        
+        default:
+            break;
+    }
+}
+
+void PSOLA::applyRobotEffect(std::vector<float>& buffer, int sampleCount, 
+                            int sampleRate, float pitchFactor)
+{
+    // Robot için daha agresif işlemler
     if (pitchFactor != 1.0f) {
         applyPitchShift(buffer, sampleCount, pitchFactor);
     }
     
-    // 2. RAPÇİ EFKTİ: Sadece autotune uygula
+    // Autotune uygula
     applyAutotune(buffer, sampleCount, sampleRate);
     
-    // 3. Robotik formant ve ring modulation kaldırıldı - sadece autotune kalacak
+    // Light formant filtering
+    applyRobotFormant(buffer, sampleCount, sampleRate);
 }
 
 
@@ -347,179 +651,67 @@ void PSOLA::applyRobotFormant(std::vector<float>& buffer, int sampleCount, int s
     }
 }
 
-void PSOLA::applyRingModulation(std::vector<float>& buffer, int sampleCount, int sampleRate, float modFreq)
-{
-    float phaseInc = 2.0f * M_PI * modFreq / sampleRate;
-    
-    for (int i = 16; i < sampleCount + 16; i++) {
-        float mod = 0.5f + 0.5f * sin(m_ringPhase);
-        // FIX: Prevent complete silence by ensuring minimum modulation
-        if (mod < 0.1f) mod = 0.1f;
-        buffer[i] *= mod;
-        m_ringPhase += phaseInc;
-        if (m_ringPhase > 2.0f * M_PI) m_ringPhase -= 2.0f * M_PI;
-    }
-}
-
-
 void PSOLA::applyCaveEcho(std::vector<float>& buffer, int sampleCount, int sampleRate)
 {
-    float delayMs1 = 300.0f;
-    float delayMs2 = 500.0f;
-    float delayMs3 = 750.0f;
-    float feedback1 = 0.7f;
-    float feedback2 = 0.6f;
-    float feedback3 = 0.5f;
-    float mix = 0.8f;
+    // Echo için cleaner ayarlar
+    float delayMs1 = 250.0f;    // Kısa delay
+    float delayMs2 = 400.0f;    // Orta delay
+    float feedback1 = 0.5f;     // Düşük feedback
+    float feedback2 = 0.4f;
+    float mix = 0.6f;          // Daha az mix
 
     int delaySamples1 = static_cast<int>(delayMs1 * sampleRate / 1000.0f);
     int delaySamples2 = static_cast<int>(delayMs2 * sampleRate / 1000.0f);
-    int delaySamples3 = static_cast<int>(delayMs3 * sampleRate / 1000.0f);
 
-    if (delaySamples1 <= 0 || delaySamples2 <= 0 || delaySamples3 <= 0)
+    if (delaySamples1 <= 0 || delaySamples2 <= 0)
         return;
 
     if ((int)m_echoBuffer1.size() != delaySamples1)
         m_echoBuffer1.assign(delaySamples1, 0.0f);
     if ((int)m_echoBuffer2.size() != delaySamples2)
         m_echoBuffer2.assign(delaySamples2, 0.0f);
-    if ((int)m_echoBuffer3.size() != delaySamples3)
-        m_echoBuffer3.assign(delaySamples3, 0.0f);
 
-    for (int i = 0; i < sampleCount; i++) {  // No padding - start from 0
+    for (int i = 0; i < sampleCount; i++) {
         float dry = buffer[i];
         float echo1 = m_echoBuffer1[m_echoIndex1];
         float echo2 = m_echoBuffer2[m_echoIndex2];
-        float echo3 = m_echoBuffer3[m_echoIndex3];
 
-        float totalEcho = echo1 * 0.5f + echo2 * 0.3f + echo3 * 0.2f;
+        float totalEcho = echo1 * 0.6f + echo2 * 0.4f;
         buffer[i] = dry + totalEcho * mix;
 
         m_echoBuffer1[m_echoIndex1] = dry + echo1 * feedback1;
         m_echoBuffer2[m_echoIndex2] = dry + echo2 * feedback2;
-        m_echoBuffer3[m_echoIndex3] = dry + echo3 * feedback3;
 
         m_echoIndex1 = (m_echoIndex1 + 1) % delaySamples1;
         m_echoIndex2 = (m_echoIndex2 + 1) % delaySamples2;
-        m_echoIndex3 = (m_echoIndex3 + 1) % delaySamples3;
-    }
-}
-
-void PSOLA::applyInputHighPass(std::vector<float>& buffer, int sampleRate, float cutoff)
-{
-    if (cutoff <= 0.0f) return;
-    
-    float dt = 1.0f / sampleRate;
-    float rc = 1.0f / (2.0f * M_PI * cutoff);
-    float alpha = rc / (rc + dt);
-    
-    float prev = m_hpPrev;
-    
-    // FIX: Reset filter state at buffer beginning
-    if (!buffer.empty()) {
-        m_lastInput = buffer[0];
-    }
-    
-    for (size_t i = 0; i < buffer.size(); i++) {
-        float x = buffer[i];
-        float y = alpha * (prev + x - m_lastInput);
-        buffer[i] = y;
-        prev = y;
-        m_lastInput = x;
-    }
-    
-    m_hpPrev = prev;
-}
-
-void PSOLA::applyEffectFilter(std::vector<float>& buffer, EffectType effect, 
-                             float strength, int sampleRate)
-{
-    switch (effect) {
-        case BANANA:
-            // BANANA için filtering kaldırıldı - temiz gibi EKO
-            break;
-        case ROBOT:
-            // Robot already has its own filtering
-            break;
-        case DEVIL:
-            // DEVIL için filtering kaldırıldı - temiz gibi EKO
-            break;
-        case FEMALE:
-            // FEMALE için filtering kaldırıldı - robotik ses gitmesi için
-            break;
-        default:
-            if (strength > 0.0f) {
-                applyHighPassFilter(buffer, strength, 150.0f, sampleRate);
-            }
-            break;
-    }
-}
-
-void PSOLA::applyHighPassFilter(std::vector<float>& buffer, float strength, 
-                               float cutoff, int sampleRate)
-{
-    if (strength <= 0.0f || cutoff <= 0.0f) return;
-    
-    float dt = 1.0f / sampleRate;
-    float rc = 1.0f / (2.0f * M_PI * cutoff);
-    float alpha = rc / (rc + dt);
-    
-    float prev = 0.0f;
-    float lastIn = buffer[0];  // No padding - start from 0
-    
-    for (size_t i = 0; i < buffer.size(); i++) {  // No padding - start from 0
-        float x = buffer[i];
-        float y = alpha * (prev + x - lastIn);
-        
-        // Mix with original based on strength
-        buffer[i] = x * (1.0f - strength) + y * strength;
-        
-        prev = y;
-        lastIn = x;
-    }
-}
-
-void PSOLA::applyLowPassFilter(std::vector<float>& buffer, float strength,
-                              float cutoff, int sampleRate)
-{
-    if (strength <= 0.0f || cutoff <= 0.0f) return;
-    
-    float dt = 1.0f / sampleRate;
-    float rc = 1.0f / (2.0f * M_PI * cutoff);
-    float alpha = dt / (rc + dt);
-    
-    float prev = buffer[0];  // No padding - start from 0
-    
-    for (size_t i = 0; i < buffer.size(); i++) {  // No padding - start from 0
-        float x = buffer[i];
-        float y = prev + alpha * (x - prev);
-        
-        // Mix with original based on strength
-        buffer[i] = x * (1.0f - strength) + y * strength;
-        
-        prev = y;
-    }
-}
-
-void PSOLA::applyOutputLimiting(std::vector<float>& buffer, int sampleCount)
-{
-    // Simple limiting for BANANA and DEVIL - no complex processing
-    for (int i = 0; i < sampleCount; i++) {
-        float sample = buffer[i];
-        
-        // Gentle hard limiting only
-        if (sample > 0.9f) {
-            sample = 0.9f + (sample - 0.9f) * 0.5f;
-        } else if (sample < -0.9f) {
-            sample = -0.9f + (sample + 0.9f) * 0.5f;
-        }
-        
-        buffer[i] = sample;
     }
 }
 
 float PSOLA::hanningWindow(int n, int N)
 {
     return 0.5f * (1.0f - cosf(2.0f * M_PI * n / (N - 1)));
+}
+
+void PSOLA::applyDCBlocker(std::vector<float>& buffer)
+{
+    static float x1 = 0.0f;
+    static float y1 = 0.0f;
+    const float R = 0.995f; // 0.99–0.998 arası ideal
+    
+    for (size_t i = 0; i < buffer.size(); i++) {
+        float x = buffer[i];
+        float y = x - x1 + R * y1;
+        buffer[i] = y;
+        x1 = x;
+        y1 = y;
+    }
+}
+
+void PSOLA::applyNoiseGate(std::vector<float>& buffer, float threshold)
+{
+    for (float& x : buffer) {
+        if (fabs(x) < threshold)
+            x = 0.0f;
+    }
 }
 

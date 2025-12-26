@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <cstdint>
-
+#include <cmath>
 class PSOLA
 {
 public:
@@ -33,47 +33,84 @@ public:
 private:
     // Core processing functions
     void applyPitchShift(std::vector<float>& buffer, int sampleCount, float pitchFactor);
+    void applyCleanPitchShift(std::vector<float>& buffer, int sampleCount, float pitchFactor, EffectType);
+    void applySimplePitchShift(std::vector<float>& buffer, int sampleCount, float pitchFactor);
+    void applyUltraCleanPitchShift(std::vector<float>& buffer, int sampleCount, float pitchFactor);
+    void applyStrongAntiAliasFilter(std::vector<float>& buffer, int sampleCount, float);
+    void applyPureEchoOnly(std::vector<float>& buffer, int sampleCount, int sampleRate);
+    void applyGentleLowPass(std::vector<float>& buffer, int sampleCount, float);
     void applyRobotEffect(std::vector<float>& buffer, int sampleCount, int sampleRate, float pitchFactor);
     void applyAutotune(std::vector<float>& buffer, int sampleCount, int sampleRate);
     float estimatePitchFrequency(const std::vector<float>& frame, int sampleRate);
     void applyRobotFormant(std::vector<float>& buffer, int sampleCount, int sampleRate);
     
     // Filtering functions
-    void applyInputHighPass(std::vector<float>& buffer, int sampleRate, float cutoff);
-    void applyEffectFilter(std::vector<float>& buffer, EffectType effect, 
-                         float strength, int sampleRate);
-    void applyHighPassFilter(std::vector<float>& buffer, float strength, 
-                           float cutoff, int sampleRate);
-    void applyLowPassFilter(std::vector<float>& buffer, float strength,
-                          float cutoff, int sampleRate);
-    void applyOutputLimiting(std::vector<float>& buffer, int sampleCount);
+    void applyMinimalFiltering(std::vector<float>& buffer, EffectType effect,
+                             float strength, int sampleRate);
+    void applyAntiAliasFilter(std::vector<float>& buffer, int sampleCount, 
+                             int sampleRate, float pitchFactor);
+    void applySimpleLowPass(std::vector<float>& buffer, int sampleCount,
+                           int sampleRate, float cutoff);
+    void applyMinimalEffect(std::vector<float>& buffer, EffectType effect, float, int);
     
     // Effect enhancement functions
-    void applyRingModulation(std::vector<float>& buffer, int sampleCount, int sampleRate, float modFreq);
     void applyCaveEcho(std::vector<float>& buffer, int sampleCount, int sampleRate);
     
     // Utility functions
     float hanningWindow(int n, int N);
     
+    // NEW: Anti-popping helper functions
+    void normalizeRMS(std::vector<float>& buffer, float targetRMS = 0.18f);
+    void applyEdgeFade(std::vector<float>& buffer, int fadeSamples = 32);
+    
+    // NEW: Deep noise elimination functions
+    void applyDCBlocker(std::vector<float>& buffer);
+    void applyNoiseGate(std::vector<float>& buffer, float threshold = 0.015f);
+    
     
     // Member variables for continuity
     float m_lastSample;
-    float m_hpPrev;
-    float m_lastInput;
-    float m_ringPhase = 0.0f;
     
     // Cave echo effect variables
     std::vector<float> m_echoBuffer1;
     std::vector<float> m_echoBuffer2;
-    std::vector<float> m_echoBuffer3;
     int m_echoIndex1 = 0;
     int m_echoIndex2 = 0;
-    int m_echoIndex3 = 0;
-    float m_lowPassState = 0.0f;
     
     // Constants
     static constexpr int MIN_PITCH_HZ = 80;
     static constexpr int MAX_PITCH_HZ = 400;
 };
+
+// NEW: Inline helper functions for anti-popping
+inline void PSOLA::normalizeRMS(std::vector<float>& buffer, float targetRMS)
+{
+    double sum = 0.0;
+    for (float x : buffer)
+        sum += x * x;
+
+    float rms = sqrt(sum / buffer.size());
+    
+    // KRİTİK: sessizse normalize etme
+    if (rms < 0.02f) return;
+
+    float gain = targetRMS / rms;
+    gain = std::min(gain, 3.0f); // gain clamp
+
+    for (float& x : buffer)
+        x *= gain;
+}
+
+inline void PSOLA::applyEdgeFade(std::vector<float>& buffer, int fadeSamples)
+{
+    int bufSize = buffer.size();
+    if (bufSize <= fadeSamples * 2) return;
+    
+    for (int i = 0; i < fadeSamples; i++) {
+        float g = (float)i / fadeSamples;
+        buffer[i] *= g;
+        buffer[bufSize - 1 - i] *= g;
+    }
+}
 
 #endif // PSOLA_H

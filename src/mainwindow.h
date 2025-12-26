@@ -210,6 +210,7 @@ private:
     QByteArray data;
     bool isRecording = false;
     bool testButtonWasActive = false;
+    QByteArray recordingBuffer;           // Recording için birikim buffer'ı
     QElapsedTimer recordingTimer;
     QElapsedTimer recordingDurationTimer;
     qint64 recordingStartTime = 0;

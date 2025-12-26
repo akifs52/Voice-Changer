@@ -91,20 +91,28 @@ void MainWindow::on_startRecord_clicked()
     g_pts = 0;
     g_recordStartTime = QDateTime::currentMSecsSinceEpoch();
     isRecording = true;
-
-    // Timer connection for recording
-    QTimer* recordTimer = new QTimer(this);
-    recordTimer->setObjectName("recordTimer"); // Give timer a name
     
-    // Signal-slot connection for recording
+    // Recording buffer'ını temizle
+    recordingBuffer.clear();
+    
+    // AudioPipeline recording state'ini güncelle
+    if (audioPipeline) {
+        audioPipeline->setRecordingState(true);
+    }
+
+    // AudioPipeline sinyalini doğrudan recording'e bağla - timer kullanma
     connect(this, &MainWindow::audioDataReady, this, [=](const QByteArray &audioData) {
         if (!isRecording || audioData.isEmpty()) return;
         
-        // Use audioData for recording
-        processAudioForRecording(audioData);
+        // Recording buffer'ına biriktir - daha az işlem için
+        recordingBuffer.append(audioData);
+        
+        // Buffer 8KB'a ulaşınca recording'e gönder
+        if (recordingBuffer.size() >= 8192) {
+            processAudioForRecording(recordingBuffer);
+            recordingBuffer.clear();
+        }
     });
-    
-    recordTimer->start(20);
 
     qDebug() << "Recording started - capturing mixed audio from AudioPipeline (input+soundpack or effects+soundpack)";
 
@@ -117,13 +125,6 @@ void MainWindow::on_startRecord_clicked()
 void MainWindow::on_stopRecord_clicked()
 {
     if (!isRecording) return;
-
-    // Find and stop the record timer
-    QTimer* recordTimer = findChild<QTimer*>("recordTimer");
-    if (recordTimer) {
-        recordTimer->stop();
-        recordTimer->deleteLater();
-    }
 
     if (g_codecContext) {
         avcodec_send_frame(g_codecContext, nullptr);
@@ -157,6 +158,17 @@ void MainWindow::on_stopRecord_clicked()
 
     qint64 recordingDuration = QDateTime::currentMSecsSinceEpoch() - g_recordStartTime;
     isRecording = false;
+    
+    // Kalan recording buffer'ını işle
+    if (!recordingBuffer.isEmpty()) {
+        processAudioForRecording(recordingBuffer);
+        recordingBuffer.clear();
+    }
+    
+    // AudioPipeline recording state'ini güncelle
+    if (audioPipeline) {
+        audioPipeline->setRecordingState(false);
+    }
 
     ui->startRecord->setText("Start Record");
     ui->startRecord->setEnabled(true);
