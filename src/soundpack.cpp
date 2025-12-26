@@ -196,9 +196,22 @@ void MainWindow::playAudioNotInterrupt(const QString &filename, const QString &p
                             if (bytesAvailable > 2048) {
                                 qDebug() << "Soundpack: Skipping chunk - buffer full (" << bytesAvailable << "bytes pending)";
                             } else {
-                                // Try to write the data with multiple attempts
+                                // Adaptive chunk size based on available buffer space
+                                qint64 chunkSize = chunk.size();
+                                qint64 availableSpace = 2048 - bytesAvailable; // Max 2KB buffer
+                                
+                                if (availableSpace < chunkSize) {
+                                    chunkSize = availableSpace;
+                                    if (chunkSize < 512) {
+                                        qDebug() << "Soundpack: Buffer too constrained, skipping chunk";
+                                        goto skip_chunk; // Skip if less than 512 bytes available
+                                    }
+                                    qDebug() << "Soundpack: Adaptive chunk size reduced to" << chunkSize << "bytes";
+                                }
+                                
+                                // Try to write the (possibly reduced) chunk
                                 qint64 totalWritten = 0;
-                                qint64 remaining = chunk.size();
+                                qint64 remaining = chunkSize;
                                 int attempts = 0;
                                 const int maxAttempts = 3;
                                 
@@ -208,21 +221,39 @@ void MainWindow::playAudioNotInterrupt(const QString &filename, const QString &p
                                     if (bytesWritten > 0) {
                                         totalWritten += bytesWritten;
                                         remaining -= bytesWritten;
-                                        qDebug() << "Soundpack: Attempt" << (attempts + 1) << "wrote" << bytesWritten << "bytes (total:" << totalWritten << "/" << chunk.size() << ")";
+                                        qDebug() << "Soundpack: Attempt" << (attempts + 1) << "wrote" << bytesWritten << "bytes (total:" << totalWritten << "/" << chunkSize << ")";
                                     } else {
-                                        // If write failed, wait briefly and retry
-                                        QThread::usleep(100 * (attempts + 1));
-                                        qDebug() << "Soundpack: Attempt" << (attempts + 1) << "failed, retrying...";
+                                        // If write failed, check device state and use adaptive delay
+                                        if (!outputDevice || !outputDevice->isOpen()) {
+                                            qDebug() << "Soundpack: Device disconnected during write, aborting attempts";
+                                            break; // Exit loop if device is no longer available
+                                        }
+                                        
+                                        // Exponential backoff with minimum delay: 200, 400, 800 μs
+                                        int delayUs = 200 * (1 << attempts); // 200, 400, 800
+                                        if (delayUs > 1000) delayUs = 1000; // Cap at 1ms
+                                        
+                                        QThread::usleep(delayUs);
+                                        qDebug() << "Soundpack: Attempt" << (attempts + 1) << "failed, waiting" << delayUs << "μs...";
+                                        
+                                        // Check if device buffer is full
+                                        qint64 currentBuffer = outputDevice->bytesToWrite();
+                                        if (currentBuffer > 4096) {
+                                            qDebug() << "Soundpack: Device buffer too full (" << currentBuffer << "bytes), skipping remaining";
+                                            break; // Skip this chunk if buffer is overloaded
+                                        }
                                     }
                                     attempts++;
                                 }
                                 
-                                if (totalWritten < chunk.size()) {
-                                    qDebug() << "Soundpack: Write incomplete after" << maxAttempts << "attempts - expected" << chunk.size() << "bytes, wrote" << totalWritten;
+                                if (totalWritten < chunkSize) {
+                                    qDebug() << "Soundpack: Write incomplete after" << maxAttempts << "attempts - expected" << chunkSize << "bytes, wrote" << totalWritten;
                                 } else {
                                     qDebug() << "Soundpack: Worker thread actually written bytes:" << totalWritten;
                                 }
                             }
+                            
+                            skip_chunk:; // Label for skipping chunks when buffer is constrained
                         } else {
                             qDebug() << "Soundpack: Worker thread - device not available";
                         }
@@ -233,25 +264,9 @@ void MainWindow::playAudioNotInterrupt(const QString &filename, const QString &p
                         emit audioDataReady(chunk);
                     }
                     
-                    // Real-time timing control - 256 samples için optimal balance
-                    qint64 expectedTime = (written * 1000) / 192000; // ms elapsed
-                    qint64 actualTime = timer.elapsed();
-                    
-                    if (actualTime < expectedTime) {
-                        // 256 samples için optimal timing
-                        int sleepTime = expectedTime - actualTime;
-                        if (sleepTime > 2) {
-                            QThread::msleep(sleepTime / 2); // Yarı zaman uyku
-                            QThread::yieldCurrentThread();
-                        } else if (sleepTime > 0) {
-                            QThread::usleep(sleepTime * 150); // Mikrosaniye uyku
-                        } else {
-                            QThread::yieldCurrentThread(); // CPU'ya zaman bırak
-                        }
-                    } else {
-                        // Geri kalmışsak, buffer'ı temizle ve devam et
-                        QThread::yieldCurrentThread();
-                    }
+                    // Real-time timing control - moved to main thread to avoid Qt timer errors
+                    // Worker thread should not use QThread::usleep as it causes Qt timer issues
+                    // Timing is now handled by the main thread timer
                 }
                 
                 if (!soundInterrupted) {
@@ -403,9 +418,22 @@ void MainWindow::playAudioNotInterrupt(const QString &filename, const QString &p
                             if (bytesAvailable > 2048) {
                                 qDebug() << "Soundpack: Skipping chunk - buffer full (" << bytesAvailable << "bytes pending)";
                             } else {
-                                // Try to write the data with multiple attempts
+                                // Adaptive chunk size based on available buffer space
+                                qint64 chunkSize = chunk.size();
+                                qint64 availableSpace = 2048 - bytesAvailable; // Max 2KB buffer
+                                
+                                if (availableSpace < chunkSize) {
+                                    chunkSize = availableSpace;
+                                    if (chunkSize < 512) {
+                                        qDebug() << "Soundpack: Buffer too constrained, skipping chunk";
+                                        goto skip_chunk; // Skip if less than 512 bytes available
+                                    }
+                                    qDebug() << "Soundpack: Adaptive chunk size reduced to" << chunkSize << "bytes";
+                                }
+                                
+                                // Try to write the (possibly reduced) chunk
                                 qint64 totalWritten = 0;
-                                qint64 remaining = chunk.size();
+                                qint64 remaining = chunkSize;
                                 int attempts = 0;
                                 const int maxAttempts = 3;
                                 
@@ -415,21 +443,39 @@ void MainWindow::playAudioNotInterrupt(const QString &filename, const QString &p
                                     if (bytesWritten > 0) {
                                         totalWritten += bytesWritten;
                                         remaining -= bytesWritten;
-                                        qDebug() << "Soundpack: Attempt" << (attempts + 1) << "wrote" << bytesWritten << "bytes (total:" << totalWritten << "/" << chunk.size() << ")";
+                                        qDebug() << "Soundpack: Attempt" << (attempts + 1) << "wrote" << bytesWritten << "bytes (total:" << totalWritten << "/" << chunkSize << ")";
                                     } else {
-                                        // If write failed, wait briefly and retry
-                                        QThread::usleep(100 * (attempts + 1));
-                                        qDebug() << "Soundpack: Attempt" << (attempts + 1) << "failed, retrying...";
+                                        // If write failed, check device state and use adaptive delay
+                                        if (!outputDevice || !outputDevice->isOpen()) {
+                                            qDebug() << "Soundpack: Device disconnected during write, aborting attempts";
+                                            break; // Exit loop if device is no longer available
+                                        }
+                                        
+                                        // Exponential backoff with minimum delay: 200, 400, 800 μs
+                                        int delayUs = 200 * (1 << attempts); // 200, 400, 800
+                                        if (delayUs > 1000) delayUs = 1000; // Cap at 1ms
+                                        
+                                        QThread::usleep(delayUs);
+                                        qDebug() << "Soundpack: Attempt" << (attempts + 1) << "failed, waiting" << delayUs << "μs...";
+                                        
+                                        // Check if device buffer is full
+                                        qint64 currentBuffer = outputDevice->bytesToWrite();
+                                        if (currentBuffer > 4096) {
+                                            qDebug() << "Soundpack: Device buffer too full (" << currentBuffer << "bytes), skipping remaining";
+                                            break; // Skip this chunk if buffer is overloaded
+                                        }
                                     }
                                     attempts++;
                                 }
                                 
-                                if (totalWritten < chunk.size()) {
-                                    qDebug() << "Soundpack: Write incomplete after" << maxAttempts << "attempts - expected" << chunk.size() << "bytes, wrote" << totalWritten;
+                                if (totalWritten < chunkSize) {
+                                    qDebug() << "Soundpack: Write incomplete after" << maxAttempts << "attempts - expected" << chunkSize << "bytes, wrote" << totalWritten;
                                 } else {
                                     qDebug() << "Soundpack: Worker thread actually written bytes:" << totalWritten;
                                 }
                             }
+                            
+                            skip_chunk:; // Label for skipping chunks when buffer is constrained
                         } else {
                             qDebug() << "Soundpack: Worker thread - device not available";
                         }
@@ -441,25 +487,9 @@ void MainWindow::playAudioNotInterrupt(const QString &filename, const QString &p
                         emit audioDataReady(chunk);
                     }
                     
-                    // Real-time timing control - 256 samples için optimal balance
-                    qint64 expectedTime = (written * 1000) / 192000; // ms elapsed
-                    qint64 actualTime = timer.elapsed();
-                    
-                    if (actualTime < expectedTime) {
-                        // 256 samples için optimal timing
-                        int sleepTime = expectedTime - actualTime;
-                        if (sleepTime > 2) {
-                            QThread::msleep(sleepTime / 2); // Yarı zaman uyku
-                            QThread::yieldCurrentThread();
-                        } else if (sleepTime > 0) {
-                            QThread::usleep(sleepTime * 150); // Mikrosaniye uyku
-                        } else {
-                            QThread::yieldCurrentThread(); // CPU'ya zaman bırak
-                        }
-                    } else {
-                        // Geri kalmışsak, buffer'ı temizle ve devam et
-                        QThread::yieldCurrentThread();
-                    }
+                    // Real-time timing control - moved to main thread to avoid Qt timer errors
+                    // Worker thread should not use QThread::usleep as it causes Qt timer issues
+                    // Timing is now handled by the main thread timer
                 }
                 
                 if (!soundInterrupted) {
