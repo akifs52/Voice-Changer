@@ -92,63 +92,19 @@ void MainWindow::on_startRecord_clicked()
     g_recordStartTime = QDateTime::currentMSecsSinceEpoch();
     isRecording = true;
 
-    // Timer to capture mixed audio from AudioPipeline
+    // Timer connection for recording
     QTimer* recordTimer = new QTimer(this);
-    connect(recordTimer, &QTimer::timeout, this, [this]() {
-        if (!isRecording) return;
+    recordTimer->setObjectName("recordTimer"); // Give timer a name
+    
+    // Signal-slot connection for recording
+    connect(this, &MainWindow::audioDataReady, this, [=](const QByteArray &audioData) {
+        if (!isRecording || audioData.isEmpty()) return;
         
-        // Get mixed audio from AudioPipeline (contains input+soundpack or effects+soundpack)
-        if (audioPipeline) {
-            QByteArray mixedData = audioPipeline->getMixedAudioData(4096); // Get up to 4KB of mixed audio
-            if (!mixedData.isEmpty()) {
-                QByteArray data = mixedData;
-                
-                int samplesPerChannel = data.size() / sizeof(int16_t) / 2;
-                int nb_samples = samplesPerChannel;
-
-                AVFrame* frame = av_frame_alloc();
-                frame->nb_samples = nb_samples;
-                frame->format = AV_SAMPLE_FMT_S16;
-                frame->sample_rate = 48000;
-                av_channel_layout_default(&frame->ch_layout, 2);
-
-                if (av_frame_get_buffer(frame, 0) < 0) {
-                    qDebug() << "ERROR: Failed to get frame buffer";
-                    av_frame_free(&frame);
-                    return;
-                }
-
-                av_frame_make_writable(frame);
-                memcpy(frame->data[0], data.constData(), data.size());
-
-                frame->pts = g_pts;
-                g_pts += nb_samples;
-
-                if (avcodec_send_frame(g_codecContext, frame) < 0) {
-                    qDebug() << "ERROR: Failed to send frame";
-                    av_frame_free(&frame);
-                    return;
-                }
-
-                AVPacket* packet = av_packet_alloc();
-                while (avcodec_receive_packet(g_codecContext, packet) == 0) {
-                    packet->stream_index = g_audioStream->index;
-                    av_write_frame(g_formatContext, packet);
-                    av_packet_unref(packet);
-                }
-
-                av_frame_free(&frame);
-                av_packet_free(&packet);
-
-                static int frameCount = 0;
-                if (++frameCount % 50 == 0) {
-                    qDebug() << "Recording frames:" << frameCount << "Time:" << (QDateTime::currentMSecsSinceEpoch() - g_recordStartTime) << "ms" << "Samples:" << nb_samples << "Size:" << data.size() << "bytes (MIXED AUDIO)";
-                }
-            }
-        }
+        // Use audioData for recording
+        processAudioForRecording(audioData);
     });
-
-    recordTimer->start(20); // Capture every 20ms
+    
+    recordTimer->start(20);
 
     qDebug() << "Recording started - capturing mixed audio from AudioPipeline (input+soundpack or effects+soundpack)";
 
@@ -163,13 +119,10 @@ void MainWindow::on_stopRecord_clicked()
     if (!isRecording) return;
 
     // Find and stop the record timer
-    QList<QTimer*> timers = findChildren<QTimer*>();
-    for (QTimer* timer : timers) {
-        if (timer->objectName().startsWith("recordTimer") || timer->interval() == 20) {
-            timer->stop();
-            timer->deleteLater();
-            break;
-        }
+    QTimer* recordTimer = findChild<QTimer*>("recordTimer");
+    if (recordTimer) {
+        recordTimer->stop();
+        recordTimer->deleteLater();
     }
 
     if (g_codecContext) {
@@ -209,4 +162,91 @@ void MainWindow::on_stopRecord_clicked()
     ui->startRecord->setEnabled(true);
 
     qDebug() << "Recording stopped. Duration:" << recordingDuration << "ms";
+}
+
+void MainWindow::processAudioForRecording(const QByteArray &audioData)
+{
+    if (!isRecording || audioData.isEmpty()) return;
+    
+    int samplesPerChannel = audioData.size() / sizeof(int16_t) / 2;
+    int nb_samples = samplesPerChannel;
+
+    AVFrame* frame = av_frame_alloc();
+    frame->nb_samples = nb_samples;
+    frame->format = AV_SAMPLE_FMT_S16;
+    frame->sample_rate = 48000;
+    av_channel_layout_default(&frame->ch_layout, 2);
+
+    if (av_frame_get_buffer(frame, 0) < 0) {
+        qDebug() << "ERROR: Failed to get frame buffer";
+        av_frame_free(&frame);
+        return;
+    }
+
+    av_frame_make_writable(frame);
+    memcpy(frame->data[0], audioData.constData(), audioData.size());
+
+    frame->pts = g_pts;
+    g_pts += nb_samples;
+
+    if (avcodec_send_frame(g_codecContext, frame) < 0) {
+        qDebug() << "ERROR: Failed to send frame";
+        av_frame_free(&frame);
+        return;
+    }
+
+    AVPacket* packet = av_packet_alloc();
+    while (avcodec_receive_packet(g_codecContext, packet) == 0) {
+        packet->stream_index = g_audioStream->index;
+        av_write_frame(g_formatContext, packet);
+        av_packet_unref(packet);
+    }
+
+    av_frame_free(&frame);
+    av_packet_free(&packet);
+
+    static int frameCount = 0;
+    if (++frameCount % 50 == 0) {
+        qDebug() << "Recording frames:" << frameCount << "Time:" 
+                 << (QDateTime::currentMSecsSinceEpoch() - g_recordStartTime) 
+                 << "ms" << "Samples:" << nb_samples << "Size:" 
+                 << audioData.size() << "bytes (EFFECT AUDIO)";
+    }
+}
+
+void MainWindow::setupEffectConnection(const QString &effectName, std::function<void(QByteArray&)> effectProcessor)
+{
+    if(!audioInput) return;
+    
+    // Always disconnect previous connection
+    disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
+
+    connect(inputDevice, &QIODevice::readyRead, this, [=](){
+        data = inputDevice->readAll();
+        
+        // Apply the effect
+        effectProcessor(data);
+        progressBarOutput();
+        
+        // Emit signal for recording when recording is active
+        if (isRecording) {
+            qDebug() << "EMITTING SIGNAL (" << effectName << " EFFECT): Audio size:" << data.size() << "bytes";
+            emit audioDataReady(data);
+        }
+
+        // Send to virtual output for mixing
+        if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
+            if (audioPipeline) {
+                audioPipeline->writeEffectsAudio(data);
+                audioPipeline->processBuffers();
+            } else {
+                virtualOutputDevice->write(data);
+            }
+        }
+        
+        // Send to normal output only in test mode
+        if (ui->testButton->isChecked() && outputDevice && outputDevice->isOpen()) {
+            outputDevice->write(data);
+        }
+    });
 }

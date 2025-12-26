@@ -204,6 +204,8 @@ private:
     QByteArray readFromCircularBuffer(size_t samplesNeeded);
     void processRecordedFrames();
     void cleanupRecording();
+    void processAudioForRecording(const QByteArray &audioData);
+    void setupEffectConnection(const QString &effectName, std::function<void(QByteArray&)> effectProcessor);
 
     bool usingEffects = true;
     QByteArray data;
