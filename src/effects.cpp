@@ -59,9 +59,8 @@ void MainWindow::stopAllEffects()
                     }
                 }
                 
-                if (outputDevice && outputDevice->isOpen()) {
-                    outputDevice->write(data);
-                }
+                // Test modunda output routing AudioPipeline tarafından yönetiliyor
+                // Burada doğrudan outputDevice'e yazma - AudioPipeline test moduna göre yönlendirir
             } else {
                 // Normal mod: sadece virtual output'a gönder
                 if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
@@ -285,10 +284,8 @@ void MainWindow::on_robotButton_clicked(bool checked)
                             virtualOutputDevice->write(data);
                         }
                     }
-                    // Sonra normal output'a gönder
-                    if (ui->testButton->isChecked() && outputDevice && outputDevice->isOpen()) {
-                        outputDevice->write(data);
-                    }
+                    // Test modunda output routing AudioPipeline tarafından yönetiliyor
+                    // AudioPipeline test moduna göre normal output'a otomatik olarak yazar
                 });
             } else {
                 connect(inputDevice, &QIODevice::readyRead, this, [=](){
@@ -365,10 +362,8 @@ void MainWindow::on_bananaButton_clicked(bool checked)
                             virtualOutputDevice->write(data);
                         }
                     }
-                    // Sonra normal output'a gönder
-                    if (ui->testButton->isChecked() && outputDevice && outputDevice->isOpen()) {
-                        outputDevice->write(data);
-                    }
+                    // Test modunda output routing AudioPipeline tarafından yönetiliyor
+                    // AudioPipeline test moduna göre normal output'a otomatik olarak yazar
                 });
             } else {
                 connect(inputDevice, &QIODevice::readyRead, this, [=](){
@@ -449,10 +444,8 @@ void MainWindow::on_devilButton_clicked(bool checked)
                             virtualOutputDevice->write(data);
                         }
                     }
-                    // Sonra normal output'a gönder
-                    if (ui->testButton->isChecked() && outputDevice && outputDevice->isOpen()) {
-                        outputDevice->write(data);
-                    }
+                    // Test modunda output routing AudioPipeline tarafından yönetiliyor
+                    // AudioPipeline test moduna göre normal output'a otomatik olarak yazar
                 });
             } else {
                 connect(inputDevice, &QIODevice::readyRead, this, [=](){
@@ -533,10 +526,8 @@ void MainWindow::on_ekoButton_clicked(bool checked)
                             virtualOutputDevice->write(data);
                         }
                     }
-                    // Sonra normal output'a gönder
-                    if (ui->testButton->isChecked() && outputDevice && outputDevice->isOpen()) {
-                        outputDevice->write(data);
-                    }
+                    // Test modunda output routing AudioPipeline tarafından yönetiliyor
+                    // AudioPipeline test moduna göre normal output'a otomatik olarak yazar
                 });
             } else {
                 connect(inputDevice, &QIODevice::readyRead, this, [=](){
@@ -614,10 +605,8 @@ void MainWindow::on_femaleButton_clicked(bool checked)
                             virtualOutputDevice->write(data);
                         }
                     }
-                    // Sonra normal output'a gönder
-                    if (ui->testButton->isChecked() && outputDevice && outputDevice->isOpen()) {
-                        outputDevice->write(data);
-                    }
+                    // Test modunda output routing AudioPipeline tarafından yönetiliyor
+                    // AudioPipeline test moduna göre normal output'a otomatik olarak yazar
                 });
             } else {
                 connect(inputDevice, &QIODevice::readyRead, this, [=](){
@@ -699,10 +688,8 @@ void MainWindow::on_combineButton_clicked(bool checked)
                             virtualOutputDevice->write(data);
                         }
                     }
-                    // Sonra normal output'a gönder
-                    if (ui->testButton->isChecked() && outputDevice && outputDevice->isOpen()) {
-                        outputDevice->write(data);
-                    }
+                    // Test modunda output routing AudioPipeline tarafından yönetiliyor
+                    // AudioPipeline test moduna göre normal output'a otomatik olarak yazar
                 });
             } else {
                 connect(inputDevice, &QIODevice::readyRead, this, [=](){

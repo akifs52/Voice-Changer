@@ -244,9 +244,7 @@ void MainWindow::setupEffectConnection(const QString &effectName, std::function<
             }
         }
         
-        // Send to normal output only in test mode
-        if (ui->testButton->isChecked() && outputDevice && outputDevice->isOpen()) {
-            outputDevice->write(data);
-        }
+        // Test modunda output routing AudioPipeline tarafından yönetiliyor
+        // AudioPipeline test moduna göre normal output'a otomatik olarak yazar
     });
 }

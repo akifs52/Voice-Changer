@@ -458,9 +458,26 @@ void MainWindow::on_testButton_clicked(bool checked)
                         emit audioDataReady(data);
                     }
                     
-                    // SADECE test modunda output'a gönder
-                    if (outputDevice && outputDevice->isOpen()) {
-                        outputDevice->write(data);
+                    // Test modunda hem normal output'a hem de virtual output'a gönder
+                    // AudioPipeline üzerinden göndererek soundpack ile mix işlemini sağla
+                    if (audioPipeline) {
+                        if (usingEffects) {
+                            // Efekt aktifse effects buffer'ına yaz
+                            audioPipeline->writeEffectsAudio(data);
+                        } else {
+                            // Efekt yoksa input buffer'ına yaz
+                            audioPipeline->writeInputAudio(data);
+                        }
+                        // AudioPipeline processBuffers tetikle
+                        audioPipeline->processBuffers();
+                    } else {
+                        // Fallback: AudioPipeline yoksa doğrudan yaz
+                        if (outputDevice && outputDevice->isOpen()) {
+                            outputDevice->write(data);
+                        }
+                        if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
+                            virtualOutputDevice->write(data);
+                        }
                     }
                 });
             }
@@ -498,12 +515,25 @@ void MainWindow::on_testButton_clicked(bool checked)
                         emit audioDataReady(data);
                     }
                     
-                    // Her zaman virtual output'a gönder (Cable Input)
-                    if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
-                        virtualOutputDevice->write(data);
+                    // Normal modda sadece virtual output'a gönder - AudioPipeline üzerinden
+                    if (audioPipeline) {
+                        if (usingEffects) {
+                            // Efekt aktifse effects buffer'ına yaz
+                            audioPipeline->writeEffectsAudio(data);
+                        } else {
+                            // Efekt yoksa input buffer'ına yaz
+                            audioPipeline->writeInputAudio(data);
+                        }
+                        // AudioPipeline processBuffers tetikle
+                        audioPipeline->processBuffers();
+                    } else {
+                        // Fallback: AudioPipeline yoksa doğrudan virtual output'a yaz
+                        if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
+                            virtualOutputDevice->write(data);
+                        }
                     }
                     
-                    // Fiziksel output'a gönderme (sadece test butonu aktifken gönderilecek)
+                    // Normal modda fiziksel output'a gönderme
                 });
             }
         }
