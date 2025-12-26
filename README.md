@@ -1,5 +1,7 @@
 # Voice Changer
 
+<img width="1114" height="859" alt="image" src="https://github.com/user-attachments/assets/da9c07dd-af0b-411d-8623-a55f8e346b23" />
+
 A professional voice changer application built with Qt 6, featuring real-time voice effects, audio visualization, and comprehensive audio processing capabilities.
 
 ## Features
@@ -47,7 +49,7 @@ A professional voice changer application built with Qt 6, featuring real-time vo
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/Voice-Changer.git
+git clone https://github.com/akifs52/Voice-Changer.git
 cd Voice-Changer
 
 # Install dependencies
@@ -80,7 +82,8 @@ cmake --build . --config Release
 1. **Select Audio Devices**
    - Choose your input microphone from the dropdown
    - Choose your output speakers/headphones
-   - (Optional) Select VB-CABLE Output for virtual audio routing
+   - Select VB-CABLE Input for virtual audio routing
+   - !! YOU HAVE TO CHOOSE DEFAULT OUTPUT TO VB-CABLE FOR YOUR SOUNDS REACH OTHERS OR CHOOSE IN YOUR GAME OR CHAT APP
 
 2. **Test Your Setup**
    - Click "Test Device" to hear your voice through speakers
