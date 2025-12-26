@@ -1,5 +1,7 @@
 # Voice Changer
 
+<img width="1114" height="859" alt="image" src="https://github.com/user-attachments/assets/da9c07dd-af0b-411d-8623-a55f8e346b23" />
+
 A professional voice changer application built with Qt 6, featuring real-time voice effects, audio visualization, and comprehensive audio processing capabilities.
 
 ## Features
@@ -80,7 +82,8 @@ cmake --build . --config Release
 1. **Select Audio Devices**
    - Choose your input microphone from the dropdown
    - Choose your output speakers/headphones
-   - (Optional) Select VB-CABLE Output for virtual audio routing
+   - Select VB-CABLE Output for virtual audio routing
+   - !! YOU HAVE TO CHOOSE DEFAULT INPUT TO VB-CABLE INPUT
 
 2. **Test Your Setup**
    - Click "Test Device" to hear your voice through speakers
