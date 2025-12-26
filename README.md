@@ -82,8 +82,8 @@ cmake --build . --config Release
 1. **Select Audio Devices**
    - Choose your input microphone from the dropdown
    - Choose your output speakers/headphones
-   - Select VB-CABLE Output for virtual audio routing
-   - !! YOU HAVE TO CHOOSE DEFAULT INPUT TO VB-CABLE INPUT
+   - Select VB-CABLE Input for virtual audio routing
+   - !! YOU HAVE TO CHOOSE DEFAULT OUTPUT TO VB-CABLE FOR YOUR SOUNDS REACH OTHERS OR CHOOSE IN YOUR GAME OR CHAT APP
 
 2. **Test Your Setup**
    - Click "Test Device" to hear your voice through speakers
