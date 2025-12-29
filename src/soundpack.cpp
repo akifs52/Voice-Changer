@@ -81,7 +81,12 @@ void MainWindow::stopCurrentSound()
     
     if (currentOutputThread) {
         currentOutputThread->quit();
-        currentOutputThread->wait(200); // Wait longer for thread to finish
+        if (!currentOutputThread->wait(1000)) { // 1 saniye bekle
+            qWarning() << "Thread did not stop gracefully, terminating...";
+            currentOutputThread->terminate(); // Son çare
+            currentOutputThread->wait(500); // 500ms daha bekle
+        }
+        currentOutputThread->deleteLater();
         currentOutputThread = nullptr;
     }
     
@@ -180,13 +185,10 @@ void MainWindow::playAudioNotInterrupt(const QString &filename, const QString &p
 
 
                     // Paralel pipeline: Soundpack sesini AudioPipeline'a gönder
-                    // HIGH-QUALITY MODE: Soundpack verilerini ignore et ama buffer temizle
+                    // AudioPipeline kendi timer'ı ile processBuffers çağırır
                     if (audioPipeline) {
-                        // Sadece buffer temizliği için gönder - asıl ses işlenmeyecek
                         audioPipeline->writeSoundpackAudio(chunk);
-                        
-                        // Hemen processBuffers tetikle - timing uyumsuzluğu önlemek için
-                        audioPipeline->processBuffers();
+                        // processBuffers() çağrma - timer zaten yapıyor
                     }
 
 
@@ -207,27 +209,21 @@ void MainWindow::playAudioNotInterrupt(const QString &filename, const QString &p
                     if (isRecording && audioPipeline) {
                         // Soundpack sesini AudioPipeline'a gönder, recording sinyali oradan emit edilir
                         audioPipeline->writeSoundpackAudio(chunk);
-                        audioPipeline->processBuffers();
+                        // processBuffers() çağrma - timer zaten yapıyor
                     }
 
-                    // Real-time timing control - 256 samples için optimal balance
+                    // Real-time timing control - daha az CPU yükü için optimize
                     qint64 expectedTime = (written * 1000) / 192000; // ms elapsed
                     qint64 actualTime = timer.elapsed();
 
                     if (actualTime < expectedTime) {
-                        // 256 samples için optimal timing
                         int sleepTime = expectedTime - actualTime;
-                        if (sleepTime > 2) {
-                            QThread::msleep(sleepTime / 2); // Yarı zaman uyku
-                            QThread::yieldCurrentThread();
+                        if (sleepTime > 5) {
+                            QThread::msleep(sleepTime);
                         } else if (sleepTime > 0) {
-                            QThread::usleep(sleepTime * 150); // Mikrosaniye uyku
-                        } else {
-                            QThread::yieldCurrentThread(); // CPU'ya zaman bırak
+                            QThread::usleep(sleepTime * 500);
                         }
-                    } else {
-                        // Geri kalmışsak, buffer'ı temizle ve devam et
-                        QThread::yieldCurrentThread();
+                        // yieldCurrentThread() kaldırıldı - CPU yükünü azaltmak için
                     }
                 }
 
@@ -366,13 +362,10 @@ void MainWindow::playAudioNotInterrupt(const QString &filename, const QString &p
 
 
                     // Paralel pipeline: Soundpack sesini AudioPipeline'a gönder
-                    // HIGH-QUALITY MODE: Soundpack verilerini ignore et ama buffer temizle
+                    // AudioPipeline kendi timer'ı ile processBuffers çağırır
                     if (audioPipeline) {
-                        // Sadece buffer temizliği için gönder - asıl ses işlenmeyecek
                         audioPipeline->writeSoundpackAudio(chunk);
-                        
-                        // Hemen processBuffers tetikle - timing uyumsuzluğu önlemek için
-                        audioPipeline->processBuffers();
+                        // processBuffers() çağrma - timer zaten yapıyor
                     }
 
 
@@ -393,27 +386,21 @@ void MainWindow::playAudioNotInterrupt(const QString &filename, const QString &p
                     if (isRecording && audioPipeline) {
                         // Soundpack sesini AudioPipeline'a gönder, recording sinyali oradan emit edilir
                         audioPipeline->writeSoundpackAudio(chunk);
-                        audioPipeline->processBuffers();
+                        // processBuffers() çağrma - timer zaten yapıyor
                     }
 
-                    // Real-time timing control - 256 samples için optimal balance
+                    // Real-time timing control - daha az CPU yükü için optimize
                     qint64 expectedTime = (written * 1000) / 192000; // ms elapsed
                     qint64 actualTime = timer.elapsed();
 
                     if (actualTime < expectedTime) {
-                        // 256 samples için optimal timing
                         int sleepTime = expectedTime - actualTime;
-                        if (sleepTime > 2) {
-                            QThread::msleep(sleepTime / 2); // Yarı zaman uyku
-                            QThread::yieldCurrentThread();
+                        if (sleepTime > 5) {
+                            QThread::msleep(sleepTime);
                         } else if (sleepTime > 0) {
-                            QThread::usleep(sleepTime * 150); // Mikrosaniye uyku
-                        } else {
-                            QThread::yieldCurrentThread(); // CPU'ya zaman bırak
+                            QThread::usleep(sleepTime * 500);
                         }
-                    } else {
-                        // Geri kalmışsak, buffer'ı temizle ve devam et
-                        QThread::yieldCurrentThread();
+                        // yieldCurrentThread() kaldırıldı - CPU yükünü azaltmak için
                     }
                 }
 

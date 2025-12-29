@@ -2,6 +2,7 @@
 #include "mainwindow.h"
 #include <QDebug>
 #include <QTimer>
+#include <QMetaObject>
 
 AudioPipeline::AudioPipeline(QObject *parent)
     : QObject(parent)
@@ -20,10 +21,10 @@ AudioPipeline::AudioPipeline(QObject *parent)
     , m_mixChunkSize(1024)
     , m_isRunning(false)
 {
-m_inputAudioBuffer = new CircularBuffer(65536);  // 64KB buffer for input audio
-    m_soundpackBuffer = new CircularBuffer(65536); // 64KB buffer for soundpack
-    m_effectsAudioBuffer = new CircularBuffer(65536); // 64KB buffer for effects
-    m_mixAudioBuffer = new CircularBuffer(65536); // 64KB buffer for mixed audio
+    m_inputAudioBuffer = new CircularBuffer(16384);  // 16KB buffer for input audio (~85ms)
+    m_soundpackBuffer = new CircularBuffer(8192);   // 8KB buffer for soundpack (~42ms)
+    m_effectsAudioBuffer = new CircularBuffer(16384); // 16KB buffer for effects (~85ms)
+    m_mixAudioBuffer = new CircularBuffer(8192);    // 8KB buffer for mixed audio (~42ms)
     
     // Timer for periodic buffer processing - 2ms for optimal balance
     m_timer = new QTimer(this);
@@ -144,9 +145,12 @@ void AudioPipeline::processBuffers()
                 qDebug() << "EFFECTS MIXED: Effects + Soundpack =" << effectsData.size() << "bytes";
             }
             
-            // Recording için sinyal emit et - frekansı azaltmak için counter kontrolü
-            if (m_isRecording && (++m_recordingCounter % 25 == 0)) {
-                emit processedAudioReady(mixedData);
+            // Recording için sinyal emit et - ANA THREAD'de göndermek için invokeMethod kullan
+            if (m_isRecording && (++m_recordingCounter % 5 == 0)) {
+                // Sinyali ana thread'de göndererek thread takılmasını önle
+                QMetaObject::invokeMethod(this, [this, mixedData]() {
+                    emit processedAudioReady(mixedData);
+                }, Qt::QueuedConnection);
             }
         } else {
             // Soundpack yok - efektli sesi doğrudan geçir
@@ -164,9 +168,12 @@ void AudioPipeline::processBuffers()
                 qDebug() << "EFFECTS CLEAN PASS: No soundpack, passing through effects" << effectsData.size() << "bytes";
             }
             
-            // Recording için sinyal emit et - frekansı azaltmak için counter kontrolü
-            if (m_isRecording && (++m_recordingCounter % 25 == 0)) {
-                emit processedAudioReady(effectsData);
+            // Recording için sinyal emit et - ANA THREAD'de göndermek için invokeMethod kullan
+            if (m_isRecording && (++m_recordingCounter % 5 == 0)) {
+                // Sinyali ana thread'de göndererek thread takılmasını önle
+                QMetaObject::invokeMethod(this, [this, effectsData]() {
+                    emit processedAudioReady(effectsData);
+                }, Qt::QueuedConnection);
             }
         }
         return; // Efektli ses işlendiği için temiz sesi atla
@@ -202,9 +209,12 @@ void AudioPipeline::processBuffers()
                 qDebug() << "CLEAN MIXED: Input + Soundpack =" << inputData.size() << "bytes";
             }
             
-            // Recording için sinyal emit et - frekansı azaltmak için counter kontrolü
-            if (m_isRecording && (++m_recordingCounter % 25 == 0)) {
-                emit processedAudioReady(mixedData);
+            // Recording için sinyal emit et - ANA THREAD'de göndermek için invokeMethod kullan
+            if (m_isRecording && (++m_recordingCounter % 5 == 0)) {
+                // Sinyali ana thread'de göndererek thread takılmasını önle
+                QMetaObject::invokeMethod(this, [this, mixedData]() {
+                    emit processedAudioReady(mixedData);
+                }, Qt::QueuedConnection);
             }
         } else {
             // Soundpack yok - temiz sesi doğrudan geçir
@@ -222,9 +232,12 @@ void AudioPipeline::processBuffers()
                 qDebug() << "CLEAN ONLY PASS: No soundpack, passing through clean" << inputData.size() << "bytes";
             }
             
-            // Recording için sinyal emit et - frekansı azaltmak için counter kontrolü
-            if (m_isRecording && (++m_recordingCounter % 25 == 0)) {
-                emit processedAudioReady(inputData);
+            // Recording için sinyal emit et - ANA THREAD'de göndermek için invokeMethod kullan
+            if (m_isRecording && (++m_recordingCounter % 5 == 0)) {
+                // Sinyali ana thread'de göndererek thread takılmasını önle
+                QMetaObject::invokeMethod(this, [this, inputData]() {
+                    emit processedAudioReady(inputData);
+                }, Qt::QueuedConnection);
             }
         }
     }

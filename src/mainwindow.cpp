@@ -494,6 +494,8 @@ void MainWindow::on_testButton_clicked(bool checked)
         if (audioPipeline) {
             audioPipeline->setTestMode(false);
             audioPipeline->setNormalOutputDevice(nullptr);
+            // Buffer'ları temizle CPU kullanımını azaltmak için
+            audioPipeline->clearBuffers();
         }
 
         // Test bağlantısını kopar
