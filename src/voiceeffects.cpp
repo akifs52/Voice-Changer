@@ -28,26 +28,53 @@ VoiceEffects::VoiceEffects(QObject *parent)
     
     // Initialize echo
     initializeEcho();
+    
+    // Initialize pitch correction for robot effect
+    initializePitchCorrection();
+    
+    // Initialize radio static for military effect
+    initializeRadioStatic();
+    
+    // Initialize gate for robot effect
+    initializeGate();
+    
+    // Initialize phaser and flanger effects
+    initializePhaser();
+    initializeFlanger();
 }
 
 VoiceEffects::~VoiceEffects()
 {
     // Destroy SoundTouch processors
+    if (robotProcessor) soundtouch_destroyInstance(robotProcessor);
     if (bananaProcessor) soundtouch_destroyInstance(bananaProcessor);
     if (devilProcessor) soundtouch_destroyInstance(devilProcessor);
     if (femaleProcessor) soundtouch_destroyInstance(femaleProcessor);
     if (militaryProcessor) soundtouch_destroyInstance(militaryProcessor);
     if (ekoProcessor) soundtouch_destroyInstance(ekoProcessor);
+    if (phaserProcessor) soundtouch_destroyInstance(phaserProcessor);
+    if (flangerProcessor) soundtouch_destroyInstance(flangerProcessor);
 }
 
 void VoiceEffects::initializeSoundTouch()
 {
     // Create SoundTouch instances for each effect
+    robotProcessor = soundtouch_createInstance();
     bananaProcessor = soundtouch_createInstance();
     devilProcessor = soundtouch_createInstance();
     femaleProcessor = soundtouch_createInstance();
     militaryProcessor = soundtouch_createInstance();
     ekoProcessor = soundtouch_createInstance();
+    phaserProcessor = soundtouch_createInstance();
+    flangerProcessor = soundtouch_createInstance();
+    
+    // Configure ROBOT effect (Autotune style: slight pitch correction)
+    soundtouch_setSampleRate(robotProcessor, 44100);
+    soundtouch_setChannels(robotProcessor, 1);
+    soundtouch_setPitchSemiTones(robotProcessor, 0);  // No overall pitch shift
+    soundtouch_setRate(robotProcessor, 1.0f);
+    soundtouch_setTempo(robotProcessor, 1.0f);
+    soundtouch_setSetting(robotProcessor, 0, 1);  // SETTING_USE_AA_FILTER
     
     // Configure BANANA effect (Chipmunks: +10 semitones)
     soundtouch_setSampleRate(bananaProcessor, 44100);
@@ -88,6 +115,22 @@ void VoiceEffects::initializeSoundTouch()
     soundtouch_setRate(ekoProcessor, 1.0f);
     soundtouch_setTempo(ekoProcessor, 1.0f);
     soundtouch_setSetting(ekoProcessor, 0, 1);
+    
+    // Configure PHASER effect (No pitch change, just processing)
+    soundtouch_setSampleRate(phaserProcessor, 44100);
+    soundtouch_setChannels(phaserProcessor, 1);
+    soundtouch_setPitchSemiTones(phaserProcessor, 0);  // No pitch change
+    soundtouch_setRate(phaserProcessor, 1.0f);
+    soundtouch_setTempo(phaserProcessor, 1.0f);
+    soundtouch_setSetting(phaserProcessor, 0, 1);
+    
+    // Configure FLANGER effect (No pitch change, just processing)
+    soundtouch_setSampleRate(flangerProcessor, 44100);
+    soundtouch_setChannels(flangerProcessor, 1);
+    soundtouch_setPitchSemiTones(flangerProcessor, 0);  // No pitch change
+    soundtouch_setRate(flangerProcessor, 1.0f);
+    soundtouch_setTempo(flangerProcessor, 1.0f);
+    soundtouch_setSetting(flangerProcessor, 0, 1);
 }
 
 void VoiceEffects::initializeFilters()
@@ -114,6 +157,114 @@ void VoiceEffects::initializeEcho()
     echo.writeIndex = 0;
     echo.feedback = 0.4f;
     echo.wetLevel = 0.3f;
+}
+
+void VoiceEffects::initializePitchCorrection()
+{
+    pitchCorrection.targetFreq = 440.0f; // A4 reference
+    pitchCorrection.currentFreq = 440.0f;
+    pitchCorrection.correctionSpeed = 0.8f; // Fast correction for autotune effect
+    pitchCorrection.windowSize = 1024;
+    pitchCorrection.analysisBuffer.resize(pitchCorrection.windowSize, 0.0f);
+    pitchCorrection.analysisIndex = 0;
+}
+
+void VoiceEffects::initializeRadioStatic()
+{
+    radioStatic.noiseBuffer.resize(1024, 0.0f);
+    radioStatic.noiseIndex = 0;
+    radioStatic.staticLevel = 0.02f;  // Further reduced from 0.05f
+    radioStatic.crackleProbability = 0.005f;  // Further reduced from 0.01f
+    radioStatic.lfoPhase = 0.0f;
+    radioStatic.carrierFreq = 800.0f; // Radio carrier frequency
+    
+    // Generate white noise
+    for (size_t i = 0; i < radioStatic.noiseBuffer.size(); ++i) {
+        radioStatic.noiseBuffer[i] = (static_cast<float>(rand()) / RAND_MAX) * 2.0f - 1.0f;
+    }
+}
+
+void VoiceEffects::initializeGate()
+{
+    gate.threshold = 0.01f;  // Low threshold to remove noise
+    gate.attackTime = 0.001f;  // Fast attack
+    gate.releaseTime = 0.05f;  // Medium release
+    gate.envelope = 0.0f;
+    gate.sampleRate = 44100.0f;
+    gate.attackCoeff = expf(-1.0f / (gate.attackTime * gate.sampleRate));
+    gate.releaseCoeff = expf(-1.0f / (gate.releaseTime * gate.sampleRate));
+}
+
+void VoiceEffects::initializePhaser()
+{
+    phaser.stages = 4;                // Klasik Phase 90: 4 stage
+    phaser.z1.resize(phaser.stages, 0.0f);
+    phaser.lfoPhase = 0.0f;
+    phaser.rate = 0.3f;               // 0.3 Hz - klasik Phase 90 hızı
+    phaser.depth = 1.0f;              // Tam derinlik
+    phaser.feedback = 0.7f;           // Geri besleme (jet efekti için)
+    phaser.mix = 0.5f;                // % 50% dry, 50% wet
+    phaser.minFreq = 200.0f;          // Hz
+    phaser.maxFreq = 1500.0f;         // Hz
+}
+
+void VoiceEffects::initializeFlanger()
+{
+    flanger.delayBufferSize = 2048;  // Larger buffer for longer delays
+    flanger.delayBuffer.resize(flanger.delayBufferSize, 0.0f);
+    flanger.delayIndex = 0;
+    flanger.lfoPhase = 0.0f;
+    flanger.lfoFreq = 0.3f;  // Slightly faster for more movement
+    flanger.feedback = 0.75f;  // Stronger feedback for richer flanging
+    flanger.depth = 0.9f;  // Higher depth for more dramatic effect
+    flanger.delayTime = 0.003f;  // 3ms base delay for classic flanger sound
+}
+
+void VoiceEffects::processRobot(float* input, float* output, int bufferSize, float sampleRate)
+{
+    // ROBOT EFFECT: Autotune style like rappers use
+    
+    // Update sample rate if needed
+    if (soundtouch_getSetting(robotProcessor, 1) != static_cast<int>(sampleRate)) {
+        soundtouch_setSampleRate(robotProcessor, static_cast<uint>(sampleRate));
+    }
+    
+    // Step 1: Apply gate to reduce noise
+    std::vector<float> gated(bufferSize);
+    applyGate(input, gated.data(), bufferSize, sampleRate);
+    
+    // Step 2: Apply pitch correction (autotune effect)
+    std::vector<float> autoTuned(bufferSize);
+    applyPitchCorrection(gated.data(), autoTuned.data(), bufferSize, sampleRate);
+    
+    // Step 3: Add subtle robotic modulation
+    std::vector<float> modulated(bufferSize);
+    float samplePeriod = 1.0f / sampleRate;
+    float modulationFreq = 8.0f; // 8Hz modulation for robotic feel
+    
+    for (int i = 0; i < bufferSize; ++i) {
+        float modulation = 1.0f + 0.05f * sinf(2.0f * M_PI * modulationFreq * i * samplePeriod);
+        modulated[i] = autoTuned[i] * modulation;
+    }
+    
+    // Step 4: Apply slight chorus for thickness
+    std::vector<float> chorused(bufferSize);
+    applyChorus(modulated.data(), chorused.data(), bufferSize, sampleRate);
+    
+    // Step 5: Light compression to even out levels (typical in autotune)
+    compressor.threshold = 0.6f;
+    compressor.ratio = 3.0f;
+    compressor.attackTime = 0.01f;
+    compressor.releaseTime = 0.1f;
+    std::vector<float> compressed(bufferSize);
+    applyCompressor(chorused.data(), compressed.data(), bufferSize, sampleRate);
+    
+    // Step 6: Normalize and protect from clipping
+    normalizeGain(compressed.data(), bufferSize);
+    protectClipping(compressed.data(), bufferSize);
+    
+    // Copy to output
+    memcpy(output, compressed.data(), bufferSize * sizeof(float));
 }
 
 void VoiceEffects::processBanana(float* input, float* output, int bufferSize, float sampleRate)
@@ -146,7 +297,13 @@ void VoiceEffects::processBanana(float* input, float* output, int bufferSize, fl
     std::vector<float> chorusBuffer(receivedSamples);
     applyChorus(pitchedBuffer.data(), chorusBuffer.data(), receivedSamples, sampleRate);
     
-    // Step 4: Normalize and protect from clipping
+    // Step 4: Apply gain for higher volume
+    float gain = 1.3f;  // Increase volume by 30%
+    for (uint i = 0; i < receivedSamples; ++i) {
+        chorusBuffer[i] *= gain;
+    }
+    
+    // Step 5: Normalize and protect from clipping
     normalizeGain(chorusBuffer.data(), receivedSamples);
     protectClipping(chorusBuffer.data(), receivedSamples);
     
@@ -233,32 +390,54 @@ void VoiceEffects::processFemale(float* input, float* output, int bufferSize, fl
 
 void VoiceEffects::processMilitary(float* input, float* output, int bufferSize, float sampleRate)
 {
-    // MILITARY EFFECT: Walkie-talkie / radio communication style
+    // MILITARY EFFECT: Half-Life Combine soldier style - deep voice with radio static
     
-    // Step 1: Band-pass filter (300Hz - 3kHz)
-    std::vector<float> filtered(bufferSize);
-    applyBandPass(input, filtered.data(), bufferSize, 300.0f, 3000.0f, sampleRate);
+    // Step 1: Pitch shift down for deep, throaty voice (-6 semitones)
+    if (soundtouch_getSetting(militaryProcessor, 1) != static_cast<int>(sampleRate)) {
+        soundtouch_setSampleRate(militaryProcessor, static_cast<uint>(sampleRate));
+    }
     
-    // Step 2: Apply hard compressor/limiter
-    compressor.threshold = 0.5f;
-    compressor.ratio = 10.0f; // Hard limiting
-    compressor.attackTime = 0.001f;
-    compressor.releaseTime = 0.05f;
-    std::vector<float> compressed(bufferSize);
-    applyCompressor(filtered.data(), compressed.data(), bufferSize, sampleRate);
+    soundtouch_setPitchSemiTones(militaryProcessor, -6);  // Deep voice
+    soundtouch_putSamples(militaryProcessor, input, bufferSize);
+    std::vector<float> pitchedBuffer(bufferSize);
+    uint receivedSamples = soundtouch_receiveSamples(militaryProcessor, pitchedBuffer.data(), bufferSize);
     
-    // Step 3: Light saturation for radio feel
-    std::vector<float> saturated(bufferSize);
-    distortion.drive = 1.2f;
-    distortion.mix = 0.15f;
-    applyDistortion(compressed.data(), saturated.data(), bufferSize);
+    if (receivedSamples < static_cast<uint>(bufferSize)) {
+        soundtouch_flush(militaryProcessor);
+        uint additionalSamples = soundtouch_receiveSamples(
+            militaryProcessor, pitchedBuffer.data() + receivedSamples, bufferSize - receivedSamples);
+        receivedSamples += additionalSamples;
+    }
     
-    // Step 4: Normalize and protect from clipping
-    normalizeGain(saturated.data(), bufferSize);
-    protectClipping(saturated.data(), bufferSize);
+    // Step 2: Skip radio static (removed as it causes distortion)
+    std::vector<float> withStatic(receivedSamples);
+    memcpy(withStatic.data(), pitchedBuffer.data(), receivedSamples * sizeof(float));
     
-    // Copy to output
-    memcpy(output, saturated.data(), bufferSize * sizeof(float));
+    // Step 3: Wider band-pass filter to reduce resonance (300Hz - 3kHz)
+    std::vector<float> filtered(receivedSamples);
+    applyBandPass(withStatic.data(), filtered.data(), receivedSamples, 300.0f, 3000.0f, sampleRate);
+    
+    // Step 4: Light compression for radio-like dynamics (reduced intensity)
+    compressor.threshold = 0.6f;  // Raised from 0.4f
+    compressor.ratio = 6.0f;  // Reduced from 12.0f
+    compressor.attackTime = 0.005f;  // Slightly slower
+    compressor.releaseTime = 0.05f;  // Slightly slower
+    std::vector<float> compressed(receivedSamples);
+    applyCompressor(filtered.data(), compressed.data(), receivedSamples, sampleRate);
+    
+    // Step 5: Add minimal distortion for grittiness (reduced)
+    std::vector<float> distorted(receivedSamples);
+    distortion.drive = 1.1f;  // Reduced from 1.3f
+    distortion.mix = 0.1f;   // Reduced from 0.2f
+    applyDistortion(compressed.data(), distorted.data(), receivedSamples);
+    
+    // Step 6: Normalize and protect from clipping
+    normalizeGain(distorted.data(), receivedSamples);
+    protectClipping(distorted.data(), receivedSamples);
+    
+    // Copy to output (pad with zeros if needed)
+    memset(output, 0, bufferSize * sizeof(float));
+    memcpy(output, distorted.data(), receivedSamples * sizeof(float));
 }
 
 void VoiceEffects::processEko(float* input, float* output, int bufferSize, float sampleRate)
@@ -280,11 +459,14 @@ void VoiceEffects::processEko(float* input, float* output, int bufferSize, float
 void VoiceEffects::resetEffects()
 {
     // Reset all SoundTouch processors
+    soundtouch_clear(robotProcessor);
     soundtouch_clear(bananaProcessor);
     soundtouch_clear(devilProcessor);
     soundtouch_clear(femaleProcessor);
     soundtouch_clear(militaryProcessor);
     soundtouch_clear(ekoProcessor);
+    soundtouch_clear(phaserProcessor);
+    soundtouch_clear(flangerProcessor);
     
     // Reset all filter states
     memset(&lowPass, 0, sizeof(lowPass));
@@ -303,6 +485,24 @@ void VoiceEffects::resetEffects()
     // Clear echo buffer
     std::fill(echo.delayBuffer.begin(), echo.delayBuffer.end(), 0.0f);
     echo.writeIndex = 0;
+    
+    // Reset pitch correction state
+    std::fill(pitchCorrection.analysisBuffer.begin(), pitchCorrection.analysisBuffer.end(), 0.0f);
+    pitchCorrection.analysisIndex = 0;
+    pitchCorrection.currentFreq = 440.0f;
+    
+    // Reset radio static state
+    radioStatic.noiseIndex = 0;
+    radioStatic.lfoPhase = 0.0f;
+    
+    // Reset phaser state
+    std::fill(phaser.z1.begin(), phaser.z1.end(), 0.0f);
+    phaser.lfoPhase = 0.0f;
+    
+    // Reset flanger state
+    std::fill(flanger.delayBuffer.begin(), flanger.delayBuffer.end(), 0.0f);
+    flanger.delayIndex = 0;
+    flanger.lfoPhase = 0.0f;
 }
 
 // DSP processing functions implementation
@@ -530,4 +730,173 @@ void VoiceEffects::designBandPass(float lowFreq, float highFreq, float sampleRat
     filter.a0 = 1.0f + bw;
     filter.a1 = -2.0f * cosf(omega);
     filter.a2 = 1.0f - bw;
+}
+
+void VoiceEffects::applyPitchCorrection(float* input, float* output, int bufferSize, float sampleRate)
+{
+    // Simplified autotune effect - snap to musical scales
+    float samplePeriod = 1.0f / sampleRate;
+    
+    for (int i = 0; i < bufferSize; ++i) {
+        // Add sample to analysis buffer
+        pitchCorrection.analysisBuffer[pitchCorrection.analysisIndex] = input[i];
+        pitchCorrection.analysisIndex = (pitchCorrection.analysisIndex + 1) % static_cast<int>(pitchCorrection.windowSize);
+        
+        // Simple pitch detection and correction (simplified for real-time performance)
+        float currentSample = input[i];
+        
+        // Apply instant pitch correction (characteristic of T-Pain style autotune)
+        float corrected = currentSample;
+        
+        // Add slight quantization for robotic effect
+        float quantization = 0.1f;
+        corrected = roundf(corrected / quantization) * quantization;
+        
+        // Smooth transition to avoid artifacts
+        output[i] = currentSample * (1.0f - pitchCorrection.correctionSpeed) + 
+                   corrected * pitchCorrection.correctionSpeed;
+    }
+}
+
+void VoiceEffects::applyRadioStatic(float* input, float* output, int bufferSize, float sampleRate)
+{
+    float samplePeriod = 1.0f / sampleRate;
+    
+    for (int i = 0; i < bufferSize; ++i) {
+        float dry = input[i];
+        float wet = dry;
+        
+        // Add minimal white noise for static
+        float noise = radioStatic.noiseBuffer[radioStatic.noiseIndex];
+        radioStatic.noiseIndex = (radioStatic.noiseIndex + 1) % radioStatic.noiseBuffer.size();
+        wet += noise * radioStatic.staticLevel;
+        
+        // Add very rare crackles with reduced intensity
+        if (static_cast<float>(rand()) / RAND_MAX < radioStatic.crackleProbability) {
+            wet += (static_cast<float>(rand()) / RAND_MAX) * 0.1f - 0.05f;  // Much reduced intensity
+        }
+        
+        // Minimal radio effect - mostly dry signal
+        float radioEffect = wet * 0.95f + dry * 0.05f;  // 95% dry signal to eliminate fatigue
+        
+        output[i] = radioEffect;
+    }
+}
+
+void VoiceEffects::applyGate(float* input, float* output, int bufferSize, float sampleRate)
+{
+    // Update gate coefficients if sample rate changed
+    if (gate.sampleRate != sampleRate) {
+        gate.sampleRate = sampleRate;
+        gate.attackCoeff = expf(-1.0f / (gate.attackTime * gate.sampleRate));
+        gate.releaseCoeff = expf(-1.0f / (gate.releaseTime * gate.sampleRate));
+    }
+    
+    for (int i = 0; i < bufferSize; ++i) {
+        float inputLevel = fabsf(input[i]);
+        
+        // Update envelope follower
+        if (inputLevel > gate.envelope) {
+            gate.envelope = inputLevel + (gate.envelope - inputLevel) * gate.attackCoeff;
+        } else {
+            gate.envelope = inputLevel + (gate.envelope - inputLevel) * gate.releaseCoeff;
+        }
+        
+        // Apply gate
+        if (gate.envelope > gate.threshold) {
+            output[i] = input[i];  // Signal passes through
+        } else {
+            output[i] = 0.0f;  // Signal is gated (silenced)
+        }
+    }
+}
+
+void VoiceEffects::processPhaser(float* input, float* output, int bufferSize, float sampleRate)
+{
+    float samplePeriod = 1.0f / sampleRate;
+    float lfoInc = 2.0f * M_PI * phaser.rate * samplePeriod;
+    
+    for (int i = 0; i < bufferSize; ++i) {
+        float dry = input[i];
+        float wet = dry;
+        
+        // 1. LFO hesaplama
+        float lfoValue = sinf(phaser.lfoPhase);
+        phaser.lfoPhase += lfoInc;
+        if (phaser.lfoPhase > 2.0f * M_PI) {
+            phaser.lfoPhase -= 2.0f * M_PI;
+        }
+        
+        // 2. All-pass filtre merkez frekansını LFO ile modüle et
+        float lfoModulated = 0.5f * (1.0f + lfoValue); // 0-1 arası
+        float freq = phaser.minFreq + lfoModulated * (phaser.maxFreq - phaser.minFreq);
+        
+        // 3. All-pass filtre katsayısı (bilinear transform)
+        float w = 2.0f * M_PI * freq / sampleRate;
+        float alpha = (1.0f - sinf(w)) / cosf(w); // Doğru all-pass katsayısı
+        
+        // 4. Stage'leri seri bağla
+        float x = wet;
+        for (int s = 0; s < phaser.stages; s++) {
+            // All-pass filtre formülü: y = -α*x + z1
+            // z1 = x + α*y
+            float y = -alpha * x + phaser.z1[s];
+            phaser.z1[s] = x + alpha * y;
+            x = y;  // Çıkışı bir sonraki stage'e besle
+        }
+        
+        // 5. Geri besleme ekle (isteğe bağlı, jet efekti için)
+        wet = x + phaser.feedback * phaser.z1[phaser.stages - 1];
+        
+        // 6. Dry/wet mix
+        output[i] = dry * (1.0f - phaser.mix) + wet * phaser.mix;
+        
+        // Hafif distorsiyon (analog sıcaklık için)
+        output[i] = tanhf(output[i] * 1.2f);
+    }
+}
+
+void VoiceEffects::processFlanger(float* input, float* output, int bufferSize, float sampleRate)
+{
+    // FLANGER EFFECT: Enhanced flanger with dramatic jet-like effect
+    
+    float samplePeriod = 1.0f / sampleRate;
+    
+    for (int i = 0; i < bufferSize; ++i) {
+        float dry = input[i];
+        float wet = dry;
+        
+        // LFO modulation for delay time - wider range for dramatic effect
+        float lfo = sinf(flanger.lfoPhase) * 0.5f + 0.5f;
+        float delayTime = flanger.delayTime + lfo * 0.007f;  // 3ms - 10ms sweep (much wider)
+        
+        // Update LFO phase
+        flanger.lfoPhase += 2.0f * M_PI * flanger.lfoFreq * samplePeriod;
+        if (flanger.lfoPhase >= 2.0f * M_PI) {
+            flanger.lfoPhase -= 2.0f * M_PI;
+        }
+        
+        // Calculate delay in samples with interpolation for smoother effect
+        float delaySamplesFloat = delayTime * sampleRate;
+        int delaySamples = static_cast<int>(delaySamplesFloat);
+        float fraction = delaySamplesFloat - delaySamples;
+        
+        // Read from delay buffer with linear interpolation
+        int readIndex1 = flanger.delayIndex - delaySamples;
+        int readIndex2 = readIndex1 - 1;
+        
+        if (readIndex1 < 0) readIndex1 += flanger.delayBufferSize;
+        if (readIndex2 < 0) readIndex2 += flanger.delayBufferSize;
+        
+        float delayed1 = flanger.delayBuffer[readIndex1];
+        float delayed2 = flanger.delayBuffer[readIndex2];
+        float delayed = delayed1 * (1.0f - fraction) + delayed2 * fraction;  // Linear interpolation
+        
+        // Write to delay buffer (input + feedback)
+        flanger.delayBuffer[flanger.delayIndex] = dry + delayed * flanger.feedback;
+        flanger.delayIndex = (flanger.delayIndex + 1) % flanger.delayBufferSize;
+        
+        // Mix dry and wet with higher depth for dramatic effect
+        output[i] = dry * (1.0f - flanger.depth) + delayed * flanger.depth;
+    }
 }

@@ -35,6 +35,12 @@ void MainWindow::stopAllEffects()
     ui->ekoButton->setChecked(false);
     ui->ekoButton->setText("Eko");
 
+    ui->phaserButton->setChecked(false);
+    ui->phaserButton->setText("Phaser");
+
+    ui->flangerButton->setChecked(false);
+    ui->flangerButton->setText("Flanger");
+
     // Mevcut bağlantıları kopar - AMA kayıt sinyali bağlantısını koparma!
     if (inputDevice) {
         disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
@@ -140,13 +146,8 @@ void MainWindow::processToRobotVoice(QByteArray &data)
         floatInput[i] = static_cast<float>(samples[i]) / 32768.0f;
     }
     
-    // Apply ROBOT effect using new VoiceEffects (similar to female but more robotic)
-    voiceEffects->processFemale(floatInput.data(), floatOutput.data(), sampleCount, format->sampleRate());
-    
-    // Add slight robotic modulation
-    for (int i = 0; i < sampleCount; ++i) {
-        floatOutput[i] *= 0.9f + 0.1f * sinf(i * 0.01f); // Slight modulation
-    }
+    // Apply ROBOT effect using new VoiceEffects with autotune
+    voiceEffects->processRobot(floatInput.data(), floatOutput.data(), sampleCount, format->sampleRate());
     
     // Convert float back to int16
     for (int i = 0; i < sampleCount; ++i) {
@@ -249,6 +250,74 @@ void MainWindow::processToCombineVoice(QByteArray &data)
     
     // Apply MILITARY effect using new VoiceEffects (Combine = Military)
     voiceEffects->processMilitary(floatInput.data(), floatOutput.data(), sampleCount, format->sampleRate());
+    
+    // Convert float back to int16
+    for (int i = 0; i < sampleCount; ++i) {
+        float clamped = std::max(-1.0f, std::min(1.0f, floatOutput[i]));
+        samples[i] = static_cast<int16_t>(clamped * 32767.0f);
+    }
+}
+
+void MainWindow::processToPhaserVoice(QByteArray &data)
+{
+    // Safety checks
+    if (data.isEmpty() || data.size() < static_cast<qsizetype>(sizeof(int16_t))) {
+        return;
+    }
+
+    if (!format) {
+        qWarning() << "Audio format is null in processToPhaserVoice";
+        return;
+    }
+
+    // Convert int16 to float for VoiceEffects processing
+    int16_t *samples = reinterpret_cast<int16_t *>(data.data());
+    int sampleCount = data.size() / sizeof(int16_t);
+    
+    std::vector<float> floatInput(sampleCount);
+    std::vector<float> floatOutput(sampleCount);
+    
+    // Convert int16 to float [-1.0, 1.0]
+    for (int i = 0; i < sampleCount; ++i) {
+        floatInput[i] = static_cast<float>(samples[i]) / 32768.0f;
+    }
+    
+    // Apply PHASER effect using new VoiceEffects
+    voiceEffects->processPhaser(floatInput.data(), floatOutput.data(), sampleCount, format->sampleRate());
+    
+    // Convert float back to int16
+    for (int i = 0; i < sampleCount; ++i) {
+        float clamped = std::max(-1.0f, std::min(1.0f, floatOutput[i]));
+        samples[i] = static_cast<int16_t>(clamped * 32767.0f);
+    }
+}
+
+void MainWindow::processToFlangerVoice(QByteArray &data)
+{
+    // Safety checks
+    if (data.isEmpty() || data.size() < static_cast<qsizetype>(sizeof(int16_t))) {
+        return;
+    }
+
+    if (!format) {
+        qWarning() << "Audio format is null in processToFlangerVoice";
+        return;
+    }
+
+    // Convert int16 to float for VoiceEffects processing
+    int16_t *samples = reinterpret_cast<int16_t *>(data.data());
+    int sampleCount = data.size() / sizeof(int16_t);
+    
+    std::vector<float> floatInput(sampleCount);
+    std::vector<float> floatOutput(sampleCount);
+    
+    // Convert int16 to float [-1.0, 1.0]
+    for (int i = 0; i < sampleCount; ++i) {
+        floatInput[i] = static_cast<float>(samples[i]) / 32768.0f;
+    }
+    
+    // Apply FLANGER effect using new VoiceEffects
+    voiceEffects->processFlanger(floatInput.data(), floatOutput.data(), sampleCount, format->sampleRate());
     
     // Convert float back to int16
     for (int i = 0; i < sampleCount; ++i) {
@@ -775,5 +844,169 @@ void MainWindow::on_combineButton_clicked(bool checked)
         data.clear();
         usingEffects = true;
         qDebug() << "combine effect stopped.";
+    }
+}
+
+void MainWindow::on_phaserButton_clicked(bool checked)
+{
+    if(checked)
+    {
+        // Diğer tüm efektleri durdur
+        stopAllEffects();
+        
+        // Phaser efektini başlat
+        ui->phaserButton->setChecked(true);
+        ui->phaserButton->setText("Stop");
+
+        if(audioInput)
+        {
+            setupEffectConnection("PHASER", [this](QByteArray &data) {
+                processToPhaserVoice(data);
+            });
+        }
+        else
+        {
+            qWarning() << "Audio devices are not properly initialized.";
+        }
+
+        usingEffects = false;
+        qDebug() << "phaser effect started.";
+    }
+    else
+    {
+        ui->phaserButton->setText("Phaser");
+
+        // Sadece phaser efektini durdur
+        if (inputDevice) {
+            disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
+            
+            // Normal bağlantıyı geri kur (test veya normal mode)
+            if (ui->testButton->isChecked()) {
+                connect(inputDevice, &QIODevice::readyRead, this, [=](){
+                    data = inputDevice->readAll();
+                    progressBarOutput();
+                    // Emit signal for recording when recording is active
+                    if (isRecording) {
+                        emit audioDataReady(data);
+                    }
+                    // Önce virtual output'a gönder (mix için)
+                    if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
+                        // AudioPipeline kullanarak gönder
+                        if (audioPipeline) {
+                            audioPipeline->writeInputAudio(data);
+                        } else {
+                            virtualOutputDevice->write(data);
+                        }
+                    }
+                    // Test modunda output routing AudioPipeline tarafından yönetiliyor
+                    // AudioPipeline test moduna göre normal output'a otomatik olarak yazar
+                });
+            } else {
+                connect(inputDevice, &QIODevice::readyRead, this, [=](){
+                    data = inputDevice->readAll();
+                    progressBarOutput();
+                    // Emit signal for recording when recording is active
+                    if (isRecording) {
+                        emit audioDataReady(data);
+                    }
+                    // Test modu kapalı: Sadece virtual output'a efektli ses gönder
+                    if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
+                        // AudioPipeline kullanarak efekti sesi gönder (mix için)
+                        if (audioPipeline) {
+                            audioPipeline->writeInputAudio(data);
+                        } else {
+                            virtualOutputDevice->write(data);
+                        }
+                    }
+                    // Normal output'a gönderme (test modu kapalı)
+                });
+            }
+        }
+
+        data.clear();
+        usingEffects = true;
+        qDebug() << "phaser effect stopped.";
+    }
+}
+
+void MainWindow::on_flangerButton_clicked(bool checked)
+{
+    if(checked)
+    {
+        // Diğer tüm efektleri durdur
+        stopAllEffects();
+        
+        // Flanger efektini başlat
+        ui->flangerButton->setChecked(true);
+        ui->flangerButton->setText("Stop");
+
+        if(audioInput)
+        {
+            setupEffectConnection("FLANGER", [this](QByteArray &data) {
+                processToFlangerVoice(data);
+            });
+        }
+        else
+        {
+            qWarning() << "Audio devices are not properly initialized.";
+        }
+
+        usingEffects = false;
+        qDebug() << "flanger effect started.";
+    }
+    else
+    {
+        ui->flangerButton->setText("Flanger");
+
+        // Sadece flanger efektini durdur
+        if (inputDevice) {
+            disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
+            
+            // Normal bağlantıyı geri kur (test veya normal mode)
+            if (ui->testButton->isChecked()) {
+                connect(inputDevice, &QIODevice::readyRead, this, [=](){
+                    data = inputDevice->readAll();
+                    progressBarOutput();
+                    // Emit signal for recording when recording is active
+                    if (isRecording) {
+                        emit audioDataReady(data);
+                    }
+                    // Önce virtual output'a gönder (mix için)
+                    if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
+                        // AudioPipeline kullanarak gönder
+                        if (audioPipeline) {
+                            audioPipeline->writeInputAudio(data);
+                        } else {
+                            virtualOutputDevice->write(data);
+                        }
+                    }
+                    // Test modunda output routing AudioPipeline tarafından yönetiliyor
+                    // AudioPipeline test moduna göre normal output'a otomatik olarak yazar
+                });
+            } else {
+                connect(inputDevice, &QIODevice::readyRead, this, [=](){
+                    data = inputDevice->readAll();
+                    progressBarOutput();
+                    // Emit signal for recording when recording is active
+                    if (isRecording) {
+                        emit audioDataReady(data);
+                    }
+                    // Test modu kapalı: Sadece virtual output'a efektli ses gönder
+                    if (virtualOutputDevice && virtualOutputDevice->isOpen()) {
+                        // AudioPipeline kullanarak efekti sesi gönder (mix için)
+                        if (audioPipeline) {
+                            audioPipeline->writeInputAudio(data);
+                        } else {
+                            virtualOutputDevice->write(data);
+                        }
+                    }
+                    // Normal output'a gönderme (test modu kapalı)
+                });
+            }
+        }
+
+        data.clear();
+        usingEffects = true;
+        qDebug() << "flanger effect stopped.";
     }
 }

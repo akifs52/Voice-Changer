@@ -73,6 +73,8 @@ private slots:
     void processToFemaleVoice(QByteArray &data);
     void processToCombineVoice(QByteArray &data);
     void processToEkoVoice(QByteArray &data);
+    void processToPhaserVoice(QByteArray &data);
+    void processToFlangerVoice(QByteArray &data);
     void on_bananaButton_clicked(bool checked);
     void on_testButton_clicked(bool checked);
     void on_robotButton_clicked(bool checked);
@@ -80,6 +82,8 @@ private slots:
     void on_ekoButton_clicked(bool checked);
     void on_femaleButton_clicked(bool checked);
     void on_combineButton_clicked(bool checked);
+    void on_phaserButton_clicked(bool checked);
+    void on_flangerButton_clicked(bool checked);
     void on_startRecord_clicked();
     void on_stopRecord_clicked();
     void on_sound1_clicked();

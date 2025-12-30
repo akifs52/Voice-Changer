@@ -20,7 +20,8 @@ SOURCES += \
     psola.cpp \
     recorder.cpp \
     soundpack.cpp \
-    audiopipeline.cpp
+    audiopipeline.cpp \
+    voiceeffects.cpp
 
 HEADERS += \
     circularbuffer.h \
@@ -32,7 +33,8 @@ HEADERS += \
     psola.h \
     recorder.h \
     soundpack.h \
-    audiopipeline.h
+    audiopipeline.h \
+    voiceeffects.h
 
 FORMS += \
     mainwindow.ui
@@ -71,6 +73,8 @@ DEPENDPATH += $$PWD/../../ffmpeg-master-latest-win64-lgpl-shared/include
 RESOURCES += \
     Soundpack.qrc
 
+RC_ICONS = D:\qt\voiceChanger\img\icon.ico
+
 win32 {
     LIBS += -luser32
     LIBS += -lmf
@@ -80,4 +84,9 @@ win32 {
     LIBS += -lksuser
 }
 
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../soundtouch_dll-2.3.3/ -lSoundTouchDLL_x64
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../soundtouch_dll-2.3.3/ -lSoundTouchDLL_x64
+else:unix: LIBS += -L$$PWD/../../soundtouch_dll-2.3.3/ -lSoundTouchDLL_x64
 
+INCLUDEPATH += $$PWD/../../soundtouch_dll-2.3.3
+DEPENDPATH += $$PWD/../../soundtouch_dll-2.3.3

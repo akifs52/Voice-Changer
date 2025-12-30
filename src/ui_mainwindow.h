@@ -201,6 +201,8 @@ public:
     QPushButton *devilButton;
     QPushButton *femaleButton;
     QPushButton *combineButton;
+    QPushButton *phaserButton;
+    QPushButton *flangerButton;
     QSpacerItem *verticalSpacer;
 
     void setupUi(QMainWindow *MainWindow)
@@ -1462,6 +1464,26 @@ public:
 
         verticalLayout->addWidget(combineButton);
 
+        phaserButton = new QPushButton(frame_2);
+        phaserButton->setObjectName("phaserButton");
+        QIcon icon25;
+        icon25.addFile(QString::fromUtf8(":/app/img/app/children.png"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
+        phaserButton->setIcon(icon25);
+        phaserButton->setIconSize(QSize(30, 30));
+        phaserButton->setCheckable(true);
+
+        verticalLayout->addWidget(phaserButton);
+
+        flangerButton = new QPushButton(frame_2);
+        flangerButton->setObjectName("flangerButton");
+        QIcon icon26;
+        icon26.addFile(QString::fromUtf8(":/app/img/app/children.png"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
+        flangerButton->setIcon(icon26);
+        flangerButton->setIconSize(QSize(30, 30));
+        flangerButton->setCheckable(true);
+
+        verticalLayout->addWidget(flangerButton);
+
         verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Policy::Minimum, QSizePolicy::Policy::Expanding);
 
         verticalLayout->addItem(verticalSpacer);
@@ -1560,6 +1582,8 @@ public:
         devilButton->setText(QCoreApplication::translate("MainWindow", "Canavar ", nullptr));
         femaleButton->setText(QCoreApplication::translate("MainWindow", "kad\304\261n ", nullptr));
         combineButton->setText(QCoreApplication::translate("MainWindow", "overwatch", nullptr));
+        phaserButton->setText(QCoreApplication::translate("MainWindow", "Phaser", nullptr));
+        flangerButton->setText(QCoreApplication::translate("MainWindow", "Flanger", nullptr));
     } // retranslateUi
 
 };

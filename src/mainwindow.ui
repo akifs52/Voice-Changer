@@ -2490,6 +2490,46 @@ QProgressBar::chunk {
         </widget>
        </item>
        <item>
+        <widget class="QPushButton" name="phaserButton">
+         <property name="text">
+          <string>Phaser</string>
+         </property>
+         <property name="icon">
+          <iconset resource="Soundpack.qrc">
+           <normaloff>:/app/img/app/children.png</normaloff>:/app/img/app/children.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>30</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="flangerButton">
+         <property name="text">
+          <string>Flanger</string>
+         </property>
+         <property name="icon">
+          <iconset resource="Soundpack.qrc">
+           <normaloff>:/app/img/app/children.png</normaloff>:/app/img/app/children.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>30</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
         <spacer name="verticalSpacer">
          <property name="orientation">
           <enum>Qt::Orientation::Vertical</enum>
