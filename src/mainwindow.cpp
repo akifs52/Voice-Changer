@@ -29,6 +29,7 @@ MainWindow::MainWindow(QWidget *parent)
     , soundpackBuffer(new CircularBuffer(32768))
     , effectsBuffer(new CircularBuffer(32768))
     , audioPipeline(new AudioPipeline(this))
+    , voiceEffects(new VoiceEffects(this))
 
 {
     ui->setupUi(this);
@@ -108,6 +109,7 @@ MainWindow::~MainWindow()
     delete soundpackBuffer;
     delete effectsBuffer;
     delete soundpackBuffer2;
+    delete voiceEffects;
 
     delete format;
 

@@ -24,6 +24,7 @@
 #include "audiopipeline.h"
 #include "circularbuffer.h"
 #include "psola.h"
+#include "voiceeffects.h"
 #include "qcombobox.h"
 #include "qpushbutton.h"
 #ifdef Q_OS_WIN
@@ -297,6 +298,9 @@ private:
 
     // PSOLA instance for effects (persistent to preserve echo buffers)
     PSOLA m_psola;
+    
+    // VoiceEffects instance for new DSP effects
+    VoiceEffects *voiceEffects;
 
     // Virtual audio fonksiyonları
     void searchVirtualDevices();

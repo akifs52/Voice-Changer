@@ -3,6 +3,7 @@
 #include <QTime>
 #include "mainwindow.h"
 #include "psola.h"
+#include "voiceeffects.h"
 
 
 effects::effects(QWidget *parent)
@@ -93,17 +94,26 @@ void MainWindow::processToBananaVoice(QByteArray &data)
         return;
     }
 
+    // Convert int16 to float for VoiceEffects processing
     int16_t *samples = reinterpret_cast<int16_t *>(data.data());
     int sampleCount = data.size() / sizeof(int16_t);
-
-    // Ensure we have enough samples for PSOLA processing
-    if (sampleCount < 100) {
-        return;
+    
+    std::vector<float> floatInput(sampleCount);
+    std::vector<float> floatOutput(sampleCount);
+    
+    // Convert int16 to float [-1.0, 1.0]
+    for (int i = 0; i < sampleCount; ++i) {
+        floatInput[i] = static_cast<float>(samples[i]) / 32768.0f;
     }
-
-    m_psola.process(samples, sampleCount, format->sampleRate(),
-                 PSOLA::getDefaultPitchFactor(PSOLA::BANANA),
-                 PSOLA::BANANA);
+    
+    // Apply BANANA effect using new VoiceEffects
+    voiceEffects->processBanana(floatInput.data(), floatOutput.data(), sampleCount, format->sampleRate());
+    
+    // Convert float back to int16
+    for (int i = 0; i < sampleCount; ++i) {
+        float clamped = std::max(-1.0f, std::min(1.0f, floatOutput[i]));
+        samples[i] = static_cast<int16_t>(clamped * 32767.0f);
+    }
 }
 
 void MainWindow::processToRobotVoice(QByteArray &data)
@@ -118,18 +128,31 @@ void MainWindow::processToRobotVoice(QByteArray &data)
         return;
     }
 
+    // Convert int16 to float for VoiceEffects processing
     int16_t *samples = reinterpret_cast<int16_t *>(data.data());
     int sampleCount = data.size() / sizeof(int16_t);
-
-    // Ensure we have enough samples for PSOLA processing
-    if (sampleCount < 100) {
-        return;
+    
+    std::vector<float> floatInput(sampleCount);
+    std::vector<float> floatOutput(sampleCount);
+    
+    // Convert int16 to float [-1.0, 1.0]
+    for (int i = 0; i < sampleCount; ++i) {
+        floatInput[i] = static_cast<float>(samples[i]) / 32768.0f;
     }
-
-    m_psola.process(samples, sampleCount, format->sampleRate(),
-                 PSOLA::getDefaultPitchFactor(PSOLA::ROBOT),
-                 PSOLA::ROBOT);
-
+    
+    // Apply ROBOT effect using new VoiceEffects (similar to female but more robotic)
+    voiceEffects->processFemale(floatInput.data(), floatOutput.data(), sampleCount, format->sampleRate());
+    
+    // Add slight robotic modulation
+    for (int i = 0; i < sampleCount; ++i) {
+        floatOutput[i] *= 0.9f + 0.1f * sinf(i * 0.01f); // Slight modulation
+    }
+    
+    // Convert float back to int16
+    for (int i = 0; i < sampleCount; ++i) {
+        float clamped = std::max(-1.0f, std::min(1.0f, floatOutput[i]));
+        samples[i] = static_cast<int16_t>(clamped * 32767.0f);
+    }
 }
 
 void MainWindow::processToDevilVoice(QByteArray &data)
@@ -144,17 +167,26 @@ void MainWindow::processToDevilVoice(QByteArray &data)
         return;
     }
 
+    // Convert int16 to float for VoiceEffects processing
     int16_t *samples = reinterpret_cast<int16_t *>(data.data());
     int sampleCount = data.size() / sizeof(int16_t);
-
-    // Ensure we have enough samples for PSOLA processing
-    if (sampleCount < 100) {
-        return;
+    
+    std::vector<float> floatInput(sampleCount);
+    std::vector<float> floatOutput(sampleCount);
+    
+    // Convert int16 to float [-1.0, 1.0]
+    for (int i = 0; i < sampleCount; ++i) {
+        floatInput[i] = static_cast<float>(samples[i]) / 32768.0f;
     }
-
-    m_psola.process(samples, sampleCount, format->sampleRate(),
-                 PSOLA::getDefaultPitchFactor(PSOLA::DEVIL),
-                 PSOLA::DEVIL);
+    
+    // Apply DEVIL effect using new VoiceEffects
+    voiceEffects->processDevil(floatInput.data(), floatOutput.data(), sampleCount, format->sampleRate());
+    
+    // Convert float back to int16
+    for (int i = 0; i < sampleCount; ++i) {
+        float clamped = std::max(-1.0f, std::min(1.0f, floatOutput[i]));
+        samples[i] = static_cast<int16_t>(clamped * 32767.0f);
+    }
 }
 
 void MainWindow::processToFemaleVoice(QByteArray &data)
@@ -169,17 +201,26 @@ void MainWindow::processToFemaleVoice(QByteArray &data)
         return;
     }
 
+    // Convert int16 to float for VoiceEffects processing
     int16_t *samples = reinterpret_cast<int16_t *>(data.data());
     int sampleCount = data.size() / sizeof(int16_t);
-
-    // Ensure we have enough samples for PSOLA processing
-    if (sampleCount < 100) {
-        return;
+    
+    std::vector<float> floatInput(sampleCount);
+    std::vector<float> floatOutput(sampleCount);
+    
+    // Convert int16 to float [-1.0, 1.0]
+    for (int i = 0; i < sampleCount; ++i) {
+        floatInput[i] = static_cast<float>(samples[i]) / 32768.0f;
     }
-
-    m_psola.process(samples, sampleCount, format->sampleRate(),
-                 PSOLA::getDefaultPitchFactor(PSOLA::FEMALE),
-                 PSOLA::FEMALE);
+    
+    // Apply FEMALE effect using new VoiceEffects
+    voiceEffects->processFemale(floatInput.data(), floatOutput.data(), sampleCount, format->sampleRate());
+    
+    // Convert float back to int16
+    for (int i = 0; i < sampleCount; ++i) {
+        float clamped = std::max(-1.0f, std::min(1.0f, floatOutput[i]));
+        samples[i] = static_cast<int16_t>(clamped * 32767.0f);
+    }
 }
 
 void MainWindow::processToCombineVoice(QByteArray &data)
@@ -194,17 +235,26 @@ void MainWindow::processToCombineVoice(QByteArray &data)
         return;
     }
 
+    // Convert int16 to float for VoiceEffects processing
     int16_t *samples = reinterpret_cast<int16_t *>(data.data());
     int sampleCount = data.size() / sizeof(int16_t);
-
-    // Ensure we have enough samples for PSOLA processing
-    if (sampleCount < 100) {
-        return;
+    
+    std::vector<float> floatInput(sampleCount);
+    std::vector<float> floatOutput(sampleCount);
+    
+    // Convert int16 to float [-1.0, 1.0]
+    for (int i = 0; i < sampleCount; ++i) {
+        floatInput[i] = static_cast<float>(samples[i]) / 32768.0f;
     }
-
-    m_psola.process(samples, sampleCount, format->sampleRate(),
-                 PSOLA::getDefaultPitchFactor(PSOLA::COMBINE),
-                 PSOLA::COMBINE);
+    
+    // Apply MILITARY effect using new VoiceEffects (Combine = Military)
+    voiceEffects->processMilitary(floatInput.data(), floatOutput.data(), sampleCount, format->sampleRate());
+    
+    // Convert float back to int16
+    for (int i = 0; i < sampleCount; ++i) {
+        float clamped = std::max(-1.0f, std::min(1.0f, floatOutput[i]));
+        samples[i] = static_cast<int16_t>(clamped * 32767.0f);
+    }
 }
 
 void MainWindow::processToEkoVoice(QByteArray &data)
@@ -219,17 +269,26 @@ void MainWindow::processToEkoVoice(QByteArray &data)
         return;
     }
 
+    // Convert int16 to float for VoiceEffects processing
     int16_t *samples = reinterpret_cast<int16_t *>(data.data());
     int sampleCount = data.size() / sizeof(int16_t);
-
-    // Ensure we have enough samples for PSOLA processing
-    if (sampleCount < 100) {
-        return;
+    
+    std::vector<float> floatInput(sampleCount);
+    std::vector<float> floatOutput(sampleCount);
+    
+    // Convert int16 to float [-1.0, 1.0]
+    for (int i = 0; i < sampleCount; ++i) {
+        floatInput[i] = static_cast<float>(samples[i]) / 32768.0f;
     }
-
-    m_psola.process(samples, sampleCount, format->sampleRate(),
-                  PSOLA::getDefaultPitchFactor(PSOLA::EKO),
-                  PSOLA::EKO);
+    
+    // Apply EKO effect using new VoiceEffects
+    voiceEffects->processEko(floatInput.data(), floatOutput.data(), sampleCount, format->sampleRate());
+    
+    // Convert float back to int16
+    for (int i = 0; i < sampleCount; ++i) {
+        float clamped = std::max(-1.0f, std::min(1.0f, floatOutput[i]));
+        samples[i] = static_cast<int16_t>(clamped * 32767.0f);
+    }
 }
 
 
