@@ -11,6 +11,8 @@
         <file>img/yArra.jpg</file>
         <file>img/yArra-Earrape.jpg</file>
         <file>img/ohacet.jpg</file>
+        <file>img/icon.ico</file>
+        <file>img/icon.png</file>
     </qresource>
     <qresource prefix="/app">
         <file>img/app/bin (1).png</file>
@@ -31,6 +33,8 @@
         <file>img/app/robot.png</file>
         <file>img/app/save-instagram.png</file>
         <file>img/app/woman.png</file>
+        <file>img/app/flanger.png</file>
+        <file>img/app/phaser.png</file>
     </qresource>
     <qresource prefix="/"/>
 </RCC>

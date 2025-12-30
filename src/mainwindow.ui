@@ -2496,7 +2496,7 @@ QProgressBar::chunk {
          </property>
          <property name="icon">
           <iconset resource="Soundpack.qrc">
-           <normaloff>:/app/img/app/children.png</normaloff>:/app/img/app/children.png</iconset>
+           <normaloff>:/app/img/app/phaser.png</normaloff>:/app/img/app/phaser.png</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -2516,7 +2516,7 @@ QProgressBar::chunk {
          </property>
          <property name="icon">
           <iconset resource="Soundpack.qrc">
-           <normaloff>:/app/img/app/children.png</normaloff>:/app/img/app/children.png</iconset>
+           <normaloff>:/app/img/app/flanger.png</normaloff>:/app/img/app/flanger.png</iconset>
          </property>
          <property name="iconSize">
           <size>

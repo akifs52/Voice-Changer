@@ -1467,7 +1467,7 @@ public:
         phaserButton = new QPushButton(frame_2);
         phaserButton->setObjectName("phaserButton");
         QIcon icon25;
-        icon25.addFile(QString::fromUtf8(":/app/img/app/children.png"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
+        icon25.addFile(QString::fromUtf8(":/app/img/app/phaser.png"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
         phaserButton->setIcon(icon25);
         phaserButton->setIconSize(QSize(30, 30));
         phaserButton->setCheckable(true);
@@ -1477,7 +1477,7 @@ public:
         flangerButton = new QPushButton(frame_2);
         flangerButton->setObjectName("flangerButton");
         QIcon icon26;
-        icon26.addFile(QString::fromUtf8(":/app/img/app/children.png"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
+        icon26.addFile(QString::fromUtf8(":/app/img/app/flanger.png"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
         flangerButton->setIcon(icon26);
         flangerButton->setIconSize(QSize(30, 30));
         flangerButton->setCheckable(true);
