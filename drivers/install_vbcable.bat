@@ -4,27 +4,27 @@ echo =====================================
 
 REM Check if VB-CABLE is already installed
 echo Checking for VB-CABLE installation...
-set VB_CABLE_FOUND=0
 
-REM Check for 32-bit VB-CABLE
-if exist "C:\Windows\System32\drivers\vbaudio_cable64.sys" (
-    set VB_CABLE_FOUND=1
-    echo VB-CABLE 64-bit driver found
-)
-
-REM Check for VB-CABLE in Program Files
-if exist "C:\Program Files\VB-CABLE" (
-    set VB_CABLE_FOUND=1
+if exist "C:\Program Files\VB\CABLE" (
     echo VB-CABLE installation folder found
+    echo.
+    echo VB-CABLE is already installed!
+    echo Please restart the VoiceChanger application.
+    pause
+    exit /b 0
 )
 
-REM Check in Program Files (x86)
-if exist "C:\Program Files (x86)\VB-CABLE" (
-    set VB_CABLE_FOUND=1
+if exist "C:\Program Files (x86)\VB\CABLE" (
     echo VB-CABLE (x86) installation folder found
+    echo.
+    echo VB-CABLE is already installed!
+    echo Please restart the VoiceChanger application.
+    pause
+    exit /b 0
 )
 
-if %VB_CABLE_FOUND%==1 (
+if exist "C:\Windows\System32\drivers\vbaudio_cable64.sys" (
+    echo VB-CABLE 64-bit driver found
     echo.
     echo VB-CABLE is already installed!
     echo Please restart the VoiceChanger application.
