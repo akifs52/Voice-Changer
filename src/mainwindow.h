@@ -23,7 +23,6 @@
 #include <QAction>
 #include "audiopipeline.h"
 #include "circularbuffer.h"
-#include "psola.h"
 #include "voiceeffects.h"
 #include "qcombobox.h"
 #include "qpushbutton.h"
@@ -319,9 +318,7 @@ private:
     void progressBarOutput();
     void saveLoadout(const QString &loadoutName);
 
-    // PSOLA instance for effects (persistent to preserve echo buffers)
-    PSOLA m_psola;
-    
+
     // VoiceEffects instance for new DSP effects
     VoiceEffects *voiceEffects;
 
@@ -340,7 +337,9 @@ private:
     void saveHotkeys();
     void loadHotkeys();
     void stopAllEffects();
+#ifdef Q_OS_WIN
     bool winEventFilter(MSG *message, long *result);
+#endif
     bool nativeEvent(const QByteArray &eventType, void *message, qintptr *result) override;
 };
 #endif // MAINWINDOW_H

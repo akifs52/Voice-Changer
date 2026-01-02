@@ -5,6 +5,15 @@
 #include <cmath>
 #include <vector>
 #include <cstring>
+
+// Cross-platform handle type
+#ifdef Q_OS_WIN
+#include <windows.h>
+typedef HANDLE SoundTouchHandle;
+#else
+typedef void* SoundTouchHandle;
+#endif
+
 #include <SoundTouchDLL.h>
 
 class VoiceEffects : public QObject
@@ -30,14 +39,14 @@ public:
 
 private:
     // SoundTouch handles for different effects
-    HANDLE robotProcessor;
-    HANDLE bananaProcessor;
-    HANDLE devilProcessor;
-    HANDLE femaleProcessor;
-    HANDLE militaryProcessor;
-    HANDLE ekoProcessor;
-    HANDLE phaserProcessor;
-    HANDLE flangerProcessor;
+    SoundTouchHandle robotProcessor;
+    SoundTouchHandle bananaProcessor;
+    SoundTouchHandle devilProcessor;
+    SoundTouchHandle femaleProcessor;
+    SoundTouchHandle militaryProcessor;
+    SoundTouchHandle ekoProcessor;
+    SoundTouchHandle phaserProcessor;
+    SoundTouchHandle flangerProcessor;
 
     // Filter parameters
     struct FilterState {

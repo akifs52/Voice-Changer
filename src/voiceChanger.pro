@@ -75,6 +75,8 @@ win32 {
 }
 unix:!macx {
     LIBS += -lavcodec -lavformat -lavutil -lswresample
+    INCLUDEPATH += /usr/include/ffmpeg
+    DEPENDPATH += /usr/include/ffmpeg
 }
 macx {
     LIBS += -lavcodec -lavformat -lavutil -lswresample -framework CoreAudio -framework AudioToolbox
@@ -112,6 +114,8 @@ win32 {
 }
 unix:!macx {
     LIBS += -lsoundtouch
+    INCLUDEPATH += /usr/include/soundtouch
+    DEPENDPATH += /usr/include/soundtouch
 }
 macx {
     LIBS += -lsoundtouch

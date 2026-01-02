@@ -2,7 +2,6 @@
 #include "ui_mainwindow.h"
 #include <QTime>
 #include "mainwindow.h"
-#include "psola.h"
 #include "voiceeffects.h"
 
 
