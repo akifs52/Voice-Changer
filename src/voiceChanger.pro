@@ -57,6 +57,21 @@ win32 {
     else:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../ffmpeg-master-latest-win64-lgpl-shared/lib/ -llibavcodec.dll
     INCLUDEPATH += $$PWD/../../ffmpeg-master-latest-win64-lgpl-shared/include
     DEPENDPATH += $$PWD/../../ffmpeg-master-latest-win64-lgpl-shared/include
+
+    CONFIG(release, debug|release): LIBS += -L$$PWD/../../ffmpeg-master-latest-win64-lgpl-shared/lib/ -llibavformat.dll
+    else:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../ffmpeg-master-latest-win64-lgpl-shared/lib/ -llibavformat.dll
+    INCLUDEPATH += $$PWD/../../ffmpeg-master-latest-win64-lgpl-shared/include
+    DEPENDPATH += $$PWD/../../ffmpeg-master-latest-win64-lgpl-shared/include
+
+    CONFIG(release, debug|release): LIBS += -L$$PWD/../../ffmpeg-master-latest-win64-lgpl-shared/lib/ -llibavutil.dll
+    else:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../ffmpeg-master-latest-win64-lgpl-shared/lib/ -llibavutil.dll
+    INCLUDEPATH += $$PWD/../../ffmpeg-master-latest-win64-lgpl-shared/include
+    DEPENDPATH += $$PWD/../../ffmpeg-master-latest-win64-lgpl-shared/include
+
+    CONFIG(release, debug|release): LIBS += -L$$PWD/../../ffmpeg-master-latest-win64-lgpl-shared/lib/ -llibswresample.dll
+    else:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../ffmpeg-master-latest-win64-lgpl-shared/lib/ -llibswresample.dll
+    INCLUDEPATH += $$PWD/../../ffmpeg-master-latest-win64-lgpl-shared/include
+    DEPENDPATH += $$PWD/../../ffmpeg-master-latest-win64-lgpl-shared/include
 }
 unix:!macx {
     LIBS += -lavcodec -lavformat -lavutil -lswresample
