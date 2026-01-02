@@ -2206,7 +2206,7 @@ QProgressBar::chunk {
                 <string notr="true">color: #00ff88; font-weight: bold; font-size: 10px;</string>
                </property>
                <property name="text">
-                <string>VB-CABLE Input: Aranıyor...</string>
+                <string>Virtual Audio Input: Searching...</string>
                </property>
                <property name="alignment">
                 <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -2372,7 +2372,7 @@ QProgressBar::chunk {
        <item>
         <widget class="QPushButton" name="bananaButton">
          <property name="text">
-          <string>Çocuk</string>
+          <string>Child</string>
          </property>
          <property name="icon">
           <iconset resource="Soundpack.qrc">
@@ -2392,7 +2392,7 @@ QProgressBar::chunk {
        <item>
         <widget class="QPushButton" name="ekoButton">
          <property name="text">
-          <string>eko</string>
+          <string>Echo</string>
          </property>
          <property name="icon">
           <iconset resource="Soundpack.qrc">
@@ -2432,7 +2432,7 @@ QProgressBar::chunk {
        <item>
         <widget class="QPushButton" name="devilButton">
          <property name="text">
-          <string>Canavar </string>
+          <string>Monster</string>
          </property>
          <property name="icon">
           <iconset resource="Soundpack.qrc">
@@ -2452,7 +2452,7 @@ QProgressBar::chunk {
        <item>
         <widget class="QPushButton" name="femaleButton">
          <property name="text">
-          <string>kadın </string>
+          <string>Female</string>
          </property>
          <property name="icon">
           <iconset resource="Soundpack.qrc">
@@ -2472,7 +2472,7 @@ QProgressBar::chunk {
        <item>
         <widget class="QPushButton" name="combineButton">
          <property name="text">
-          <string>overwatch</string>
+          <string>Combine</string>
          </property>
          <property name="icon">
           <iconset resource="Soundpack.qrc">

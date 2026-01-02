@@ -12,6 +12,12 @@
 #ifdef Q_OS_WIN
 #include <windows.h>
 #endif
+#ifdef Q_OS_LINUX
+#include <X11/Xlib.h>
+#endif
+#ifdef Q_OS_MACOS
+#include <Carbon/Carbon.h>
+#endif
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -89,6 +95,22 @@ MainWindow::~MainWindow()
         UnregisterHotKey((HWND)this->winId(), it.value());
     }
     m_globalHotkeyIds.clear();
+#endif
+#ifdef Q_OS_LINUX
+    if (m_x11Display) {
+        XCloseDisplay(m_x11Display);
+        m_x11Display = nullptr;
+    }
+#endif
+#ifdef Q_OS_MACOS
+    for (auto it = m_macHotkeyRefs.begin(); it != m_macHotkeyRefs.end(); ++it) {
+        UnregisterEventHotKey(it.value());
+    }
+    m_macHotkeyRefs.clear();
+    if (m_macEventHandler) {
+        RemoveEventHandler(m_macEventHandler);
+        m_macEventHandler = nullptr;
+    }
 #endif
 
     if (audioInput) {
@@ -615,23 +637,27 @@ void MainWindow::progressBarOutput()
 // Virtual Audio fonksiyonları
 void MainWindow::searchVirtualDevices()
 {
-    // Virtual output cihazlarını ara
     ui->virtualcombobox->clear();
     
     QList<QAudioDevice> outputDevices = QMediaDevices::audioOutputs();
     for (const QAudioDevice &device : outputDevices) {
         QString deviceName = device.description();
         
-        // VB-CABLE cihazlarını kontrol et
+        // Check for virtual audio devices (cross-platform)
         if (deviceName.contains("VB-CABLE", Qt::CaseInsensitive) || 
-            deviceName.contains("Virtual", Qt::CaseInsensitive)) {
+            deviceName.contains("Virtual", Qt::CaseInsensitive) ||
+            deviceName.contains("BlackHole", Qt::CaseInsensitive) ||
+            deviceName.contains("Soundflower", Qt::CaseInsensitive) ||
+            deviceName.contains("Loopback", Qt::CaseInsensitive) ||
+            deviceName.contains("Audio", Qt::CaseInsensitive) && 
+            (deviceName.contains("Virtual", Qt::CaseInsensitive) || 
+             deviceName.contains("Cable", Qt::CaseInsensitive))) {
             
             ui->virtualcombobox->addItem(deviceName);
-            qDebug() << "Virtual device found:" << deviceName;
         }
     }
     
-    // Eğer VB-CABLE bulunduysa otomatik seç
+    // Auto-select first virtual device if found
     if (ui->virtualcombobox->count() > 0) {
         ui->virtualcombobox->setCurrentIndex(0);
         vbCableFound = true;
@@ -646,11 +672,18 @@ bool MainWindow::detectVBCable()
     for (const QAudioDevice &device : inputDevices) {
         QString deviceName = device.description();
         
-        if (deviceName.contains("VB-CABLE", Qt::CaseInsensitive)) {
-            // VB-CABLE Input'ı normal input combobox'a ekle
+        // Check for virtual audio input devices (cross-platform)
+        if (deviceName.contains("VB-CABLE", Qt::CaseInsensitive) ||
+            deviceName.contains("BlackHole", Qt::CaseInsensitive) ||
+            deviceName.contains("Soundflower", Qt::CaseInsensitive) ||
+            deviceName.contains("Loopback", Qt::CaseInsensitive) ||
+            (deviceName.contains("Virtual", Qt::CaseInsensitive) && 
+             deviceName.contains("Input", Qt::CaseInsensitive))) {
+            
+            // Add virtual input device to normal input combobox
             ui->inputcombobox->addItem(deviceName);
             
-            // Otomatik seç ve kilitle
+            // Auto-select and lock it
             int index = ui->inputcombobox->findText(deviceName);
             if (index >= 0) {
                 ui->inputcombobox->setCurrentIndex(index);
@@ -670,45 +703,81 @@ bool MainWindow::detectVBCable()
 void MainWindow::updateVirtualStatusLabel()
 {
     if (vbCableFound) {
-        ui->virtualStatusLabel->setText("VB-CABLE Bulundu - Aktif");
-
+        ui->virtualStatusLabel->setText("Virtual Audio Device Found - Active");
+        ui->virtualStatusLabel->setStyleSheet("color: #00ff88; font-weight: bold; font-size: 10px;");
     } else {
-        ui->virtualStatusLabel->setText("VB-CABLE Bulunamadı - İndirin");
-        ui->virtualStatusLabel->setStyleSheet("color: red; ");
-
-
-        // VB-CABLE bulunamadıysa indirme isteği göster
+        ui->virtualStatusLabel->setText("No Virtual Audio Device - Install One");
+        ui->virtualStatusLabel->setStyleSheet("color: red; font-weight: bold; font-size: 10px;");
+        
+        // Show virtual audio device installation prompt
         QMessageBox::StandardButton reply = QMessageBox::question(
             this,
-            "VB-CABLE Driver Gerekli",
-            "VB-CABLE ses sürücüsü bulunamadı.\n\nVB-CABLE, sanal ses cihazları oluşturmak için gereklidir.\n\nŞimdi VB-CABLE kurulumunu başlatmak ister misiniz?",
+            "Virtual Audio Device Required",
+            "No virtual audio device found.\n\nA virtual audio device is required for audio routing.\n\nWould you like to see installation instructions?",
             QMessageBox::Yes | QMessageBox::No,
             QMessageBox::Yes
             );
-
+        
         if (reply == QMessageBox::Yes) {
-            // VB-CABLE kurulum betiğini çalıştır
-            QString batchPath = QCoreApplication::applicationDirPath() + "/install_vbcable.bat";
-            qDebug() << "Running VB-CABLE installer:" << batchPath;
-
-            // Batch dosyasını yönetici olarak çalıştır
-            QStringList arguments;
-            arguments << "/c" << QString("cmd /c \"%1\"").arg(batchPath);
-
-            bool success = QProcess::startDetached("powershell", arguments);
-            if (success) {
-                qDebug() << "VB-CABLE installer started successfully";
-                QMessageBox::information(this, "Kurulum Başlatıldı",
-                                         "VB-CABLE kurulum betiği başlatıldı.\n\nKurulum penceresini takip edin ve talimatlara uyun.");
-            } else {
-                qWarning() << "Failed to start VB-CABLE installer";
-                QMessageBox::warning(this, "Kurulum Hatası",
-                                     "VB-CABLE kurulum betiği başlatılamadı.\n\nManuel olarak kurulum dosyasını çalıştırın:\n" + batchPath);
-            }
+            showVirtualDeviceInstructions();
         }
-
-
     }
+}
+
+void MainWindow::showVirtualDeviceInstructions()
+{
+    QString instructions;
+    QString downloadUrl;
+    
+#ifdef Q_OS_WIN
+    instructions = "Windows Virtual Audio Device Installation:\n\n"
+                   "1. Download VB-CABLE A+B (free) from: https://vb-audio.com/Cable/\n"
+                   "2. Run the installer as Administrator\n"
+                   "3. Restart your computer\n"
+                   "4. Launch VoiceChanger again\n\n"
+                   "Alternative: BlackHole for Windows (if available)";
+    downloadUrl = "https://vb-audio.com/Cable/";
+#elif defined(Q_OS_MACOS)
+    instructions = "macOS Virtual Audio Device Installation:\n\n"
+                   "Option 1: BlackHole (Recommended)\n"
+                   "1. Download BlackHole from: https://github.com/ExistentialAudio/BlackHole\n"
+                   "2. Install the .pkg file\n"
+                   "3. Restart your computer\n"
+                   "4. Launch VoiceChanger again\n\n"
+                   "Option 2: Soundflower (Legacy)\n"
+                   "1. Download Soundflower from: https://github.com/mattingalls/Soundflower\n"
+                   "2. Install the .pkg file\n"
+                   "3. Restart your computer\n"
+                   "4. Launch VoiceChanger again";
+    downloadUrl = "https://github.com/ExistentialAudio/BlackHole";
+#elif defined(Q_OS_LINUX)
+    instructions = "Linux Virtual Audio Device Installation:\n\n"
+                   "Option 1: Using PulseAudio\n"
+                   "1. Install pavucontrol: sudo apt install pavucontrol\n"
+                   "2. Create a null sink: pactl load-module module-null-sink sink_name=virtual\n"
+                   "3. Use pavucontrol to route audio\n\n"
+                   "Option 2: Using JACK Audio Connection Kit\n"
+                   "1. Install JACK: sudo apt install jackd2\n"
+                   "2. Configure JACK for virtual routing\n\n"
+                   "Option 3: Using Loopback devices\n"
+                   "1. Install ALSA loopback: sudo modprobe snd-aloop\n"
+                   "2. Configure in your .asoundrc file";
+    downloadUrl = "https://wiki.archlinux.org/title/PulseAudio/Examples";
+#else
+    instructions = "Virtual Audio Device Installation:\n\n"
+                   "Please search for virtual audio software for your operating system.\n"
+                   "Common options include:\n"
+                   "- VB-CABLE (Windows)\n"
+                   "- BlackHole (macOS)\n"
+                   "- PulseAudio null sink (Linux)\n"
+                   "- JACK Audio Connection Kit (Cross-platform)";
+    downloadUrl = "https://vb-audio.com/Cable/";
+#endif
+    
+    QMessageBox::information(this, "Virtual Audio Device Installation", instructions);
+    
+    // Open download page
+    QDesktopServices::openUrl(QUrl(downloadUrl));
 }
 
 void MainWindow::setupVirtualOutput()

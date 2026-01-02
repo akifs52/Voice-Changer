@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
     splashWidget->setStyleSheet("background-color: #2d2d2d; border-radius: 10px; border: 2px solid #555;");
 
     QVBoxLayout *layout = new QVBoxLayout(splashWidget);
-    QLabel *label = new QLabel("Yükleniyor...", splashWidget);
+    QLabel *label = new QLabel("Loading...", splashWidget);
     label->setStyleSheet("color: white; font-size: 18px; font-weight: bold;");
     label->setAlignment(Qt::AlignCenter);
     layout->addWidget(label);

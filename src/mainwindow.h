@@ -27,8 +27,17 @@
 #include "voiceeffects.h"
 #include "qcombobox.h"
 #include "qpushbutton.h"
+
 #ifdef Q_OS_WIN
 #include <windows.h>
+#endif
+#ifdef Q_OS_LINUX
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <X11/keysym.h>
+#endif
+#ifdef Q_OS_MACOS
+#include <Carbon/Carbon.h>
 #endif
 
 extern "C"{
@@ -231,6 +240,16 @@ private:
     // Global hotkey system for background operation
     QMap<QString, int> m_globalHotkeyIds;    // KeySequence -> Hotkey ID
     static const int GLOBAL_HOTKEY_BASE_ID = 1000;
+    
+    // Cross-platform global hotkey data
+#ifdef Q_OS_LINUX
+    Display* m_x11Display = nullptr;
+    Window m_rootWindow;
+#endif
+#ifdef Q_OS_MACOS
+    QMap<QString, EventHotKeyRef> m_macHotkeyRefs;
+    EventHandlerRef m_macEventHandler = nullptr;
+#endif
 
     // Original sound file variables
     QString filename1 = QCoreApplication::applicationDirPath() + ("/soundpack/YARRA.wav");
@@ -311,6 +330,7 @@ private:
     void setupVirtualOutput();
     bool detectVBCable();
     void updateVirtualStatusLabel();
+    void showVirtualDeviceInstructions();
     void loadLoadout(const QString &loadoutName);
     void handleHotkeyChange(const QString &key, int soundIndex);
     void populateComboBox(QComboBox *combo);

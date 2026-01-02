@@ -18,22 +18,22 @@ void MainWindow::stopAllEffects()
 {
     // Tüm efekt butonlarını durdur ve text'lerini geri getir
     ui->robotButton->setChecked(false);
-    ui->robotButton->setText("Robot sesi");
+    ui->robotButton->setText("Robot");
 
     ui->bananaButton->setChecked(false);
-    ui->bananaButton->setText("Çocuk Sesi");
+    ui->bananaButton->setText("Child");
 
     ui->devilButton->setChecked(false);
-    ui->devilButton->setText("Canavar sesi");
+    ui->devilButton->setText("Monster");
 
     ui->femaleButton->setChecked(false);
-    ui->femaleButton->setText("Kadın sesi");
+    ui->femaleButton->setText("Female");
 
     ui->combineButton->setChecked(false);
-    ui->combineButton->setText("Birleşik ses");
+    ui->combineButton->setText("Combine");
 
     ui->ekoButton->setChecked(false);
-    ui->ekoButton->setText("Eko");
+    ui->ekoButton->setText("Echo");
 
     ui->phaserButton->setChecked(false);
     ui->phaserButton->setText("Phaser");

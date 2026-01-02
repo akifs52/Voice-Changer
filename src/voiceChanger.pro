@@ -51,29 +51,33 @@ contains(ANDROID_TARGET_ARCH,arm64-v8a) {
 
 
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../ffmpeg-master-latest-win64-lgpl-shared/lib/ -llibavcodec.dll
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../ffmpeg-master-latest-win64-lgpl-shared/lib/ -llibavcodec.dll
-else:unix: LIBS += -L$$PWD/../../ffmpeg-master-latest-win64-lgpl-shared/lib/ -llibavcodec.dll
-
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../ffmpeg-master-latest-win64-lgpl-shared/lib/ -llibavformat.dll
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../ffmpeg-master-latest-win64-lgpl-shared/lib/ -llibavformat.dll
-else:unix: LIBS += -L$$PWD/../../ffmpeg-master-latest-win64-lgpl-shared/lib/ -llibavformat.dll
-
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../ffmpeg-master-latest-win64-lgpl-shared/lib/ -llibswresample.dll
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../ffmpeg-master-latest-win64-lgpl-shared/lib/ -llibswresample.dll
-else:unix: LIBS += -L$$PWD/../../ffmpeg-master-latest-win64-lgpl-shared/lib/ -llibswresample.dll
-
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../ffmpeg-master-latest-win64-lgpl-shared/lib/ -llibavutil.dll
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../ffmpeg-master-latest-win64-lgpl-shared/lib/ -llibavutil.dll
-else:unix: LIBS += -L$$PWD/../../ffmpeg-master-latest-win64-lgpl-shared/lib/ -llibavutil.dll
-
-INCLUDEPATH += $$PWD/../../ffmpeg-master-latest-win64-lgpl-shared/include
-DEPENDPATH += $$PWD/../../ffmpeg-master-latest-win64-lgpl-shared/include
+# FFmpeg libraries - cross-platform
+win32 {
+    CONFIG(release, debug|release): LIBS += -L$$PWD/../../ffmpeg-master-latest-win64-lgpl-shared/lib/ -llibavcodec.dll
+    else:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../ffmpeg-master-latest-win64-lgpl-shared/lib/ -llibavcodec.dll
+    INCLUDEPATH += $$PWD/../../ffmpeg-master-latest-win64-lgpl-shared/include
+    DEPENDPATH += $$PWD/../../ffmpeg-master-latest-win64-lgpl-shared/include
+}
+unix:!macx {
+    LIBS += -lavcodec -lavformat -lavutil -lswresample
+}
+macx {
+    LIBS += -lavcodec -lavformat -lavutil -lswresample -framework CoreAudio -framework AudioToolbox
+}
 
 RESOURCES += \
     Soundpack.qrc
 
-RC_ICONS = D:\qt\voiceChanger\img\icon.ico
+# Icon - cross-platform
+win32 {
+    RC_ICONS = D:\qt\voiceChanger\img\icon.ico
+}
+unix:!macx {
+    # Linux icon will be handled by .desktop file
+}
+macx {
+    ICON = img/icon.icns
+}
 
 win32 {
     LIBS += -luser32
@@ -84,9 +88,16 @@ win32 {
     LIBS += -lksuser
 }
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../soundtouch_dll-2.3.3/ -lSoundTouchDLL_x64
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../soundtouch_dll-2.3.3/ -lSoundTouchDLL_x64
-else:unix: LIBS += -L$$PWD/../../soundtouch_dll-2.3.3/ -lSoundTouchDLL_x64
-
-INCLUDEPATH += $$PWD/../../soundtouch_dll-2.3.3
-DEPENDPATH += $$PWD/../../soundtouch_dll-2.3.3
+# SoundTouch library - cross-platform
+win32 {
+    CONFIG(release, debug|release): LIBS += -L$$PWD/../../soundtouch_dll-2.3.3/ -lSoundTouchDLL_x64
+    else:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../soundtouch_dll-2.3.3/ -lSoundTouchDLL_x64
+    INCLUDEPATH += $$PWD/../../soundtouch_dll-2.3.3
+    DEPENDPATH += $$PWD/../../soundtouch_dll-2.3.3
+}
+unix:!macx {
+    LIBS += -lsoundtouch
+}
+macx {
+    LIBS += -lsoundtouch
+}

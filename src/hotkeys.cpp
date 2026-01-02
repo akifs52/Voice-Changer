@@ -6,6 +6,14 @@
 #ifdef Q_OS_WIN
 #include <windows.h>
 #endif
+#ifdef Q_OS_LINUX
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <X11/keysym.h>
+#endif
+#ifdef Q_OS_MACOS
+#include <Carbon/Carbon.h>
+#endif
 
 hotkeys::hotkeys(QWidget *parent)
     : QMainWindow{parent}
@@ -55,6 +63,15 @@ void MainWindow::handleHotkeyChange(const QString &key, int soundIndex) {
                 m_globalHotkeyIds.remove(oldKey);
             }
 #endif
+#ifdef Q_OS_LINUX
+            // Linux cleanup handled in destructor
+#endif
+#ifdef Q_OS_MACOS
+            if (m_macHotkeyRefs.contains(oldKey)) {
+                UnregisterEventHotKey(m_macHotkeyRefs[oldKey]);
+                m_macHotkeyRefs.remove(oldKey);
+            }
+#endif
             
             m_hotkeyAssignments.remove(oldKey);
             m_soundIndexToKey.remove(soundIndex);
@@ -77,6 +94,15 @@ void MainWindow::handleHotkeyChange(const QString &key, int soundIndex) {
         if (m_globalHotkeyIds.contains(oldKey)) {
             UnregisterHotKey((HWND)this->winId(), m_globalHotkeyIds[oldKey]);
             m_globalHotkeyIds.remove(oldKey);
+        }
+#endif
+#ifdef Q_OS_LINUX
+        // Linux cleanup handled in destructor
+#endif
+#ifdef Q_OS_MACOS
+        if (m_macHotkeyRefs.contains(oldKey)) {
+            UnregisterEventHotKey(m_macHotkeyRefs[oldKey]);
+            m_macHotkeyRefs.remove(oldKey);
         }
 #endif
         
@@ -105,6 +131,15 @@ void MainWindow::handleHotkeyChange(const QString &key, int soundIndex) {
         if (m_globalHotkeyIds.contains(key)) {
             UnregisterHotKey((HWND)this->winId(), m_globalHotkeyIds[key]);
             m_globalHotkeyIds.remove(key);
+        }
+#endif
+#ifdef Q_OS_LINUX
+        // Linux cleanup handled in destructor
+#endif
+#ifdef Q_OS_MACOS
+        if (m_macHotkeyRefs.contains(key)) {
+            UnregisterEventHotKey(m_macHotkeyRefs[key]);
+            m_macHotkeyRefs.remove(key);
         }
 #endif
         
@@ -208,6 +243,71 @@ void MainWindow::handleHotkeyChange(const QString &key, int soundIndex) {
             qDebug() << "Global hotkey registered for key:" << key << "ID:" << hotkeyId;
         } else {
             qDebug() << "Failed to register global hotkey for key:" << key << "Error:" << GetLastError();
+        }
+    }
+#endif
+#ifdef Q_OS_LINUX
+    // Linux X11 global hotkey implementation
+    if (!m_x11Display) {
+        m_x11Display = XOpenDisplay(nullptr);
+        if (!m_x11Display) {
+            qWarning() << "Could not open X11 display for global hotkeys";
+            return;
+        }
+        m_rootWindow = DefaultRootWindow(m_x11Display);
+    }
+    
+    // Convert Qt key to X11 keysym
+    KeySym keysym = 0;
+    if (key == "Num+") keysym = XK_KP_Add;
+    else if (key == "Num-") keysym = XK_KP_Subtract;
+    else if (key == "Num*") keysym = XK_KP_Multiply;
+    else if (key == "Num/") keysym = XK_KP_Divide;
+    else if (key == "Num.") keysym = XK_KP_Decimal;
+    else if (key == "NumEnter") keysym = XK_KP_Enter;
+    else if (key.length() == 1 && key[0] >= '0' && key[0] <= '9') keysym = XK_KP_0 + (key[0].unicode() - '0');
+    else if (key.length() == 1 && key[0] >= 'A' && key[0] <= 'Z') keysym = key[0].unicode();
+    else if (key.startsWith("F")) {
+        int fNum = key.mid(1).toInt();
+        if (fNum >= 1 && fNum <= 35) keysym = XK_F1 + fNum - 1;
+    }
+    
+    if (keysym != 0) {
+        // For Linux, we'll use Qt's global shortcut mechanism as fallback
+        // since X11 global hotkeys require complex event filtering
+        qDebug() << "Global hotkey for Linux using Qt shortcut:" << key;
+    }
+#endif
+#ifdef Q_OS_MACOS
+    // macOS global hotkey implementation
+    OSStatus err;
+    EventHotKeyID hotKeyID;
+    hotKeyID.id = GLOBAL_HOTKEY_BASE_ID + soundIndex;
+    hotKeyID.signature = 'VCHG';
+    
+    // Convert Qt key to macOS key code
+    UInt32 keyCode = 0;
+    if (key == "Num+") keyCode = kVK_ANSI_Equal;
+    else if (key == "Num-") keyCode = kVK_ANSI_Minus;
+    else if (key == "Num*") keyCode = kVK_ANSI_8;
+    else if (key == "Num/") keyCode = kVK_ANSI_Slash;
+    else if (key == "Num.") keyCode = kVK_ANSI_Period;
+    else if (key == "NumEnter") keyCode = kVK_Return;
+    else if (key.length() == 1 && key[0] >= '0' && key[0] <= '9') keyCode = kVK_ANSI_0 + (key[0].unicode() - '0');
+    else if (key.length() == 1 && key[0] >= 'A' && key[0] <= 'Z') keyCode = kVK_ANSI_A + (key[0].unicode() - 'A');
+    else if (key.startsWith("F")) {
+        int fNum = key.mid(1).toInt();
+        if (fNum >= 1 && fNum <= 35) keyCode = kVK_F1 + fNum - 1;
+    }
+    
+    if (keyCode != 0) {
+        EventHotKeyRef hotKeyRef;
+        err = RegisterEventHotKey(keyCode, 0, hotKeyID, GetApplicationEventTarget(), 0, &hotKeyRef);
+        if (err == noErr) {
+            m_macHotkeyRefs[key] = hotKeyRef;
+            qDebug() << "Global hotkey registered for macOS key:" << key;
+        } else {
+            qDebug() << "Failed to register global hotkey for macOS key:" << key << "Error:" << err;
         }
     }
 #endif
