@@ -10,11 +10,12 @@
 #ifdef Q_OS_WIN
 #include <windows.h>
 typedef HANDLE SoundTouchHandle;
+#include <SoundTouchDLL.h>
 #else
+#include <SoundTouch.h>
+#include <soundtouch_config.h>
 typedef void* SoundTouchHandle;
 #endif
-
-#include <SoundTouchDLL.h>
 
 class VoiceEffects : public QObject
 {
@@ -38,6 +39,17 @@ public:
     void resetEffects();
 
 private:
+    // Cross-platform SoundTouch helper functions
+    void setSampleRate(SoundTouchHandle handle, uint rate);
+    void setChannels(SoundTouchHandle handle, uint channels);
+    void setPitchSemiTones(SoundTouchHandle handle, float pitch);
+    void setRate(SoundTouchHandle handle, float rate);
+    void setTempo(SoundTouchHandle handle, float tempo);
+    void setSetting(SoundTouchHandle handle, int settingId, int settingValue);
+    void putSamples(SoundTouchHandle handle, const float* samples, uint numSamples);
+    uint receiveSamples(SoundTouchHandle handle, float* samples, uint maxSamples);
+    void flush(SoundTouchHandle handle);
+
     // SoundTouch handles for different effects
     SoundTouchHandle robotProcessor;
     SoundTouchHandle bananaProcessor;

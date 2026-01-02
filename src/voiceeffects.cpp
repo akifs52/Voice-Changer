@@ -45,7 +45,8 @@ VoiceEffects::VoiceEffects(QObject *parent)
 
 VoiceEffects::~VoiceEffects()
 {
-    // Destroy SoundTouch processors
+#ifdef Q_OS_WIN
+    // Destroy SoundTouch processors (Windows DLL API)
     if (robotProcessor) soundtouch_destroyInstance(robotProcessor);
     if (bananaProcessor) soundtouch_destroyInstance(bananaProcessor);
     if (devilProcessor) soundtouch_destroyInstance(devilProcessor);
@@ -54,11 +55,23 @@ VoiceEffects::~VoiceEffects()
     if (ekoProcessor) soundtouch_destroyInstance(ekoProcessor);
     if (phaserProcessor) soundtouch_destroyInstance(phaserProcessor);
     if (flangerProcessor) soundtouch_destroyInstance(flangerProcessor);
+#else
+    // Destroy SoundTouch processors (Linux C++ API)
+    delete (soundtouch::SoundTouch*)robotProcessor;
+    delete (soundtouch::SoundTouch*)bananaProcessor;
+    delete (soundtouch::SoundTouch*)devilProcessor;
+    delete (soundtouch::SoundTouch*)femaleProcessor;
+    delete (soundtouch::SoundTouch*)militaryProcessor;
+    delete (soundtouch::SoundTouch*)ekoProcessor;
+    delete (soundtouch::SoundTouch*)phaserProcessor;
+    delete (soundtouch::SoundTouch*)flangerProcessor;
+#endif
 }
 
 void VoiceEffects::initializeSoundTouch()
 {
-    // Create SoundTouch instances for each effect
+#ifdef Q_OS_WIN
+    // Create SoundTouch instances for each effect (Windows DLL API)
     robotProcessor = soundtouch_createInstance();
     bananaProcessor = soundtouch_createInstance();
     devilProcessor = soundtouch_createInstance();
@@ -67,70 +80,81 @@ void VoiceEffects::initializeSoundTouch()
     ekoProcessor = soundtouch_createInstance();
     phaserProcessor = soundtouch_createInstance();
     flangerProcessor = soundtouch_createInstance();
+#else
+    // Create SoundTouch instances for each effect (Linux C++ API)
+    robotProcessor = new soundtouch::SoundTouch();
+    bananaProcessor = new soundtouch::SoundTouch();
+    devilProcessor = new soundtouch::SoundTouch();
+    femaleProcessor = new soundtouch::SoundTouch();
+    militaryProcessor = new soundtouch::SoundTouch();
+    ekoProcessor = new soundtouch::SoundTouch();
+    phaserProcessor = new soundtouch::SoundTouch();
+    flangerProcessor = new soundtouch::SoundTouch();
+#endif
     
     // Configure ROBOT effect (Autotune style: slight pitch correction)
-    soundtouch_setSampleRate(robotProcessor, 44100);
-    soundtouch_setChannels(robotProcessor, 1);
-    soundtouch_setPitchSemiTones(robotProcessor, 0);  // No overall pitch shift
-    soundtouch_setRate(robotProcessor, 1.0f);
-    soundtouch_setTempo(robotProcessor, 1.0f);
-    soundtouch_setSetting(robotProcessor, 0, 1);  // SETTING_USE_AA_FILTER
+    setSampleRate(robotProcessor, 44100);
+    setChannels(robotProcessor, 1);
+    setPitchSemiTones(robotProcessor, 0);  // No overall pitch shift
+    setRate(robotProcessor, 1.0f);
+    setTempo(robotProcessor, 1.0f);
+    setSetting(robotProcessor, 0, 1);  // SETTING_USE_AA_FILTER
     
     // Configure BANANA effect (Chipmunks: +10 semitones)
-    soundtouch_setSampleRate(bananaProcessor, 44100);
-    soundtouch_setChannels(bananaProcessor, 1);
-    soundtouch_setPitchSemiTones(bananaProcessor, 10);  // +10 semitones
-    soundtouch_setRate(bananaProcessor, 1.0f);
-    soundtouch_setTempo(bananaProcessor, 1.0f);
-    soundtouch_setSetting(bananaProcessor, 0, 1);  // SETTING_USE_AA_FILTER
+    setSampleRate(bananaProcessor, 44100);
+    setChannels(bananaProcessor, 1);
+    setPitchSemiTones(bananaProcessor, 10);  // +10 semitones
+    setRate(bananaProcessor, 1.0f);
+    setTempo(bananaProcessor, 1.0f);
+    setSetting(bananaProcessor, 0, 1);  // SETTING_USE_AA_FILTER
     
     // Configure DEVIL effect (Deep: -8 semitones)
-    soundtouch_setSampleRate(devilProcessor, 44100);
-    soundtouch_setChannels(devilProcessor, 1);
-    soundtouch_setPitchSemiTones(devilProcessor, -8);  // -8 semitones
-    soundtouch_setRate(devilProcessor, 1.0f);
-    soundtouch_setTempo(devilProcessor, 1.0f);
-    soundtouch_setSetting(devilProcessor, 0, 1);
+    setSampleRate(devilProcessor, 44100);
+    setChannels(devilProcessor, 1);
+    setPitchSemiTones(devilProcessor, -8);  // -8 semitones
+    setRate(devilProcessor, 1.0f);
+    setTempo(devilProcessor, 1.0f);
+    setSetting(devilProcessor, 0, 1);
     
     // Configure FEMALE effect (+4 semitones)
-    soundtouch_setSampleRate(femaleProcessor, 44100);
-    soundtouch_setChannels(femaleProcessor, 1);
-    soundtouch_setPitchSemiTones(femaleProcessor, 4);   // +4 semitones
-    soundtouch_setRate(femaleProcessor, 1.0f);
-    soundtouch_setTempo(femaleProcessor, 1.0f);
-    soundtouch_setSetting(femaleProcessor, 0, 1);
+    setSampleRate(femaleProcessor, 44100);
+    setChannels(femaleProcessor, 1);
+    setPitchSemiTones(femaleProcessor, 4);   // +4 semitones
+    setRate(femaleProcessor, 1.0f);
+    setTempo(femaleProcessor, 1.0f);
+    setSetting(femaleProcessor, 0, 1);
     
     // Configure MILITARY effect (No pitch change, just processing)
-    soundtouch_setSampleRate(militaryProcessor, 44100);
-    soundtouch_setChannels(militaryProcessor, 1);
-    soundtouch_setPitchSemiTones(militaryProcessor, 0);  // No pitch change
-    soundtouch_setRate(militaryProcessor, 1.0f);
-    soundtouch_setTempo(militaryProcessor, 1.0f);
-    soundtouch_setSetting(militaryProcessor, 0, 1);
+    setSampleRate(militaryProcessor, 44100);
+    setChannels(militaryProcessor, 1);
+    setPitchSemiTones(militaryProcessor, 0);  // No pitch change
+    setRate(militaryProcessor, 1.0f);
+    setTempo(militaryProcessor, 1.0f);
+    setSetting(militaryProcessor, 0, 1);
     
-    // Configure EKO effect (No pitch change, just delay)
-    soundtouch_setSampleRate(ekoProcessor, 44100);
-    soundtouch_setChannels(ekoProcessor, 1);
-    soundtouch_setPitchSemiTones(ekoProcessor, 0);  // No pitch change
-    soundtouch_setRate(ekoProcessor, 1.0f);
-    soundtouch_setTempo(ekoProcessor, 1.0f);
-    soundtouch_setSetting(ekoProcessor, 0, 1);
+    // Configure EKO effect (No pitch change)
+    setSampleRate(ekoProcessor, 44100);
+    setChannels(ekoProcessor, 1);
+    setPitchSemiTones(ekoProcessor, 0);  // No pitch change
+    setRate(ekoProcessor, 1.0f);
+    setTempo(ekoProcessor, 1.0f);
+    setSetting(ekoProcessor, 0, 1);
     
-    // Configure PHASER effect (No pitch change, just processing)
-    soundtouch_setSampleRate(phaserProcessor, 44100);
-    soundtouch_setChannels(phaserProcessor, 1);
-    soundtouch_setPitchSemiTones(phaserProcessor, 0);  // No pitch change
-    soundtouch_setRate(phaserProcessor, 1.0f);
-    soundtouch_setTempo(phaserProcessor, 1.0f);
-    soundtouch_setSetting(phaserProcessor, 0, 1);
+    // Configure PHASER effect (No pitch change)
+    setSampleRate(phaserProcessor, 44100);
+    setChannels(phaserProcessor, 1);
+    setPitchSemiTones(phaserProcessor, 0);  // No pitch change
+    setRate(phaserProcessor, 1.0f);
+    setTempo(phaserProcessor, 1.0f);
+    setSetting(phaserProcessor, 0, 1);
     
-    // Configure FLANGER effect (No pitch change, just processing)
-    soundtouch_setSampleRate(flangerProcessor, 44100);
-    soundtouch_setChannels(flangerProcessor, 1);
-    soundtouch_setPitchSemiTones(flangerProcessor, 0);  // No pitch change
-    soundtouch_setRate(flangerProcessor, 1.0f);
-    soundtouch_setTempo(flangerProcessor, 1.0f);
-    soundtouch_setSetting(flangerProcessor, 0, 1);
+    // Configure FLANGER effect (No pitch change)
+    setSampleRate(flangerProcessor, 44100);
+    setChannels(flangerProcessor, 1);
+    setPitchSemiTones(flangerProcessor, 0);  // No pitch change
+    setRate(flangerProcessor, 1.0f);
+    setTempo(flangerProcessor, 1.0f);
+    setSetting(flangerProcessor, 0, 1);
 }
 
 void VoiceEffects::initializeFilters()
@@ -899,4 +923,86 @@ void VoiceEffects::processFlanger(float* input, float* output, int bufferSize, f
         // Mix dry and wet with higher depth for dramatic effect
         output[i] = dry * (1.0f - flanger.depth) + delayed * flanger.depth;
     }
+}
+
+// Cross-platform SoundTouch helper functions implementation
+void VoiceEffects::setSampleRate(SoundTouchHandle handle, uint rate)
+{
+#ifdef Q_OS_WIN
+    soundtouch_setSampleRate(handle, rate);
+#else
+    ((soundtouch::SoundTouch*)handle)->setSampleRate(rate);
+#endif
+}
+
+void VoiceEffects::setChannels(SoundTouchHandle handle, uint channels)
+{
+#ifdef Q_OS_WIN
+    soundtouch_setChannels(handle, channels);
+#else
+    ((soundtouch::SoundTouch*)handle)->setChannels(channels);
+#endif
+}
+
+void VoiceEffects::setPitchSemiTones(SoundTouchHandle handle, float pitch)
+{
+#ifdef Q_OS_WIN
+    soundtouch_setPitchSemiTones(handle, pitch);
+#else
+    ((soundtouch::SoundTouch*)handle)->setPitchSemiTones(pitch);
+#endif
+}
+
+void VoiceEffects::setRate(SoundTouchHandle handle, float rate)
+{
+#ifdef Q_OS_WIN
+    soundtouch_setRate(handle, rate);
+#else
+    ((soundtouch::SoundTouch*)handle)->setRate(rate);
+#endif
+}
+
+void VoiceEffects::setTempo(SoundTouchHandle handle, float tempo)
+{
+#ifdef Q_OS_WIN
+    soundtouch_setTempo(handle, tempo);
+#else
+    ((soundtouch::SoundTouch*)handle)->setTempo(tempo);
+#endif
+}
+
+void VoiceEffects::setSetting(SoundTouchHandle handle, int settingId, int settingValue)
+{
+#ifdef Q_OS_WIN
+    soundtouch_setSetting(handle, settingId, settingValue);
+#else
+    ((soundtouch::SoundTouch*)handle)->setSetting(settingId, settingValue);
+#endif
+}
+
+void VoiceEffects::putSamples(SoundTouchHandle handle, const float* samples, uint numSamples)
+{
+#ifdef Q_OS_WIN
+    soundtouch_putSamples(handle, samples, numSamples);
+#else
+    ((soundtouch::SoundTouch*)handle)->putSamples(samples, numSamples);
+#endif
+}
+
+uint VoiceEffects::receiveSamples(SoundTouchHandle handle, float* samples, uint maxSamples)
+{
+#ifdef Q_OS_WIN
+    return soundtouch_receiveSamples(handle, samples, maxSamples);
+#else
+    return ((soundtouch::SoundTouch*)handle)->receiveSamples(samples, maxSamples);
+#endif
+}
+
+void VoiceEffects::flush(SoundTouchHandle handle)
+{
+#ifdef Q_OS_WIN
+    soundtouch_flush(handle);
+#else
+    ((soundtouch::SoundTouch*)handle)->flush();
+#endif
 }
