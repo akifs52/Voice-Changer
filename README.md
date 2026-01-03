@@ -1,7 +1,9 @@
-<img width="1401" height="857" alt="image" src="https://github.com/user-attachments/assets/1557e6b5-c654-40e1-8919-444dbc5a40bc" />
+
 
 
 # Voice Changer
+
+<img width="1401" height="857" alt="image" src="https://github.com/user-attachments/assets/1557e6b5-c654-40e1-8919-444dbc5a40bc" />
 
 A professional cross-platform voice changer application built with Qt 6, featuring real-time voice effects, audio visualization, and comprehensive audio processing capabilities.
 
