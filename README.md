@@ -1,8 +1,6 @@
 # Voice Changer
 
-<img width="1114" height="859" alt="image" src="https://github.com/user-attachments/assets/da9c07dd-af0b-411d-8623-a55f8e346b23" />
-
-A professional voice changer application built with Qt 6, featuring real-time voice effects, audio visualization, and comprehensive audio processing capabilities.
+A professional cross-platform voice changer application built with Qt 6, featuring real-time voice effects, audio visualization, and comprehensive audio processing capabilities.
 
 ## Features
 
@@ -14,66 +12,169 @@ A professional voice changer application built with Qt 6, featuring real-time vo
   - Female voice
   - Echo effect (cave-like)
   - Combined effects
+  - Phaser and Flanger effects
 
 ### Audio Processing
 - Real-time visualization (waveform + frequency spectrum)
 - Advanced audio effects (pitch shifting, ring modulation, vibrato, filtering)
 - Import/Export audio files (WAV, MP3, FLAC, AAC, OGG)
 - Batch processing support
+- Parallel audio pipeline for effects and soundpack mixing
 
 ### Sound Pack System
 - 20 custom sound slots
 - Quick playback with hotkeys
 - Load/Save presets
 - Multiple simultaneous playback
+- Preloading for instant playback
 
 ### Recording
-- Record processed voice
+- Record processed voice with effects
 - Real-time monitoring
 - Multiple format support
+- Signal-based recording system
 
 ### Hotkeys
-- Global hotkeys for background operation
+- Cross-platform global hotkeys for background operation
 - Customizable key bindings
 - Quick sound playback
+- Platform-specific implementations (Windows API, X11, Carbon)
+
+### Virtual Audio Device Integration
+- Virtual audio device support for routing output
+- VB-CABLE (Windows) integration and detection
+- Background operation with system tray support
+- Separate virtual output volume control
+- Real-time virtual audio device monitoring
+
+### Advanced Audio Processing
+- Parallel audio pipeline for simultaneous effects and soundpack mixing
+- Circular buffer system for smooth audio playback
+- Audio preloading system for instant sound playback
+- 30-second circular buffer for delay effects
+- Mutex-protected thread-safe audio processing
+
+## Cross-Platform Support
+
+**VoiceChanger now supports Windows, macOS, and Linux!**
+
+### Virtual Audio Device Support
+- **Windows**: VB-CABLE
+- **macOS**: BlackHole, Soundflower
+- **Linux**: PulseAudio null sink, JACK, ALSA loopback
 
 ## Installation
 
-### Prerequisites
-- Windows 10/11 (64-bit)
-- Qt 6.5.0 or later
-- FFmpeg libraries
-- VB-CABLE driver (optional, for virtual audio)
-
-### Build Instructions
-
+### Clone the Repository
 ```bash
-# Clone the repository
 git clone https://github.com/akifs52/Voice-Changer.git
 cd Voice-Changer
+```
 
-# Install dependencies
-pip install -r requirements.txt
+### System Requirements
 
-# Create build directory
+#### Common Requirements
+- Qt 6.5.0 or later
+- FFmpeg development libraries
+- SoundTouch development libraries
+
+#### Platform-Specific Requirements
+- **Windows**: Windows 10/11 (64-bit), Visual Studio 2019+ or MinGW-w64
+- **macOS**: macOS 10.15 (Catalina) or later, Xcode 12.0+
+- **Linux**: GCC 9.0+ or Clang 10.0+, PulseAudio/ALSA
+
+### Quick Start
+
+#### Windows
+1. Install VB-CABLE from https://vb-audio.com/Cable/
+2. Download and run the installer
+3. Restart computer
+4. Launch VoiceChanger
+
+#### macOS
+```bash
+# Install dependencies with Homebrew
+brew install qt6 ffmpeg soundtouch blackhole
+
+# Clone and build
+git clone https://github.com/akifs52/Voice-Changer.git
+cd Voice-Changer
 mkdir build && cd build
-
-# Configure with CMake
-cmake .. -DCMAKE_PREFIX_PATH="C:/Qt/6.5.0/msvc2019_64"
-
-# Build
-cmake --build . --config Release
-
-# Run
+cmake ..
+make
 ./VoiceChanger
 ```
 
-### Using Qt Creator
+#### Linux (Ubuntu/Debian)
+```bash
+# Install dependencies
+sudo apt update
+sudo apt install build-essential qt6-base-dev qt6-multimedia-dev
+sudo apt install libavcodec-dev libavformat-dev libavutil-dev libswresample-dev
+sudo apt install libsoundtouch-dev libpulse-dev
+
+# Clone and build
+git clone https://github.com/akifs52/Voice-Changer.git
+cd Voice-Changer
+mkdir build && cd build
+cmake ..
+make
+./VoiceChanger
+```
+
+### Virtual Audio Device Setup
+
+#### Windows
+- Download VB-CABLE A+B (free) from https://vb-audio.com/Cable/
+- Install as Administrator
+- Restart computer
+
+#### macOS
+- **Option 1 (Recommended)**: Install BlackHole
+  ```bash
+  brew install blackhole
+  ```
+- **Option 2**: Install Soundflower from https://github.com/mattingalls/Soundflower
+
+#### Linux
+- **Option 1**: PulseAudio null sink
+  ```bash
+  pactl load-module module-null-sink sink_name=virtual
+  pavucontrol
+  ```
+- **Option 2**: JACK Audio Connection Kit
+  ```bash
+  sudo apt install jackd2 qjackctl
+  ```
+- **Option 3**: ALSA loopback
+  ```bash
+  sudo modprobe snd-aloop
+  ```
+
+## Build Instructions
+
+```bash
+git clone https://github.com/akifs52/Voice-Changer.git
+cd Voice-Changer
+```
+
+For detailed build instructions, see [BUILD.md](BUILD.md).
+
+### Using Qt Creator (All Platforms)
 1. Open Qt Creator
 2. File -> Open File or Project -> Select `voiceChanger.pro`
-3. Configure the kit
+3. Configure the kit for your platform
 4. Build -> Build All (Ctrl+B)
 5. Run (Ctrl+R)
+
+### Using CMake (Alternative)
+```bash
+mkdir build && cd build
+cmake ..
+make  # Linux/macOS
+# or
+cmake --build . --config Release  # Windows
+```
 
 ## Usage
 
@@ -82,8 +183,9 @@ cmake --build . --config Release
 1. **Select Audio Devices**
    - Choose your input microphone from the dropdown
    - Choose your output speakers/headphones
-   - Select VB-CABLE Input for virtual audio routing
-   - !! YOU HAVE TO CHOOSE DEFAULT OUTPUT TO VB-CABLE FOR YOUR SOUNDS REACH OTHERS OR CHOOSE IN YOUR GAME OR CHAT APP
+   - (Optional) Select virtual audio device for routing
+
+   **⚠️ IMPORTANT: YOU HAVE TO CHOOSE DEFAULT OUTPUT TO VB-CABLE FOR YOUR SOUNDS REACH OTHERS OR CHOOSE IN YOUR GAME OR CHAT APP**
 
 2. **Test Your Setup**
    - Click "Test Device" to hear your voice through speakers
@@ -123,9 +225,20 @@ cmake --build . --config Release
 
 ## System Requirements
 
+### Supported Platforms
 - **Windows**: Windows 10/11 (64-bit)
-- **macOS**: macOS 11.0 (Big Sur) or later
-- **Linux**: Ubuntu 20.04 LTS or later
+- **macOS**: macOS 10.15 (Catalina) or later
+- **Linux**: Ubuntu 20.04 LTS or later, Fedora 35+, Arch Linux
+
+### Dependencies
+- Qt 6.5.0 or later
+- FFmpeg development libraries
+- SoundTouch development libraries
+- Platform-specific audio frameworks (see BUILD.md)
+
+## Repository
+
+GitHub: https://github.com/akifs52/Voice-Changer
 
 ## License
 
@@ -135,5 +248,27 @@ This project is licensed under the MIT License.
 
 - Qt Framework: https://www.qt.io/
 - FFmpeg: https://ffmpeg.org/
+- SoundTouch: http://www.surina.net/soundtouch/
 - PSOLA Algorithm: Various research papers
-- VB-CABLE: https://vb-audio.com/
+- Virtual Audio Solutions:
+  - VB-CABLE: https://vb-audio.com/ (Windows)
+  - BlackHole: https://github.com/ExistentialAudio/BlackHole (macOS)
+  - PulseAudio: https://www.freedesktop.org/wiki/Software/PulseAudio/ (Linux)
+
+## Contributing
+
+Contributions are welcome! Please read the contributing guidelines and submit pull requests.
+
+### Platform-Specific Contributions
+- **Windows**: VB-CABLE integration, Windows API improvements
+- **macOS**: BlackHole/Soundflower integration, macOS-specific optimizations
+- **Linux**: PulseAudio/JACK/ALSA support, distribution-specific packaging
+
+## Support
+
+For platform-specific issues:
+- **Windows**: Check VB-CABLE installation and Windows Audio service
+- **macOS**: Check microphone permissions and CoreAudio settings
+- **Linux**: Check PulseAudio service and user permissions
+
+For general issues, please check the [BUILD.md](BUILD.md) file and create an issue on GitHub.
