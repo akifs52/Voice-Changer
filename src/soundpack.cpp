@@ -38,24 +38,26 @@ void MainWindow::preloadAudio(const QString &filename)
     preloadDecoder->setAudioFormat(*format);
     preloadDecoder->setSource(filename);
 
-    connect(preloadDecoder, &QAudioDecoder::bufferReady, this, [=]() {
+    connect(preloadDecoder, &QAudioDecoder::bufferReady, this, [preloadDecoder, cache]() {
+        if (!preloadDecoder) return;
         const QAudioBuffer buffer = preloadDecoder->read();
         QByteArray pcmData(reinterpret_cast<const char *>(buffer.data<void>()), buffer.byteCount());
-        
+
         QMutexLocker locker(&cache->mutex);
         cache->audioData.append(pcmData);
     });
 
-    connect(preloadDecoder, &QAudioDecoder::finished, this, [=]() {
+    connect(preloadDecoder, &QAudioDecoder::finished, this, [preloadDecoder, cache, filename, this]() {
+        if (!preloadDecoder) return;
         QMutexLocker locker(&cache->mutex);
         cache->isLoaded = true;
         qDebug() << "Preloaded audio:" << filename << "Size:" << cache->audioData.size() << "bytes";
-        preloadDecoder->deleteLater();
-        
+
         preloadCount++;
         if (preloadCount >= preloadTotal) {
             emit preloadFinished();
         }
+        preloadDecoder->deleteLater();
     });
 
     preloadDecoder->start();
@@ -63,36 +65,44 @@ void MainWindow::preloadAudio(const QString &filename)
 
 void MainWindow::stopCurrentSound()
 {
-    std::lock_guard<std::mutex> lock(currentSoundMutex);
-    
-    // Set interruption flag to stop audio writing
-    soundInterrupted = true;
-    
-    if (currentPlayingButton) {
-        // Reset previous button state - move UI updates to main thread
-        QPushButton* buttonToUpdate = currentPlayingButton;
-        QMetaObject::invokeMethod(buttonToUpdate, [buttonToUpdate]() {
-            buttonToUpdate->setProperty("playing", false);
-            buttonToUpdate->setProperty("selected", false);
-            buttonToUpdate->style()->polish(buttonToUpdate);
-        }, Qt::QueuedConnection);
-        currentPlayingButton = nullptr;
-    }
-    
-    if (currentOutputThread) {
-        currentOutputThread->quit();
-        if (!currentOutputThread->wait(1000)) { // 1 saniye bekle
-            qWarning() << "Thread did not stop gracefully, terminating...";
-            currentOutputThread->terminate(); // Son çare
-            currentOutputThread->wait(500); // 500ms daha bekle
+    QThread* threadToStop = nullptr;
+    QPushButton* buttonToReset = nullptr;
+
+    {
+        std::lock_guard<std::mutex> lock(currentSoundMutex);
+
+        // Set interruption flag to stop audio writing
+        soundInterrupted = true;
+
+        if (currentPlayingButton) {
+            // Reset previous button state - move UI updates to main thread
+            buttonToReset = currentPlayingButton;
+            QMetaObject::invokeMethod(buttonToReset, [buttonToReset]() {
+                buttonToReset->setProperty("playing", false);
+                buttonToReset->setProperty("selected", false);
+                buttonToReset->style()->polish(buttonToReset);
+            }, Qt::QueuedConnection);
+            currentPlayingButton = nullptr;
         }
-        currentOutputThread->deleteLater();
+
+        threadToStop = currentOutputThread;
         currentOutputThread = nullptr;
     }
-    
+
+    // Stop thread outside mutex lock to avoid deadlock
+    if (threadToStop) {
+        threadToStop->quit();
+        if (!threadToStop->wait(1000)) {
+            qWarning() << "Thread did not stop gracefully, terminating...";
+            threadToStop->terminate();
+            threadToStop->wait(500);
+        }
+        threadToStop->deleteLater();
+    }
+
     // Small delay to ensure resources are fully cleaned up
     QThread::msleep(50);
-    
+
     // Reset interruption flag after stopping
     soundInterrupted = false;
 }
@@ -158,14 +168,13 @@ void MainWindow::playAudioNotInterrupt(const QString &filename, const QString &p
         connect(outputThread, &QThread::started, [=, localData = localData]() {
             // Thread başladıktan sonra önceliği ayarla
             QThread::currentThread()->setPriority(QThread::HighPriority);
-            
-            std::lock_guard<std::mutex> lock(outputDeviceMutex);
+
             if (outputDevice) {
                 qDebug() << "Soundpack: Output device is available, starting playback...";
                 qDebug() << "Soundpack: Test button state:" << isTestButtonChecked;
                 qDebug() << "Soundpack: Output device open:" << outputDevice->isOpen();
                 qDebug() << "Soundpack: Output device type:" << outputDevice->metaObject()->className();
-                
+
                 qint64 written = 0;
                 // 48kHz stereo: 48000 samples/sec * 2 channels * 2 bytes = 192000 bytes/sec
                 // 256 samples chunks: 1024 bytes for optimal balance
@@ -186,9 +195,12 @@ void MainWindow::playAudioNotInterrupt(const QString &filename, const QString &p
 
                     // Paralel pipeline: Soundpack sesini AudioPipeline'a gönder
                     // AudioPipeline kendi timer'ı ile processBuffers çağırır
-                    if (audioPipeline) {
-                        audioPipeline->writeSoundpackAudio(chunk);
-                        // processBuffers() çağrma - timer zaten yapıyor
+                    {
+                        std::lock_guard<std::mutex> lock(outputDeviceMutex);
+                        if (audioPipeline) {
+                            audioPipeline->writeSoundpackAudio(chunk);
+                            // processBuffers() çağrma - timer zaten yapıyor
+                        }
                     }
 
 
@@ -250,10 +262,10 @@ void MainWindow::playAudioNotInterrupt(const QString &filename, const QString &p
             outputThread->quit();
         });
 
-        connect(outputThread, &QThread::finished, this, [localData]() {
+        connect(outputThread, &QThread::finished, this, [localData, outputThread]() {
             delete localData;
+            outputThread->deleteLater();
         });
-        connect(outputThread, &QThread::finished, outputThread, &QThread::deleteLater);
 
         outputThread->start();
         return;
@@ -276,38 +288,43 @@ void MainWindow::playAudioNotInterrupt(const QString &filename, const QString &p
     }, Qt::QueuedConnection);
 
     // QThread oluşturuluyor
-    QThread *decodeThread = new QThread;
-    QAudioDecoder *audioDecoder = new QAudioDecoder();
+    QThread *localDecodeThread = new QThread;
+    QAudioDecoder *localAudioDecoder = new QAudioDecoder();
 
-    audioDecoder->setAudioFormat(*format);
+    localAudioDecoder->setAudioFormat(*format);
 
     // Decoder, thread'e taşınıyor
-    audioDecoder->moveToThread(decodeThread);
+    localAudioDecoder->moveToThread(localDecodeThread);
 
-    connect(decodeThread, &QThread::started, audioDecoder, [=]() {
-        audioDecoder->setSource(filename);
-        audioDecoder->start();
+    connect(localDecodeThread, &QThread::started, this, [localAudioDecoder, filename]() {
+        if (localAudioDecoder) {
+            localAudioDecoder->setSource(filename);
+            localAudioDecoder->start();
+        }
     });
 
-    connect(audioDecoder, &QAudioDecoder::bufferReady, this, [=, localData = localData]() {
+    connect(localAudioDecoder, &QAudioDecoder::bufferReady, this, [=, localData = localData, audioDecoder = localAudioDecoder]() {
+        if (!audioDecoder) return;
         const QAudioBuffer buffer = audioDecoder->read();
         QByteArray pcmData(reinterpret_cast<const char *>(buffer.data<void>()), buffer.byteCount());
         localData->append(pcmData);
     });
 
-    connect(audioDecoder, &QAudioDecoder::finished, this, [=]() {
-        qDebug() << "Decoding finished.";
-        decodeThread->quit();
+    connect(localAudioDecoder, &QAudioDecoder::finished, this, [localData, localDecodeThread]() {
+        qDebug() << "Decoding finished. Local data size:" << localData->size() << "bytes";
+        if (localDecodeThread) {
+            localDecodeThread->quit();
+        }
     });
 
-    connect(decodeThread, &QThread::finished, this, [localData]() {
-        delete localData;
+    connect(localDecodeThread, &QThread::finished, this, [audioDecoder = localAudioDecoder, decodeThread = localDecodeThread]() {
+        audioDecoder->deleteLater();
+        decodeThread->deleteLater();
     });
-    connect(decodeThread, &QThread::finished, audioDecoder, &QAudioDecoder::deleteLater);
-    connect(decodeThread, &QThread::finished, decodeThread, &QThread::deleteLater);
 
     // Decode işlemi bittikten sonra ses çıkışını başlat
-    connect(audioDecoder, &QAudioDecoder::finished, this, [=, localData = localData]() {
+    connect(localAudioDecoder, &QAudioDecoder::finished, this, [=, localData = localData]() {
+        qDebug() << "Soundpack: Decoder finished, starting output thread. Data size:" << localData->size();
         // Move UI updates to main thread
         QMetaObject::invokeMethod(button, [button]() {
             button->setProperty("playing", true);
@@ -335,15 +352,29 @@ void MainWindow::playAudioNotInterrupt(const QString &filename, const QString &p
         bool isTestButtonChecked = ui->testButton->isChecked();
 
         connect(outputThread, &QThread::started, [=, localData = localData]() {
+            qDebug() << "Soundpack: Output thread started. Local data size:" << localData->size() << "bytes";
+            
+            if (!outputDevice || !audioPipeline) {
+                qWarning() << "Soundpack: outputDevice or audioPipeline is nullptr!";
+                outputThread->quit();
+                return;
+            }
+            
+            if (localData->isEmpty()) {
+                qWarning() << "Soundpack: No audio data to play!";
+                outputThread->quit();
+                return;
+            }
+            
             // Thread başladıktan sonra önceliği ayarla
             QThread::currentThread()->setPriority(QThread::HighPriority);
-            
-            if (outputDevice) {
+
+            {
                 qDebug() << "Soundpack: Output device is available, starting playback...";
                 qDebug() << "Soundpack: Test button state:" << isTestButtonChecked;
                 qDebug() << "Soundpack: Output device open:" << outputDevice->isOpen();
                 qDebug() << "Soundpack: Output device type:" << outputDevice->metaObject()->className();
-                
+
                 qint64 written = 0;
                 // 48kHz stereo: 48000 samples/sec * 2 channels * 2 bytes = 192000 bytes/sec
                 // 256 samples chunks: 1024 bytes for optimal balance
@@ -363,9 +394,12 @@ void MainWindow::playAudioNotInterrupt(const QString &filename, const QString &p
 
                     // Paralel pipeline: Soundpack sesini AudioPipeline'a gönder
                     // AudioPipeline kendi timer'ı ile processBuffers çağırır
-                    if (audioPipeline) {
-                        audioPipeline->writeSoundpackAudio(chunk);
-                        // processBuffers() çağrma - timer zaten yapıyor
+                    {
+                        std::lock_guard<std::mutex> lock(outputDeviceMutex);
+                        if (audioPipeline) {
+                            audioPipeline->writeSoundpackAudio(chunk);
+                            // processBuffers() çağrma - timer zaten yapıyor
+                        }
                     }
 
 
@@ -383,10 +417,13 @@ void MainWindow::playAudioNotInterrupt(const QString &filename, const QString &p
 
                     // Recording için soundpack sesini AudioPipeline üzerinden gönder
                     // Bu, takılmayı önler ve proper mixing sağlar
-                    if (isRecording && audioPipeline) {
-                        // Soundpack sesini AudioPipeline'a gönder, recording sinyali oradan emit edilir
-                        audioPipeline->writeSoundpackAudio(chunk);
-                        // processBuffers() çağrma - timer zaten yapıyor
+                    {
+                        std::lock_guard<std::mutex> lock(outputDeviceMutex);
+                        if (isRecording && audioPipeline) {
+                            // Soundpack sesini AudioPipeline'a gönder, recording sinyali oradan emit edilir
+                            audioPipeline->writeSoundpackAudio(chunk);
+                            // processBuffers() çağrma - timer zaten yapıyor
+                        }
                     }
 
                     // Real-time timing control - daha az CPU yükü için optimize
@@ -427,17 +464,18 @@ void MainWindow::playAudioNotInterrupt(const QString &filename, const QString &p
             outputThread->quit();
         });
 
-        connect(outputThread, &QThread::finished, this, [localData]() {
+        connect(outputThread, &QThread::finished, this, [localData, outputThread]() {
             delete localData;
+            outputThread->deleteLater();
         });
-        connect(outputThread, &QThread::finished, outputThread, &QThread::deleteLater);
 
         // Ses çıkış thread'ini başlat
+        qDebug() << "Soundpack: Starting output thread...";
         outputThread->start();
     });
 
     // Decode thread'ini başlat
-    decodeThread->start();
+    localDecodeThread->start();
 }
 
 
