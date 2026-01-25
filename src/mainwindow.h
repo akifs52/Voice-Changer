@@ -21,11 +21,15 @@
 #include <QSystemTrayIcon>
 #include <QMenu>
 #include <QAction>
+#include <QMouseEvent>
+#include <QPoint>
 #include "audiopipeline.h"
 #include "circularbuffer.h"
 #include "voiceeffects.h"
+#include "gloweffekt.h"
 #include "qcombobox.h"
 #include "qpushbutton.h"
+#include "ui_mainwindow.h"
 
 #ifdef Q_OS_WIN
 #include <windows.h>
@@ -46,7 +50,7 @@ extern "C"{
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
-class MainWindow;
+class VoiceChangerMainWindow;
 }
 QT_END_NAMESPACE
 
@@ -60,6 +64,9 @@ public:
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
 
 signals:
     void audioDataReady(const QByteArray &processedAudio);
@@ -71,69 +78,70 @@ private slots:
     void on_inputslider_valueChanged(int value);
     void on_refreshInput_clicked();
     void on_refreshOutput_clicked();
-    void on_inputcombobox_currentIndexChanged(int index);
-    void on_outputcombobox_currentIndexChanged(int index);
-    void on_virtualcombobox_currentIndexChanged(int index);
-    void on_virtualslider_valueChanged(int value);
-    void processToBananaVoice(QByteArray &data);
+    void on_inputDeviceCombobox_currentIndexChanged(int index);
+    void on_OutputDEviceCombobox_currentIndexChanged(int index);
+    void on_virtualInputcombobox_currentIndexChanged(int index);
+    void on_VirtualSlider_valueChanged(int value);
+    void on_VirtualDriverButton_clicked();
+    void processToChildVoice(QByteArray &data);
     void processToRobotVoice(QByteArray &data);
     void processToDevilVoice(QByteArray &data);
     void processToFemaleVoice(QByteArray &data);
     void processToCombineVoice(QByteArray &data);
     void processToEkoVoice(QByteArray &data);
-    void processToPhaserVoice(QByteArray &data);
+    void processToPhaseVoice(QByteArray &data);
     void processToFlangerVoice(QByteArray &data);
-    void on_bananaButton_clicked(bool checked);
+    void on_childButton_clicked(bool checked);
     void on_testButton_clicked(bool checked);
     void on_robotButton_clicked(bool checked);
     void on_devilButton_clicked(bool checked);
-    void on_ekoButton_clicked(bool checked);
+    void on_caveButton_clicked(bool checked);
     void on_femaleButton_clicked(bool checked);
     void on_combineButton_clicked(bool checked);
-    void on_phaserButton_clicked(bool checked);
+    void on_phaseButton_clicked(bool checked);
     void on_flangerButton_clicked(bool checked);
     void on_startRecord_clicked();
     void on_stopRecord_clicked();
-    void on_sound1_clicked();
-    void on_sound2_clicked();
-    void on_sound3_clicked();
-    void on_sound4_clicked();
-    void on_sound5_clicked();
-    void on_sound6_clicked();
-    void on_sound7_clicked();
-    void on_sound8_clicked();
-    void on_sound9_clicked();
-    void on_sound10_clicked();
-    void on_sound11_clicked();
-    void on_sound12_clicked();
-    void on_sound13_clicked();
-    void on_sound14_clicked();
-    void on_sound15_clicked();
-    void on_sound16_clicked();
-    void on_sound17_clicked();
-    void on_sound18_clicked();
-    void on_sound19_clicked();
-    void on_sound20_clicked();
-    void on_delete1_clicked();
-    void on_delete2_clicked();
-    void on_delete3_clicked();
-    void on_delete4_clicked();
-    void on_delete5_clicked();
-    void on_delete6_clicked();
-    void on_delete7_clicked();
-    void on_delete8_clicked();
-    void on_delete9_clicked();
-    void on_delete10_clicked();
-    void on_delete11_clicked();
-    void on_delete12_clicked();
-    void on_delete13_clicked();
-    void on_delete14_clicked();
-    void on_delete15_clicked();
-    void on_delete16_clicked();
-    void on_delete17_clicked();
-    void on_delete18_clicked();
-    void on_delete19_clicked();
-    void on_delete20_clicked();
+    void on_slot1_clicked();
+    void on_slot2_clicked();
+    void on_slot3_clicked();
+    void on_slot4_clicked();
+    void on_slot5_clicked();
+    void on_slot6_clicked();
+    void on_slot7_clicked();
+    void on_slot8_clicked();
+    void on_slot9_clicked();
+    void on_slot10_clicked();
+    void on_slot11_clicked();
+    void on_slot12_clicked();
+    void on_slot13_clicked();
+    void on_slot14_clicked();
+    void on_slot15_clicked();
+    void on_slot16_clicked();
+    void on_slot17_clicked();
+    void on_slot18_clicked();
+    void on_slot19_clicked();
+    void on_slot20_clicked();
+    void on_slot1Delete_clicked();
+    void on_slot2Delete_clicked();
+    void on_slot3Delete_clicked();
+    void on_slot4Delete_clicked();
+    void on_slot5Delete_clicked();
+    void on_slot6Delete_clicked();
+    void on_slot7Delete_clicked();
+    void on_slot8Delete_clicked();
+    void on_slot9Delete_clicked();
+    void on_slot10Delete_clicked();
+    void on_slot11Delete_clicked();
+    void on_slot12Delete_clicked();
+    void on_slot13Delete_clicked();
+    void on_slot14Delete_clicked();
+    void on_slot15Delete_clicked();
+    void on_slot16Delete_clicked();
+    void on_slot17Delete_clicked();
+    void on_slot18Delete_clicked();
+    void on_slot19Delete_clicked();
+    void on_slot20Delete_clicked();
     void on_load1_clicked();
     void on_load2_clicked();
     void on_load3_clicked();
@@ -145,31 +153,36 @@ private slots:
     void on_save4_clicked();
     void on_save5_clicked();
 
+    // Titlebar functionality
+    void on_minimizeButton_clicked();
+    void on_maximizeButton_clicked();
+    void on_closeButton_clicked();
+
     // Slots for hotkeys
-    void on_comboBox1_currentTextChanged(const QString &key);
-    void on_comboBox2_currentTextChanged(const QString &key);
-    void on_comboBox3_currentTextChanged(const QString &key);
-    void on_comboBox4_currentTextChanged(const QString &key);
-    void on_comboBox5_currentTextChanged(const QString &key);
-    void on_comboBox6_currentTextChanged(const QString &key);
-    void on_comboBox7_currentTextChanged(const QString &key);
-    void on_comboBox8_currentTextChanged(const QString &key);
-    void on_comboBox9_currentTextChanged(const QString &key);
-    void on_comboBox10_currentTextChanged(const QString &key);
-    void on_comboBox11_currentTextChanged(const QString &key);
-    void on_comboBox12_currentTextChanged(const QString &key);
-    void on_comboBox13_currentTextChanged(const QString &key);
-    void on_comboBox14_currentTextChanged(const QString &key);
-    void on_comboBox15_currentTextChanged(const QString &key);
-    void on_comboBox16_currentTextChanged(const QString &key);
-    void on_comboBox17_currentTextChanged(const QString &key);
-    void on_comboBox18_currentTextChanged(const QString &key);
-    void on_comboBox19_currentTextChanged(const QString &key);
-    void on_comboBox20_currentTextChanged(const QString &key);
+    void on_slot1Hotkey_currentTextChanged(const QString &key);
+    void on_slot2Hotkey_currentTextChanged(const QString &key);
+    void on_slot3Hotkey_currentTextChanged(const QString &key);
+    void on_slot4Hotkey_currentTextChanged(const QString &key);
+    void on_slot5Hotkey_currentTextChanged(const QString &key);
+    void on_slot6Hotkey_currentTextChanged(const QString &key);
+    void on_slot7Hotkey_currentTextChanged(const QString &key);
+    void on_slot8Hotkey_currentTextChanged(const QString &key);
+    void on_slot9Hotkey_currentTextChanged(const QString &key);
+    void on_slot10Hotkey_currentTextChanged(const QString &key);
+    void on_slot11Hotkey_currentTextChanged(const QString &key);
+    void on_slot12Hotkey_currentTextChanged(const QString &key);
+    void on_slot13Hotkey_currentTextChanged(const QString &key);
+    void on_slot14Hotkey_currentTextChanged(const QString &key);
+    void on_slot15Hotkey_currentTextChanged(const QString &key);
+    void on_slot16Hotkey_currentTextChanged(const QString &key);
+    void on_slot17Hotkey_currentTextChanged(const QString &key);
+    void on_slot18Hotkey_currentTextChanged(const QString &key);
+    void on_slot19Hotkey_currentTextChanged(const QString &key);
+    void on_slot20Hotkey_currentTextChanged(const QString &key);
 
 
 private:
-    Ui::MainWindow *ui;
+    Ui::VoiceChangerMainWindow *ui;
 
     QAudioFormat *format;
     QAudioSink *audioOutput;
@@ -183,6 +196,11 @@ private:
     bool vbCableFound;
     bool cableInputSelected;
     bool testButtonActive;
+
+    // Titlebar dragging variables
+    bool isDragging;
+    QPoint dragPosition;
+    bool isMaximizing;
 
     // Soundpack buffer for audio processing
     CircularBuffer *soundpackBuffer;
@@ -321,6 +339,9 @@ private:
 
     // VoiceEffects instance for new DSP effects
     VoiceEffects *voiceEffects;
+    
+    // GlowEffect instance for widget glow effects
+    GlowEffect *glowEffect;
 
     // Virtual audio fonksiyonları
     void searchVirtualDevices();

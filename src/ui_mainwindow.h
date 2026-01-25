@@ -13,347 +13,321 @@
 #include <QtGui/QIcon>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QComboBox>
-#include <QtWidgets/QFrame>
+#include <QtWidgets/QGridLayout>
 #include <QtWidgets/QGroupBox>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
-#include <QtWidgets/QLineEdit>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QProgressBar>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSlider>
 #include <QtWidgets/QSpacerItem>
-#include <QtWidgets/QStackedWidget>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
 
-class Ui_MainWindow
+class Ui_VoiceChangerMainWindow
 {
 public:
     QWidget *centralwidget;
+    QVBoxLayout *mainVerticalLayout;
+    QWidget *titleBar;
+    QHBoxLayout *titleBarLayout;
+    QLabel *iconLabel;
+    QLabel *appTitle;
+    QHBoxLayout *titleLayout;
+    QSpacerItem *titleSpacer;
+    QPushButton *minimizeButton;
+    QPushButton *maximizeButton;
+    QPushButton *closeButton;
     QHBoxLayout *horizontalLayout;
-    QFrame *frame;
-    QHBoxLayout *horizontalLayout_9;
-    QFrame *frame_12;
-    QHBoxLayout *horizontalLayout_10;
-    QFrame *frame_13;
-    QVBoxLayout *verticalLayout_10;
-    QFrame *frame_24;
-    QVBoxLayout *verticalLayout_15;
-    QPushButton *save1;
-    QPushButton *load1;
-    QFrame *frame_25;
-    QVBoxLayout *verticalLayout_16;
-    QPushButton *save2;
-    QPushButton *load2;
-    QFrame *frame_26;
-    QVBoxLayout *verticalLayout_17;
-    QPushButton *savee3;
-    QPushButton *load3;
-    QFrame *frame_27;
-    QVBoxLayout *verticalLayout_18;
-    QPushButton *save4;
-    QPushButton *load4;
-    QFrame *frame_28;
-    QVBoxLayout *verticalLayout_19;
-    QPushButton *save5;
-    QPushButton *load5;
-    QStackedWidget *stackedWidget;
-    QWidget *page;
-    QFrame *frame_15;
-    QLineEdit *lineEdit;
-    QLineEdit *lineEdit_2;
-    QPushButton *confirmB;
-    QPushButton *ExitB;
-    QWidget *page_2;
-    QHBoxLayout *horizontalLayout_11;
-    QFrame *frame_16;
-    QVBoxLayout *verticalLayout_8;
-    QPushButton *sound1;
-    QPushButton *sound2;
-    QPushButton *sound3;
-    QPushButton *sound4;
-    QPushButton *sound5;
-    QFrame *frame_20;
-    QVBoxLayout *verticalLayout_11;
-    QPushButton *delete1;
-    QComboBox *hotkey1;
-    QPushButton *delete2;
-    QComboBox *hotkey2;
-    QPushButton *delete3;
-    QComboBox *hotkey3;
-    QPushButton *delete4;
-    QComboBox *hotkey4;
-    QPushButton *delete5;
-    QComboBox *hotkey5;
-    QFrame *frame_17;
-    QVBoxLayout *verticalLayout_7;
-    QPushButton *sound6;
-    QPushButton *sound7;
-    QPushButton *sound8;
-    QPushButton *sound9;
-    QPushButton *sound10;
-    QFrame *frame_21;
-    QVBoxLayout *verticalLayout_12;
-    QPushButton *delete6;
-    QComboBox *hotkey6;
-    QPushButton *delete7;
-    QComboBox *hotkey7;
-    QPushButton *delete8;
-    QComboBox *hotkey8;
-    QPushButton *delete9;
-    QComboBox *hotkey9;
-    QPushButton *delete10;
-    QComboBox *hotkey10;
-    QFrame *frame_18;
-    QVBoxLayout *verticalLayout_5;
-    QPushButton *sound11;
-    QPushButton *sound12;
-    QPushButton *sound13;
-    QPushButton *sound14;
-    QPushButton *sound15;
-    QFrame *frame_22;
-    QVBoxLayout *verticalLayout_13;
-    QPushButton *delete11;
-    QComboBox *hotkey11;
-    QPushButton *delete12;
-    QComboBox *hotkey12;
-    QPushButton *delete13;
-    QComboBox *hotkey13;
-    QPushButton *delete14;
-    QComboBox *hotkey14;
-    QPushButton *delete15;
-    QComboBox *hotkey15;
-    QFrame *frame_19;
-    QVBoxLayout *verticalLayout_9;
-    QPushButton *sound16;
-    QPushButton *sound17;
-    QPushButton *sound18;
-    QPushButton *sound19;
-    QPushButton *sound20;
-    QFrame *frame_23;
-    QVBoxLayout *verticalLayout_14;
-    QPushButton *delete16;
-    QComboBox *hotkey16;
-    QPushButton *delete17;
-    QComboBox *hotkey17;
-    QPushButton *delete18;
-    QComboBox *hotkey18;
-    QPushButton *delete19;
-    QComboBox *hotkey19;
-    QPushButton *delete20;
-    QComboBox *hotkey20;
-    QFrame *frame_3;
-    QVBoxLayout *verticalLayout_2;
-    QFrame *frame_8;
+    QWidget *miniSidebarWidget;
+    QVBoxLayout *miniSidebarLayout;
+    QPushButton *miniSidebarToggleBtn;
+    QSpacerItem *miniSidebarSpacer;
+    QWidget *presetsSidebarWidget;
+    QVBoxLayout *PresetsLayout;
     QHBoxLayout *horizontalLayout_5;
-    QPushButton *min;
-    QSpacerItem *horizontalSpacer;
+    QPushButton *presetsSidebarHideButton;
+    QLabel *presetLabel;
+    QWidget *preset1Widget;
+    QVBoxLayout *preset1Layout;
+    QPushButton *savePreset1;
+    QPushButton *loadPreset1;
+    QWidget *preset2Widget;
+    QVBoxLayout *preset2Layout;
+    QPushButton *savePreset2;
+    QPushButton *loadPreset2;
+    QWidget *preset3Widget;
+    QVBoxLayout *preset3Layout;
+    QPushButton *savePreset3;
+    QPushButton *loadPreset3;
+    QWidget *preset4Widget;
+    QVBoxLayout *preset4Layout;
+    QPushButton *savePreset4;
+    QPushButton *loadPreset4;
+    QWidget *preset5Widget;
+    QVBoxLayout *preset5Layout;
+    QPushButton *savePreset5;
+    QPushButton *loadPreset5;
+    QWidget *preset6Widget;
+    QVBoxLayout *preset6Layout;
+    QPushButton *savePreset6;
+    QPushButton *loadPreset6;
+    QWidget *preset7Widget;
+    QVBoxLayout *preset7Layout;
+    QPushButton *savePreset7;
+    QPushButton *loadPreset7;
+    QWidget *preset8Widget;
+    QVBoxLayout *preset8Layout;
+    QPushButton *savePreset8;
+    QPushButton *loadPreset8;
+    QSpacerItem *verticalSpacer_2;
+    QWidget *slotsWidget;
+    QVBoxLayout *verticalLayout;
+    QLabel *label;
+    QGridLayout *gridLayout;
+    QWidget *slot5Widget;
+    QVBoxLayout *slot5Layout;
+    QPushButton *slot5;
+    QHBoxLayout *slot5Controls;
+    QComboBox *slot5Hotkey;
+    QPushButton *slot5Delete;
+    QWidget *slot7Widget;
+    QVBoxLayout *slot7Layout;
+    QPushButton *slot7;
+    QHBoxLayout *slot7Controls;
+    QComboBox *slot7Hotkey;
+    QPushButton *slot7Delete;
+    QWidget *slot4Widget;
+    QVBoxLayout *slot4Layout;
+    QPushButton *slot4;
+    QHBoxLayout *slot4Controls;
+    QComboBox *slot4Hotkey;
+    QPushButton *slot4Delete;
+    QWidget *slot15Widget;
+    QVBoxLayout *slot15Layout;
+    QPushButton *slot15;
+    QHBoxLayout *slot15Controls;
+    QComboBox *slot15Hotkey;
+    QPushButton *slot15Delete;
+    QWidget *slot19Widget;
+    QVBoxLayout *slot19Layout;
+    QPushButton *slot19;
+    QHBoxLayout *slot19Controls;
+    QComboBox *slot19Hotkey;
+    QPushButton *slot19Delete;
+    QWidget *slot14Widget;
+    QVBoxLayout *slot14Layout;
+    QPushButton *slot14;
+    QHBoxLayout *slot14Controls;
+    QComboBox *slot14Hotkey;
+    QPushButton *slot14Delete;
+    QWidget *slot12Widget;
+    QVBoxLayout *slot12Layout;
+    QPushButton *slot12;
+    QHBoxLayout *slot12Controls;
+    QComboBox *slot12Hotkey;
+    QPushButton *slot12Delete;
+    QWidget *slot17Widget;
+    QVBoxLayout *slot17Layout;
+    QPushButton *slot17;
+    QHBoxLayout *slot17Controls;
+    QComboBox *slot17Hotkey;
+    QPushButton *slot17Delete;
+    QWidget *slot10Widget;
+    QVBoxLayout *slot10Layout;
+    QPushButton *slot10;
+    QHBoxLayout *slot10Controls;
+    QComboBox *slot10Hotkey;
+    QPushButton *slot10Delete;
+    QWidget *slot3Widget;
+    QVBoxLayout *slot3Layout;
+    QPushButton *slot3;
+    QHBoxLayout *slot3Controls;
+    QComboBox *slot3Hotkey;
+    QPushButton *slot3Delete;
+    QWidget *slot2Widget;
+    QVBoxLayout *slot2Layout;
+    QPushButton *slot2;
+    QHBoxLayout *slot2Controls;
+    QComboBox *slot2Hotkey;
+    QPushButton *slot2Delete;
+    QWidget *slot6Widget;
+    QVBoxLayout *slot6Layout;
+    QPushButton *slot6;
+    QHBoxLayout *slot6Controls;
+    QComboBox *slot6Hotkey;
+    QPushButton *slot6Delete;
+    QWidget *slot1Widget;
+    QVBoxLayout *slot1Layout;
+    QPushButton *slot1;
+    QHBoxLayout *slot1Controls;
+    QComboBox *slot1Hotkey;
+    QPushButton *slot1Delete;
+    QWidget *slot8Widget;
+    QVBoxLayout *slot8Layout;
+    QPushButton *slot8;
+    QHBoxLayout *slot8Controls;
+    QComboBox *slot8Hotkey;
+    QPushButton *slot8Delete;
+    QWidget *slot11Widget;
+    QVBoxLayout *slot11Layout;
+    QPushButton *slot11;
+    QHBoxLayout *slot11Controls;
+    QComboBox *slot11Hotkey;
+    QPushButton *slot11Delete;
+    QWidget *slot18Widget;
+    QVBoxLayout *slot18Layout;
+    QPushButton *slot18;
+    QHBoxLayout *slot18Controls;
+    QComboBox *slot18Hotkey;
+    QPushButton *slot18Delete;
+    QWidget *slot13Widget;
+    QVBoxLayout *slot13Layout;
+    QPushButton *slot13;
+    QHBoxLayout *slot13Controls;
+    QComboBox *slot13Hotkey;
+    QPushButton *slot13Delete;
+    QWidget *slot16Widget;
+    QVBoxLayout *slot16Layout;
+    QPushButton *slot16;
+    QHBoxLayout *slot16Controls;
+    QComboBox *slot16Hotkey;
+    QPushButton *slot16Delete;
+    QWidget *slot20Widget;
+    QVBoxLayout *slot20Layout;
+    QPushButton *slot20;
+    QHBoxLayout *slot20Controls;
+    QComboBox *slot20Hotkey;
+    QPushButton *slot20Delete;
+    QWidget *slot9Widget;
+    QVBoxLayout *slot9Layout;
+    QPushButton *slot9;
+    QHBoxLayout *slot9Controls;
+    QComboBox *slot9Hotkey;
+    QPushButton *slot9Delete;
+    QVBoxLayout *verticalLayout_2;
+    QWidget *settingsSidebarWidget;
+    QVBoxLayout *effectsSidebarLayout;
+    QHBoxLayout *effectsTitleLayout;
+    QLabel *settingsLabel;
+    QPushButton *toggleEffectsSidebar;
     QGroupBox *groupBox;
     QVBoxLayout *verticalLayout_3;
-    QFrame *frame_9;
-    QHBoxLayout *horizontalLayout_6;
-    QComboBox *inputcombobox;
-    QPushButton *refreshInput;
-    QFrame *frame_6;
-    QHBoxLayout *horizontalLayout_3;
-    QSlider *inputslider;
-    QLabel *inputlabel;
-    QFrame *frame_11;
-    QHBoxLayout *horizontalLayout_8;
-    QProgressBar *progressBar;
-    QPushButton *testButton;
+    QHBoxLayout *horizontalLayout_2;
+    QComboBox *inputDeviceCombobox;
+    QPushButton *refreshInpurDevice;
+    QSlider *inputSlider;
     QGroupBox *groupBox_2;
     QVBoxLayout *verticalLayout_4;
-    QFrame *frame_10;
-    QHBoxLayout *horizontalLayout_7;
-    QComboBox *outputcombobox;
-    QPushButton *refreshOutput;
-    QFrame *frame_7;
+    QHBoxLayout *horizontalLayout_3;
+    QComboBox *OutputDEviceCombobox;
+    QPushButton *refreshOutputDevice;
+    QHBoxLayout *horizontalLayout_51;
+    QProgressBar *progressBar;
+    QPushButton *testButton;
+    QSlider *outputSlider;
+    QGroupBox *groupBox_3;
+    QVBoxLayout *verticalLayout_5;
     QHBoxLayout *horizontalLayout_4;
-    QSlider *outputslider;
-    QLabel *outputlabel;
-    QGroupBox *virtualGroupBox;
-    QVBoxLayout *verticalLayout_virtual;
-    QFrame *virtualFrame;
-    QHBoxLayout *horizontalLayout_virtual;
-    QComboBox *virtualcombobox;
-    QFrame *virtualSliderFrame;
-    QHBoxLayout *horizontalLayout_virtual_slider;
-    QSlider *virtualslider;
-    QLabel *virtualStatusLabel;
-    QFrame *frame_5;
-    QVBoxLayout *verticalLayout_6;
-    QGroupBox *groupBox_4;
-    QHBoxLayout *horizontalLayout_12;
-    QPushButton *startRecord;
-    QPushButton *stopRecord;
-    QFrame *frame_2;
-    QVBoxLayout *verticalLayout;
-    QFrame *frame_4;
-    QHBoxLayout *horizontalLayout_2;
-    QPushButton *max;
-    QPushButton *bananaButton;
-    QPushButton *ekoButton;
-    QPushButton *robotButton;
-    QPushButton *devilButton;
-    QPushButton *femaleButton;
-    QPushButton *combineButton;
-    QPushButton *phaserButton;
-    QPushButton *flangerButton;
+    QComboBox *virtualInputcombobox;
+    QSlider *virtualSlider;
+    QPushButton *VirtualDriverButton;
+    QGroupBox *groupBox_5;
+    QHBoxLayout *horizontalLayout_6;
+    QPushButton *recordingButton;
     QSpacerItem *verticalSpacer;
+    QWidget *EffectsSideBarWidget;
+    QVBoxLayout *verticalLayout_6;
+    QHBoxLayout *horizontalLayout_9;
+    QPushButton *settingsHideButton;
+    QLabel *effectsSidebarTitle;
+    QHBoxLayout *effectsHeaderLayout;
+    QVBoxLayout *effectsButtonsLayout;
+    QWidget *childWidget;
+    QHBoxLayout *childLayout;
+    QLabel *label_2;
+    QPushButton *childButton;
+    QWidget *caveWidget;
+    QHBoxLayout *caveLayout;
+    QLabel *label_4;
+    QPushButton *caveButton;
+    QWidget *robotWidget;
+    QHBoxLayout *robotLayout;
+    QLabel *label_5;
+    QPushButton *robotButton;
+    QWidget *devilWidget;
+    QHBoxLayout *devilLayout;
+    QLabel *label_6;
+    QPushButton *devilButton;
+    QWidget *femaleWidget;
+    QHBoxLayout *femaleLayout;
+    QLabel *label_7;
+    QPushButton *femaleButton;
+    QWidget *combineWidget;
+    QHBoxLayout *combineLayout;
+    QLabel *label_10;
+    QPushButton *combineButton;
+    QWidget *phaseWidget;
+    QHBoxLayout *phaseLayout;
+    QLabel *label_8;
+    QPushButton *phaseButton;
+    QWidget *flangerWidget;
+    QHBoxLayout *flangerLayout;
+    QLabel *label_9;
+    QPushButton *flangerButton;
+    QSpacerItem *verticalSpacer_3;
 
-    void setupUi(QMainWindow *MainWindow)
+    void setupUi(QMainWindow *VoiceChangerMainWindow)
     {
-        if (MainWindow->objectName().isEmpty())
-            MainWindow->setObjectName("MainWindow");
-        MainWindow->resize(891, 659);
-        QIcon icon;
-        icon.addFile(QString::fromUtf8(":/img/img/app/WhatsApp Image 2024-11-26 at 22.59.00_27fe18d8.jpg"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
-        MainWindow->setWindowIcon(icon);
-        centralwidget = new QWidget(MainWindow);
-        centralwidget->setObjectName("centralwidget");
-        centralwidget->setStyleSheet(QString::fromUtf8("QMainWindow {\n"
-"    background-color: #1e1e1e;\n"
-"    color: #e0e0e0;\n"
-"    font-family: \"Segoe UI\";\n"
-"    font-size: 9pt;\n"
+        if (VoiceChangerMainWindow->objectName().isEmpty())
+            VoiceChangerMainWindow->setObjectName("VoiceChangerMainWindow");
+        VoiceChangerMainWindow->resize(1080, 804);
+        VoiceChangerMainWindow->setStyleSheet(QString::fromUtf8("QMainWindow {\n"
+"    background: qlineargradient(\n"
+"        x1:0, y1:0,\n"
+"        x2:0, y2:1,\n"
+"        stop:0 #2B2A35,\n"
+"        stop:1 #1C1B24\n"
+"    );\n"
 "}\n"
 "\n"
-"QWidget {\n"
-"    background: transparent;\n"
-"    color: #e0e0e0;\n"
+"QWidget#centralwidget {\n"
+"    background-color: transparent;\n"
 "}\n"
-"\n"
-"/* ================================\n"
-"   FRAME / CARD\n"
-"================================ */\n"
-"QFrame {\n"
-"    background: #252525;\n"
-"    border-radius: 12px;\n"
-"    padding: 6px;\n"
-"}\n"
-"\n"
-"QFrame[class=\"card\"] {\n"
-"    background: #2b2b2b;\n"
-"    border-radius: 14px;\n"
-"}\n"
-"\n"
-"/* ================================\n"
-"   LABELS\n"
-"================================ */\n"
-"QLabel {\n"
-"    color: #e0e0e0;\n"
-"}\n"
-"\n"
-"QLabel[class=\"title\"] {\n"
-"    color: #00ff88;\n"
-"    font-size: 14pt;\n"
-"    font-weight: bold;\n"
-"}\n"
-"\n"
-"QLabel[class=\"panelTitle\"] {\n"
-"    color: #00ff88;\n"
-"    font-size: 11pt;\n"
-"    font-weight: bold;\n"
-"    border-bottom: 1px solid #3a3a3a;\n"
-"    padding-bottom: 4px;\n"
-"    margin-bottom: 6px;\n"
-"}\n"
-"\n"
-"/* ==========="
-                        "=====================\n"
-"   SCROLLBAR (MINIMAL)\n"
-"================================ */\n"
-"QScrollBar:vertical {\n"
-"    background: transparent;\n"
-"    width: 6px;\n"
-"}\n"
-"QScrollBar::handle:vertical {\n"
-"    background: #00ff88;\n"
-"    border-radius: 3px;\n"
-"}\n"
-"QScrollBar::add-line,\n"
-"QScrollBar::sub-line {\n"
-"    height: 0px;\n"
-"}\n"
-"\n"
-"/* ================================\n"
-"   BUTTONS (BASE)\n"
-"================================ */\n"
-"QPushButton {\n"
-"    background: #2f2f2f;\n"
-"    border: 1px solid #3a3a3a;\n"
+"QGroupBox {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #404050, stop:0.5 #2c2b35, stop:1 #0a0a0a);\n"
+"    border: 2px solid #363540;\n"
 "    border-radius: 8px;\n"
-"    color: #ffffff;\n"
-"    padding: 4px 10px;\n"
-"}\n"
-"\n"
-"QPushButton:hover {\n"
-"    background: #3a3a3a;\n"
-"    border: 1px solid #00ff88;\n"
-"}\n"
-"\n"
-"QPushButton:pressed {\n"
-"    background: #1f1f1f;\n"
-"}\n"
-"\n"
-"/* ================================\n"
-"   SOUND GRID BUTTONS\n"
-"================================ */\n"
-"QPushButton[class=\"soundButton\"] {\n"
-"    background: #2a2a2a;\n"
-"    border-radius: 10px;\n"
-"    min-width: 58px;\n"
-""
-                        "    max-width: 58px;\n"
-"    min-height: 44px;\n"
-"    max-height: 44px;\n"
-"    font-size: 7pt;\n"
-"}\n"
-"\n"
-"QPushButton[class=\"soundButton\"]:hover {\n"
-"    background: #353535;\n"
-"    border: 1px solid #00ff88;\n"
-"}\n"
-"\n"
-"/* ================================\n"
-"   EFFECT / ACCENT BUTTONS\n"
-"================================ */\n"
-"QPushButton[class=\"effectButton\"] {\n"
-"    background: #ff6b35;\n"
-"    border-radius: 10px;\n"
-"    padding: 4px 12px;\n"
+"    font-size: 12px;\n"
 "    font-weight: bold;\n"
+"    color: white;\n"
+"    margin-top: 10px;\n"
+"    padding-top: 10px;\n"
 "}\n"
-"\n"
-"QPushButton[class=\"effectButton\"]:hover {\n"
-"    background: #ff855c;\n"
+"QGroupBox::title {\n"
+"    subcontrol-origin: margin;\n"
+"    left: 10px;\n"
+"    padding: 0 5px 0 5px;\n"
+"    color: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #00ff88, stop:1 #00cc66);\n"
 "}\n"
-"\n"
-"QPushButton[class=\"effectButton\"]:checked {\n"
-"    background: #00ff88;\n"
-"    color: #000000;\n"
-"}\n"
-"\n"
-"/* ================================\n"
-"   COMBOBOX\n"
-"================================ */\n"
 "QComboBox {\n"
 "    background: #2f2f2f;\n"
 "    border-radius: 8px;\n"
 "    border: 1px solid #3a3a3a;\n"
 "    padding: 2px 8px;\n"
+"    color: white;\n"
+"    font-size: 10px;\n"
 "}\n"
 "\n"
 "QComboBox:hover {\n"
-"    border: 1px solid #00ff88;\n"
+"    border: 1"
+                        "px solid #00ff88;\n"
 "}\n"
 "\n"
-"QCom"
-                        "boBox::drop-down {\n"
+"QComboBox::drop-down {\n"
 "    border: none;\n"
 "    width: 18px;\n"
 "}\n"
@@ -363,1233 +337,4275 @@ public:
 "    border: 1px solid #00ff88;\n"
 "    selection-background-color: #00ff88;\n"
 "    selection-color: #000000;\n"
+"    color: white;\n"
+"    outline: none;\n"
 "}\n"
 "\n"
-"/* ================================\n"
-"   SLIDER\n"
-"================================ */\n"
-"QSlider::groove:horizontal {\n"
-"    height: 4px;\n"
-"    background: #3a3a3a;\n"
-"    border-radius: 2px;\n"
+"QComboBox QAbstractItemView::item {\n"
+"    padding: 8px 12px;\n"
+"    border: none;\n"
+"    color: white;\n"
+"    font-size: 10px;\n"
 "}\n"
 "\n"
-"QSlider::handle:horizontal {\n"
-"    width: 14px;\n"
-"    height: 14px;\n"
-"    margin: -5px 0;\n"
+"QComboBox QAbstractItemView::item:hover {\n"
+"    background: #363540;\n"
+"    color: #00ff88;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView::item:selected {\n"
 "    background: #00ff88;\n"
-"    border-radius: 7px;\n"
+"    color: #000000;\n"
 "}\n"
 "\n"
-"/* ================================\n"
-"   PROGRESS BAR\n"
-"================================ */\n"
-"QProgressBar {\n"
+"/* Modern scrollbar for QComboBox */\n"
+"QComboBox QAbstractItemView QScrollBar:vertical {\n"
+"    border: none;\n"
 "    background: #2a2a2a;\n"
+"    width: 12px;\n"
+"    margin: 0px;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView QScrollBar::handle:vertical {\n"
+"    background: qlineargradient(x1:0, y1:0, x2:"
+                        "0, y2:1, stop:0 #4a4a4a, stop:1 #2a2a2a);\n"
+"    min-height: 20px;\n"
+"    border-radius: 6px;\n"
+"    border: 1px solid #363540;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView QScrollBar::handle:vertical:hover {\n"
+"    background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #00ff88, stop:1 #00cc66);\n"
+"    border: 1px solid #00ff88;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView QScrollBar::add-line:vertical,\n"
+"QComboBox QAbstractItemView QScrollBar::sub-line:vertical {\n"
+"    height: 0px;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView QScrollBar::add-page:vertical,\n"
+"QComboBox QAbstractItemView QScrollBar::sub-page:vertical {\n"
+"    background: none;\n"
+"}\n"
+"QListWidget {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #4a4a5a, stop:0.5 #2c2b35, stop:1 #0a0a0a);\n"
+"    border: 2px solid #363540;\n"
+"    border-radius: 6px;\n"
+"    color: white;\n"
+"    font-size: 12px;\n"
+"}\n"
+"QListWidget::item {\n"
+"    padding: 5px;\n"
+"    border-bottom: 1px solid #363540;\n"
+"}"
+                        "\n"
+"QListWidget::item:selected {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #7a7aff, stop:0.5 #6a6aff, stop:1 #3a3a5a);\n"
+"}\n"
+"\n"
+"/* === SLIDER GENEL === */\n"
+"QSlider {\n"
+"    min-height: 24px;\n"
+"}\n"
+"\n"
+"/* === GROOVE (ARKA \303\203\342\200\241UBUK) === */\n"
+"QSlider::groove:horizontal {\n"
+"    height: 6px;\n"
+"    background: #2A2D3A;\n"
+"    border-radius: 3px;\n"
+"}\n"
+"\n"
+"/* === SUB-PAGE (DOLU KISIM) === */\n"
+"QSlider::sub-page:horizontal {\n"
+"    background: qlineargradient(\n"
+"        x1:0, y1:0, x2:1, y2:0,\n"
+"        stop:0 #006400,\n"
+"        stop:1 #00ff88\n"
+"    );\n"
+"    border-radius: 3px;\n"
+"}\n"
+"\n"
+"/* === ADD-PAGE (BO\303\205\302\236 KISIM) === */\n"
+"QSlider::add-page:horizontal {\n"
+"    background: #1E202C;\n"
+"    border-radius: 3px;\n"
+"}\n"
+"\n"
+"/* === HANDLE (TOPUZ) === */\n"
+"QSlider::handle:horizontal {\n"
+"    width: 16px;\n"
+"    height: 16px;\n"
+"    margin: -5px 0;\n"
+"    border-radius: 8px;\n"
+"    backgroun"
+                        "d: qlineargradient(\n"
+"        x1:0, y1:0, x2:1, y2:0,\n"
+"        stop:0 #4a4a4a,\n"
+"        stop:1 #2a2a2a\n"
+"    );\n"
+"}\n"
+"\n"
+"/* === HOVER EFFECT === */\n"
+"QSlider::handle:horizontal:hover {\n"
+"    background: qlineargradient(\n"
+"        x1:0, y1:0, x2:1, y2:0,\n"
+"        stop:0 #006400,\n"
+"        stop:1 #00ff88\n"
+"    );\n"
+"}\n"
+"\n"
+"/* === DISABLED === */\n"
+"QSlider::handle:horizontal:disabled {\n"
+"    background: #555;\n"
+"}\n"
+"\n"
+"QProgressBar {\n"
+"    border: 2px solid #363540;\n"
 "    border-radius: 8px;\n"
 "    text-align: center;\n"
-"    color: #ffffff;\n"
+"    font-weight: bold;\n"
+"    color: white;\n"
+"    background: qradialgradient(\n"
+"        cx: 0.5, cy: 0.5,\n"
+"        radius: 0.8,\n"
+"        fx: 0.5, fy: 0.5,\n"
+"        stop: 0 #2a2a35,\n"
+"        stop: 0.5 #1c1b25,\n"
+"        stop: 1 #050505\n"
+"    );\n"
 "}\n"
 "\n"
 "QProgressBar::chunk {\n"
-"    background: #00ff88;\n"
-"    border-radius: 8px;\n"
-"}"));
-        horizontalLayout = new QHBoxLayout(centralwidget);
+"    border-radius: 6px;\n"
+"    background: qlineargradient(\n"
+"        x1: 0, y1: 0,\n"
+"        x2: 1, y2: 0,\n"
+"        stop: 0 #00ff88,\n"
+""
+                        "        stop: 0.5 #00cc6a,\n"
+"        stop: 1 #00aa55\n"
+"    );\n"
+"    border: 1px solid #00ff88;\n"
+"}\n"
+""));
+        VoiceChangerMainWindow->setIconSize(QSize(30, 30));
+        centralwidget = new QWidget(VoiceChangerMainWindow);
+        centralwidget->setObjectName("centralwidget");
+        mainVerticalLayout = new QVBoxLayout(centralwidget);
+        mainVerticalLayout->setSpacing(0);
+        mainVerticalLayout->setObjectName("mainVerticalLayout");
+        mainVerticalLayout->setContentsMargins(0, 0, 0, 0);
+        titleBar = new QWidget(centralwidget);
+        titleBar->setObjectName("titleBar");
+        titleBar->setMinimumSize(QSize(0, 35));
+        titleBar->setMaximumSize(QSize(16777215, 35));
+        titleBarLayout = new QHBoxLayout(titleBar);
+        titleBarLayout->setSpacing(0);
+        titleBarLayout->setObjectName("titleBarLayout");
+        titleBarLayout->setContentsMargins(0, 0, 0, 0);
+        iconLabel = new QLabel(titleBar);
+        iconLabel->setObjectName("iconLabel");
+        iconLabel->setMinimumSize(QSize(40, 40));
+        iconLabel->setMaximumSize(QSize(40, 40));
+        iconLabel->setPixmap(QPixmap(QString::fromUtf8(":/img/img/icon.png")));
+        iconLabel->setScaledContents(true);
+
+        titleBarLayout->addWidget(iconLabel);
+
+        appTitle = new QLabel(titleBar);
+        appTitle->setObjectName("appTitle");
+        QFont font;
+        font.setPointSize(12);
+        font.setBold(true);
+        appTitle->setFont(font);
+
+        titleBarLayout->addWidget(appTitle);
+
+        titleLayout = new QHBoxLayout();
+        titleLayout->setObjectName("titleLayout");
+
+        titleBarLayout->addLayout(titleLayout);
+
+        titleSpacer = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
+
+        titleBarLayout->addItem(titleSpacer);
+
+        minimizeButton = new QPushButton(titleBar);
+        minimizeButton->setObjectName("minimizeButton");
+        minimizeButton->setMinimumSize(QSize(45, 35));
+        minimizeButton->setMaximumSize(QSize(45, 35));
+
+        titleBarLayout->addWidget(minimizeButton);
+
+        maximizeButton = new QPushButton(titleBar);
+        maximizeButton->setObjectName("maximizeButton");
+        maximizeButton->setMinimumSize(QSize(45, 35));
+        maximizeButton->setMaximumSize(QSize(45, 35));
+
+        titleBarLayout->addWidget(maximizeButton);
+
+        closeButton = new QPushButton(titleBar);
+        closeButton->setObjectName("closeButton");
+        closeButton->setMinimumSize(QSize(45, 35));
+        closeButton->setMaximumSize(QSize(45, 35));
+
+        titleBarLayout->addWidget(closeButton);
+
+
+        mainVerticalLayout->addWidget(titleBar);
+
+        horizontalLayout = new QHBoxLayout();
         horizontalLayout->setSpacing(0);
         horizontalLayout->setObjectName("horizontalLayout");
         horizontalLayout->setContentsMargins(0, 0, 0, 0);
-        frame = new QFrame(centralwidget);
-        frame->setObjectName("frame");
-        frame->setMinimumSize(QSize(400, 0));
-        frame->setFrameShape(QFrame::Shape::StyledPanel);
-        frame->setFrameShadow(QFrame::Shadow::Raised);
-        horizontalLayout_9 = new QHBoxLayout(frame);
-        horizontalLayout_9->setSpacing(0);
-        horizontalLayout_9->setObjectName("horizontalLayout_9");
-        horizontalLayout_9->setContentsMargins(0, 0, 0, 0);
-        frame_12 = new QFrame(frame);
-        frame_12->setObjectName("frame_12");
-        frame_12->setFrameShape(QFrame::Shape::StyledPanel);
-        frame_12->setFrameShadow(QFrame::Shadow::Raised);
-        horizontalLayout_10 = new QHBoxLayout(frame_12);
-        horizontalLayout_10->setSpacing(0);
-        horizontalLayout_10->setObjectName("horizontalLayout_10");
-        horizontalLayout_10->setContentsMargins(0, 0, 0, 0);
-        frame_13 = new QFrame(frame_12);
-        frame_13->setObjectName("frame_13");
-        frame_13->setMinimumSize(QSize(100, 0));
-        frame_13->setStyleSheet(QString::fromUtf8(""));
-        frame_13->setFrameShape(QFrame::Shape::StyledPanel);
-        frame_13->setFrameShadow(QFrame::Shadow::Raised);
-        verticalLayout_10 = new QVBoxLayout(frame_13);
-        verticalLayout_10->setSpacing(0);
-        verticalLayout_10->setObjectName("verticalLayout_10");
-        verticalLayout_10->setContentsMargins(0, 0, 0, 0);
-        frame_24 = new QFrame(frame_13);
-        frame_24->setObjectName("frame_24");
-        frame_24->setFrameShape(QFrame::Shape::StyledPanel);
-        frame_24->setFrameShadow(QFrame::Shadow::Raised);
-        verticalLayout_15 = new QVBoxLayout(frame_24);
-        verticalLayout_15->setObjectName("verticalLayout_15");
-        save1 = new QPushButton(frame_24);
-        save1->setObjectName("save1");
-        QIcon icon1;
-        icon1.addFile(QString::fromUtf8(":/app/img/app/diskette.png"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
-        save1->setIcon(icon1);
-
-        verticalLayout_15->addWidget(save1);
-
-        load1 = new QPushButton(frame_24);
-        load1->setObjectName("load1");
-        QIcon icon2;
-        icon2.addFile(QString::fromUtf8(":/app/img/app/save-instagram.png"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
-        load1->setIcon(icon2);
-
-        verticalLayout_15->addWidget(load1);
-
-
-        verticalLayout_10->addWidget(frame_24);
-
-        frame_25 = new QFrame(frame_13);
-        frame_25->setObjectName("frame_25");
-        frame_25->setFrameShape(QFrame::Shape::StyledPanel);
-        frame_25->setFrameShadow(QFrame::Shadow::Raised);
-        verticalLayout_16 = new QVBoxLayout(frame_25);
-        verticalLayout_16->setObjectName("verticalLayout_16");
-        save2 = new QPushButton(frame_25);
-        save2->setObjectName("save2");
-        save2->setIcon(icon1);
-
-        verticalLayout_16->addWidget(save2);
-
-        load2 = new QPushButton(frame_25);
-        load2->setObjectName("load2");
-        load2->setIcon(icon2);
-
-        verticalLayout_16->addWidget(load2);
-
-
-        verticalLayout_10->addWidget(frame_25);
-
-        frame_26 = new QFrame(frame_13);
-        frame_26->setObjectName("frame_26");
-        frame_26->setFrameShape(QFrame::Shape::StyledPanel);
-        frame_26->setFrameShadow(QFrame::Shadow::Raised);
-        verticalLayout_17 = new QVBoxLayout(frame_26);
-        verticalLayout_17->setObjectName("verticalLayout_17");
-        savee3 = new QPushButton(frame_26);
-        savee3->setObjectName("savee3");
-        savee3->setIcon(icon1);
-
-        verticalLayout_17->addWidget(savee3);
-
-        load3 = new QPushButton(frame_26);
-        load3->setObjectName("load3");
-        load3->setIcon(icon2);
-
-        verticalLayout_17->addWidget(load3);
-
-
-        verticalLayout_10->addWidget(frame_26);
-
-        frame_27 = new QFrame(frame_13);
-        frame_27->setObjectName("frame_27");
-        frame_27->setFrameShape(QFrame::Shape::StyledPanel);
-        frame_27->setFrameShadow(QFrame::Shadow::Raised);
-        verticalLayout_18 = new QVBoxLayout(frame_27);
-        verticalLayout_18->setObjectName("verticalLayout_18");
-        save4 = new QPushButton(frame_27);
-        save4->setObjectName("save4");
-        save4->setIcon(icon1);
-
-        verticalLayout_18->addWidget(save4);
-
-        load4 = new QPushButton(frame_27);
-        load4->setObjectName("load4");
-        load4->setIcon(icon2);
-
-        verticalLayout_18->addWidget(load4);
-
-
-        verticalLayout_10->addWidget(frame_27);
-
-        frame_28 = new QFrame(frame_13);
-        frame_28->setObjectName("frame_28");
-        frame_28->setFrameShape(QFrame::Shape::StyledPanel);
-        frame_28->setFrameShadow(QFrame::Shadow::Raised);
-        verticalLayout_19 = new QVBoxLayout(frame_28);
-        verticalLayout_19->setObjectName("verticalLayout_19");
-        save5 = new QPushButton(frame_28);
-        save5->setObjectName("save5");
-        save5->setIcon(icon1);
-
-        verticalLayout_19->addWidget(save5);
-
-        load5 = new QPushButton(frame_28);
-        load5->setObjectName("load5");
-        load5->setIcon(icon2);
-
-        verticalLayout_19->addWidget(load5);
-
-
-        verticalLayout_10->addWidget(frame_28);
-
-
-        horizontalLayout_10->addWidget(frame_13);
-
-        stackedWidget = new QStackedWidget(frame_12);
-        stackedWidget->setObjectName("stackedWidget");
-        page = new QWidget();
-        page->setObjectName("page");
-        frame_15 = new QFrame(page);
-        frame_15->setObjectName("frame_15");
-        frame_15->setGeometry(QRect(30, 180, 291, 191));
-        frame_15->setFrameShape(QFrame::Shape::StyledPanel);
-        frame_15->setFrameShadow(QFrame::Shadow::Raised);
-        lineEdit = new QLineEdit(frame_15);
-        lineEdit->setObjectName("lineEdit");
-        lineEdit->setGeometry(QRect(10, 50, 113, 26));
-        lineEdit_2 = new QLineEdit(frame_15);
-        lineEdit_2->setObjectName("lineEdit_2");
-        lineEdit_2->setGeometry(QRect(10, 100, 113, 26));
-        confirmB = new QPushButton(page);
-        confirmB->setObjectName("confirmB");
-        confirmB->setGeometry(QRect(50, 410, 116, 26));
-        ExitB = new QPushButton(page);
-        ExitB->setObjectName("ExitB");
-        ExitB->setGeometry(QRect(150, 410, 116, 26));
-        stackedWidget->addWidget(page);
-        page_2 = new QWidget();
-        page_2->setObjectName("page_2");
-        page_2->setStyleSheet(QString::fromUtf8(""));
-        horizontalLayout_11 = new QHBoxLayout(page_2);
-        horizontalLayout_11->setObjectName("horizontalLayout_11");
-        horizontalLayout_11->setContentsMargins(0, 0, 0, 0);
-        frame_16 = new QFrame(page_2);
-        frame_16->setObjectName("frame_16");
-        frame_16->setMaximumSize(QSize(100, 16777215));
-        frame_16->setFrameShape(QFrame::Shape::StyledPanel);
-        frame_16->setFrameShadow(QFrame::Shadow::Raised);
-        verticalLayout_8 = new QVBoxLayout(frame_16);
-        verticalLayout_8->setSpacing(0);
-        verticalLayout_8->setObjectName("verticalLayout_8");
-        verticalLayout_8->setContentsMargins(0, 0, 0, 0);
-        sound1 = new QPushButton(frame_16);
-        sound1->setObjectName("sound1");
-        sound1->setMinimumSize(QSize(0, 0));
-        sound1->setMaximumSize(QSize(100, 16777215));
-        sound1->setStyleSheet(QString::fromUtf8(""));
-        QIcon icon3;
-        icon3.addFile(QString::fromUtf8(":/img/img/yArra.jpg"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
-        sound1->setIcon(icon3);
-        sound1->setIconSize(QSize(75, 75));
-
-        verticalLayout_8->addWidget(sound1);
-
-        sound2 = new QPushButton(frame_16);
-        sound2->setObjectName("sound2");
-        sound2->setMinimumSize(QSize(0, 0));
-        sound2->setMaximumSize(QSize(100, 16777215));
-        sound2->setStyleSheet(QString::fromUtf8(""));
-        QIcon icon4;
-        icon4.addFile(QString::fromUtf8(":/img/img/yArra-Earrape.jpg"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
-        sound2->setIcon(icon4);
-        sound2->setIconSize(QSize(75, 75));
-
-        verticalLayout_8->addWidget(sound2);
-
-        sound3 = new QPushButton(frame_16);
-        sound3->setObjectName("sound3");
-        sound3->setMinimumSize(QSize(0, 0));
-        sound3->setMaximumSize(QSize(100, 16777215));
-        sound3->setStyleSheet(QString::fromUtf8(""));
-        QIcon icon5;
-        icon5.addFile(QString::fromUtf8(":/img/img/chineseRap.jpeg"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
-        sound3->setIcon(icon5);
-        sound3->setIconSize(QSize(75, 75));
-
-        verticalLayout_8->addWidget(sound3);
-
-        sound4 = new QPushButton(frame_16);
-        sound4->setObjectName("sound4");
-        sound4->setMinimumSize(QSize(0, 0));
-        sound4->setMaximumSize(QSize(100, 16777215));
-        sound4->setStyleSheet(QString::fromUtf8(""));
-        QIcon icon6;
-        icon6.addFile(QString::fromUtf8(":/img/img/ohacet.jpg"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
-        sound4->setIcon(icon6);
-        sound4->setIconSize(QSize(75, 75));
-
-        verticalLayout_8->addWidget(sound4);
-
-        sound5 = new QPushButton(frame_16);
-        sound5->setObjectName("sound5");
-        sound5->setMinimumSize(QSize(0, 0));
-        sound5->setMaximumSize(QSize(100, 16777215));
-        sound5->setStyleSheet(QString::fromUtf8(""));
-        QIcon icon7;
-        icon7.addFile(QString::fromUtf8(":/img/img/talisca.jpeg"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
-        sound5->setIcon(icon7);
-        sound5->setIconSize(QSize(75, 75));
-
-        verticalLayout_8->addWidget(sound5);
-
-
-        horizontalLayout_11->addWidget(frame_16);
-
-        frame_20 = new QFrame(page_2);
-        frame_20->setObjectName("frame_20");
-        frame_20->setMaximumSize(QSize(16777215, 16777215));
-        frame_20->setFrameShape(QFrame::Shape::StyledPanel);
-        frame_20->setFrameShadow(QFrame::Shadow::Raised);
-        verticalLayout_11 = new QVBoxLayout(frame_20);
-        verticalLayout_11->setSpacing(0);
-        verticalLayout_11->setObjectName("verticalLayout_11");
-        verticalLayout_11->setContentsMargins(0, 0, 0, 0);
-        delete1 = new QPushButton(frame_20);
-        delete1->setObjectName("delete1");
-        delete1->setMaximumSize(QSize(30, 16777215));
-        QIcon icon8;
-        icon8.addFile(QString::fromUtf8(":/app/img/app/bin (2).png"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
-        delete1->setIcon(icon8);
-
-        verticalLayout_11->addWidget(delete1);
-
-        hotkey1 = new QComboBox(frame_20);
-        hotkey1->setObjectName("hotkey1");
-
-        verticalLayout_11->addWidget(hotkey1);
-
-        delete2 = new QPushButton(frame_20);
-        delete2->setObjectName("delete2");
-        delete2->setMaximumSize(QSize(30, 16777215));
-        delete2->setIcon(icon8);
-
-        verticalLayout_11->addWidget(delete2);
-
-        hotkey2 = new QComboBox(frame_20);
-        hotkey2->setObjectName("hotkey2");
-
-        verticalLayout_11->addWidget(hotkey2);
-
-        delete3 = new QPushButton(frame_20);
-        delete3->setObjectName("delete3");
-        delete3->setMaximumSize(QSize(30, 16777215));
-        delete3->setIcon(icon8);
-
-        verticalLayout_11->addWidget(delete3);
-
-        hotkey3 = new QComboBox(frame_20);
-        hotkey3->setObjectName("hotkey3");
-
-        verticalLayout_11->addWidget(hotkey3);
-
-        delete4 = new QPushButton(frame_20);
-        delete4->setObjectName("delete4");
-        delete4->setMaximumSize(QSize(30, 16777215));
-        delete4->setIcon(icon8);
-
-        verticalLayout_11->addWidget(delete4);
-
-        hotkey4 = new QComboBox(frame_20);
-        hotkey4->setObjectName("hotkey4");
-
-        verticalLayout_11->addWidget(hotkey4);
-
-        delete5 = new QPushButton(frame_20);
-        delete5->setObjectName("delete5");
-        delete5->setMaximumSize(QSize(30, 16777215));
-        delete5->setIcon(icon8);
-
-        verticalLayout_11->addWidget(delete5);
-
-        hotkey5 = new QComboBox(frame_20);
-        hotkey5->setObjectName("hotkey5");
-
-        verticalLayout_11->addWidget(hotkey5);
-
-
-        horizontalLayout_11->addWidget(frame_20);
-
-        frame_17 = new QFrame(page_2);
-        frame_17->setObjectName("frame_17");
-        frame_17->setMaximumSize(QSize(100, 16777215));
-        frame_17->setFrameShape(QFrame::Shape::StyledPanel);
-        frame_17->setFrameShadow(QFrame::Shadow::Raised);
-        verticalLayout_7 = new QVBoxLayout(frame_17);
-        verticalLayout_7->setSpacing(0);
-        verticalLayout_7->setObjectName("verticalLayout_7");
-        verticalLayout_7->setContentsMargins(0, 0, 0, 0);
-        sound6 = new QPushButton(frame_17);
-        sound6->setObjectName("sound6");
-        sound6->setMaximumSize(QSize(100, 16777215));
-        sound6->setStyleSheet(QString::fromUtf8(""));
-        QIcon icon9;
-        icon9.addFile(QString::fromUtf8(":/img/img/trollface.jpg"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
-        sound6->setIcon(icon9);
-        sound6->setIconSize(QSize(75, 75));
-
-        verticalLayout_7->addWidget(sound6);
-
-        sound7 = new QPushButton(frame_17);
-        sound7->setObjectName("sound7");
-        sound7->setMaximumSize(QSize(100, 16777215));
-        sound7->setStyleSheet(QString::fromUtf8(""));
-        QIcon icon10;
-        icon10.addFile(QString::fromUtf8(":/img/img/sus.jpg"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
-        sound7->setIcon(icon10);
-        sound7->setIconSize(QSize(75, 75));
-
-        verticalLayout_7->addWidget(sound7);
-
-        sound8 = new QPushButton(frame_17);
-        sound8->setObjectName("sound8");
-        sound8->setMaximumSize(QSize(100, 16777215));
-        sound8->setStyleSheet(QString::fromUtf8(""));
-        QIcon icon11;
-        icon11.addFile(QString::fromUtf8(":/img/img/osuruk1.jpg"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
-        sound8->setIcon(icon11);
-        sound8->setIconSize(QSize(75, 75));
-
-        verticalLayout_7->addWidget(sound8);
-
-        sound9 = new QPushButton(frame_17);
-        sound9->setObjectName("sound9");
-        sound9->setMaximumSize(QSize(100, 16777215));
-        sound9->setStyleSheet(QString::fromUtf8(""));
-        QIcon icon12;
-        icon12.addFile(QString::fromUtf8(":/img/img/osuruk.jpg"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
-        sound9->setIcon(icon12);
-        sound9->setIconSize(QSize(75, 75));
-
-        verticalLayout_7->addWidget(sound9);
-
-        sound10 = new QPushButton(frame_17);
-        sound10->setObjectName("sound10");
-        sound10->setMaximumSize(QSize(100, 16777215));
-        sound10->setStyleSheet(QString::fromUtf8(""));
-        QIcon icon13;
-        icon13.addFile(QString::fromUtf8(":/img/img/osuru2.jpg"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
-        sound10->setIcon(icon13);
-        sound10->setIconSize(QSize(75, 75));
-
-        verticalLayout_7->addWidget(sound10);
-
-
-        horizontalLayout_11->addWidget(frame_17);
-
-        frame_21 = new QFrame(page_2);
-        frame_21->setObjectName("frame_21");
-        frame_21->setMaximumSize(QSize(16777215, 16777215));
-        frame_21->setFrameShape(QFrame::Shape::StyledPanel);
-        frame_21->setFrameShadow(QFrame::Shadow::Raised);
-        verticalLayout_12 = new QVBoxLayout(frame_21);
-        verticalLayout_12->setSpacing(0);
-        verticalLayout_12->setObjectName("verticalLayout_12");
-        verticalLayout_12->setContentsMargins(0, 0, 0, 0);
-        delete6 = new QPushButton(frame_21);
-        delete6->setObjectName("delete6");
-        delete6->setMaximumSize(QSize(30, 16777215));
-        delete6->setIcon(icon8);
-
-        verticalLayout_12->addWidget(delete6);
-
-        hotkey6 = new QComboBox(frame_21);
-        hotkey6->setObjectName("hotkey6");
-
-        verticalLayout_12->addWidget(hotkey6);
-
-        delete7 = new QPushButton(frame_21);
-        delete7->setObjectName("delete7");
-        delete7->setMaximumSize(QSize(30, 16777215));
-        delete7->setIcon(icon8);
-
-        verticalLayout_12->addWidget(delete7);
-
-        hotkey7 = new QComboBox(frame_21);
-        hotkey7->setObjectName("hotkey7");
-
-        verticalLayout_12->addWidget(hotkey7);
-
-        delete8 = new QPushButton(frame_21);
-        delete8->setObjectName("delete8");
-        delete8->setMaximumSize(QSize(30, 16777215));
-        delete8->setIcon(icon8);
-
-        verticalLayout_12->addWidget(delete8);
-
-        hotkey8 = new QComboBox(frame_21);
-        hotkey8->setObjectName("hotkey8");
-
-        verticalLayout_12->addWidget(hotkey8);
-
-        delete9 = new QPushButton(frame_21);
-        delete9->setObjectName("delete9");
-        delete9->setMaximumSize(QSize(30, 16777215));
-        delete9->setIcon(icon8);
-
-        verticalLayout_12->addWidget(delete9);
-
-        hotkey9 = new QComboBox(frame_21);
-        hotkey9->setObjectName("hotkey9");
-
-        verticalLayout_12->addWidget(hotkey9);
-
-        delete10 = new QPushButton(frame_21);
-        delete10->setObjectName("delete10");
-        delete10->setMaximumSize(QSize(30, 16777215));
-        delete10->setIcon(icon8);
-
-        verticalLayout_12->addWidget(delete10);
-
-        hotkey10 = new QComboBox(frame_21);
-        hotkey10->setObjectName("hotkey10");
-
-        verticalLayout_12->addWidget(hotkey10);
-
-
-        horizontalLayout_11->addWidget(frame_21);
-
-        frame_18 = new QFrame(page_2);
-        frame_18->setObjectName("frame_18");
-        frame_18->setMaximumSize(QSize(100, 16777215));
-        frame_18->setFrameShape(QFrame::Shape::StyledPanel);
-        frame_18->setFrameShadow(QFrame::Shadow::Raised);
-        verticalLayout_5 = new QVBoxLayout(frame_18);
-        verticalLayout_5->setSpacing(0);
-        verticalLayout_5->setObjectName("verticalLayout_5");
-        verticalLayout_5->setContentsMargins(0, 0, 0, 0);
-        sound11 = new QPushButton(frame_18);
-        sound11->setObjectName("sound11");
-        sound11->setMaximumSize(QSize(100, 16777215));
-        sound11->setStyleSheet(QString::fromUtf8(""));
-
-        verticalLayout_5->addWidget(sound11);
-
-        sound12 = new QPushButton(frame_18);
-        sound12->setObjectName("sound12");
-        sound12->setMaximumSize(QSize(100, 16777215));
-        sound12->setStyleSheet(QString::fromUtf8(""));
-
-        verticalLayout_5->addWidget(sound12);
-
-        sound13 = new QPushButton(frame_18);
-        sound13->setObjectName("sound13");
-        sound13->setMaximumSize(QSize(100, 16777215));
-        sound13->setStyleSheet(QString::fromUtf8(""));
-
-        verticalLayout_5->addWidget(sound13);
-
-        sound14 = new QPushButton(frame_18);
-        sound14->setObjectName("sound14");
-        sound14->setMaximumSize(QSize(100, 16777215));
-        sound14->setStyleSheet(QString::fromUtf8(""));
-
-        verticalLayout_5->addWidget(sound14);
-
-        sound15 = new QPushButton(frame_18);
-        sound15->setObjectName("sound15");
-        sound15->setMaximumSize(QSize(100, 16777215));
-        sound15->setStyleSheet(QString::fromUtf8(""));
-
-        verticalLayout_5->addWidget(sound15);
-
-
-        horizontalLayout_11->addWidget(frame_18);
-
-        frame_22 = new QFrame(page_2);
-        frame_22->setObjectName("frame_22");
-        frame_22->setMaximumSize(QSize(16777215, 16777215));
-        frame_22->setFrameShape(QFrame::Shape::StyledPanel);
-        frame_22->setFrameShadow(QFrame::Shadow::Raised);
-        verticalLayout_13 = new QVBoxLayout(frame_22);
-        verticalLayout_13->setSpacing(0);
-        verticalLayout_13->setObjectName("verticalLayout_13");
-        verticalLayout_13->setContentsMargins(0, 0, 0, 0);
-        delete11 = new QPushButton(frame_22);
-        delete11->setObjectName("delete11");
-        delete11->setMaximumSize(QSize(30, 16777215));
-        delete11->setIcon(icon8);
-
-        verticalLayout_13->addWidget(delete11);
-
-        hotkey11 = new QComboBox(frame_22);
-        hotkey11->setObjectName("hotkey11");
-
-        verticalLayout_13->addWidget(hotkey11);
-
-        delete12 = new QPushButton(frame_22);
-        delete12->setObjectName("delete12");
-        delete12->setMaximumSize(QSize(30, 16777215));
-        delete12->setIcon(icon8);
-
-        verticalLayout_13->addWidget(delete12);
-
-        hotkey12 = new QComboBox(frame_22);
-        hotkey12->setObjectName("hotkey12");
-
-        verticalLayout_13->addWidget(hotkey12);
-
-        delete13 = new QPushButton(frame_22);
-        delete13->setObjectName("delete13");
-        delete13->setMaximumSize(QSize(30, 16777215));
-        delete13->setIcon(icon8);
-
-        verticalLayout_13->addWidget(delete13);
-
-        hotkey13 = new QComboBox(frame_22);
-        hotkey13->setObjectName("hotkey13");
-
-        verticalLayout_13->addWidget(hotkey13);
-
-        delete14 = new QPushButton(frame_22);
-        delete14->setObjectName("delete14");
-        delete14->setMaximumSize(QSize(30, 16777215));
-        delete14->setIcon(icon8);
-
-        verticalLayout_13->addWidget(delete14);
-
-        hotkey14 = new QComboBox(frame_22);
-        hotkey14->setObjectName("hotkey14");
-
-        verticalLayout_13->addWidget(hotkey14);
-
-        delete15 = new QPushButton(frame_22);
-        delete15->setObjectName("delete15");
-        delete15->setMaximumSize(QSize(30, 16777215));
-        delete15->setIcon(icon8);
-
-        verticalLayout_13->addWidget(delete15);
-
-        hotkey15 = new QComboBox(frame_22);
-        hotkey15->setObjectName("hotkey15");
-
-        verticalLayout_13->addWidget(hotkey15);
-
-
-        horizontalLayout_11->addWidget(frame_22);
-
-        frame_19 = new QFrame(page_2);
-        frame_19->setObjectName("frame_19");
-        frame_19->setMaximumSize(QSize(100, 16777215));
-        frame_19->setFrameShape(QFrame::Shape::StyledPanel);
-        frame_19->setFrameShadow(QFrame::Shadow::Raised);
-        verticalLayout_9 = new QVBoxLayout(frame_19);
-        verticalLayout_9->setSpacing(0);
-        verticalLayout_9->setObjectName("verticalLayout_9");
-        verticalLayout_9->setContentsMargins(0, 0, 0, 0);
-        sound16 = new QPushButton(frame_19);
-        sound16->setObjectName("sound16");
-        sound16->setMaximumSize(QSize(100, 16777215));
-        sound16->setStyleSheet(QString::fromUtf8(""));
-
-        verticalLayout_9->addWidget(sound16);
-
-        sound17 = new QPushButton(frame_19);
-        sound17->setObjectName("sound17");
-        sound17->setMaximumSize(QSize(100, 16777215));
-        sound17->setStyleSheet(QString::fromUtf8(""));
-
-        verticalLayout_9->addWidget(sound17);
-
-        sound18 = new QPushButton(frame_19);
-        sound18->setObjectName("sound18");
-        sound18->setMaximumSize(QSize(100, 16777215));
-        sound18->setStyleSheet(QString::fromUtf8(""));
-
-        verticalLayout_9->addWidget(sound18);
-
-        sound19 = new QPushButton(frame_19);
-        sound19->setObjectName("sound19");
-        sound19->setMaximumSize(QSize(100, 16777215));
-        sound19->setStyleSheet(QString::fromUtf8(""));
-
-        verticalLayout_9->addWidget(sound19);
-
-        sound20 = new QPushButton(frame_19);
-        sound20->setObjectName("sound20");
-        sound20->setMaximumSize(QSize(100, 16777215));
-        sound20->setStyleSheet(QString::fromUtf8(""));
-
-        verticalLayout_9->addWidget(sound20);
-
-
-        horizontalLayout_11->addWidget(frame_19);
-
-        frame_23 = new QFrame(page_2);
-        frame_23->setObjectName("frame_23");
-        frame_23->setMaximumSize(QSize(16777215, 16777215));
-        frame_23->setFrameShape(QFrame::Shape::StyledPanel);
-        frame_23->setFrameShadow(QFrame::Shadow::Raised);
-        verticalLayout_14 = new QVBoxLayout(frame_23);
-        verticalLayout_14->setSpacing(0);
-        verticalLayout_14->setObjectName("verticalLayout_14");
-        verticalLayout_14->setContentsMargins(0, 0, 0, 0);
-        delete16 = new QPushButton(frame_23);
-        delete16->setObjectName("delete16");
-        delete16->setMaximumSize(QSize(30, 16777215));
-        delete16->setIcon(icon8);
-
-        verticalLayout_14->addWidget(delete16);
-
-        hotkey16 = new QComboBox(frame_23);
-        hotkey16->setObjectName("hotkey16");
-
-        verticalLayout_14->addWidget(hotkey16);
-
-        delete17 = new QPushButton(frame_23);
-        delete17->setObjectName("delete17");
-        delete17->setMaximumSize(QSize(30, 16777215));
-        delete17->setIcon(icon8);
-
-        verticalLayout_14->addWidget(delete17);
-
-        hotkey17 = new QComboBox(frame_23);
-        hotkey17->setObjectName("hotkey17");
-
-        verticalLayout_14->addWidget(hotkey17);
-
-        delete18 = new QPushButton(frame_23);
-        delete18->setObjectName("delete18");
-        delete18->setMaximumSize(QSize(30, 16777215));
-        delete18->setIcon(icon8);
-
-        verticalLayout_14->addWidget(delete18);
-
-        hotkey18 = new QComboBox(frame_23);
-        hotkey18->setObjectName("hotkey18");
-
-        verticalLayout_14->addWidget(hotkey18);
-
-        delete19 = new QPushButton(frame_23);
-        delete19->setObjectName("delete19");
-        delete19->setMaximumSize(QSize(30, 16777215));
-        delete19->setIcon(icon8);
-
-        verticalLayout_14->addWidget(delete19);
-
-        hotkey19 = new QComboBox(frame_23);
-        hotkey19->setObjectName("hotkey19");
-
-        verticalLayout_14->addWidget(hotkey19);
-
-        delete20 = new QPushButton(frame_23);
-        delete20->setObjectName("delete20");
-        delete20->setMaximumSize(QSize(30, 16777215));
-        delete20->setIcon(icon8);
-
-        verticalLayout_14->addWidget(delete20);
-
-        hotkey20 = new QComboBox(frame_23);
-        hotkey20->setObjectName("hotkey20");
-
-        verticalLayout_14->addWidget(hotkey20);
-
-
-        horizontalLayout_11->addWidget(frame_23);
-
-        stackedWidget->addWidget(page_2);
-
-        horizontalLayout_10->addWidget(stackedWidget);
-
-
-        horizontalLayout_9->addWidget(frame_12);
-
-
-        horizontalLayout->addWidget(frame);
-
-        frame_3 = new QFrame(centralwidget);
-        frame_3->setObjectName("frame_3");
-        frame_3->setMaximumSize(QSize(360, 16777215));
-        frame_3->setStyleSheet(QString::fromUtf8(""));
-        frame_3->setFrameShape(QFrame::Shape::StyledPanel);
-        frame_3->setFrameShadow(QFrame::Shadow::Raised);
-        verticalLayout_2 = new QVBoxLayout(frame_3);
-        verticalLayout_2->setSpacing(0);
-        verticalLayout_2->setObjectName("verticalLayout_2");
-        verticalLayout_2->setContentsMargins(0, 0, 0, 0);
-        frame_8 = new QFrame(frame_3);
-        frame_8->setObjectName("frame_8");
-        frame_8->setMaximumSize(QSize(16777215, 30));
-        frame_8->setFrameShape(QFrame::Shape::StyledPanel);
-        frame_8->setFrameShadow(QFrame::Shadow::Raised);
-        horizontalLayout_5 = new QHBoxLayout(frame_8);
+        miniSidebarWidget = new QWidget(centralwidget);
+        miniSidebarWidget->setObjectName("miniSidebarWidget");
+        miniSidebarWidget->setMinimumSize(QSize(40, 0));
+        miniSidebarWidget->setMaximumSize(QSize(40, 16777215));
+        miniSidebarWidget->setStyleSheet(QString::fromUtf8("QWidget {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);\n"
+"    border: 1px solid #363540;\n"
+"    border-radius: 8px;\n"
+"}"));
+        miniSidebarLayout = new QVBoxLayout(miniSidebarWidget);
+        miniSidebarLayout->setSpacing(5);
+        miniSidebarLayout->setObjectName("miniSidebarLayout");
+        miniSidebarLayout->setContentsMargins(5, 5, 0, 0);
+        miniSidebarToggleBtn = new QPushButton(miniSidebarWidget);
+        miniSidebarToggleBtn->setObjectName("miniSidebarToggleBtn");
+        miniSidebarToggleBtn->setMinimumSize(QSize(30, 30));
+        miniSidebarToggleBtn->setMaximumSize(QSize(30, 30));
+        QIcon icon;
+        icon.addFile(QString::fromUtf8(":/app/img/app/menu.png"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
+        miniSidebarToggleBtn->setIcon(icon);
+
+        miniSidebarLayout->addWidget(miniSidebarToggleBtn);
+
+        miniSidebarSpacer = new QSpacerItem(20, 40, QSizePolicy::Policy::Minimum, QSizePolicy::Policy::Expanding);
+
+        miniSidebarLayout->addItem(miniSidebarSpacer);
+
+
+        horizontalLayout->addWidget(miniSidebarWidget);
+
+        presetsSidebarWidget = new QWidget(centralwidget);
+        presetsSidebarWidget->setObjectName("presetsSidebarWidget");
+        presetsSidebarWidget->setMaximumSize(QSize(140, 16777215));
+        PresetsLayout = new QVBoxLayout(presetsSidebarWidget);
+        PresetsLayout->setSpacing(5);
+        PresetsLayout->setObjectName("PresetsLayout");
+        PresetsLayout->setContentsMargins(5, 5, 5, 5);
+        horizontalLayout_5 = new QHBoxLayout();
         horizontalLayout_5->setSpacing(0);
         horizontalLayout_5->setObjectName("horizontalLayout_5");
-        horizontalLayout_5->setContentsMargins(0, 0, 0, 0);
-        min = new QPushButton(frame_8);
-        min->setObjectName("min");
-        min->setMinimumSize(QSize(0, 0));
-        min->setMaximumSize(QSize(50, 16777215));
-        QIcon icon14;
-        icon14.addFile(QString::fromUtf8(":/app/img/app/menu.png"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
-        min->setIcon(icon14);
+        horizontalLayout_5->setContentsMargins(-1, -1, -1, 0);
+        presetsSidebarHideButton = new QPushButton(presetsSidebarWidget);
+        presetsSidebarHideButton->setObjectName("presetsSidebarHideButton");
+        presetsSidebarHideButton->setMinimumSize(QSize(30, 30));
+        presetsSidebarHideButton->setMaximumSize(QSize(30, 30));
+        presetsSidebarHideButton->setIcon(icon);
 
-        horizontalLayout_5->addWidget(min);
+        horizontalLayout_5->addWidget(presetsSidebarHideButton);
 
-        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
+        presetLabel = new QLabel(presetsSidebarWidget);
+        presetLabel->setObjectName("presetLabel");
+        presetLabel->setMaximumSize(QSize(16777215, 30));
+        presetLabel->setFont(font);
 
-        horizontalLayout_5->addItem(horizontalSpacer);
-
-
-        verticalLayout_2->addWidget(frame_8);
-
-        groupBox = new QGroupBox(frame_3);
-        groupBox->setObjectName("groupBox");
-        verticalLayout_3 = new QVBoxLayout(groupBox);
-        verticalLayout_3->setSpacing(0);
-        verticalLayout_3->setObjectName("verticalLayout_3");
-        verticalLayout_3->setContentsMargins(0, 0, 0, 0);
-        frame_9 = new QFrame(groupBox);
-        frame_9->setObjectName("frame_9");
-        frame_9->setFrameShape(QFrame::Shape::StyledPanel);
-        frame_9->setFrameShadow(QFrame::Shadow::Raised);
-        horizontalLayout_6 = new QHBoxLayout(frame_9);
-        horizontalLayout_6->setSpacing(11);
-        horizontalLayout_6->setObjectName("horizontalLayout_6");
-        horizontalLayout_6->setContentsMargins(0, 0, 0, 0);
-        inputcombobox = new QComboBox(frame_9);
-        inputcombobox->setObjectName("inputcombobox");
-        inputcombobox->setMinimumSize(QSize(0, 0));
-        inputcombobox->setDuplicatesEnabled(false);
-        inputcombobox->setModelColumn(0);
-
-        horizontalLayout_6->addWidget(inputcombobox);
-
-        refreshInput = new QPushButton(frame_9);
-        refreshInput->setObjectName("refreshInput");
-        QIcon icon15;
-        icon15.addFile(QString::fromUtf8(":/app/img/app/refresh.png"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
-        refreshInput->setIcon(icon15);
-
-        horizontalLayout_6->addWidget(refreshInput);
+        horizontalLayout_5->addWidget(presetLabel);
 
 
-        verticalLayout_3->addWidget(frame_9);
+        PresetsLayout->addLayout(horizontalLayout_5);
 
-        frame_6 = new QFrame(groupBox);
-        frame_6->setObjectName("frame_6");
-        frame_6->setFrameShape(QFrame::Shape::StyledPanel);
-        frame_6->setFrameShadow(QFrame::Shadow::Raised);
-        horizontalLayout_3 = new QHBoxLayout(frame_6);
-        horizontalLayout_3->setSpacing(0);
-        horizontalLayout_3->setObjectName("horizontalLayout_3");
-        horizontalLayout_3->setContentsMargins(0, 0, 0, 0);
-        inputslider = new QSlider(frame_6);
-        inputslider->setObjectName("inputslider");
-        inputslider->setStyleSheet(QString::fromUtf8(""));
-        inputslider->setMaximum(100);
-        inputslider->setValue(100);
-        inputslider->setOrientation(Qt::Orientation::Horizontal);
+        preset1Widget = new QWidget(presetsSidebarWidget);
+        preset1Widget->setObjectName("preset1Widget");
+        preset1Layout = new QVBoxLayout(preset1Widget);
+        preset1Layout->setSpacing(5);
+        preset1Layout->setObjectName("preset1Layout");
+        preset1Layout->setContentsMargins(5, 5, 5, 5);
+        savePreset1 = new QPushButton(preset1Widget);
+        savePreset1->setObjectName("savePreset1");
+        savePreset1->setMinimumSize(QSize(120, 35));
+        savePreset1->setMaximumSize(QSize(120, 35));
 
-        horizontalLayout_3->addWidget(inputslider);
+        preset1Layout->addWidget(savePreset1);
 
-        inputlabel = new QLabel(frame_6);
-        inputlabel->setObjectName("inputlabel");
+        loadPreset1 = new QPushButton(preset1Widget);
+        loadPreset1->setObjectName("loadPreset1");
+        loadPreset1->setMinimumSize(QSize(120, 35));
+        loadPreset1->setMaximumSize(QSize(120, 35));
 
-        horizontalLayout_3->addWidget(inputlabel);
+        preset1Layout->addWidget(loadPreset1);
 
 
-        verticalLayout_3->addWidget(frame_6);
+        PresetsLayout->addWidget(preset1Widget);
 
-        frame_11 = new QFrame(groupBox);
-        frame_11->setObjectName("frame_11");
-        frame_11->setFrameShape(QFrame::Shape::StyledPanel);
-        frame_11->setFrameShadow(QFrame::Shadow::Raised);
-        horizontalLayout_8 = new QHBoxLayout(frame_11);
-        horizontalLayout_8->setObjectName("horizontalLayout_8");
-        progressBar = new QProgressBar(frame_11);
-        progressBar->setObjectName("progressBar");
-        progressBar->setStyleSheet(QString::fromUtf8(""));
-        progressBar->setValue(0);
+        preset2Widget = new QWidget(presetsSidebarWidget);
+        preset2Widget->setObjectName("preset2Widget");
+        preset2Layout = new QVBoxLayout(preset2Widget);
+        preset2Layout->setSpacing(5);
+        preset2Layout->setObjectName("preset2Layout");
+        preset2Layout->setContentsMargins(5, 5, 5, 5);
+        savePreset2 = new QPushButton(preset2Widget);
+        savePreset2->setObjectName("savePreset2");
+        savePreset2->setMinimumSize(QSize(120, 35));
+        savePreset2->setMaximumSize(QSize(120, 35));
 
-        horizontalLayout_8->addWidget(progressBar);
+        preset2Layout->addWidget(savePreset2);
 
-        testButton = new QPushButton(frame_11);
-        testButton->setObjectName("testButton");
-        QIcon icon16;
-        icon16.addFile(QString::fromUtf8(":/app/img/app/microphone.png"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
-        testButton->setIcon(icon16);
-        testButton->setIconSize(QSize(30, 30));
-        testButton->setCheckable(true);
+        loadPreset2 = new QPushButton(preset2Widget);
+        loadPreset2->setObjectName("loadPreset2");
+        loadPreset2->setMinimumSize(QSize(120, 35));
+        loadPreset2->setMaximumSize(QSize(120, 35));
 
-        horizontalLayout_8->addWidget(testButton);
+        preset2Layout->addWidget(loadPreset2);
 
 
-        verticalLayout_3->addWidget(frame_11);
+        PresetsLayout->addWidget(preset2Widget);
+
+        preset3Widget = new QWidget(presetsSidebarWidget);
+        preset3Widget->setObjectName("preset3Widget");
+        preset3Layout = new QVBoxLayout(preset3Widget);
+        preset3Layout->setSpacing(5);
+        preset3Layout->setObjectName("preset3Layout");
+        preset3Layout->setContentsMargins(5, 5, 5, 5);
+        savePreset3 = new QPushButton(preset3Widget);
+        savePreset3->setObjectName("savePreset3");
+        savePreset3->setMinimumSize(QSize(120, 35));
+        savePreset3->setMaximumSize(QSize(120, 35));
+
+        preset3Layout->addWidget(savePreset3);
+
+        loadPreset3 = new QPushButton(preset3Widget);
+        loadPreset3->setObjectName("loadPreset3");
+        loadPreset3->setMinimumSize(QSize(120, 35));
+        loadPreset3->setMaximumSize(QSize(120, 35));
+
+        preset3Layout->addWidget(loadPreset3);
 
 
-        verticalLayout_2->addWidget(groupBox);
+        PresetsLayout->addWidget(preset3Widget);
 
-        groupBox_2 = new QGroupBox(frame_3);
-        groupBox_2->setObjectName("groupBox_2");
-        verticalLayout_4 = new QVBoxLayout(groupBox_2);
-        verticalLayout_4->setSpacing(0);
-        verticalLayout_4->setObjectName("verticalLayout_4");
-        verticalLayout_4->setContentsMargins(0, 0, 0, 0);
-        frame_10 = new QFrame(groupBox_2);
-        frame_10->setObjectName("frame_10");
-        frame_10->setFrameShape(QFrame::Shape::StyledPanel);
-        frame_10->setFrameShadow(QFrame::Shadow::Raised);
-        horizontalLayout_7 = new QHBoxLayout(frame_10);
-        horizontalLayout_7->setSpacing(11);
-        horizontalLayout_7->setObjectName("horizontalLayout_7");
-        horizontalLayout_7->setContentsMargins(0, 0, 0, 0);
-        outputcombobox = new QComboBox(frame_10);
-        outputcombobox->setObjectName("outputcombobox");
-        outputcombobox->setMinimumSize(QSize(0, 0));
-        outputcombobox->setMaximumSize(QSize(16777215, 16777215));
+        preset4Widget = new QWidget(presetsSidebarWidget);
+        preset4Widget->setObjectName("preset4Widget");
+        preset4Layout = new QVBoxLayout(preset4Widget);
+        preset4Layout->setSpacing(5);
+        preset4Layout->setObjectName("preset4Layout");
+        preset4Layout->setContentsMargins(5, 5, 5, 5);
+        savePreset4 = new QPushButton(preset4Widget);
+        savePreset4->setObjectName("savePreset4");
+        savePreset4->setMinimumSize(QSize(120, 35));
+        savePreset4->setMaximumSize(QSize(120, 35));
 
-        horizontalLayout_7->addWidget(outputcombobox);
+        preset4Layout->addWidget(savePreset4);
 
-        refreshOutput = new QPushButton(frame_10);
-        refreshOutput->setObjectName("refreshOutput");
-        refreshOutput->setMinimumSize(QSize(0, 0));
-        refreshOutput->setIcon(icon15);
+        loadPreset4 = new QPushButton(preset4Widget);
+        loadPreset4->setObjectName("loadPreset4");
+        loadPreset4->setMinimumSize(QSize(120, 35));
+        loadPreset4->setMaximumSize(QSize(120, 35));
 
-        horizontalLayout_7->addWidget(refreshOutput);
+        preset4Layout->addWidget(loadPreset4);
 
 
-        verticalLayout_4->addWidget(frame_10);
+        PresetsLayout->addWidget(preset4Widget);
 
-        frame_7 = new QFrame(groupBox_2);
-        frame_7->setObjectName("frame_7");
-        frame_7->setFrameShape(QFrame::Shape::StyledPanel);
-        frame_7->setFrameShadow(QFrame::Shadow::Raised);
-        horizontalLayout_4 = new QHBoxLayout(frame_7);
-        horizontalLayout_4->setSpacing(0);
-        horizontalLayout_4->setObjectName("horizontalLayout_4");
-        horizontalLayout_4->setContentsMargins(0, 0, 0, 0);
-        outputslider = new QSlider(frame_7);
-        outputslider->setObjectName("outputslider");
-        outputslider->setStyleSheet(QString::fromUtf8(""));
-        outputslider->setMaximum(100);
-        outputslider->setValue(100);
-        outputslider->setOrientation(Qt::Orientation::Horizontal);
+        preset5Widget = new QWidget(presetsSidebarWidget);
+        preset5Widget->setObjectName("preset5Widget");
+        preset5Layout = new QVBoxLayout(preset5Widget);
+        preset5Layout->setSpacing(5);
+        preset5Layout->setObjectName("preset5Layout");
+        preset5Layout->setContentsMargins(5, 5, 5, 5);
+        savePreset5 = new QPushButton(preset5Widget);
+        savePreset5->setObjectName("savePreset5");
+        savePreset5->setMinimumSize(QSize(120, 35));
+        savePreset5->setMaximumSize(QSize(120, 35));
 
-        horizontalLayout_4->addWidget(outputslider);
+        preset5Layout->addWidget(savePreset5);
 
-        outputlabel = new QLabel(frame_7);
-        outputlabel->setObjectName("outputlabel");
+        loadPreset5 = new QPushButton(preset5Widget);
+        loadPreset5->setObjectName("loadPreset5");
+        loadPreset5->setMinimumSize(QSize(120, 35));
+        loadPreset5->setMaximumSize(QSize(120, 35));
 
-        horizontalLayout_4->addWidget(outputlabel);
+        preset5Layout->addWidget(loadPreset5);
 
 
-        verticalLayout_4->addWidget(frame_7);
+        PresetsLayout->addWidget(preset5Widget);
 
-        virtualGroupBox = new QGroupBox(groupBox_2);
-        virtualGroupBox->setObjectName("virtualGroupBox");
-        verticalLayout_virtual = new QVBoxLayout(virtualGroupBox);
-        verticalLayout_virtual->setSpacing(0);
-        verticalLayout_virtual->setObjectName("verticalLayout_virtual");
-        verticalLayout_virtual->setContentsMargins(0, 0, 0, 0);
-        virtualFrame = new QFrame(virtualGroupBox);
-        virtualFrame->setObjectName("virtualFrame");
-        virtualFrame->setFrameShape(QFrame::Shape::StyledPanel);
-        virtualFrame->setFrameShadow(QFrame::Shadow::Raised);
-        horizontalLayout_virtual = new QHBoxLayout(virtualFrame);
-        horizontalLayout_virtual->setSpacing(11);
-        horizontalLayout_virtual->setObjectName("horizontalLayout_virtual");
-        horizontalLayout_virtual->setContentsMargins(0, 0, 0, 0);
-        virtualcombobox = new QComboBox(virtualFrame);
-        virtualcombobox->setObjectName("virtualcombobox");
-        virtualcombobox->setMinimumSize(QSize(0, 0));
-        virtualcombobox->setDuplicatesEnabled(false);
-        virtualcombobox->setModelColumn(0);
+        preset6Widget = new QWidget(presetsSidebarWidget);
+        preset6Widget->setObjectName("preset6Widget");
+        preset6Layout = new QVBoxLayout(preset6Widget);
+        preset6Layout->setSpacing(5);
+        preset6Layout->setObjectName("preset6Layout");
+        preset6Layout->setContentsMargins(5, 5, 5, 5);
+        savePreset6 = new QPushButton(preset6Widget);
+        savePreset6->setObjectName("savePreset6");
+        savePreset6->setMinimumSize(QSize(120, 35));
+        savePreset6->setMaximumSize(QSize(120, 35));
 
-        horizontalLayout_virtual->addWidget(virtualcombobox);
+        preset6Layout->addWidget(savePreset6);
+
+        loadPreset6 = new QPushButton(preset6Widget);
+        loadPreset6->setObjectName("loadPreset6");
+        loadPreset6->setMinimumSize(QSize(120, 35));
+        loadPreset6->setMaximumSize(QSize(120, 35));
+
+        preset6Layout->addWidget(loadPreset6);
 
 
-        verticalLayout_virtual->addWidget(virtualFrame);
+        PresetsLayout->addWidget(preset6Widget);
 
-        virtualSliderFrame = new QFrame(virtualGroupBox);
-        virtualSliderFrame->setObjectName("virtualSliderFrame");
-        virtualSliderFrame->setFrameShape(QFrame::Shape::StyledPanel);
-        virtualSliderFrame->setFrameShadow(QFrame::Shadow::Raised);
-        horizontalLayout_virtual_slider = new QHBoxLayout(virtualSliderFrame);
-        horizontalLayout_virtual_slider->setSpacing(0);
-        horizontalLayout_virtual_slider->setObjectName("horizontalLayout_virtual_slider");
-        horizontalLayout_virtual_slider->setContentsMargins(0, 0, 0, 0);
-        virtualslider = new QSlider(virtualSliderFrame);
-        virtualslider->setObjectName("virtualslider");
-        virtualslider->setStyleSheet(QString::fromUtf8(""));
-        virtualslider->setMaximum(100);
-        virtualslider->setValue(100);
-        virtualslider->setOrientation(Qt::Orientation::Horizontal);
+        preset7Widget = new QWidget(presetsSidebarWidget);
+        preset7Widget->setObjectName("preset7Widget");
+        preset7Layout = new QVBoxLayout(preset7Widget);
+        preset7Layout->setSpacing(5);
+        preset7Layout->setObjectName("preset7Layout");
+        preset7Layout->setContentsMargins(5, 5, 5, 5);
+        savePreset7 = new QPushButton(preset7Widget);
+        savePreset7->setObjectName("savePreset7");
+        savePreset7->setMinimumSize(QSize(120, 35));
+        savePreset7->setMaximumSize(QSize(120, 35));
 
-        horizontalLayout_virtual_slider->addWidget(virtualslider);
+        preset7Layout->addWidget(savePreset7);
 
+        loadPreset7 = new QPushButton(preset7Widget);
+        loadPreset7->setObjectName("loadPreset7");
+        loadPreset7->setMinimumSize(QSize(120, 35));
+        loadPreset7->setMaximumSize(QSize(120, 35));
 
-        verticalLayout_virtual->addWidget(virtualSliderFrame);
-
-        virtualStatusLabel = new QLabel(virtualGroupBox);
-        virtualStatusLabel->setObjectName("virtualStatusLabel");
-        virtualStatusLabel->setStyleSheet(QString::fromUtf8("color: #00ff88; font-weight: bold; font-size: 10px;"));
-        virtualStatusLabel->setAlignment(Qt::AlignmentFlag::AlignCenter);
-
-        verticalLayout_virtual->addWidget(virtualStatusLabel);
+        preset7Layout->addWidget(loadPreset7);
 
 
-        verticalLayout_4->addWidget(virtualGroupBox);
+        PresetsLayout->addWidget(preset7Widget);
+
+        preset8Widget = new QWidget(presetsSidebarWidget);
+        preset8Widget->setObjectName("preset8Widget");
+        preset8Layout = new QVBoxLayout(preset8Widget);
+        preset8Layout->setSpacing(5);
+        preset8Layout->setObjectName("preset8Layout");
+        preset8Layout->setContentsMargins(5, 5, 5, 5);
+        savePreset8 = new QPushButton(preset8Widget);
+        savePreset8->setObjectName("savePreset8");
+        savePreset8->setMinimumSize(QSize(120, 35));
+        savePreset8->setMaximumSize(QSize(120, 35));
+
+        preset8Layout->addWidget(savePreset8);
+
+        loadPreset8 = new QPushButton(preset8Widget);
+        loadPreset8->setObjectName("loadPreset8");
+        loadPreset8->setMinimumSize(QSize(120, 35));
+        loadPreset8->setMaximumSize(QSize(120, 35));
+
+        preset8Layout->addWidget(loadPreset8);
 
 
-        verticalLayout_2->addWidget(groupBox_2);
+        PresetsLayout->addWidget(preset8Widget);
 
-        frame_5 = new QFrame(frame_3);
-        frame_5->setObjectName("frame_5");
-        frame_5->setFrameShape(QFrame::Shape::StyledPanel);
-        frame_5->setFrameShadow(QFrame::Shadow::Raised);
-        verticalLayout_6 = new QVBoxLayout(frame_5);
-        verticalLayout_6->setSpacing(0);
-        verticalLayout_6->setObjectName("verticalLayout_6");
-        verticalLayout_6->setContentsMargins(0, 0, 0, 0);
-        groupBox_4 = new QGroupBox(frame_5);
-        groupBox_4->setObjectName("groupBox_4");
-        horizontalLayout_12 = new QHBoxLayout(groupBox_4);
-        horizontalLayout_12->setObjectName("horizontalLayout_12");
-        startRecord = new QPushButton(groupBox_4);
-        startRecord->setObjectName("startRecord");
-        QIcon icon17;
-        icon17.addFile(QString::fromUtf8(":/app/img/app/record.png"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
-        startRecord->setIcon(icon17);
+        verticalSpacer_2 = new QSpacerItem(20, 40, QSizePolicy::Policy::Minimum, QSizePolicy::Policy::Expanding);
 
-        horizontalLayout_12->addWidget(startRecord);
-
-        stopRecord = new QPushButton(groupBox_4);
-        stopRecord->setObjectName("stopRecord");
-        QIcon icon18;
-        icon18.addFile(QString::fromUtf8(":/app/img/app/stop-button.png"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
-        stopRecord->setIcon(icon18);
-
-        horizontalLayout_12->addWidget(stopRecord);
+        PresetsLayout->addItem(verticalSpacer_2);
 
 
-        verticalLayout_6->addWidget(groupBox_4);
+        horizontalLayout->addWidget(presetsSidebarWidget);
 
-
-        verticalLayout_2->addWidget(frame_5);
-
-
-        horizontalLayout->addWidget(frame_3);
-
-        frame_2 = new QFrame(centralwidget);
-        frame_2->setObjectName("frame_2");
-        frame_2->setMinimumSize(QSize(100, 0));
-        frame_2->setMaximumSize(QSize(100, 16777215));
-        frame_2->setStyleSheet(QString::fromUtf8(""));
-        frame_2->setFrameShape(QFrame::Shape::StyledPanel);
-        frame_2->setFrameShadow(QFrame::Shadow::Raised);
-        verticalLayout = new QVBoxLayout(frame_2);
+        slotsWidget = new QWidget(centralwidget);
+        slotsWidget->setObjectName("slotsWidget");
+        slotsWidget->setMaximumSize(QSize(16777215, 16777215));
+        verticalLayout = new QVBoxLayout(slotsWidget);
         verticalLayout->setSpacing(0);
         verticalLayout->setObjectName("verticalLayout");
         verticalLayout->setContentsMargins(0, 0, 0, 0);
-        frame_4 = new QFrame(frame_2);
-        frame_4->setObjectName("frame_4");
-        frame_4->setMaximumSize(QSize(16777215, 30));
-        frame_4->setFrameShape(QFrame::Shape::StyledPanel);
-        frame_4->setFrameShadow(QFrame::Shadow::Raised);
-        horizontalLayout_2 = new QHBoxLayout(frame_4);
-        horizontalLayout_2->setSpacing(0);
+        label = new QLabel(slotsWidget);
+        label->setObjectName("label");
+        label->setMaximumSize(QSize(16777215, 30));
+        QFont font1;
+        font1.setPointSize(14);
+        font1.setBold(true);
+        label->setFont(font1);
+
+        verticalLayout->addWidget(label);
+
+        gridLayout = new QGridLayout();
+        gridLayout->setObjectName("gridLayout");
+        slot5Widget = new QWidget(slotsWidget);
+        slot5Widget->setObjectName("slot5Widget");
+        slot5Layout = new QVBoxLayout(slot5Widget);
+        slot5Layout->setSpacing(10);
+        slot5Layout->setObjectName("slot5Layout");
+        slot5Layout->setContentsMargins(10, 10, 10, 5);
+        slot5 = new QPushButton(slot5Widget);
+        slot5->setObjectName("slot5");
+        slot5->setMinimumSize(QSize(110, 110));
+        slot5->setMaximumSize(QSize(16777215, 16777215));
+        QIcon icon1;
+        icon1.addFile(QString::fromUtf8(":/img/img/talisca.jpeg"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
+        slot5->setIcon(icon1);
+        slot5->setIconSize(QSize(96, 96));
+        slot5->setProperty("scaledContents", QVariant(true));
+
+        slot5Layout->addWidget(slot5);
+
+        slot5Controls = new QHBoxLayout();
+        slot5Controls->setObjectName("slot5Controls");
+        slot5Controls->setContentsMargins(0, 0, 0, 0);
+        slot5Hotkey = new QComboBox(slot5Widget);
+        slot5Hotkey->setObjectName("slot5Hotkey");
+        slot5Hotkey->setMinimumSize(QSize(70, 25));
+        slot5Hotkey->setMaximumSize(QSize(70, 25));
+
+        slot5Controls->addWidget(slot5Hotkey);
+
+        slot5Delete = new QPushButton(slot5Widget);
+        slot5Delete->setObjectName("slot5Delete");
+        slot5Delete->setMinimumSize(QSize(25, 25));
+        slot5Delete->setMaximumSize(QSize(25, 25));
+        QIcon icon2;
+        icon2.addFile(QString::fromUtf8(":/app/img/app/bin (1).png"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
+        slot5Delete->setIcon(icon2);
+
+        slot5Controls->addWidget(slot5Delete);
+
+
+        slot5Layout->addLayout(slot5Controls);
+
+
+        gridLayout->addWidget(slot5Widget, 0, 5, 1, 1);
+
+        slot7Widget = new QWidget(slotsWidget);
+        slot7Widget->setObjectName("slot7Widget");
+        slot7Layout = new QVBoxLayout(slot7Widget);
+        slot7Layout->setSpacing(10);
+        slot7Layout->setObjectName("slot7Layout");
+        slot7Layout->setContentsMargins(10, 10, 10, 5);
+        slot7 = new QPushButton(slot7Widget);
+        slot7->setObjectName("slot7");
+        slot7->setMinimumSize(QSize(110, 110));
+        slot7->setMaximumSize(QSize(16777215, 16777215));
+        QIcon icon3;
+        icon3.addFile(QString::fromUtf8(":/img/img/sus.jpg"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
+        slot7->setIcon(icon3);
+        slot7->setIconSize(QSize(96, 96));
+        slot7->setProperty("scaledContents", QVariant(true));
+
+        slot7Layout->addWidget(slot7);
+
+        slot7Controls = new QHBoxLayout();
+        slot7Controls->setObjectName("slot7Controls");
+        slot7Controls->setContentsMargins(0, 0, 0, 0);
+        slot7Hotkey = new QComboBox(slot7Widget);
+        slot7Hotkey->setObjectName("slot7Hotkey");
+        slot7Hotkey->setMinimumSize(QSize(70, 25));
+        slot7Hotkey->setMaximumSize(QSize(70, 25));
+
+        slot7Controls->addWidget(slot7Hotkey);
+
+        slot7Delete = new QPushButton(slot7Widget);
+        slot7Delete->setObjectName("slot7Delete");
+        slot7Delete->setMinimumSize(QSize(25, 25));
+        slot7Delete->setMaximumSize(QSize(25, 25));
+        slot7Delete->setIcon(icon2);
+
+        slot7Controls->addWidget(slot7Delete);
+
+
+        slot7Layout->addLayout(slot7Controls);
+
+
+        gridLayout->addWidget(slot7Widget, 1, 2, 1, 1);
+
+        slot4Widget = new QWidget(slotsWidget);
+        slot4Widget->setObjectName("slot4Widget");
+        slot4Layout = new QVBoxLayout(slot4Widget);
+        slot4Layout->setSpacing(10);
+        slot4Layout->setObjectName("slot4Layout");
+        slot4Layout->setContentsMargins(10, 10, 10, 5);
+        slot4 = new QPushButton(slot4Widget);
+        slot4->setObjectName("slot4");
+        slot4->setMinimumSize(QSize(110, 110));
+        slot4->setMaximumSize(QSize(16777215, 16777215));
+        QIcon icon4;
+        icon4.addFile(QString::fromUtf8(":/img/img/ohacet.jpg"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
+        slot4->setIcon(icon4);
+        slot4->setIconSize(QSize(96, 96));
+        slot4->setProperty("scaledContents", QVariant(true));
+
+        slot4Layout->addWidget(slot4);
+
+        slot4Controls = new QHBoxLayout();
+        slot4Controls->setObjectName("slot4Controls");
+        slot4Controls->setContentsMargins(0, 0, 0, 0);
+        slot4Hotkey = new QComboBox(slot4Widget);
+        slot4Hotkey->setObjectName("slot4Hotkey");
+        slot4Hotkey->setMinimumSize(QSize(70, 25));
+        slot4Hotkey->setMaximumSize(QSize(70, 25));
+
+        slot4Controls->addWidget(slot4Hotkey);
+
+        slot4Delete = new QPushButton(slot4Widget);
+        slot4Delete->setObjectName("slot4Delete");
+        slot4Delete->setMinimumSize(QSize(25, 25));
+        slot4Delete->setMaximumSize(QSize(25, 25));
+        slot4Delete->setIcon(icon2);
+
+        slot4Controls->addWidget(slot4Delete);
+
+
+        slot4Layout->addLayout(slot4Controls);
+
+
+        gridLayout->addWidget(slot4Widget, 0, 4, 1, 1);
+
+        slot15Widget = new QWidget(slotsWidget);
+        slot15Widget->setObjectName("slot15Widget");
+        slot15Layout = new QVBoxLayout(slot15Widget);
+        slot15Layout->setSpacing(10);
+        slot15Layout->setObjectName("slot15Layout");
+        slot15Layout->setContentsMargins(10, 10, 10, 5);
+        slot15 = new QPushButton(slot15Widget);
+        slot15->setObjectName("slot15");
+        slot15->setMinimumSize(QSize(110, 110));
+        slot15->setMaximumSize(QSize(16777215, 16777215));
+        slot15->setIconSize(QSize(96, 96));
+        slot15->setProperty("scaledContents", QVariant(true));
+
+        slot15Layout->addWidget(slot15);
+
+        slot15Controls = new QHBoxLayout();
+        slot15Controls->setObjectName("slot15Controls");
+        slot15Controls->setContentsMargins(0, 0, 0, 0);
+        slot15Hotkey = new QComboBox(slot15Widget);
+        slot15Hotkey->setObjectName("slot15Hotkey");
+        slot15Hotkey->setMinimumSize(QSize(70, 25));
+        slot15Hotkey->setMaximumSize(QSize(70, 25));
+
+        slot15Controls->addWidget(slot15Hotkey);
+
+        slot15Delete = new QPushButton(slot15Widget);
+        slot15Delete->setObjectName("slot15Delete");
+        slot15Delete->setMinimumSize(QSize(25, 25));
+        slot15Delete->setMaximumSize(QSize(25, 25));
+        slot15Delete->setIcon(icon2);
+
+        slot15Controls->addWidget(slot15Delete);
+
+
+        slot15Layout->addLayout(slot15Controls);
+
+
+        gridLayout->addWidget(slot15Widget, 2, 5, 1, 1);
+
+        slot19Widget = new QWidget(slotsWidget);
+        slot19Widget->setObjectName("slot19Widget");
+        slot19Layout = new QVBoxLayout(slot19Widget);
+        slot19Layout->setSpacing(10);
+        slot19Layout->setObjectName("slot19Layout");
+        slot19Layout->setContentsMargins(10, 10, 10, 5);
+        slot19 = new QPushButton(slot19Widget);
+        slot19->setObjectName("slot19");
+        slot19->setMinimumSize(QSize(110, 110));
+        slot19->setMaximumSize(QSize(16777215, 16777215));
+        slot19->setIconSize(QSize(96, 96));
+        slot19->setProperty("scaledContents", QVariant(true));
+
+        slot19Layout->addWidget(slot19);
+
+        slot19Controls = new QHBoxLayout();
+        slot19Controls->setObjectName("slot19Controls");
+        slot19Controls->setContentsMargins(0, 0, 0, 0);
+        slot19Hotkey = new QComboBox(slot19Widget);
+        slot19Hotkey->setObjectName("slot19Hotkey");
+        slot19Hotkey->setMinimumSize(QSize(70, 25));
+        slot19Hotkey->setMaximumSize(QSize(70, 25));
+
+        slot19Controls->addWidget(slot19Hotkey);
+
+        slot19Delete = new QPushButton(slot19Widget);
+        slot19Delete->setObjectName("slot19Delete");
+        slot19Delete->setMinimumSize(QSize(25, 25));
+        slot19Delete->setMaximumSize(QSize(25, 25));
+        slot19Delete->setIcon(icon2);
+
+        slot19Controls->addWidget(slot19Delete);
+
+
+        slot19Layout->addLayout(slot19Controls);
+
+
+        gridLayout->addWidget(slot19Widget, 3, 4, 1, 1);
+
+        slot14Widget = new QWidget(slotsWidget);
+        slot14Widget->setObjectName("slot14Widget");
+        slot14Layout = new QVBoxLayout(slot14Widget);
+        slot14Layout->setSpacing(10);
+        slot14Layout->setObjectName("slot14Layout");
+        slot14Layout->setContentsMargins(10, 10, 10, 5);
+        slot14 = new QPushButton(slot14Widget);
+        slot14->setObjectName("slot14");
+        slot14->setMinimumSize(QSize(110, 110));
+        slot14->setMaximumSize(QSize(16777215, 16777215));
+        slot14->setIconSize(QSize(96, 96));
+        slot14->setProperty("scaledContents", QVariant(true));
+
+        slot14Layout->addWidget(slot14);
+
+        slot14Controls = new QHBoxLayout();
+        slot14Controls->setObjectName("slot14Controls");
+        slot14Controls->setContentsMargins(0, 0, 0, 0);
+        slot14Hotkey = new QComboBox(slot14Widget);
+        slot14Hotkey->setObjectName("slot14Hotkey");
+        slot14Hotkey->setMinimumSize(QSize(70, 25));
+        slot14Hotkey->setMaximumSize(QSize(70, 25));
+
+        slot14Controls->addWidget(slot14Hotkey);
+
+        slot14Delete = new QPushButton(slot14Widget);
+        slot14Delete->setObjectName("slot14Delete");
+        slot14Delete->setMinimumSize(QSize(25, 25));
+        slot14Delete->setMaximumSize(QSize(25, 25));
+        slot14Delete->setIcon(icon2);
+
+        slot14Controls->addWidget(slot14Delete);
+
+
+        slot14Layout->addLayout(slot14Controls);
+
+
+        gridLayout->addWidget(slot14Widget, 2, 4, 1, 1);
+
+        slot12Widget = new QWidget(slotsWidget);
+        slot12Widget->setObjectName("slot12Widget");
+        slot12Layout = new QVBoxLayout(slot12Widget);
+        slot12Layout->setSpacing(10);
+        slot12Layout->setObjectName("slot12Layout");
+        slot12Layout->setContentsMargins(10, 10, 10, 5);
+        slot12 = new QPushButton(slot12Widget);
+        slot12->setObjectName("slot12");
+        slot12->setMinimumSize(QSize(110, 110));
+        slot12->setMaximumSize(QSize(16777215, 16777215));
+        slot12->setIconSize(QSize(96, 96));
+        slot12->setProperty("scaledContents", QVariant(true));
+
+        slot12Layout->addWidget(slot12);
+
+        slot12Controls = new QHBoxLayout();
+        slot12Controls->setObjectName("slot12Controls");
+        slot12Controls->setContentsMargins(0, 0, 0, 0);
+        slot12Hotkey = new QComboBox(slot12Widget);
+        slot12Hotkey->setObjectName("slot12Hotkey");
+        slot12Hotkey->setMinimumSize(QSize(70, 25));
+        slot12Hotkey->setMaximumSize(QSize(70, 25));
+
+        slot12Controls->addWidget(slot12Hotkey);
+
+        slot12Delete = new QPushButton(slot12Widget);
+        slot12Delete->setObjectName("slot12Delete");
+        slot12Delete->setMinimumSize(QSize(25, 25));
+        slot12Delete->setMaximumSize(QSize(25, 25));
+        slot12Delete->setIcon(icon2);
+
+        slot12Controls->addWidget(slot12Delete);
+
+
+        slot12Layout->addLayout(slot12Controls);
+
+
+        gridLayout->addWidget(slot12Widget, 2, 2, 1, 1);
+
+        slot17Widget = new QWidget(slotsWidget);
+        slot17Widget->setObjectName("slot17Widget");
+        slot17Layout = new QVBoxLayout(slot17Widget);
+        slot17Layout->setSpacing(10);
+        slot17Layout->setObjectName("slot17Layout");
+        slot17Layout->setContentsMargins(10, 10, 10, 5);
+        slot17 = new QPushButton(slot17Widget);
+        slot17->setObjectName("slot17");
+        slot17->setMinimumSize(QSize(110, 110));
+        slot17->setMaximumSize(QSize(16777215, 16777215));
+        slot17->setIconSize(QSize(96, 96));
+        slot17->setProperty("scaledContents", QVariant(true));
+
+        slot17Layout->addWidget(slot17);
+
+        slot17Controls = new QHBoxLayout();
+        slot17Controls->setObjectName("slot17Controls");
+        slot17Controls->setContentsMargins(0, 0, 0, 0);
+        slot17Hotkey = new QComboBox(slot17Widget);
+        slot17Hotkey->setObjectName("slot17Hotkey");
+        slot17Hotkey->setMinimumSize(QSize(70, 25));
+        slot17Hotkey->setMaximumSize(QSize(70, 25));
+
+        slot17Controls->addWidget(slot17Hotkey);
+
+        slot17Delete = new QPushButton(slot17Widget);
+        slot17Delete->setObjectName("slot17Delete");
+        slot17Delete->setMinimumSize(QSize(25, 25));
+        slot17Delete->setMaximumSize(QSize(25, 25));
+        slot17Delete->setIcon(icon2);
+
+        slot17Controls->addWidget(slot17Delete);
+
+
+        slot17Layout->addLayout(slot17Controls);
+
+
+        gridLayout->addWidget(slot17Widget, 3, 2, 1, 1);
+
+        slot10Widget = new QWidget(slotsWidget);
+        slot10Widget->setObjectName("slot10Widget");
+        slot10Layout = new QVBoxLayout(slot10Widget);
+        slot10Layout->setSpacing(10);
+        slot10Layout->setObjectName("slot10Layout");
+        slot10Layout->setContentsMargins(10, 10, 10, 5);
+        slot10 = new QPushButton(slot10Widget);
+        slot10->setObjectName("slot10");
+        slot10->setMinimumSize(QSize(110, 110));
+        slot10->setMaximumSize(QSize(16777215, 16777215));
+        QIcon icon5;
+        icon5.addFile(QString::fromUtf8(":/img/img/osuru2.jpg"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
+        slot10->setIcon(icon5);
+        slot10->setIconSize(QSize(96, 96));
+        slot10->setProperty("scaledContents", QVariant(true));
+
+        slot10Layout->addWidget(slot10);
+
+        slot10Controls = new QHBoxLayout();
+        slot10Controls->setObjectName("slot10Controls");
+        slot10Controls->setContentsMargins(0, 0, 0, 0);
+        slot10Hotkey = new QComboBox(slot10Widget);
+        slot10Hotkey->setObjectName("slot10Hotkey");
+        slot10Hotkey->setMinimumSize(QSize(70, 25));
+        slot10Hotkey->setMaximumSize(QSize(70, 25));
+
+        slot10Controls->addWidget(slot10Hotkey);
+
+        slot10Delete = new QPushButton(slot10Widget);
+        slot10Delete->setObjectName("slot10Delete");
+        slot10Delete->setMinimumSize(QSize(25, 25));
+        slot10Delete->setMaximumSize(QSize(25, 25));
+        slot10Delete->setIcon(icon2);
+
+        slot10Controls->addWidget(slot10Delete);
+
+
+        slot10Layout->addLayout(slot10Controls);
+
+
+        gridLayout->addWidget(slot10Widget, 1, 5, 1, 1);
+
+        slot3Widget = new QWidget(slotsWidget);
+        slot3Widget->setObjectName("slot3Widget");
+        slot3Layout = new QVBoxLayout(slot3Widget);
+        slot3Layout->setSpacing(10);
+        slot3Layout->setObjectName("slot3Layout");
+        slot3Layout->setContentsMargins(10, 10, 10, 5);
+        slot3 = new QPushButton(slot3Widget);
+        slot3->setObjectName("slot3");
+        slot3->setMinimumSize(QSize(110, 110));
+        slot3->setMaximumSize(QSize(16777215, 16777215));
+        QIcon icon6;
+        icon6.addFile(QString::fromUtf8(":/img/img/chineseRap.jpeg"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
+        slot3->setIcon(icon6);
+        slot3->setIconSize(QSize(96, 96));
+        slot3->setProperty("scaledContents", QVariant(true));
+
+        slot3Layout->addWidget(slot3);
+
+        slot3Controls = new QHBoxLayout();
+        slot3Controls->setObjectName("slot3Controls");
+        slot3Controls->setContentsMargins(0, 0, 0, 0);
+        slot3Hotkey = new QComboBox(slot3Widget);
+        slot3Hotkey->setObjectName("slot3Hotkey");
+        slot3Hotkey->setMinimumSize(QSize(70, 25));
+        slot3Hotkey->setMaximumSize(QSize(70, 25));
+
+        slot3Controls->addWidget(slot3Hotkey);
+
+        slot3Delete = new QPushButton(slot3Widget);
+        slot3Delete->setObjectName("slot3Delete");
+        slot3Delete->setMinimumSize(QSize(25, 25));
+        slot3Delete->setMaximumSize(QSize(25, 25));
+        slot3Delete->setIcon(icon2);
+
+        slot3Controls->addWidget(slot3Delete);
+
+
+        slot3Layout->addLayout(slot3Controls);
+
+
+        gridLayout->addWidget(slot3Widget, 0, 3, 1, 1);
+
+        slot2Widget = new QWidget(slotsWidget);
+        slot2Widget->setObjectName("slot2Widget");
+        slot2Layout = new QVBoxLayout(slot2Widget);
+        slot2Layout->setObjectName("slot2Layout");
+        slot2Layout->setContentsMargins(10, 10, 10, 5);
+        slot2 = new QPushButton(slot2Widget);
+        slot2->setObjectName("slot2");
+        slot2->setMinimumSize(QSize(110, 110));
+        slot2->setMaximumSize(QSize(16777215, 16777215));
+        QIcon icon7;
+        icon7.addFile(QString::fromUtf8(":/img/img/yArra-Earrape.jpg"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
+        slot2->setIcon(icon7);
+        slot2->setIconSize(QSize(90, 90));
+        slot2->setProperty("scaledContents", QVariant(true));
+
+        slot2Layout->addWidget(slot2);
+
+        slot2Controls = new QHBoxLayout();
+        slot2Controls->setObjectName("slot2Controls");
+        slot2Controls->setContentsMargins(0, 0, 0, 0);
+        slot2Hotkey = new QComboBox(slot2Widget);
+        slot2Hotkey->setObjectName("slot2Hotkey");
+        slot2Hotkey->setMinimumSize(QSize(70, 25));
+        slot2Hotkey->setMaximumSize(QSize(70, 25));
+
+        slot2Controls->addWidget(slot2Hotkey);
+
+        slot2Delete = new QPushButton(slot2Widget);
+        slot2Delete->setObjectName("slot2Delete");
+        slot2Delete->setMinimumSize(QSize(25, 25));
+        slot2Delete->setMaximumSize(QSize(25, 25));
+        slot2Delete->setIcon(icon2);
+
+        slot2Controls->addWidget(slot2Delete);
+
+
+        slot2Layout->addLayout(slot2Controls);
+
+
+        gridLayout->addWidget(slot2Widget, 0, 2, 1, 1);
+
+        slot6Widget = new QWidget(slotsWidget);
+        slot6Widget->setObjectName("slot6Widget");
+        slot6Layout = new QVBoxLayout(slot6Widget);
+        slot6Layout->setSpacing(10);
+        slot6Layout->setObjectName("slot6Layout");
+        slot6Layout->setContentsMargins(10, 10, 10, 5);
+        slot6 = new QPushButton(slot6Widget);
+        slot6->setObjectName("slot6");
+        slot6->setMinimumSize(QSize(110, 110));
+        slot6->setMaximumSize(QSize(16777215, 16777215));
+        QIcon icon8;
+        icon8.addFile(QString::fromUtf8(":/img/img/trollface.jpg"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
+        slot6->setIcon(icon8);
+        slot6->setIconSize(QSize(96, 96));
+        slot6->setProperty("scaledContents", QVariant(true));
+
+        slot6Layout->addWidget(slot6);
+
+        slot6Controls = new QHBoxLayout();
+        slot6Controls->setObjectName("slot6Controls");
+        slot6Controls->setContentsMargins(0, 0, 0, 0);
+        slot6Hotkey = new QComboBox(slot6Widget);
+        slot6Hotkey->setObjectName("slot6Hotkey");
+        slot6Hotkey->setMinimumSize(QSize(70, 25));
+        slot6Hotkey->setMaximumSize(QSize(70, 25));
+
+        slot6Controls->addWidget(slot6Hotkey);
+
+        slot6Delete = new QPushButton(slot6Widget);
+        slot6Delete->setObjectName("slot6Delete");
+        slot6Delete->setMinimumSize(QSize(25, 25));
+        slot6Delete->setMaximumSize(QSize(25, 25));
+        slot6Delete->setIcon(icon2);
+
+        slot6Controls->addWidget(slot6Delete);
+
+
+        slot6Layout->addLayout(slot6Controls);
+
+
+        gridLayout->addWidget(slot6Widget, 1, 1, 1, 1);
+
+        slot1Widget = new QWidget(slotsWidget);
+        slot1Widget->setObjectName("slot1Widget");
+        slot1Layout = new QVBoxLayout(slot1Widget);
+        slot1Layout->setSpacing(10);
+        slot1Layout->setObjectName("slot1Layout");
+        slot1Layout->setContentsMargins(10, 10, 10, 5);
+        slot1 = new QPushButton(slot1Widget);
+        slot1->setObjectName("slot1");
+        slot1->setMinimumSize(QSize(110, 110));
+        slot1->setMaximumSize(QSize(16777215, 16777215));
+        QIcon icon9;
+        icon9.addFile(QString::fromUtf8(":/img/img/yArra.jpg"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
+        slot1->setIcon(icon9);
+        slot1->setIconSize(QSize(90, 90));
+        slot1->setProperty("scaledContents", QVariant(true));
+
+        slot1Layout->addWidget(slot1);
+
+        slot1Controls = new QHBoxLayout();
+        slot1Controls->setObjectName("slot1Controls");
+        slot1Controls->setContentsMargins(0, 0, 0, 0);
+        slot1Hotkey = new QComboBox(slot1Widget);
+        slot1Hotkey->setObjectName("slot1Hotkey");
+        slot1Hotkey->setMinimumSize(QSize(70, 25));
+        slot1Hotkey->setMaximumSize(QSize(70, 25));
+
+        slot1Controls->addWidget(slot1Hotkey);
+
+        slot1Delete = new QPushButton(slot1Widget);
+        slot1Delete->setObjectName("slot1Delete");
+        slot1Delete->setMinimumSize(QSize(25, 25));
+        slot1Delete->setMaximumSize(QSize(25, 25));
+        slot1Delete->setIcon(icon2);
+
+        slot1Controls->addWidget(slot1Delete);
+
+
+        slot1Layout->addLayout(slot1Controls);
+
+
+        gridLayout->addWidget(slot1Widget, 0, 1, 1, 1);
+
+        slot8Widget = new QWidget(slotsWidget);
+        slot8Widget->setObjectName("slot8Widget");
+        slot8Layout = new QVBoxLayout(slot8Widget);
+        slot8Layout->setSpacing(10);
+        slot8Layout->setObjectName("slot8Layout");
+        slot8Layout->setContentsMargins(10, 10, 10, 5);
+        slot8 = new QPushButton(slot8Widget);
+        slot8->setObjectName("slot8");
+        slot8->setMinimumSize(QSize(110, 110));
+        slot8->setMaximumSize(QSize(16777215, 16777215));
+        QIcon icon10;
+        icon10.addFile(QString::fromUtf8(":/img/img/osuruk1.jpg"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
+        slot8->setIcon(icon10);
+        slot8->setIconSize(QSize(96, 96));
+        slot8->setProperty("scaledContents", QVariant(true));
+
+        slot8Layout->addWidget(slot8);
+
+        slot8Controls = new QHBoxLayout();
+        slot8Controls->setObjectName("slot8Controls");
+        slot8Controls->setContentsMargins(0, 0, 0, 0);
+        slot8Hotkey = new QComboBox(slot8Widget);
+        slot8Hotkey->setObjectName("slot8Hotkey");
+        slot8Hotkey->setMinimumSize(QSize(70, 25));
+        slot8Hotkey->setMaximumSize(QSize(70, 25));
+
+        slot8Controls->addWidget(slot8Hotkey);
+
+        slot8Delete = new QPushButton(slot8Widget);
+        slot8Delete->setObjectName("slot8Delete");
+        slot8Delete->setMinimumSize(QSize(25, 25));
+        slot8Delete->setMaximumSize(QSize(25, 25));
+        slot8Delete->setIcon(icon2);
+
+        slot8Controls->addWidget(slot8Delete);
+
+
+        slot8Layout->addLayout(slot8Controls);
+
+
+        gridLayout->addWidget(slot8Widget, 1, 3, 1, 1);
+
+        slot11Widget = new QWidget(slotsWidget);
+        slot11Widget->setObjectName("slot11Widget");
+        slot11Layout = new QVBoxLayout(slot11Widget);
+        slot11Layout->setSpacing(10);
+        slot11Layout->setObjectName("slot11Layout");
+        slot11Layout->setContentsMargins(10, 10, 10, 5);
+        slot11 = new QPushButton(slot11Widget);
+        slot11->setObjectName("slot11");
+        slot11->setMinimumSize(QSize(110, 110));
+        slot11->setMaximumSize(QSize(16777215, 16777215));
+        slot11->setIconSize(QSize(96, 96));
+        slot11->setProperty("scaledContents", QVariant(true));
+
+        slot11Layout->addWidget(slot11);
+
+        slot11Controls = new QHBoxLayout();
+        slot11Controls->setObjectName("slot11Controls");
+        slot11Controls->setContentsMargins(0, 0, 0, 0);
+        slot11Hotkey = new QComboBox(slot11Widget);
+        slot11Hotkey->setObjectName("slot11Hotkey");
+        slot11Hotkey->setMinimumSize(QSize(70, 25));
+        slot11Hotkey->setMaximumSize(QSize(70, 25));
+
+        slot11Controls->addWidget(slot11Hotkey);
+
+        slot11Delete = new QPushButton(slot11Widget);
+        slot11Delete->setObjectName("slot11Delete");
+        slot11Delete->setMinimumSize(QSize(25, 25));
+        slot11Delete->setMaximumSize(QSize(25, 25));
+        slot11Delete->setIcon(icon2);
+
+        slot11Controls->addWidget(slot11Delete);
+
+
+        slot11Layout->addLayout(slot11Controls);
+
+
+        gridLayout->addWidget(slot11Widget, 2, 1, 1, 1);
+
+        slot18Widget = new QWidget(slotsWidget);
+        slot18Widget->setObjectName("slot18Widget");
+        slot18Layout = new QVBoxLayout(slot18Widget);
+        slot18Layout->setSpacing(10);
+        slot18Layout->setObjectName("slot18Layout");
+        slot18Layout->setContentsMargins(10, 10, 10, 5);
+        slot18 = new QPushButton(slot18Widget);
+        slot18->setObjectName("slot18");
+        slot18->setMinimumSize(QSize(110, 110));
+        slot18->setMaximumSize(QSize(16777215, 16777215));
+        slot18->setIconSize(QSize(96, 96));
+        slot18->setProperty("scaledContents", QVariant(true));
+
+        slot18Layout->addWidget(slot18);
+
+        slot18Controls = new QHBoxLayout();
+        slot18Controls->setObjectName("slot18Controls");
+        slot18Controls->setContentsMargins(0, 0, 0, 0);
+        slot18Hotkey = new QComboBox(slot18Widget);
+        slot18Hotkey->setObjectName("slot18Hotkey");
+        slot18Hotkey->setMinimumSize(QSize(70, 25));
+        slot18Hotkey->setMaximumSize(QSize(70, 25));
+
+        slot18Controls->addWidget(slot18Hotkey);
+
+        slot18Delete = new QPushButton(slot18Widget);
+        slot18Delete->setObjectName("slot18Delete");
+        slot18Delete->setMinimumSize(QSize(25, 25));
+        slot18Delete->setMaximumSize(QSize(25, 25));
+        slot18Delete->setIcon(icon2);
+
+        slot18Controls->addWidget(slot18Delete);
+
+
+        slot18Layout->addLayout(slot18Controls);
+
+
+        gridLayout->addWidget(slot18Widget, 3, 3, 1, 1);
+
+        slot13Widget = new QWidget(slotsWidget);
+        slot13Widget->setObjectName("slot13Widget");
+        slot13Layout = new QVBoxLayout(slot13Widget);
+        slot13Layout->setSpacing(10);
+        slot13Layout->setObjectName("slot13Layout");
+        slot13Layout->setContentsMargins(10, 10, 10, 5);
+        slot13 = new QPushButton(slot13Widget);
+        slot13->setObjectName("slot13");
+        slot13->setMinimumSize(QSize(110, 110));
+        slot13->setMaximumSize(QSize(16777215, 16777215));
+        slot13->setIconSize(QSize(96, 96));
+        slot13->setProperty("scaledContents", QVariant(true));
+
+        slot13Layout->addWidget(slot13);
+
+        slot13Controls = new QHBoxLayout();
+        slot13Controls->setObjectName("slot13Controls");
+        slot13Controls->setContentsMargins(0, 0, 0, 0);
+        slot13Hotkey = new QComboBox(slot13Widget);
+        slot13Hotkey->setObjectName("slot13Hotkey");
+        slot13Hotkey->setMinimumSize(QSize(70, 25));
+        slot13Hotkey->setMaximumSize(QSize(70, 25));
+
+        slot13Controls->addWidget(slot13Hotkey);
+
+        slot13Delete = new QPushButton(slot13Widget);
+        slot13Delete->setObjectName("slot13Delete");
+        slot13Delete->setMinimumSize(QSize(25, 25));
+        slot13Delete->setMaximumSize(QSize(25, 25));
+        slot13Delete->setIcon(icon2);
+
+        slot13Controls->addWidget(slot13Delete);
+
+
+        slot13Layout->addLayout(slot13Controls);
+
+
+        gridLayout->addWidget(slot13Widget, 2, 3, 1, 1);
+
+        slot16Widget = new QWidget(slotsWidget);
+        slot16Widget->setObjectName("slot16Widget");
+        slot16Layout = new QVBoxLayout(slot16Widget);
+        slot16Layout->setSpacing(10);
+        slot16Layout->setObjectName("slot16Layout");
+        slot16Layout->setContentsMargins(10, 10, 10, 5);
+        slot16 = new QPushButton(slot16Widget);
+        slot16->setObjectName("slot16");
+        slot16->setMinimumSize(QSize(110, 110));
+        slot16->setMaximumSize(QSize(16777215, 16777215));
+        slot16->setIconSize(QSize(96, 96));
+        slot16->setProperty("scaledContents", QVariant(true));
+
+        slot16Layout->addWidget(slot16);
+
+        slot16Controls = new QHBoxLayout();
+        slot16Controls->setObjectName("slot16Controls");
+        slot16Controls->setContentsMargins(0, 0, 0, 0);
+        slot16Hotkey = new QComboBox(slot16Widget);
+        slot16Hotkey->setObjectName("slot16Hotkey");
+        slot16Hotkey->setMinimumSize(QSize(70, 25));
+        slot16Hotkey->setMaximumSize(QSize(70, 25));
+
+        slot16Controls->addWidget(slot16Hotkey);
+
+        slot16Delete = new QPushButton(slot16Widget);
+        slot16Delete->setObjectName("slot16Delete");
+        slot16Delete->setMinimumSize(QSize(25, 25));
+        slot16Delete->setMaximumSize(QSize(25, 25));
+        slot16Delete->setIcon(icon2);
+
+        slot16Controls->addWidget(slot16Delete);
+
+
+        slot16Layout->addLayout(slot16Controls);
+
+
+        gridLayout->addWidget(slot16Widget, 3, 1, 1, 1);
+
+        slot20Widget = new QWidget(slotsWidget);
+        slot20Widget->setObjectName("slot20Widget");
+        slot20Layout = new QVBoxLayout(slot20Widget);
+        slot20Layout->setSpacing(10);
+        slot20Layout->setObjectName("slot20Layout");
+        slot20Layout->setContentsMargins(10, 10, 10, 5);
+        slot20 = new QPushButton(slot20Widget);
+        slot20->setObjectName("slot20");
+        slot20->setMinimumSize(QSize(110, 110));
+        slot20->setMaximumSize(QSize(16777215, 16777215));
+        slot20->setIconSize(QSize(96, 96));
+        slot20->setProperty("scaledContents", QVariant(true));
+
+        slot20Layout->addWidget(slot20);
+
+        slot20Controls = new QHBoxLayout();
+        slot20Controls->setObjectName("slot20Controls");
+        slot20Controls->setContentsMargins(0, 0, 0, 0);
+        slot20Hotkey = new QComboBox(slot20Widget);
+        slot20Hotkey->setObjectName("slot20Hotkey");
+        slot20Hotkey->setMinimumSize(QSize(70, 25));
+        slot20Hotkey->setMaximumSize(QSize(70, 25));
+
+        slot20Controls->addWidget(slot20Hotkey);
+
+        slot20Delete = new QPushButton(slot20Widget);
+        slot20Delete->setObjectName("slot20Delete");
+        slot20Delete->setMinimumSize(QSize(25, 25));
+        slot20Delete->setMaximumSize(QSize(25, 25));
+        slot20Delete->setIcon(icon2);
+
+        slot20Controls->addWidget(slot20Delete);
+
+
+        slot20Layout->addLayout(slot20Controls);
+
+
+        gridLayout->addWidget(slot20Widget, 3, 5, 1, 1);
+
+        slot9Widget = new QWidget(slotsWidget);
+        slot9Widget->setObjectName("slot9Widget");
+        slot9Layout = new QVBoxLayout(slot9Widget);
+        slot9Layout->setSpacing(10);
+        slot9Layout->setObjectName("slot9Layout");
+        slot9Layout->setContentsMargins(10, 10, 10, 5);
+        slot9 = new QPushButton(slot9Widget);
+        slot9->setObjectName("slot9");
+        slot9->setMinimumSize(QSize(110, 110));
+        slot9->setMaximumSize(QSize(16777215, 16777215));
+        QIcon icon11;
+        icon11.addFile(QString::fromUtf8(":/img/img/osuruk.jpg"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
+        slot9->setIcon(icon11);
+        slot9->setIconSize(QSize(96, 96));
+        slot9->setProperty("scaledContents", QVariant(true));
+
+        slot9Layout->addWidget(slot9);
+
+        slot9Controls = new QHBoxLayout();
+        slot9Controls->setObjectName("slot9Controls");
+        slot9Controls->setContentsMargins(0, 0, 0, 0);
+        slot9Hotkey = new QComboBox(slot9Widget);
+        slot9Hotkey->setObjectName("slot9Hotkey");
+        slot9Hotkey->setMinimumSize(QSize(70, 25));
+        slot9Hotkey->setMaximumSize(QSize(70, 25));
+
+        slot9Controls->addWidget(slot9Hotkey);
+
+        slot9Delete = new QPushButton(slot9Widget);
+        slot9Delete->setObjectName("slot9Delete");
+        slot9Delete->setMinimumSize(QSize(25, 25));
+        slot9Delete->setMaximumSize(QSize(25, 25));
+        slot9Delete->setIcon(icon2);
+
+        slot9Controls->addWidget(slot9Delete);
+
+
+        slot9Layout->addLayout(slot9Controls);
+
+
+        gridLayout->addWidget(slot9Widget, 1, 4, 1, 1);
+
+        verticalLayout_2 = new QVBoxLayout();
+        verticalLayout_2->setObjectName("verticalLayout_2");
+
+        gridLayout->addLayout(verticalLayout_2, 0, 0, 1, 1);
+
+
+        verticalLayout->addLayout(gridLayout);
+
+
+        horizontalLayout->addWidget(slotsWidget);
+
+        settingsSidebarWidget = new QWidget(centralwidget);
+        settingsSidebarWidget->setObjectName("settingsSidebarWidget");
+        settingsSidebarWidget->setMinimumSize(QSize(50, 0));
+        settingsSidebarWidget->setMaximumSize(QSize(300, 16777215));
+        settingsSidebarWidget->setStyleSheet(QString::fromUtf8("QWidget#settingsSidebarWidget {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a35, stop:0.5 #1c1b25, stop:1 #050505);\n"
+"    border: 2px solid #363540;\n"
+"    border-radius: 8px;\n"
+"    padding: 10px;\n"
+"}"));
+        effectsSidebarLayout = new QVBoxLayout(settingsSidebarWidget);
+        effectsSidebarLayout->setSpacing(0);
+        effectsSidebarLayout->setObjectName("effectsSidebarLayout");
+        effectsSidebarLayout->setContentsMargins(0, 0, 0, 0);
+        effectsTitleLayout = new QHBoxLayout();
+        effectsTitleLayout->setObjectName("effectsTitleLayout");
+        settingsLabel = new QLabel(settingsSidebarWidget);
+        settingsLabel->setObjectName("settingsLabel");
+        settingsLabel->setMaximumSize(QSize(16777215, 30));
+        settingsLabel->setFont(font);
+
+        effectsTitleLayout->addWidget(settingsLabel);
+
+        toggleEffectsSidebar = new QPushButton(settingsSidebarWidget);
+        toggleEffectsSidebar->setObjectName("toggleEffectsSidebar");
+        toggleEffectsSidebar->setMinimumSize(QSize(30, 30));
+        toggleEffectsSidebar->setMaximumSize(QSize(30, 30));
+        toggleEffectsSidebar->setIcon(icon);
+
+        effectsTitleLayout->addWidget(toggleEffectsSidebar);
+
+
+        effectsSidebarLayout->addLayout(effectsTitleLayout);
+
+        groupBox = new QGroupBox(settingsSidebarWidget);
+        groupBox->setObjectName("groupBox");
+        verticalLayout_3 = new QVBoxLayout(groupBox);
+        verticalLayout_3->setObjectName("verticalLayout_3");
+        horizontalLayout_2 = new QHBoxLayout();
         horizontalLayout_2->setObjectName("horizontalLayout_2");
-        horizontalLayout_2->setContentsMargins(0, 0, 0, 0);
-        max = new QPushButton(frame_4);
-        max->setObjectName("max");
-        max->setMaximumSize(QSize(50, 16777215));
-        max->setIcon(icon14);
+        inputDeviceCombobox = new QComboBox(groupBox);
+        inputDeviceCombobox->setObjectName("inputDeviceCombobox");
+        inputDeviceCombobox->setMinimumSize(QSize(50, 48));
 
-        horizontalLayout_2->addWidget(max);
+        horizontalLayout_2->addWidget(inputDeviceCombobox);
+
+        refreshInpurDevice = new QPushButton(groupBox);
+        refreshInpurDevice->setObjectName("refreshInpurDevice");
+        refreshInpurDevice->setMaximumSize(QSize(30, 30));
+        QIcon icon12;
+        icon12.addFile(QString::fromUtf8(":/app/img/app/refresh.png"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
+        refreshInpurDevice->setIcon(icon12);
+
+        horizontalLayout_2->addWidget(refreshInpurDevice);
 
 
-        verticalLayout->addWidget(frame_4);
+        verticalLayout_3->addLayout(horizontalLayout_2);
 
-        bananaButton = new QPushButton(frame_2);
-        bananaButton->setObjectName("bananaButton");
-        QIcon icon19;
-        icon19.addFile(QString::fromUtf8(":/app/img/app/children.png"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
-        bananaButton->setIcon(icon19);
-        bananaButton->setIconSize(QSize(30, 30));
-        bananaButton->setCheckable(true);
+        inputSlider = new QSlider(groupBox);
+        inputSlider->setObjectName("inputSlider");
+        inputSlider->setStyleSheet(QString::fromUtf8(""));
+        inputSlider->setMaximum(100);
+        inputSlider->setValue(100);
+        inputSlider->setOrientation(Qt::Orientation::Horizontal);
 
-        verticalLayout->addWidget(bananaButton);
+        verticalLayout_3->addWidget(inputSlider);
 
-        ekoButton = new QPushButton(frame_2);
-        ekoButton->setObjectName("ekoButton");
-        QIcon icon20;
-        icon20.addFile(QString::fromUtf8(":/app/img/app/cave.png"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
-        ekoButton->setIcon(icon20);
-        ekoButton->setIconSize(QSize(30, 30));
-        ekoButton->setCheckable(true);
 
-        verticalLayout->addWidget(ekoButton);
+        effectsSidebarLayout->addWidget(groupBox);
 
-        robotButton = new QPushButton(frame_2);
-        robotButton->setObjectName("robotButton");
-        QIcon icon21;
-        icon21.addFile(QString::fromUtf8(":/app/img/app/robot.png"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
-        robotButton->setIcon(icon21);
-        robotButton->setIconSize(QSize(30, 30));
-        robotButton->setCheckable(true);
+        groupBox_2 = new QGroupBox(settingsSidebarWidget);
+        groupBox_2->setObjectName("groupBox_2");
+        verticalLayout_4 = new QVBoxLayout(groupBox_2);
+        verticalLayout_4->setObjectName("verticalLayout_4");
+        horizontalLayout_3 = new QHBoxLayout();
+        horizontalLayout_3->setObjectName("horizontalLayout_3");
+        OutputDEviceCombobox = new QComboBox(groupBox_2);
+        OutputDEviceCombobox->setObjectName("OutputDEviceCombobox");
+        OutputDEviceCombobox->setMinimumSize(QSize(50, 48));
 
-        verticalLayout->addWidget(robotButton);
+        horizontalLayout_3->addWidget(OutputDEviceCombobox);
 
-        devilButton = new QPushButton(frame_2);
-        devilButton->setObjectName("devilButton");
-        QIcon icon22;
-        icon22.addFile(QString::fromUtf8(":/app/img/app/ogre.png"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
-        devilButton->setIcon(icon22);
-        devilButton->setIconSize(QSize(30, 30));
-        devilButton->setCheckable(true);
+        refreshOutputDevice = new QPushButton(groupBox_2);
+        refreshOutputDevice->setObjectName("refreshOutputDevice");
+        refreshOutputDevice->setMaximumSize(QSize(30, 30));
+        refreshOutputDevice->setIcon(icon12);
 
-        verticalLayout->addWidget(devilButton);
+        horizontalLayout_3->addWidget(refreshOutputDevice);
 
-        femaleButton = new QPushButton(frame_2);
-        femaleButton->setObjectName("femaleButton");
-        QIcon icon23;
-        icon23.addFile(QString::fromUtf8(":/app/img/app/woman.png"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
-        femaleButton->setIcon(icon23);
-        femaleButton->setIconSize(QSize(30, 30));
-        femaleButton->setCheckable(true);
 
-        verticalLayout->addWidget(femaleButton);
+        verticalLayout_4->addLayout(horizontalLayout_3);
 
-        combineButton = new QPushButton(frame_2);
-        combineButton->setObjectName("combineButton");
-        QIcon icon24;
-        icon24.addFile(QString::fromUtf8(":/app/img/app/lambda.png"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
-        combineButton->setIcon(icon24);
-        combineButton->setIconSize(QSize(30, 30));
-        combineButton->setCheckable(true);
+        horizontalLayout_51 = new QHBoxLayout();
+        horizontalLayout_51->setObjectName("horizontalLayout_51");
+        progressBar = new QProgressBar(groupBox_2);
+        progressBar->setObjectName("progressBar");
+        progressBar->setValue(0);
+        progressBar->setTextVisible(false);
 
-        verticalLayout->addWidget(combineButton);
+        horizontalLayout_51->addWidget(progressBar);
 
-        phaserButton = new QPushButton(frame_2);
-        phaserButton->setObjectName("phaserButton");
-        QIcon icon25;
-        icon25.addFile(QString::fromUtf8(":/app/img/app/phaser.png"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
-        phaserButton->setIcon(icon25);
-        phaserButton->setIconSize(QSize(30, 30));
-        phaserButton->setCheckable(true);
+        testButton = new QPushButton(groupBox_2);
+        testButton->setObjectName("testButton");
+        testButton->setMaximumSize(QSize(30, 30));
+        QIcon icon13;
+        icon13.addFile(QString::fromUtf8(":/app/img/app/microphone.png"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
+        testButton->setIcon(icon13);
 
-        verticalLayout->addWidget(phaserButton);
+        horizontalLayout_51->addWidget(testButton);
 
-        flangerButton = new QPushButton(frame_2);
-        flangerButton->setObjectName("flangerButton");
-        QIcon icon26;
-        icon26.addFile(QString::fromUtf8(":/app/img/app/flanger.png"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
-        flangerButton->setIcon(icon26);
-        flangerButton->setIconSize(QSize(30, 30));
-        flangerButton->setCheckable(true);
 
-        verticalLayout->addWidget(flangerButton);
+        verticalLayout_4->addLayout(horizontalLayout_51);
+
+        outputSlider = new QSlider(groupBox_2);
+        outputSlider->setObjectName("outputSlider");
+        outputSlider->setMaximum(100);
+        outputSlider->setValue(100);
+        outputSlider->setOrientation(Qt::Orientation::Horizontal);
+
+        verticalLayout_4->addWidget(outputSlider);
+
+
+        effectsSidebarLayout->addWidget(groupBox_2);
+
+        groupBox_3 = new QGroupBox(settingsSidebarWidget);
+        groupBox_3->setObjectName("groupBox_3");
+        verticalLayout_5 = new QVBoxLayout(groupBox_3);
+        verticalLayout_5->setObjectName("verticalLayout_5");
+        horizontalLayout_4 = new QHBoxLayout();
+        horizontalLayout_4->setObjectName("horizontalLayout_4");
+        virtualInputcombobox = new QComboBox(groupBox_3);
+        virtualInputcombobox->setObjectName("virtualInputcombobox");
+        virtualInputcombobox->setMinimumSize(QSize(50, 48));
+
+        horizontalLayout_4->addWidget(virtualInputcombobox);
+
+
+        verticalLayout_5->addLayout(horizontalLayout_4);
+
+        virtualSlider = new QSlider(groupBox_3);
+        virtualSlider->setObjectName("virtualSlider");
+        virtualSlider->setMaximum(100);
+        virtualSlider->setValue(100);
+        virtualSlider->setOrientation(Qt::Orientation::Horizontal);
+
+        verticalLayout_5->addWidget(virtualSlider);
+
+        VirtualDriverButton = new QPushButton(groupBox_3);
+        VirtualDriverButton->setObjectName("VirtualDriverButton");
+        VirtualDriverButton->setMinimumSize(QSize(200, 0));
+
+        verticalLayout_5->addWidget(VirtualDriverButton);
+
+
+        effectsSidebarLayout->addWidget(groupBox_3);
+
+        groupBox_5 = new QGroupBox(settingsSidebarWidget);
+        groupBox_5->setObjectName("groupBox_5");
+        horizontalLayout_6 = new QHBoxLayout(groupBox_5);
+        horizontalLayout_6->setObjectName("horizontalLayout_6");
+        recordingButton = new QPushButton(groupBox_5);
+        recordingButton->setObjectName("recordingButton");
+        recordingButton->setMinimumSize(QSize(60, 60));
+        recordingButton->setMaximumSize(QSize(60, 60));
+        recordingButton->setCheckable(true);
+
+        horizontalLayout_6->addWidget(recordingButton);
+
+
+        effectsSidebarLayout->addWidget(groupBox_5);
 
         verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Policy::Minimum, QSizePolicy::Policy::Expanding);
 
-        verticalLayout->addItem(verticalSpacer);
+        effectsSidebarLayout->addItem(verticalSpacer);
 
 
-        horizontalLayout->addWidget(frame_2);
+        horizontalLayout->addWidget(settingsSidebarWidget);
 
-        MainWindow->setCentralWidget(centralwidget);
+        EffectsSideBarWidget = new QWidget(centralwidget);
+        EffectsSideBarWidget->setObjectName("EffectsSideBarWidget");
+        EffectsSideBarWidget->setMaximumSize(QSize(150, 16777215));
+        verticalLayout_6 = new QVBoxLayout(EffectsSideBarWidget);
+        verticalLayout_6->setObjectName("verticalLayout_6");
+        verticalLayout_6->setContentsMargins(0, 0, 0, 0);
+        horizontalLayout_9 = new QHBoxLayout();
+        horizontalLayout_9->setSpacing(0);
+        horizontalLayout_9->setObjectName("horizontalLayout_9");
+        horizontalLayout_9->setContentsMargins(-1, -1, -1, 0);
+        settingsHideButton = new QPushButton(EffectsSideBarWidget);
+        settingsHideButton->setObjectName("settingsHideButton");
+        settingsHideButton->setMinimumSize(QSize(30, 30));
+        settingsHideButton->setMaximumSize(QSize(30, 30));
+        settingsHideButton->setIcon(icon);
 
-        retranslateUi(MainWindow);
-        QObject::connect(max, &QPushButton::clicked, frame_3, qOverload<>(&QFrame::show));
-        QObject::connect(max, &QPushButton::clicked, frame_2, qOverload<>(&QFrame::hide));
-        QObject::connect(min, &QPushButton::clicked, frame_3, qOverload<>(&QFrame::hide));
-        QObject::connect(min, &QPushButton::clicked, frame_2, qOverload<>(&QFrame::show));
+        horizontalLayout_9->addWidget(settingsHideButton);
 
-        stackedWidget->setCurrentIndex(1);
-        inputcombobox->setCurrentIndex(-1);
-        virtualcombobox->setCurrentIndex(-1);
+        effectsSidebarTitle = new QLabel(EffectsSideBarWidget);
+        effectsSidebarTitle->setObjectName("effectsSidebarTitle");
+        effectsSidebarTitle->setMaximumSize(QSize(16777215, 30));
+        effectsSidebarTitle->setFont(font);
+
+        horizontalLayout_9->addWidget(effectsSidebarTitle);
 
 
-        QMetaObject::connectSlotsByName(MainWindow);
+        verticalLayout_6->addLayout(horizontalLayout_9);
+
+        effectsHeaderLayout = new QHBoxLayout();
+        effectsHeaderLayout->setObjectName("effectsHeaderLayout");
+        effectsButtonsLayout = new QVBoxLayout();
+        effectsButtonsLayout->setSpacing(10);
+        effectsButtonsLayout->setObjectName("effectsButtonsLayout");
+        effectsButtonsLayout->setContentsMargins(10, 10, 10, 10);
+        childWidget = new QWidget(EffectsSideBarWidget);
+        childWidget->setObjectName("childWidget");
+        childLayout = new QHBoxLayout(childWidget);
+        childLayout->setObjectName("childLayout");
+        childLayout->setContentsMargins(5, 5, 5, 5);
+        label_2 = new QLabel(childWidget);
+        label_2->setObjectName("label_2");
+        label_2->setMaximumSize(QSize(40, 40));
+        label_2->setPixmap(QPixmap(QString::fromUtf8(":/app/img/app/children.png")));
+        label_2->setScaledContents(true);
+
+        childLayout->addWidget(label_2);
+
+        childButton = new QPushButton(childWidget);
+        childButton->setObjectName("childButton");
+        childButton->setMinimumSize(QSize(50, 30));
+        childButton->setMaximumSize(QSize(50, 30));
+        childButton->setCheckable(true);
+
+        childLayout->addWidget(childButton);
+
+
+        effectsButtonsLayout->addWidget(childWidget);
+
+        caveWidget = new QWidget(EffectsSideBarWidget);
+        caveWidget->setObjectName("caveWidget");
+        caveLayout = new QHBoxLayout(caveWidget);
+        caveLayout->setObjectName("caveLayout");
+        caveLayout->setContentsMargins(5, 5, 5, 5);
+        label_4 = new QLabel(caveWidget);
+        label_4->setObjectName("label_4");
+        label_4->setMinimumSize(QSize(0, 0));
+        label_4->setMaximumSize(QSize(40, 40));
+        label_4->setPixmap(QPixmap(QString::fromUtf8(":/app/img/app/cave.png")));
+        label_4->setScaledContents(true);
+
+        caveLayout->addWidget(label_4);
+
+        caveButton = new QPushButton(caveWidget);
+        caveButton->setObjectName("caveButton");
+        caveButton->setMinimumSize(QSize(50, 30));
+        caveButton->setMaximumSize(QSize(50, 30));
+        caveButton->setCheckable(true);
+
+        caveLayout->addWidget(caveButton);
+
+
+        effectsButtonsLayout->addWidget(caveWidget);
+
+        robotWidget = new QWidget(EffectsSideBarWidget);
+        robotWidget->setObjectName("robotWidget");
+        robotLayout = new QHBoxLayout(robotWidget);
+        robotLayout->setObjectName("robotLayout");
+        robotLayout->setContentsMargins(5, 5, 5, 5);
+        label_5 = new QLabel(robotWidget);
+        label_5->setObjectName("label_5");
+        label_5->setMaximumSize(QSize(40, 40));
+        label_5->setPixmap(QPixmap(QString::fromUtf8(":/app/img/app/robot.png")));
+        label_5->setScaledContents(true);
+
+        robotLayout->addWidget(label_5);
+
+        robotButton = new QPushButton(robotWidget);
+        robotButton->setObjectName("robotButton");
+        robotButton->setMinimumSize(QSize(50, 30));
+        robotButton->setMaximumSize(QSize(50, 30));
+        robotButton->setCheckable(true);
+
+        robotLayout->addWidget(robotButton);
+
+
+        effectsButtonsLayout->addWidget(robotWidget);
+
+        devilWidget = new QWidget(EffectsSideBarWidget);
+        devilWidget->setObjectName("devilWidget");
+        devilLayout = new QHBoxLayout(devilWidget);
+        devilLayout->setObjectName("devilLayout");
+        devilLayout->setContentsMargins(5, 5, 5, 5);
+        label_6 = new QLabel(devilWidget);
+        label_6->setObjectName("label_6");
+        label_6->setMaximumSize(QSize(40, 40));
+        label_6->setPixmap(QPixmap(QString::fromUtf8(":/app/img/app/ogre.png")));
+        label_6->setScaledContents(true);
+
+        devilLayout->addWidget(label_6);
+
+        devilButton = new QPushButton(devilWidget);
+        devilButton->setObjectName("devilButton");
+        devilButton->setMinimumSize(QSize(50, 30));
+        devilButton->setMaximumSize(QSize(50, 30));
+        devilButton->setCheckable(true);
+
+        devilLayout->addWidget(devilButton);
+
+
+        effectsButtonsLayout->addWidget(devilWidget);
+
+        femaleWidget = new QWidget(EffectsSideBarWidget);
+        femaleWidget->setObjectName("femaleWidget");
+        femaleLayout = new QHBoxLayout(femaleWidget);
+        femaleLayout->setObjectName("femaleLayout");
+        femaleLayout->setContentsMargins(5, 5, 5, 5);
+        label_7 = new QLabel(femaleWidget);
+        label_7->setObjectName("label_7");
+        label_7->setMaximumSize(QSize(40, 40));
+        label_7->setPixmap(QPixmap(QString::fromUtf8(":/app/img/app/woman.png")));
+        label_7->setScaledContents(true);
+
+        femaleLayout->addWidget(label_7);
+
+        femaleButton = new QPushButton(femaleWidget);
+        femaleButton->setObjectName("femaleButton");
+        femaleButton->setMinimumSize(QSize(50, 30));
+        femaleButton->setMaximumSize(QSize(50, 30));
+        femaleButton->setCheckable(true);
+
+        femaleLayout->addWidget(femaleButton);
+
+
+        effectsButtonsLayout->addWidget(femaleWidget);
+
+        combineWidget = new QWidget(EffectsSideBarWidget);
+        combineWidget->setObjectName("combineWidget");
+        combineLayout = new QHBoxLayout(combineWidget);
+        combineLayout->setObjectName("combineLayout");
+        combineLayout->setContentsMargins(5, 5, 5, 5);
+        label_10 = new QLabel(combineWidget);
+        label_10->setObjectName("label_10");
+        label_10->setMaximumSize(QSize(40, 40));
+        label_10->setPixmap(QPixmap(QString::fromUtf8(":/app/img/app/lambda.png")));
+        label_10->setScaledContents(true);
+
+        combineLayout->addWidget(label_10);
+
+        combineButton = new QPushButton(combineWidget);
+        combineButton->setObjectName("combineButton");
+        combineButton->setMinimumSize(QSize(50, 30));
+        combineButton->setMaximumSize(QSize(50, 30));
+        combineButton->setCheckable(true);
+
+        combineLayout->addWidget(combineButton);
+
+
+        effectsButtonsLayout->addWidget(combineWidget);
+
+        phaseWidget = new QWidget(EffectsSideBarWidget);
+        phaseWidget->setObjectName("phaseWidget");
+        phaseLayout = new QHBoxLayout(phaseWidget);
+        phaseLayout->setObjectName("phaseLayout");
+        phaseLayout->setContentsMargins(5, 5, 5, 5);
+        label_8 = new QLabel(phaseWidget);
+        label_8->setObjectName("label_8");
+        label_8->setMaximumSize(QSize(40, 40));
+        label_8->setPixmap(QPixmap(QString::fromUtf8(":/app/img/app/phaser.png")));
+        label_8->setScaledContents(true);
+
+        phaseLayout->addWidget(label_8);
+
+        phaseButton = new QPushButton(phaseWidget);
+        phaseButton->setObjectName("phaseButton");
+        phaseButton->setMinimumSize(QSize(50, 30));
+        phaseButton->setMaximumSize(QSize(50, 30));
+        phaseButton->setCheckable(true);
+
+        phaseLayout->addWidget(phaseButton);
+
+
+        effectsButtonsLayout->addWidget(phaseWidget);
+
+        flangerWidget = new QWidget(EffectsSideBarWidget);
+        flangerWidget->setObjectName("flangerWidget");
+        flangerLayout = new QHBoxLayout(flangerWidget);
+        flangerLayout->setObjectName("flangerLayout");
+        flangerLayout->setContentsMargins(5, 5, 5, 5);
+        label_9 = new QLabel(flangerWidget);
+        label_9->setObjectName("label_9");
+        label_9->setMaximumSize(QSize(40, 40));
+        label_9->setPixmap(QPixmap(QString::fromUtf8(":/app/img/app/flanger.png")));
+        label_9->setScaledContents(true);
+
+        flangerLayout->addWidget(label_9);
+
+        flangerButton = new QPushButton(flangerWidget);
+        flangerButton->setObjectName("flangerButton");
+        flangerButton->setMinimumSize(QSize(50, 30));
+        flangerButton->setMaximumSize(QSize(50, 30));
+        flangerButton->setCheckable(true);
+
+        flangerLayout->addWidget(flangerButton);
+
+
+        effectsButtonsLayout->addWidget(flangerWidget);
+
+        verticalSpacer_3 = new QSpacerItem(20, 40, QSizePolicy::Policy::Minimum, QSizePolicy::Policy::Expanding);
+
+        effectsButtonsLayout->addItem(verticalSpacer_3);
+
+
+        effectsHeaderLayout->addLayout(effectsButtonsLayout);
+
+
+        verticalLayout_6->addLayout(effectsHeaderLayout);
+
+
+        horizontalLayout->addWidget(EffectsSideBarWidget);
+
+
+        mainVerticalLayout->addLayout(horizontalLayout);
+
+        VoiceChangerMainWindow->setCentralWidget(centralwidget);
+
+        retranslateUi(VoiceChangerMainWindow);
+        QObject::connect(miniSidebarToggleBtn, &QPushButton::clicked, miniSidebarWidget, qOverload<>(&QWidget::hide));
+        QObject::connect(miniSidebarToggleBtn, &QPushButton::clicked, presetsSidebarWidget, qOverload<>(&QWidget::show));
+        QObject::connect(presetsSidebarHideButton, &QPushButton::clicked, miniSidebarWidget, qOverload<>(&QWidget::show));
+        QObject::connect(presetsSidebarHideButton, &QPushButton::clicked, presetsSidebarWidget, qOverload<>(&QWidget::hide));
+        QObject::connect(toggleEffectsSidebar, &QPushButton::clicked, settingsSidebarWidget, qOverload<>(&QWidget::hide));
+        QObject::connect(toggleEffectsSidebar, &QPushButton::clicked, EffectsSideBarWidget, qOverload<>(&QWidget::show));
+        QObject::connect(settingsHideButton, &QPushButton::clicked, EffectsSideBarWidget, qOverload<>(&QWidget::hide));
+        QObject::connect(settingsHideButton, &QPushButton::clicked, settingsSidebarWidget, qOverload<>(&QWidget::show));
+
+        QMetaObject::connectSlotsByName(VoiceChangerMainWindow);
     } // setupUi
 
-    void retranslateUi(QMainWindow *MainWindow)
+    void retranslateUi(QMainWindow *VoiceChangerMainWindow)
     {
-        MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "Voice Changer", nullptr));
-        save1->setText(QCoreApplication::translate("MainWindow", "s1", nullptr));
-        load1->setText(QCoreApplication::translate("MainWindow", "l1", nullptr));
-        save2->setText(QCoreApplication::translate("MainWindow", "s2", nullptr));
-        load2->setText(QCoreApplication::translate("MainWindow", "l2", nullptr));
-        savee3->setText(QCoreApplication::translate("MainWindow", "s3", nullptr));
-        load3->setText(QCoreApplication::translate("MainWindow", "l3", nullptr));
-        save4->setText(QCoreApplication::translate("MainWindow", "s4", nullptr));
-        load4->setText(QCoreApplication::translate("MainWindow", "l4", nullptr));
-        save5->setText(QCoreApplication::translate("MainWindow", "s5", nullptr));
-        load5->setText(QCoreApplication::translate("MainWindow", "l5", nullptr));
-        confirmB->setText(QCoreApplication::translate("MainWindow", "OK", nullptr));
-        ExitB->setText(QCoreApplication::translate("MainWindow", "Exit", nullptr));
-        sound1->setText(QString());
-        sound2->setText(QString());
-        sound3->setText(QString());
-        sound4->setText(QString());
-        sound5->setText(QString());
-        delete1->setText(QString());
-        delete2->setText(QString());
-        delete3->setText(QString());
-        delete4->setText(QString());
-        delete5->setText(QString());
-        sound6->setText(QString());
-        sound7->setText(QString());
-        sound8->setText(QString());
-        sound9->setText(QString());
-        sound10->setText(QString());
-        delete6->setText(QString());
-        delete7->setText(QString());
-        delete8->setText(QString());
-        delete9->setText(QString());
-        delete10->setText(QString());
-        sound11->setText(QString());
-        sound12->setText(QString());
-        sound13->setText(QString());
-        sound14->setText(QString());
-        sound15->setText(QString());
-        delete11->setText(QString());
-        delete12->setText(QString());
-        delete13->setText(QString());
-        delete14->setText(QString());
-        delete15->setText(QString());
-        sound16->setText(QString());
-        sound17->setText(QString());
-        sound18->setText(QString());
-        sound19->setText(QString());
-        sound20->setText(QString());
-        delete16->setText(QString());
-        delete17->setText(QString());
-        delete18->setText(QString());
-        delete19->setText(QString());
-        delete20->setText(QString());
-        min->setText(QString());
-        groupBox->setTitle(QCoreApplication::translate("MainWindow", "Input Device", nullptr));
-        refreshInput->setText(QString());
-        inputlabel->setText(QCoreApplication::translate("MainWindow", "100", nullptr));
+        VoiceChangerMainWindow->setWindowTitle(QCoreApplication::translate("VoiceChangerMainWindow", "Voice Changer", nullptr));
+        titleBar->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QWidget#titleBar {\n"
+"    background: qlineargradient(\n"
+"        x1:0, y1:0,\n"
+"        x2:0, y2:1,\n"
+"        stop:0 #2B2A35,\n"
+"        stop:1 #1C1B24\n"
+"    );\n"
+"    border-bottom: 1px solid #363540;\n"
+"}", nullptr));
+        iconLabel->setText(QString());
+        appTitle->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QLabel {\n"
+"    color: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #00ff88, stop:1 #00cc66);\n"
+"    padding: 5px;\n"
+"}", nullptr));
+        appTitle->setText(QCoreApplication::translate("VoiceChangerMainWindow", "Voice Changer", nullptr));
+        minimizeButton->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background: transparent;\n"
+"    border: none;\n"
+"    color: #EDEEFF;\n"
+"    font-size: 16px;\n"
+"    font-weight: bold;\n"
+"    border-radius: 0px;\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"    background: rgba(255, 193, 7, 0.4);\n"
+"}", nullptr));
+        minimizeButton->setText(QCoreApplication::translate("VoiceChangerMainWindow", "\342\210\222", nullptr));
+        maximizeButton->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background: transparent;\n"
+"    border: none;\n"
+"    color: #EDEEFF;\n"
+"    font-size: 16px;\n"
+"    font-weight: bold;\n"
+"    border-radius: 0px;\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"    background: rgba(40, 167, 69, 0.4);\n"
+"}", nullptr));
+        maximizeButton->setText(QCoreApplication::translate("VoiceChangerMainWindow", "\342\226\241", nullptr));
+        closeButton->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background: transparent;\n"
+"    border: none;\n"
+"    color: #EDEEFF;\n"
+"    font-size: 16px;\n"
+"    font-weight: bold;\n"
+"    border-radius: 0px;\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"    background: rgba(220, 53, 69, 1.0);\n"
+"}", nullptr));
+        closeButton->setText(QCoreApplication::translate("VoiceChangerMainWindow", "\303\227", nullptr));
+        miniSidebarToggleBtn->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #404050, stop:0.5 #2c2b35, stop:1 #0a0a0a);\n"
+"    border: 1px solid #202030;\n"
+"    border-radius: 4px;\n"
+"    color: #00ff88;\n"
+"    font-size: 16px;\n"
+"    font-weight: bold;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #5a5a6a, stop:0.5 #363540, stop:1 #1a1a1a);\n"
+"    border: 1px solid #00ff88;\n"
+"}\n"
+"QPushButton:pressed {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #20202a, stop:1 #000000);\n"
+"}", nullptr));
+        miniSidebarToggleBtn->setText(QString());
+        presetsSidebarWidget->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QWidget#presetsSidebarWidget {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a35, stop:0.5 #1c1b25, stop:1 #050505);\n"
+"    border: 2px solid #363540;\n"
+"    border-radius: 8px;\n"
+"    padding: 10px;\n"
+"}", nullptr));
+        presetsSidebarHideButton->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #404050, stop:0.5 #2c2b35, stop:1 #0a0a0a);\n"
+"    border: 2px solid #363540;\n"
+"    border-radius: 6px;\n"
+"    color: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #00ff88, stop:1 #00cc66);\n"
+"    font-size: 14px;\n"
+"    font-weight: bold;\n"
+"    padding: 2px;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #5a5a6a, stop:0.5 #363540, stop:1 #1a1a1a);\n"
+"}\n"
+"QPushButton:pressed {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #20202a, stop:1 #000000);\n"
+"    border-color: #26252f;\n"
+"    color: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #00ff88, stop:1 #00cc66);\n"
+"}", nullptr));
+        presetsSidebarHideButton->setText(QString());
+        presetLabel->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QLabel {\n"
+"    color: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #00ff88, stop:1 #00cc66);\n"
+"    padding: 10px 5px 5px 5px;\n"
+"}", nullptr));
+        presetLabel->setText(QCoreApplication::translate("VoiceChangerMainWindow", "Presets", nullptr));
+        preset1Widget->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QWidget#preset1Widget {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);\n"
+"    border: 1px solid #363540;\n"
+"    border-radius: 8px;\n"
+"}", nullptr));
+        savePreset1->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #404050, stop:0.5 #2c2b35, stop:1 #0a0a0a);\n"
+"    border: 2px solid #363540;\n"
+"    border-radius: 6px;\n"
+"    color: white;\n"
+"    font-size: 11px;\n"
+"    font-weight: bold;\n"
+"    padding: 5px;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #5a5a6a, stop:0.5 #363540, stop:1 #1a1a1a);\n"
+"}\n"
+"QPushButton:pressed {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #20202a, stop:1 #000000);\n"
+"    border-color: #26252f;\n"
+"}", nullptr));
+        savePreset1->setText(QCoreApplication::translate("VoiceChangerMainWindow", "Save Preset 1", nullptr));
+        loadPreset1->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #404050, stop:0.5 #2c2b35, stop:1 #0a0a0a);\n"
+"    border: 2px solid #363540;\n"
+"    border-radius: 6px;\n"
+"    color: white;\n"
+"    font-size: 11px;\n"
+"    font-weight: bold;\n"
+"    padding: 5px;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #5a5a6a, stop:0.5 #363540, stop:1 #1a1a1a);\n"
+"}\n"
+"QPushButton:pressed {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #20202a, stop:1 #000000);\n"
+"    border-color: #26252f;\n"
+"}", nullptr));
+        loadPreset1->setText(QCoreApplication::translate("VoiceChangerMainWindow", "Load Preset 1", nullptr));
+        preset2Widget->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QWidget#preset2Widget {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);\n"
+"    border: 1px solid #363540;\n"
+"    border-radius: 8px;\n"
+"}", nullptr));
+        savePreset2->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #404050, stop:0.5 #2c2b35, stop:1 #0a0a0a);\n"
+"    border: 2px solid #363540;\n"
+"    border-radius: 6px;\n"
+"    color: white;\n"
+"    font-size: 11px;\n"
+"    font-weight: bold;\n"
+"    padding: 5px;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #5a5a6a, stop:0.5 #363540, stop:1 #1a1a1a);\n"
+"}\n"
+"QPushButton:pressed {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #20202a, stop:1 #000000);\n"
+"    border-color: #26252f;\n"
+"}", nullptr));
+        savePreset2->setText(QCoreApplication::translate("VoiceChangerMainWindow", "Save Preset 2", nullptr));
+        loadPreset2->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #404050, stop:0.5 #2c2b35, stop:1 #0a0a0a);\n"
+"    border: 2px solid #363540;\n"
+"    border-radius: 6px;\n"
+"    color: white;\n"
+"    font-size: 11px;\n"
+"    font-weight: bold;\n"
+"    padding: 5px;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #5a5a6a, stop:0.5 #363540, stop:1 #1a1a1a);\n"
+"}\n"
+"QPushButton:pressed {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #20202a, stop:1 #000000);\n"
+"    border-color: #26252f;\n"
+"}", nullptr));
+        loadPreset2->setText(QCoreApplication::translate("VoiceChangerMainWindow", "Load Preset 2", nullptr));
+        preset3Widget->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QWidget#preset3Widget {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);\n"
+"    border: 1px solid #363540;\n"
+"    border-radius: 8px;\n"
+"}", nullptr));
+        savePreset3->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #404050, stop:0.5 #2c2b35, stop:1 #0a0a0a);\n"
+"    border: 2px solid #363540;\n"
+"    border-radius: 6px;\n"
+"    color: white;\n"
+"    font-size: 11px;\n"
+"    font-weight: bold;\n"
+"    padding: 5px;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #5a5a6a, stop:0.5 #363540, stop:1 #1a1a1a);\n"
+"}\n"
+"QPushButton:pressed {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #20202a, stop:1 #000000);\n"
+"    border-color: #26252f;\n"
+"}", nullptr));
+        savePreset3->setText(QCoreApplication::translate("VoiceChangerMainWindow", "Save Preset 3", nullptr));
+        loadPreset3->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #404050, stop:0.5 #2c2b35, stop:1 #0a0a0a);\n"
+"    border: 2px solid #363540;\n"
+"    border-radius: 6px;\n"
+"    color: white;\n"
+"    font-size: 11px;\n"
+"    font-weight: bold;\n"
+"    padding: 5px;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #5a5a6a, stop:0.5 #363540, stop:1 #1a1a1a);\n"
+"}\n"
+"QPushButton:pressed {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #20202a, stop:1 #000000);\n"
+"    border-color: #26252f;\n"
+"}", nullptr));
+        loadPreset3->setText(QCoreApplication::translate("VoiceChangerMainWindow", "Load Preset 3", nullptr));
+        preset4Widget->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QWidget#preset4Widget {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);\n"
+"    border: 1px solid #363540;\n"
+"    border-radius: 8px;\n"
+"}", nullptr));
+        savePreset4->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #404050, stop:0.5 #2c2b35, stop:1 #0a0a0a);\n"
+"    border: 2px solid #363540;\n"
+"    border-radius: 6px;\n"
+"    color: white;\n"
+"    font-size: 11px;\n"
+"    font-weight: bold;\n"
+"    padding: 5px;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #5a5a6a, stop:0.5 #363540, stop:1 #1a1a1a);\n"
+"}\n"
+"QPushButton:pressed {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #20202a, stop:1 #000000);\n"
+"    border-color: #26252f;\n"
+"}", nullptr));
+        savePreset4->setText(QCoreApplication::translate("VoiceChangerMainWindow", "Save Preset 4", nullptr));
+        loadPreset4->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #404050, stop:0.5 #2c2b35, stop:1 #0a0a0a);\n"
+"    border: 2px solid #363540;\n"
+"    border-radius: 6px;\n"
+"    color: white;\n"
+"    font-size: 11px;\n"
+"    font-weight: bold;\n"
+"    padding: 5px;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #5a5a6a, stop:0.5 #363540, stop:1 #1a1a1a);\n"
+"}\n"
+"QPushButton:pressed {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #20202a, stop:1 #000000);\n"
+"    border-color: #26252f;\n"
+"}", nullptr));
+        loadPreset4->setText(QCoreApplication::translate("VoiceChangerMainWindow", "Load Preset 4", nullptr));
+        preset5Widget->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QWidget#preset5Widget {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);\n"
+"    border: 1px solid #363540;\n"
+"    border-radius: 8px;\n"
+"}", nullptr));
+        savePreset5->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #404050, stop:0.5 #2c2b35, stop:1 #0a0a0a);\n"
+"    border: 2px solid #363540;\n"
+"    border-radius: 6px;\n"
+"    color: white;\n"
+"    font-size: 11px;\n"
+"    font-weight: bold;\n"
+"    padding: 5px;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #5a5a6a, stop:0.5 #363540, stop:1 #1a1a1a);\n"
+"}\n"
+"QPushButton:pressed {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #20202a, stop:1 #000000);\n"
+"    border-color: #26252f;\n"
+"}", nullptr));
+        savePreset5->setText(QCoreApplication::translate("VoiceChangerMainWindow", "Save Preset 5", nullptr));
+        loadPreset5->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #404050, stop:0.5 #2c2b35, stop:1 #0a0a0a);\n"
+"    border: 2px solid #363540;\n"
+"    border-radius: 6px;\n"
+"    color: white;\n"
+"    font-size: 11px;\n"
+"    font-weight: bold;\n"
+"    padding: 5px;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #5a5a6a, stop:0.5 #363540, stop:1 #1a1a1a);\n"
+"}\n"
+"QPushButton:pressed {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #20202a, stop:1 #000000);\n"
+"    border-color: #26252f;\n"
+"}", nullptr));
+        loadPreset5->setText(QCoreApplication::translate("VoiceChangerMainWindow", "Load Preset 5", nullptr));
+        preset6Widget->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QWidget#preset6Widget {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);\n"
+"    border: 1px solid #363540;\n"
+"    border-radius: 8px;\n"
+"}", nullptr));
+        savePreset6->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #404050, stop:0.5 #2c2b35, stop:1 #0a0a0a);\n"
+"    border: 2px solid #363540;\n"
+"    border-radius: 6px;\n"
+"    color: white;\n"
+"    font-size: 11px;\n"
+"    font-weight: bold;\n"
+"    padding: 5px;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #5a5a6a, stop:0.5 #363540, stop:1 #1a1a1a);\n"
+"}\n"
+"QPushButton:pressed {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #20202a, stop:1 #000000);\n"
+"    border-color: #26252f;\n"
+"}", nullptr));
+        savePreset6->setText(QCoreApplication::translate("VoiceChangerMainWindow", "Save Preset 6", nullptr));
+        loadPreset6->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #404050, stop:0.5 #2c2b35, stop:1 #0a0a0a);\n"
+"    border: 2px solid #363540;\n"
+"    border-radius: 6px;\n"
+"    color: white;\n"
+"    font-size: 11px;\n"
+"    font-weight: bold;\n"
+"    padding: 5px;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #5a5a6a, stop:0.5 #363540, stop:1 #1a1a1a);\n"
+"}\n"
+"QPushButton:pressed {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #20202a, stop:1 #000000);\n"
+"    border-color: #26252f;\n"
+"}", nullptr));
+        loadPreset6->setText(QCoreApplication::translate("VoiceChangerMainWindow", "Load Preset 6", nullptr));
+        preset7Widget->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QWidget#preset7Widget {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);\n"
+"    border: 1px solid #363540;\n"
+"    border-radius: 8px;\n"
+"}", nullptr));
+        savePreset7->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #404050, stop:0.5 #2c2b35, stop:1 #0a0a0a);\n"
+"    border: 2px solid #363540;\n"
+"    border-radius: 6px;\n"
+"    color: white;\n"
+"    font-size: 11px;\n"
+"    font-weight: bold;\n"
+"    padding: 5px;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #5a5a6a, stop:0.5 #363540, stop:1 #1a1a1a);\n"
+"}\n"
+"QPushButton:pressed {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #20202a, stop:1 #000000);\n"
+"    border-color: #26252f;\n"
+"}", nullptr));
+        savePreset7->setText(QCoreApplication::translate("VoiceChangerMainWindow", "Save Preset 7", nullptr));
+        loadPreset7->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #404050, stop:0.5 #2c2b35, stop:1 #0a0a0a);\n"
+"    border: 2px solid #363540;\n"
+"    border-radius: 6px;\n"
+"    color: white;\n"
+"    font-size: 11px;\n"
+"    font-weight: bold;\n"
+"    padding: 5px;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #5a5a6a, stop:0.5 #363540, stop:1 #1a1a1a);\n"
+"}\n"
+"QPushButton:pressed {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #20202a, stop:1 #000000);\n"
+"    border-color: #26252f;\n"
+"}", nullptr));
+        loadPreset7->setText(QCoreApplication::translate("VoiceChangerMainWindow", "Load Preset 7", nullptr));
+        preset8Widget->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QWidget#preset8Widget {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);\n"
+"    border: 1px solid #363540;\n"
+"    border-radius: 8px;\n"
+"}", nullptr));
+        savePreset8->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #404050, stop:0.5 #2c2b35, stop:1 #0a0a0a);\n"
+"    border: 2px solid #363540;\n"
+"    border-radius: 6px;\n"
+"    color: white;\n"
+"    font-size: 11px;\n"
+"    font-weight: bold;\n"
+"    padding: 5px;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #5a5a6a, stop:0.5 #363540, stop:1 #1a1a1a);\n"
+"}\n"
+"QPushButton:pressed {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #20202a, stop:1 #000000);\n"
+"    border-color: #26252f;\n"
+"}", nullptr));
+        savePreset8->setText(QCoreApplication::translate("VoiceChangerMainWindow", "Save Preset 8", nullptr));
+        loadPreset8->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #404050, stop:0.5 #2c2b35, stop:1 #0a0a0a);\n"
+"    border: 2px solid #363540;\n"
+"    border-radius: 6px;\n"
+"    color: white;\n"
+"    font-size: 11px;\n"
+"    font-weight: bold;\n"
+"    padding: 5px;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #5a5a6a, stop:0.5 #363540, stop:1 #1a1a1a);\n"
+"}\n"
+"QPushButton:pressed {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #20202a, stop:1 #000000);\n"
+"    border-color: #26252f;\n"
+"}", nullptr));
+        loadPreset8->setText(QCoreApplication::translate("VoiceChangerMainWindow", "Load Preset 8", nullptr));
+        slotsWidget->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QWidget#slotsWidget {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #404050, stop:0.5 #2c2b35, stop:1 #0a0a0a);\n"
+"    border: 2px solid #363540;\n"
+"    border-radius: 8px;\n"
+"    padding: 10px;\n"
+"}", nullptr));
+        label->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QLabel {\n"
+"    color: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #00ff88, stop:1 #00cc66);\n"
+"}", nullptr));
+        label->setText(QCoreApplication::translate("VoiceChangerMainWindow", "  Voice Slots", nullptr));
+        slot5Widget->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QWidget#slot5Widget {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);\n"
+"    border: 1px solid #363540;\n"
+"    border-radius: 8px;\n"
+"}", nullptr));
+        slot5->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #303040, stop:0.5 #1a1a2a, stop:1 #000010);\n"
+"    border: 2px solid #202030;\n"
+"    border-radius: 12px;\n"
+"    color: white;\n"
+"    font-size: 14px;\n"
+"    font-weight: bold;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}\n"
+"QPushButton:pressed {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #101020, stop:0.5 #0a0a1a, stop:1 #000000);\n"
+"    border-color: #1a1a2a;\n"
+"}", nullptr));
+        slot5->setText(QString());
+        slot5Hotkey->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QComboBox {\n"
+"    background: #2f2f2f;\n"
+"    border-radius: 8px;\n"
+"    border: 1px solid #3a3a3a;\n"
+"    padding: 2px 8px;\n"
+"    color: white;\n"
+"}\n"
+"\n"
+"QComboBox:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}\n"
+"\n"
+"QComboBox::drop-down {\n"
+"    border: none;\n"
+"    width: 18px;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView {\n"
+"    background: #2a2a2a;\n"
+"    border: 1px solid #00ff88;\n"
+"    selection-background-color: #00ff88;\n"
+"    selection-color: #000000;\n"
+"    color: white;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView::item {\n"
+"    padding: 5px 10px;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView::item:selected {\n"
+"    background: #00ff88;\n"
+"    color: #000000;\n"
+"}\n"
+"\n"
+"QScrollBar:vertical {\n"
+"    background: #2a2a2a;\n"
+"    width: 8px;\n"
+"    border-radius: 4px;\n"
+"}\n"
+"\n"
+"QScrollBar::handle:vertical {\n"
+"    background: #00ff88;\n"
+"    border-radius: 4px;\n"
+"    min-height: 20px;\n"
+"}\n"
+"\n"
+"QScrollBar::handle:vertical:hover {\n"
+"    background: #00cc66;\n"
+""
+                        "}", nullptr));
+        slot5Delete->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background-color: #e74c3c;\n"
+"    border: none;\n"
+"    border-radius: 12px;\n"
+"    color: white;\n"
+"    font-size: 12px;\n"
+"    font-weight: bold;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}", nullptr));
+        slot5Delete->setText(QString());
+        slot7Widget->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QWidget#slot7Widget {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);\n"
+"    border: 1px solid #363540;\n"
+"    border-radius: 8px;\n"
+"}", nullptr));
+        slot7->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #303040, stop:0.5 #1a1a2a, stop:1 #000010);\n"
+"    border: 2px solid #202030;\n"
+"    border-radius: 12px;\n"
+"    color: white;\n"
+"    font-size: 14px;\n"
+"    font-weight: bold;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}\n"
+"QPushButton:pressed {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #101020, stop:0.5 #0a0a1a, stop:1 #000000);\n"
+"    border-color: #1a1a2a;\n"
+"}", nullptr));
+        slot7->setText(QString());
+        slot7Hotkey->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QComboBox {\n"
+"    background: #2f2f2f;\n"
+"    border-radius: 8px;\n"
+"    border: 1px solid #3a3a3a;\n"
+"    padding: 2px 8px;\n"
+"    color: white;\n"
+"}\n"
+"\n"
+"QComboBox:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}\n"
+"\n"
+"QComboBox::drop-down {\n"
+"    border: none;\n"
+"    width: 18px;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView {\n"
+"    background: #2a2a2a;\n"
+"    border: 1px solid #00ff88;\n"
+"    selection-background-color: #00ff88;\n"
+"    selection-color: #000000;\n"
+"    color: white;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView::item {\n"
+"    padding: 5px 10px;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView::item:selected {\n"
+"    background: #00ff88;\n"
+"    color: #000000;\n"
+"}\n"
+"\n"
+"QScrollBar:vertical {\n"
+"    background: #2a2a2a;\n"
+"    width: 8px;\n"
+"    border-radius: 4px;\n"
+"}\n"
+"\n"
+"QScrollBar::handle:vertical {\n"
+"    background: #00ff88;\n"
+"    border-radius: 4px;\n"
+"    min-height: 20px;\n"
+"}\n"
+"\n"
+"QScrollBar::handle:vertical:hover {\n"
+"    background: #00cc66;\n"
+""
+                        "}", nullptr));
+        slot7Delete->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background-color: #e74c3c;\n"
+"    border: none;\n"
+"    border-radius: 12px;\n"
+"    color: white;\n"
+"    font-size: 12px;\n"
+"    font-weight: bold;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}", nullptr));
+        slot7Delete->setText(QString());
+        slot4Widget->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QWidget#slot4Widget {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);\n"
+"    border: 1px solid #363540;\n"
+"    border-radius: 8px;\n"
+"}", nullptr));
+        slot4->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #303040, stop:0.5 #1a1a2a, stop:1 #000010);\n"
+"    border: 2px solid #202030;\n"
+"    border-radius: 12px;\n"
+"    color: white;\n"
+"    font-size: 14px;\n"
+"    font-weight: bold;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}\n"
+"QPushButton:pressed {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #101020, stop:0.5 #0a0a1a, stop:1 #000000);\n"
+"    border-color: #1a1a2a;\n"
+"}", nullptr));
+        slot4->setText(QString());
+        slot4Hotkey->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QComboBox {\n"
+"    background: #2f2f2f;\n"
+"    border-radius: 8px;\n"
+"    border: 1px solid #3a3a3a;\n"
+"    padding: 2px 8px;\n"
+"    color: white;\n"
+"}\n"
+"\n"
+"QComboBox:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}\n"
+"\n"
+"QComboBox::drop-down {\n"
+"    border: none;\n"
+"    width: 18px;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView {\n"
+"    background: #2a2a2a;\n"
+"    border: 1px solid #00ff88;\n"
+"    selection-background-color: #00ff88;\n"
+"    selection-color: #000000;\n"
+"    color: white;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView::item {\n"
+"    padding: 5px 10px;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView::item:selected {\n"
+"    background: #00ff88;\n"
+"    color: #000000;\n"
+"}\n"
+"\n"
+"QScrollBar:vertical {\n"
+"    background: #2a2a2a;\n"
+"    width: 8px;\n"
+"    border-radius: 4px;\n"
+"}\n"
+"\n"
+"QScrollBar::handle:vertical {\n"
+"    background: #00ff88;\n"
+"    border-radius: 4px;\n"
+"    min-height: 20px;\n"
+"}\n"
+"\n"
+"QScrollBar::handle:vertical:hover {\n"
+"    background: #00cc66;\n"
+""
+                        "}", nullptr));
+        slot4Delete->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background-color: #e74c3c;\n"
+"    border: none;\n"
+"    border-radius: 12px;\n"
+"    color: white;\n"
+"    font-size: 12px;\n"
+"    font-weight: bold;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}", nullptr));
+        slot4Delete->setText(QString());
+        slot15Widget->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QWidget#slot15Widget {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);\n"
+"    border: 1px solid #363540;\n"
+"    border-radius: 8px;\n"
+"}", nullptr));
+        slot15->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #303040, stop:0.5 #1a1a2a, stop:1 #000010);\n"
+"    border: 2px solid #202030;\n"
+"    border-radius: 12px;\n"
+"    color: white;\n"
+"    font-size: 14px;\n"
+"    font-weight: bold;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}\n"
+"QPushButton:pressed {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #101020, stop:0.5 #0a0a1a, stop:1 #000000);\n"
+"    border-color: #1a1a2a;\n"
+"}", nullptr));
+        slot15->setText(QCoreApplication::translate("VoiceChangerMainWindow", "+", nullptr));
+        slot15Hotkey->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QComboBox {\n"
+"    background: #2f2f2f;\n"
+"    border-radius: 8px;\n"
+"    border: 1px solid #3a3a3a;\n"
+"    padding: 2px 8px;\n"
+"    color: white;\n"
+"}\n"
+"\n"
+"QComboBox:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}\n"
+"\n"
+"QComboBox::drop-down {\n"
+"    border: none;\n"
+"    width: 18px;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView {\n"
+"    background: #2a2a2a;\n"
+"    border: 1px solid #00ff88;\n"
+"    selection-background-color: #00ff88;\n"
+"    selection-color: #000000;\n"
+"    color: white;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView::item {\n"
+"    padding: 5px 10px;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView::item:selected {\n"
+"    background: #00ff88;\n"
+"    color: #000000;\n"
+"}\n"
+"\n"
+"QScrollBar:vertical {\n"
+"    background: #2a2a2a;\n"
+"    width: 8px;\n"
+"    border-radius: 4px;\n"
+"}\n"
+"\n"
+"QScrollBar::handle:vertical {\n"
+"    background: #00ff88;\n"
+"    border-radius: 4px;\n"
+"    min-height: 20px;\n"
+"}\n"
+"\n"
+"QScrollBar::handle:vertical:hover {\n"
+"    background: #00cc66;\n"
+""
+                        "}", nullptr));
+        slot15Delete->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background-color: #e74c3c;\n"
+"    border: none;\n"
+"    border-radius: 12px;\n"
+"    color: white;\n"
+"    font-size: 12px;\n"
+"    font-weight: bold;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}", nullptr));
+        slot15Delete->setText(QString());
+        slot19Widget->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QWidget#slot19Widget {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);\n"
+"    border: 1px solid #363540;\n"
+"    border-radius: 8px;\n"
+"}", nullptr));
+        slot19->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #303040, stop:0.5 #1a1a2a, stop:1 #000010);\n"
+"    border: 2px solid #202030;\n"
+"    border-radius: 12px;\n"
+"    color: white;\n"
+"    font-size: 14px;\n"
+"    font-weight: bold;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}\n"
+"QPushButton:pressed {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #101020, stop:0.5 #0a0a1a, stop:1 #000000);\n"
+"    border-color: #1a1a2a;\n"
+"}", nullptr));
+        slot19->setText(QCoreApplication::translate("VoiceChangerMainWindow", "+", nullptr));
+        slot19Hotkey->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QComboBox {\n"
+"    background: #2f2f2f;\n"
+"    border-radius: 8px;\n"
+"    border: 1px solid #3a3a3a;\n"
+"    padding: 2px 8px;\n"
+"    color: white;\n"
+"}\n"
+"\n"
+"QComboBox:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}\n"
+"\n"
+"QComboBox::drop-down {\n"
+"    border: none;\n"
+"    width: 18px;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView {\n"
+"    background: #2a2a2a;\n"
+"    border: 1px solid #00ff88;\n"
+"    selection-background-color: #00ff88;\n"
+"    selection-color: #000000;\n"
+"    color: white;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView::item {\n"
+"    padding: 5px 10px;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView::item:selected {\n"
+"    background: #00ff88;\n"
+"    color: #000000;\n"
+"}\n"
+"\n"
+"QScrollBar:vertical {\n"
+"    background: #2a2a2a;\n"
+"    width: 8px;\n"
+"    border-radius: 4px;\n"
+"}\n"
+"\n"
+"QScrollBar::handle:vertical {\n"
+"    background: #00ff88;\n"
+"    border-radius: 4px;\n"
+"    min-height: 20px;\n"
+"}\n"
+"\n"
+"QScrollBar::handle:vertical:hover {\n"
+"    background: #00cc66;\n"
+""
+                        "}", nullptr));
+        slot19Delete->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background-color: #e74c3c;\n"
+"    border: none;\n"
+"    border-radius: 12px;\n"
+"    color: white;\n"
+"    font-size: 12px;\n"
+"    font-weight: bold;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}", nullptr));
+        slot14Widget->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QWidget#slot14Widget {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);\n"
+"    border: 1px solid #363540;\n"
+"    border-radius: 8px;\n"
+"}", nullptr));
+        slot14->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #303040, stop:0.5 #1a1a2a, stop:1 #000010);\n"
+"    border: 2px solid #202030;\n"
+"    border-radius: 12px;\n"
+"    color: white;\n"
+"    font-size: 14px;\n"
+"    font-weight: bold;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}\n"
+"QPushButton:pressed {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #101020, stop:0.5 #0a0a1a, stop:1 #000000);\n"
+"    border-color: #1a1a2a;\n"
+"}", nullptr));
+        slot14->setText(QCoreApplication::translate("VoiceChangerMainWindow", "+", nullptr));
+        slot14Hotkey->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QComboBox {\n"
+"    background: #2f2f2f;\n"
+"    border-radius: 8px;\n"
+"    border: 1px solid #3a3a3a;\n"
+"    padding: 2px 8px;\n"
+"    color: white;\n"
+"}\n"
+"\n"
+"QComboBox:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}\n"
+"\n"
+"QComboBox::drop-down {\n"
+"    border: none;\n"
+"    width: 18px;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView {\n"
+"    background: #2a2a2a;\n"
+"    border: 1px solid #00ff88;\n"
+"    selection-background-color: #00ff88;\n"
+"    selection-color: #000000;\n"
+"    color: white;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView::item {\n"
+"    padding: 5px 10px;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView::item:selected {\n"
+"    background: #00ff88;\n"
+"    color: #000000;\n"
+"}\n"
+"\n"
+"QScrollBar:vertical {\n"
+"    background: #2a2a2a;\n"
+"    width: 8px;\n"
+"    border-radius: 4px;\n"
+"}\n"
+"\n"
+"QScrollBar::handle:vertical {\n"
+"    background: #00ff88;\n"
+"    border-radius: 4px;\n"
+"    min-height: 20px;\n"
+"}\n"
+"\n"
+"QScrollBar::handle:vertical:hover {\n"
+"    background: #00cc66;\n"
+""
+                        "}", nullptr));
+        slot14Delete->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background-color: #e74c3c;\n"
+"    border: none;\n"
+"    border-radius: 12px;\n"
+"    color: white;\n"
+"    font-size: 12px;\n"
+"    font-weight: bold;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}", nullptr));
+        slot14Delete->setText(QString());
+        slot12Widget->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QWidget#slot12Widget {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);\n"
+"    border: 1px solid #363540;\n"
+"    border-radius: 8px;\n"
+"}", nullptr));
+        slot12->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #303040, stop:0.5 #1a1a2a, stop:1 #000010);\n"
+"    border: 2px solid #202030;\n"
+"    border-radius: 12px;\n"
+"    color: white;\n"
+"    font-size: 14px;\n"
+"    font-weight: bold;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}\n"
+"QPushButton:pressed {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #101020, stop:0.5 #0a0a1a, stop:1 #000000);\n"
+"    border-color: #1a1a2a;\n"
+"}", nullptr));
+        slot12->setText(QCoreApplication::translate("VoiceChangerMainWindow", "+", nullptr));
+        slot12Hotkey->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QComboBox {\n"
+"    background: #2f2f2f;\n"
+"    border-radius: 8px;\n"
+"    border: 1px solid #3a3a3a;\n"
+"    padding: 2px 8px;\n"
+"    color: white;\n"
+"}\n"
+"\n"
+"QComboBox:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}\n"
+"\n"
+"QComboBox::drop-down {\n"
+"    border: none;\n"
+"    width: 18px;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView {\n"
+"    background: #2a2a2a;\n"
+"    border: 1px solid #00ff88;\n"
+"    selection-background-color: #00ff88;\n"
+"    selection-color: #000000;\n"
+"    color: white;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView::item {\n"
+"    padding: 5px 10px;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView::item:selected {\n"
+"    background: #00ff88;\n"
+"    color: #000000;\n"
+"}\n"
+"\n"
+"QScrollBar:vertical {\n"
+"    background: #2a2a2a;\n"
+"    width: 8px;\n"
+"    border-radius: 4px;\n"
+"}\n"
+"\n"
+"QScrollBar::handle:vertical {\n"
+"    background: #00ff88;\n"
+"    border-radius: 4px;\n"
+"    min-height: 20px;\n"
+"}\n"
+"\n"
+"QScrollBar::handle:vertical:hover {\n"
+"    background: #00cc66;\n"
+""
+                        "}", nullptr));
+        slot12Delete->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background-color: #e74c3c;\n"
+"    border: none;\n"
+"    border-radius: 12px;\n"
+"    color: white;\n"
+"    font-size: 12px;\n"
+"    font-weight: bold;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}", nullptr));
+        slot12Delete->setText(QString());
+        slot17Widget->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QWidget#slot17Widget {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);\n"
+"    border: 1px solid #363540;\n"
+"    border-radius: 8px;\n"
+"}", nullptr));
+        slot17->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #303040, stop:0.5 #1a1a2a, stop:1 #000010);\n"
+"    border: 2px solid #202030;\n"
+"    border-radius: 12px;\n"
+"    color: white;\n"
+"    font-size: 14px;\n"
+"    font-weight: bold;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}\n"
+"QPushButton:pressed {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #101020, stop:0.5 #0a0a1a, stop:1 #000000);\n"
+"    border-color: #1a1a2a;\n"
+"}", nullptr));
+        slot17->setText(QCoreApplication::translate("VoiceChangerMainWindow", "+", nullptr));
+        slot17Hotkey->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QComboBox {\n"
+"    background: #2f2f2f;\n"
+"    border-radius: 8px;\n"
+"    border: 1px solid #3a3a3a;\n"
+"    padding: 2px 8px;\n"
+"    color: white;\n"
+"}\n"
+"\n"
+"QComboBox:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}\n"
+"\n"
+"QComboBox::drop-down {\n"
+"    border: none;\n"
+"    width: 18px;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView {\n"
+"    background: #2a2a2a;\n"
+"    border: 1px solid #00ff88;\n"
+"    selection-background-color: #00ff88;\n"
+"    selection-color: #000000;\n"
+"    color: white;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView::item {\n"
+"    padding: 5px 10px;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView::item:selected {\n"
+"    background: #00ff88;\n"
+"    color: #000000;\n"
+"}\n"
+"\n"
+"QScrollBar:vertical {\n"
+"    background: #2a2a2a;\n"
+"    width: 8px;\n"
+"    border-radius: 4px;\n"
+"}\n"
+"\n"
+"QScrollBar::handle:vertical {\n"
+"    background: #00ff88;\n"
+"    border-radius: 4px;\n"
+"    min-height: 20px;\n"
+"}\n"
+"\n"
+"QScrollBar::handle:vertical:hover {\n"
+"    background: #00cc66;\n"
+""
+                        "}", nullptr));
+        slot17Delete->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background-color: #e74c3c;\n"
+"    border: none;\n"
+"    border-radius: 12px;\n"
+"    color: white;\n"
+"    font-size: 12px;\n"
+"    font-weight: bold;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}", nullptr));
+        slot17Delete->setText(QString());
+        slot10Widget->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QWidget#slot10Widget {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);\n"
+"    border: 1px solid #363540;\n"
+"    border-radius: 8px;\n"
+"}", nullptr));
+        slot10->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #303040, stop:0.5 #1a1a2a, stop:1 #000010);\n"
+"    border: 2px solid #202030;\n"
+"    border-radius: 12px;\n"
+"    color: white;\n"
+"    font-size: 14px;\n"
+"    font-weight: bold;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}\n"
+"QPushButton:pressed {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #101020, stop:0.5 #0a0a1a, stop:1 #000000);\n"
+"    border-color: #1a1a2a;\n"
+"}", nullptr));
+        slot10->setText(QString());
+        slot10Hotkey->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QComboBox {\n"
+"    background: #2f2f2f;\n"
+"    border-radius: 8px;\n"
+"    border: 1px solid #3a3a3a;\n"
+"    padding: 2px 8px;\n"
+"    color: white;\n"
+"}\n"
+"\n"
+"QComboBox:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}\n"
+"\n"
+"QComboBox::drop-down {\n"
+"    border: none;\n"
+"    width: 18px;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView {\n"
+"    background: #2a2a2a;\n"
+"    border: 1px solid #00ff88;\n"
+"    selection-background-color: #00ff88;\n"
+"    selection-color: #000000;\n"
+"    color: white;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView::item {\n"
+"    padding: 5px 10px;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView::item:selected {\n"
+"    background: #00ff88;\n"
+"    color: #000000;\n"
+"}\n"
+"\n"
+"QScrollBar:vertical {\n"
+"    background: #2a2a2a;\n"
+"    width: 8px;\n"
+"    border-radius: 4px;\n"
+"}\n"
+"\n"
+"QScrollBar::handle:vertical {\n"
+"    background: #00ff88;\n"
+"    border-radius: 4px;\n"
+"    min-height: 20px;\n"
+"}\n"
+"\n"
+"QScrollBar::handle:vertical:hover {\n"
+"    background: #00cc66;\n"
+""
+                        "}", nullptr));
+        slot10Delete->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background-color: #e74c3c;\n"
+"    border: none;\n"
+"    border-radius: 12px;\n"
+"    color: white;\n"
+"    font-size: 12px;\n"
+"    font-weight: bold;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}", nullptr));
+        slot10Delete->setText(QString());
+        slot3Widget->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QWidget#slot3Widget {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);\n"
+"    border: 1px solid #363540;\n"
+"    border-radius: 8px;\n"
+"}", nullptr));
+        slot3->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #303040, stop:0.5 #1a1a2a, stop:1 #000010);\n"
+"    border: 2px solid #202030;\n"
+"    border-radius: 12px;\n"
+"    color: white;\n"
+"    font-size: 14px;\n"
+"    font-weight: bold;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}\n"
+"QPushButton:pressed {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #101020, stop:0.5 #0a0a1a, stop:1 #000000);\n"
+"    border-color: #1a1a2a;\n"
+"}", nullptr));
+        slot3->setText(QString());
+        slot3Hotkey->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QComboBox {\n"
+"    background: #2f2f2f;\n"
+"    border-radius: 8px;\n"
+"    border: 1px solid #3a3a3a;\n"
+"    padding: 2px 8px;\n"
+"    color: white;\n"
+"}\n"
+"\n"
+"QComboBox:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}\n"
+"\n"
+"QComboBox::drop-down {\n"
+"    border: none;\n"
+"    width: 18px;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView {\n"
+"    background: #2a2a2a;\n"
+"    border: 1px solid #00ff88;\n"
+"    selection-background-color: #00ff88;\n"
+"    selection-color: #000000;\n"
+"    color: white;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView::item {\n"
+"    padding: 5px 10px;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView::item:selected {\n"
+"    background: #00ff88;\n"
+"    color: #000000;\n"
+"}\n"
+"\n"
+"QScrollBar:vertical {\n"
+"    background: #2a2a2a;\n"
+"    width: 8px;\n"
+"    border-radius: 4px;\n"
+"}\n"
+"\n"
+"QScrollBar::handle:vertical {\n"
+"    background: #00ff88;\n"
+"    border-radius: 4px;\n"
+"    min-height: 20px;\n"
+"}\n"
+"\n"
+"QScrollBar::handle:vertical:hover {\n"
+"    background: #00cc66;\n"
+""
+                        "}", nullptr));
+        slot3Delete->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background-color: #e74c3c;\n"
+"    border: none;\n"
+"    border-radius: 12px;\n"
+"    color: white;\n"
+"    font-size: 12px;\n"
+"    font-weight: bold;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}", nullptr));
+        slot3Delete->setText(QString());
+        slot2Widget->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QWidget#slot2Widget {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);\n"
+"    border: 1px solid #363540;\n"
+"    border-radius: 8px;\n"
+"}", nullptr));
+        slot2->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #303040, stop:0.5 #1a1a2a, stop:1 #000010);\n"
+"    border: 2px solid #202030;\n"
+"    border-radius: 12px;\n"
+"    color: white;\n"
+"    font-size: 14px;\n"
+"    font-weight: bold;\n"
+"    icon-size: 96px 96px;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}\n"
+"QPushButton:pressed {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #101020, stop:0.5 #0a0a1a, stop:1 #000000);\n"
+"    border-color: #1a1a2a;\n"
+"}", nullptr));
+        slot2->setText(QString());
+        slot2Hotkey->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QComboBox {\n"
+"    background: #2f2f2f;\n"
+"    border-radius: 8px;\n"
+"    border: 1px solid #3a3a3a;\n"
+"    padding: 2px 8px;\n"
+"    color: white;\n"
+"}\n"
+"\n"
+"QComboBox:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}\n"
+"\n"
+"QComboBox::drop-down {\n"
+"    border: none;\n"
+"    width: 18px;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView {\n"
+"    background: #2a2a2a;\n"
+"    border: 1px solid #00ff88;\n"
+"    selection-background-color: #00ff88;\n"
+"    selection-color: #000000;\n"
+"    color: white;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView::item {\n"
+"    padding: 5px 10px;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView::item:selected {\n"
+"    background: #00ff88;\n"
+"    color: #000000;\n"
+"}\n"
+"\n"
+"QScrollBar:vertical {\n"
+"    background: #2a2a2a;\n"
+"    width: 8px;\n"
+"    border-radius: 4px;\n"
+"}\n"
+"\n"
+"QScrollBar::handle:vertical {\n"
+"    background: #00ff88;\n"
+"    border-radius: 4px;\n"
+"    min-height: 20px;\n"
+"}\n"
+"\n"
+"QScrollBar::handle:vertical:hover {\n"
+"    background: #00cc66;\n"
+""
+                        "}", nullptr));
+        slot2Delete->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background-color: #e74c3c;\n"
+"    border: none;\n"
+"    border-radius: 12px;\n"
+"    color: white;\n"
+"    font-size: 12px;\n"
+"    font-weight: bold;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}", nullptr));
+        slot2Delete->setText(QString());
+        slot6Widget->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QWidget#slot6Widget {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);\n"
+"    border: 1px solid #363540;\n"
+"    border-radius: 8px;\n"
+"}", nullptr));
+        slot6->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #303040, stop:0.5 #1a1a2a, stop:1 #000010);\n"
+"    border: 2px solid #202030;\n"
+"    border-radius: 12px;\n"
+"    color: white;\n"
+"    font-size: 14px;\n"
+"    font-weight: bold;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}\n"
+"QPushButton:pressed {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #101020, stop:0.5 #0a0a1a, stop:1 #000000);\n"
+"    border-color: #1a1a2a;\n"
+"}", nullptr));
+        slot6->setText(QString());
+        slot6Hotkey->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QComboBox {\n"
+"    background: #2f2f2f;\n"
+"    border-radius: 8px;\n"
+"    border: 1px solid #3a3a3a;\n"
+"    padding: 2px 8px;\n"
+"    color: white;\n"
+"}\n"
+"\n"
+"QComboBox:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}\n"
+"\n"
+"QComboBox::drop-down {\n"
+"    border: none;\n"
+"    width: 18px;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView {\n"
+"    background: #2a2a2a;\n"
+"    border: 1px solid #00ff88;\n"
+"    selection-background-color: #00ff88;\n"
+"    selection-color: #000000;\n"
+"    color: white;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView::item {\n"
+"    padding: 5px 10px;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView::item:selected {\n"
+"    background: #00ff88;\n"
+"    color: #000000;\n"
+"}\n"
+"\n"
+"QScrollBar:vertical {\n"
+"    background: #2a2a2a;\n"
+"    width: 8px;\n"
+"    border-radius: 4px;\n"
+"}\n"
+"\n"
+"QScrollBar::handle:vertical {\n"
+"    background: #00ff88;\n"
+"    border-radius: 4px;\n"
+"    min-height: 20px;\n"
+"}\n"
+"\n"
+"QScrollBar::handle:vertical:hover {\n"
+"    background: #00cc66;\n"
+""
+                        "}", nullptr));
+        slot6Delete->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background-color: #e74c3c;\n"
+"    border: none;\n"
+"    border-radius: 12px;\n"
+"    color: white;\n"
+"    font-size: 12px;\n"
+"    font-weight: bold;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}", nullptr));
+        slot6Delete->setText(QString());
+        slot1Widget->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QWidget#slot1Widget {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);\n"
+"    border: 1px solid #363540;\n"
+"    border-radius: 8px;\n"
+"}", nullptr));
+        slot1->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #303040, stop:0.5 #1a1a2a, stop:1 #000010);\n"
+"    border: 2px solid #202030;\n"
+"    border-radius: 12px;\n"
+"    color: white;\n"
+"    font-size: 14px;\n"
+"    font-weight: bold;\n"
+"    icon-size: 96px 96px;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}\n"
+"QPushButton:pressed {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #101020, stop:0.5 #0a0a1a, stop:1 #000000);\n"
+"    border-color: #1a1a2a;\n"
+"}", nullptr));
+        slot1->setText(QString());
+        slot1Hotkey->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QComboBox {\n"
+"    background: #2f2f2f;\n"
+"    border-radius: 8px;\n"
+"    border: 1px solid #3a3a3a;\n"
+"    padding: 2px 8px;\n"
+"    color: white;\n"
+"}\n"
+"\n"
+"QComboBox:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}\n"
+"\n"
+"QComboBox::drop-down {\n"
+"    border: none;\n"
+"    width: 18px;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView {\n"
+"    background: #2a2a2a;\n"
+"    border: 1px solid #00ff88;\n"
+"    selection-background-color: #00ff88;\n"
+"    selection-color: #000000;\n"
+"    color: white;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView::item {\n"
+"    padding: 5px 10px;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView::item:selected {\n"
+"    background: #00ff88;\n"
+"    color: #000000;\n"
+"}\n"
+"\n"
+"QScrollBar:vertical {\n"
+"    background: #2a2a2a;\n"
+"    width: 8px;\n"
+"    border-radius: 4px;\n"
+"}\n"
+"\n"
+"QScrollBar::handle:vertical {\n"
+"    background: #00ff88;\n"
+"    border-radius: 4px;\n"
+"    min-height: 20px;\n"
+"}\n"
+"\n"
+"QScrollBar::handle:vertical:hover {\n"
+"    background: #00cc66;\n"
+""
+                        "}", nullptr));
+        slot1Delete->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background-color: #e74c3c;\n"
+"    border: none;\n"
+"    border-radius: 12px;\n"
+"    color: white;\n"
+"    font-size: 12px;\n"
+"    font-weight: bold;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}", nullptr));
+        slot1Delete->setText(QString());
+        slot8Widget->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QWidget#slot8Widget {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);\n"
+"    border: 1px solid #363540;\n"
+"    border-radius: 8px;\n"
+"}", nullptr));
+        slot8->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #303040, stop:0.5 #1a1a2a, stop:1 #000010);\n"
+"    border: 2px solid #202030;\n"
+"    border-radius: 12px;\n"
+"    color: white;\n"
+"    font-size: 14px;\n"
+"    font-weight: bold;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}\n"
+"QPushButton:pressed {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #101020, stop:0.5 #0a0a1a, stop:1 #000000);\n"
+"    border-color: #1a1a2a;\n"
+"}", nullptr));
+        slot8->setText(QString());
+        slot8Hotkey->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QComboBox {\n"
+"    background: #2f2f2f;\n"
+"    border-radius: 8px;\n"
+"    border: 1px solid #3a3a3a;\n"
+"    padding: 2px 8px;\n"
+"    color: white;\n"
+"}\n"
+"\n"
+"QComboBox:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}\n"
+"\n"
+"QComboBox::drop-down {\n"
+"    border: none;\n"
+"    width: 18px;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView {\n"
+"    background: #2a2a2a;\n"
+"    border: 1px solid #00ff88;\n"
+"    selection-background-color: #00ff88;\n"
+"    selection-color: #000000;\n"
+"    color: white;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView::item {\n"
+"    padding: 5px 10px;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView::item:selected {\n"
+"    background: #00ff88;\n"
+"    color: #000000;\n"
+"}\n"
+"\n"
+"QScrollBar:vertical {\n"
+"    background: #2a2a2a;\n"
+"    width: 8px;\n"
+"    border-radius: 4px;\n"
+"}\n"
+"\n"
+"QScrollBar::handle:vertical {\n"
+"    background: #00ff88;\n"
+"    border-radius: 4px;\n"
+"    min-height: 20px;\n"
+"}\n"
+"\n"
+"QScrollBar::handle:vertical:hover {\n"
+"    background: #00cc66;\n"
+""
+                        "}", nullptr));
+        slot8Delete->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background-color: #e74c3c;\n"
+"    border: none;\n"
+"    border-radius: 12px;\n"
+"    color: white;\n"
+"    font-size: 12px;\n"
+"    font-weight: bold;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}", nullptr));
+        slot8Delete->setText(QString());
+        slot11Widget->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QWidget#slot11Widget {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);\n"
+"    border: 1px solid #363540;\n"
+"    border-radius: 8px;\n"
+"}", nullptr));
+        slot11->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #303040, stop:0.5 #1a1a2a, stop:1 #000010);\n"
+"    border: 2px solid #202030;\n"
+"    border-radius: 12px;\n"
+"    color: white;\n"
+"    font-size: 14px;\n"
+"    font-weight: bold;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}\n"
+"QPushButton:pressed {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #101020, stop:0.5 #0a0a1a, stop:1 #000000);\n"
+"    border-color: #1a1a2a;\n"
+"}", nullptr));
+        slot11->setText(QCoreApplication::translate("VoiceChangerMainWindow", "+", nullptr));
+        slot11Hotkey->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QComboBox {\n"
+"    background: #2f2f2f;\n"
+"    border-radius: 8px;\n"
+"    border: 1px solid #3a3a3a;\n"
+"    padding: 2px 8px;\n"
+"    color: white;\n"
+"}\n"
+"\n"
+"QComboBox:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}\n"
+"\n"
+"QComboBox::drop-down {\n"
+"    border: none;\n"
+"    width: 18px;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView {\n"
+"    background: #2a2a2a;\n"
+"    border: 1px solid #00ff88;\n"
+"    selection-background-color: #00ff88;\n"
+"    selection-color: #000000;\n"
+"    color: white;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView::item {\n"
+"    padding: 5px 10px;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView::item:selected {\n"
+"    background: #00ff88;\n"
+"    color: #000000;\n"
+"}\n"
+"\n"
+"QScrollBar:vertical {\n"
+"    background: #2a2a2a;\n"
+"    width: 8px;\n"
+"    border-radius: 4px;\n"
+"}\n"
+"\n"
+"QScrollBar::handle:vertical {\n"
+"    background: #00ff88;\n"
+"    border-radius: 4px;\n"
+"    min-height: 20px;\n"
+"}\n"
+"\n"
+"QScrollBar::handle:vertical:hover {\n"
+"    background: #00cc66;\n"
+""
+                        "}", nullptr));
+        slot11Delete->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background-color: #e74c3c;\n"
+"    border: none;\n"
+"    border-radius: 12px;\n"
+"    color: white;\n"
+"    font-size: 12px;\n"
+"    font-weight: bold;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}", nullptr));
+        slot11Delete->setText(QString());
+        slot18Widget->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QWidget#slot18Widget {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);\n"
+"    border: 1px solid #363540;\n"
+"    border-radius: 8px;\n"
+"}", nullptr));
+        slot18->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #303040, stop:0.5 #1a1a2a, stop:1 #000010);\n"
+"    border: 2px solid #202030;\n"
+"    border-radius: 12px;\n"
+"    color: white;\n"
+"    font-size: 14px;\n"
+"    font-weight: bold;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}\n"
+"QPushButton:pressed {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #101020, stop:0.5 #0a0a1a, stop:1 #000000);\n"
+"    border-color: #1a1a2a;\n"
+"}", nullptr));
+        slot18->setText(QCoreApplication::translate("VoiceChangerMainWindow", "+", nullptr));
+        slot18Hotkey->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QComboBox {\n"
+"    background: #2f2f2f;\n"
+"    border-radius: 8px;\n"
+"    border: 1px solid #3a3a3a;\n"
+"    padding: 2px 8px;\n"
+"    color: white;\n"
+"}\n"
+"\n"
+"QComboBox:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}\n"
+"\n"
+"QComboBox::drop-down {\n"
+"    border: none;\n"
+"    width: 18px;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView {\n"
+"    background: #2a2a2a;\n"
+"    border: 1px solid #00ff88;\n"
+"    selection-background-color: #00ff88;\n"
+"    selection-color: #000000;\n"
+"    color: white;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView::item {\n"
+"    padding: 5px 10px;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView::item:selected {\n"
+"    background: #00ff88;\n"
+"    color: #000000;\n"
+"}\n"
+"\n"
+"QScrollBar:vertical {\n"
+"    background: #2a2a2a;\n"
+"    width: 8px;\n"
+"    border-radius: 4px;\n"
+"}\n"
+"\n"
+"QScrollBar::handle:vertical {\n"
+"    background: #00ff88;\n"
+"    border-radius: 4px;\n"
+"    min-height: 20px;\n"
+"}\n"
+"\n"
+"QScrollBar::handle:vertical:hover {\n"
+"    background: #00cc66;\n"
+""
+                        "}", nullptr));
+        slot18Delete->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background-color: #e74c3c;\n"
+"    border: none;\n"
+"    border-radius: 12px;\n"
+"    color: white;\n"
+"    font-size: 12px;\n"
+"    font-weight: bold;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}", nullptr));
+        slot18Delete->setText(QString());
+        slot13Widget->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QWidget#slot13Widget {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);\n"
+"    border: 1px solid #363540;\n"
+"    border-radius: 8px;\n"
+"}", nullptr));
+        slot13->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #303040, stop:0.5 #1a1a2a, stop:1 #000010);\n"
+"    border: 2px solid #202030;\n"
+"    border-radius: 12px;\n"
+"    color: white;\n"
+"    font-size: 14px;\n"
+"    font-weight: bold;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}\n"
+"QPushButton:pressed {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #101020, stop:0.5 #0a0a1a, stop:1 #000000);\n"
+"    border-color: #1a1a2a;\n"
+"}", nullptr));
+        slot13->setText(QCoreApplication::translate("VoiceChangerMainWindow", "+", nullptr));
+        slot13Hotkey->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QComboBox {\n"
+"    background: #2f2f2f;\n"
+"    border-radius: 8px;\n"
+"    border: 1px solid #3a3a3a;\n"
+"    padding: 2px 8px;\n"
+"    color: white;\n"
+"}\n"
+"\n"
+"QComboBox:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}\n"
+"\n"
+"QComboBox::drop-down {\n"
+"    border: none;\n"
+"    width: 18px;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView {\n"
+"    background: #2a2a2a;\n"
+"    border: 1px solid #00ff88;\n"
+"    selection-background-color: #00ff88;\n"
+"    selection-color: #000000;\n"
+"    color: white;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView::item {\n"
+"    padding: 5px 10px;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView::item:selected {\n"
+"    background: #00ff88;\n"
+"    color: #000000;\n"
+"}\n"
+"\n"
+"QScrollBar:vertical {\n"
+"    background: #2a2a2a;\n"
+"    width: 8px;\n"
+"    border-radius: 4px;\n"
+"}\n"
+"\n"
+"QScrollBar::handle:vertical {\n"
+"    background: #00ff88;\n"
+"    border-radius: 4px;\n"
+"    min-height: 20px;\n"
+"}\n"
+"\n"
+"QScrollBar::handle:vertical:hover {\n"
+"    background: #00cc66;\n"
+""
+                        "}", nullptr));
+        slot13Delete->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background-color: #e74c3c;\n"
+"    border: none;\n"
+"    border-radius: 12px;\n"
+"    color: white;\n"
+"    font-size: 12px;\n"
+"    font-weight: bold;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}", nullptr));
+        slot13Delete->setText(QString());
+        slot16Widget->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QWidget#slot16Widget {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);\n"
+"    border: 1px solid #363540;\n"
+"    border-radius: 8px;\n"
+"}", nullptr));
+        slot16->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #303040, stop:0.5 #1a1a2a, stop:1 #000010);\n"
+"    border: 2px solid #202030;\n"
+"    border-radius: 12px;\n"
+"    color: white;\n"
+"    font-size: 14px;\n"
+"    font-weight: bold;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}\n"
+"QPushButton:pressed {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #101020, stop:0.5 #0a0a1a, stop:1 #000000);\n"
+"    border-color: #1a1a2a;\n"
+"}", nullptr));
+        slot16->setText(QCoreApplication::translate("VoiceChangerMainWindow", "+", nullptr));
+        slot16Hotkey->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QComboBox {\n"
+"    background: #2f2f2f;\n"
+"    border-radius: 8px;\n"
+"    border: 1px solid #3a3a3a;\n"
+"    padding: 2px 8px;\n"
+"    color: white;\n"
+"}\n"
+"\n"
+"QComboBox:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}\n"
+"\n"
+"QComboBox::drop-down {\n"
+"    border: none;\n"
+"    width: 18px;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView {\n"
+"    background: #2a2a2a;\n"
+"    border: 1px solid #00ff88;\n"
+"    selection-background-color: #00ff88;\n"
+"    selection-color: #000000;\n"
+"    color: white;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView::item {\n"
+"    padding: 5px 10px;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView::item:selected {\n"
+"    background: #00ff88;\n"
+"    color: #000000;\n"
+"}\n"
+"\n"
+"QScrollBar:vertical {\n"
+"    background: #2a2a2a;\n"
+"    width: 8px;\n"
+"    border-radius: 4px;\n"
+"}\n"
+"\n"
+"QScrollBar::handle:vertical {\n"
+"    background: #00ff88;\n"
+"    border-radius: 4px;\n"
+"    min-height: 20px;\n"
+"}\n"
+"\n"
+"QScrollBar::handle:vertical:hover {\n"
+"    background: #00cc66;\n"
+""
+                        "}", nullptr));
+        slot16Delete->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background-color: #e74c3c;\n"
+"    border: none;\n"
+"    border-radius: 12px;\n"
+"    color: white;\n"
+"    font-size: 12px;\n"
+"    font-weight: bold;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}", nullptr));
+        slot16Delete->setText(QString());
+        slot20Widget->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QWidget#slot20Widget {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);\n"
+"    border: 1px solid #363540;\n"
+"    border-radius: 8px;\n"
+"}", nullptr));
+        slot20->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #303040, stop:0.5 #1a1a2a, stop:1 #000010);\n"
+"    border: 2px solid #202030;\n"
+"    border-radius: 12px;\n"
+"    color: white;\n"
+"    font-size: 14px;\n"
+"    font-weight: bold;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}\n"
+"QPushButton:pressed {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #101020, stop:0.5 #0a0a1a, stop:1 #000000);\n"
+"    border-color: #1a1a2a;\n"
+"}", nullptr));
+        slot20->setText(QCoreApplication::translate("VoiceChangerMainWindow", "+", nullptr));
+        slot20Hotkey->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QComboBox {\n"
+"    background: #2f2f2f;\n"
+"    border-radius: 8px;\n"
+"    border: 1px solid #3a3a3a;\n"
+"    padding: 2px 8px;\n"
+"    color: white;\n"
+"}\n"
+"\n"
+"QComboBox:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}\n"
+"\n"
+"QComboBox::drop-down {\n"
+"    border: none;\n"
+"    width: 18px;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView {\n"
+"    background: #2a2a2a;\n"
+"    border: 1px solid #00ff88;\n"
+"    selection-background-color: #00ff88;\n"
+"    selection-color: #000000;\n"
+"    color: white;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView::item {\n"
+"    padding: 5px 10px;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView::item:selected {\n"
+"    background: #00ff88;\n"
+"    color: #000000;\n"
+"}\n"
+"\n"
+"QScrollBar:vertical {\n"
+"    background: #2a2a2a;\n"
+"    width: 8px;\n"
+"    border-radius: 4px;\n"
+"}\n"
+"\n"
+"QScrollBar::handle:vertical {\n"
+"    background: #00ff88;\n"
+"    border-radius: 4px;\n"
+"    min-height: 20px;\n"
+"}\n"
+"\n"
+"QScrollBar::handle:vertical:hover {\n"
+"    background: #00cc66;\n"
+""
+                        "}", nullptr));
+        slot20Delete->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background-color: #e74c3c;\n"
+"    border: none;\n"
+"    border-radius: 12px;\n"
+"    color: white;\n"
+"    font-size: 12px;\n"
+"    font-weight: bold;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}", nullptr));
+        slot20Delete->setText(QString());
+        slot9Widget->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QWidget#slot9Widget {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);\n"
+"    border: 1px solid #363540;\n"
+"    border-radius: 8px;\n"
+"}", nullptr));
+        slot9->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #303040, stop:0.5 #1a1a2a, stop:1 #000010);\n"
+"    border: 2px solid #202030;\n"
+"    border-radius: 12px;\n"
+"    color: white;\n"
+"    font-size: 14px;\n"
+"    font-weight: bold;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}\n"
+"QPushButton:pressed {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #101020, stop:0.5 #0a0a1a, stop:1 #000000);\n"
+"    border-color: #1a1a2a;\n"
+"}", nullptr));
+        slot9->setText(QString());
+        slot9Hotkey->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QComboBox {\n"
+"    background: #2f2f2f;\n"
+"    border-radius: 8px;\n"
+"    border: 1px solid #3a3a3a;\n"
+"    padding: 2px 8px;\n"
+"    color: white;\n"
+"}\n"
+"\n"
+"QComboBox:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}\n"
+"\n"
+"QComboBox::drop-down {\n"
+"    border: none;\n"
+"    width: 18px;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView {\n"
+"    background: #2a2a2a;\n"
+"    border: 1px solid #00ff88;\n"
+"    selection-background-color: #00ff88;\n"
+"    selection-color: #000000;\n"
+"    color: white;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView::item {\n"
+"    padding: 5px 10px;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView::item:selected {\n"
+"    background: #00ff88;\n"
+"    color: #000000;\n"
+"}\n"
+"\n"
+"QScrollBar:vertical {\n"
+"    background: #2a2a2a;\n"
+"    width: 8px;\n"
+"    border-radius: 4px;\n"
+"}\n"
+"\n"
+"QScrollBar::handle:vertical {\n"
+"    background: #00ff88;\n"
+"    border-radius: 4px;\n"
+"    min-height: 20px;\n"
+"}\n"
+"\n"
+"QScrollBar::handle:vertical:hover {\n"
+"    background: #00cc66;\n"
+""
+                        "}", nullptr));
+        slot9Delete->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background-color: #e74c3c;\n"
+"    border: none;\n"
+"    border-radius: 12px;\n"
+"    color: white;\n"
+"    font-size: 12px;\n"
+"    font-weight: bold;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}", nullptr));
+        slot9Delete->setText(QString());
+        settingsLabel->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QLabel {\n"
+"    color: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #00ff88, stop:1 #00cc66);\n"
+"    padding: 10px 5px 5px 5px;\n"
+"}", nullptr));
+        settingsLabel->setText(QCoreApplication::translate("VoiceChangerMainWindow", "Settings", nullptr));
+        toggleEffectsSidebar->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #404050, stop:0.5 #2c2b35, stop:1 #0a0a0a);\n"
+"    border: 2px solid #363540;\n"
+"    border-radius: 6px;\n"
+"    color: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #00ff88, stop:1 #00cc66);\n"
+"    font-size: 14px;\n"
+"    font-weight: bold;\n"
+"    padding: 2px;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"}\n"
+"QPushButton:pressed {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #20202a, stop:1 #000000);\n"
+"    border-color: #26252f;\n"
+"    color: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #00ff88, stop:1 #00cc66);\n"
+"}", nullptr));
+        toggleEffectsSidebar->setText(QString());
+        groupBox->setTitle(QCoreApplication::translate("VoiceChangerMainWindow", "Input Device", nullptr));
+        refreshInpurDevice->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background-color: #27ae60;\n"
+"    color: white;\n"
+"    border: none;\n"
+"    border-radius: 6px;\n"
+"    padding: 8px 12px;\n"
+"    font-weight: bold;\n"
+"    font-size: 11px;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    background-color: #229954;\n"
+"}\n"
+"QPushButton:pressed {\n"
+"    background-color: #1e8449;\n"
+"}", nullptr));
+        groupBox_2->setTitle(QCoreApplication::translate("VoiceChangerMainWindow", "Output Device", nullptr));
+        refreshOutputDevice->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background-color: #27ae60;\n"
+"    color: white;\n"
+"    border: none;\n"
+"    border-radius: 6px;\n"
+"    padding: 8px 12px;\n"
+"    font-weight: bold;\n"
+"    font-size: 11px;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    background-color: #229954;\n"
+"}\n"
+"QPushButton:pressed {\n"
+"    background-color: #1e8449;\n"
+"}", nullptr));
+        refreshOutputDevice->setText(QString());
+        testButton->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background-color: #27ae60;\n"
+"    color: white;\n"
+"    border: none;\n"
+"    border-radius: 6px;\n"
+"    padding: 8px 12px;\n"
+"    font-weight: bold;\n"
+"    font-size: 11px;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    background-color: #229954;\n"
+"}\n"
+"QPushButton:pressed {\n"
+"    background-color: #1e8449;\n"
+"}", nullptr));
         testButton->setText(QString());
-        groupBox_2->setTitle(QCoreApplication::translate("MainWindow", "Test Output", nullptr));
-        refreshOutput->setText(QString());
-        outputlabel->setText(QCoreApplication::translate("MainWindow", "100", nullptr));
-        virtualGroupBox->setTitle(QCoreApplication::translate("MainWindow", "Virtual Input", nullptr));
-        virtualStatusLabel->setText(QCoreApplication::translate("MainWindow", "VB-CABLE Input: Aran\304\261yor...", nullptr));
-        groupBox_4->setTitle(QCoreApplication::translate("MainWindow", "Recording", nullptr));
-        startRecord->setText(QString());
-        stopRecord->setText(QString());
-        max->setText(QString());
-        bananaButton->setText(QCoreApplication::translate("MainWindow", "\303\207ocuk", nullptr));
-        ekoButton->setText(QCoreApplication::translate("MainWindow", "eko", nullptr));
-        robotButton->setText(QCoreApplication::translate("MainWindow", "Robot", nullptr));
-        devilButton->setText(QCoreApplication::translate("MainWindow", "Canavar ", nullptr));
-        femaleButton->setText(QCoreApplication::translate("MainWindow", "kad\304\261n ", nullptr));
-        combineButton->setText(QCoreApplication::translate("MainWindow", "overwatch", nullptr));
-        phaserButton->setText(QCoreApplication::translate("MainWindow", "Phaser", nullptr));
-        flangerButton->setText(QCoreApplication::translate("MainWindow", "Flanger", nullptr));
+        groupBox_3->setTitle(QCoreApplication::translate("VoiceChangerMainWindow", "Virtual Input", nullptr));
+        VirtualDriverButton->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background-color: #27ae60;\n"
+"    color: white;\n"
+"    border: none;\n"
+"    border-radius: 6px;\n"
+"    padding: 8px 12px;\n"
+"    font-weight: bold;\n"
+"    font-size: 11px;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    background-color: #229954;\n"
+"}\n"
+"QPushButton:pressed {\n"
+"    background-color: #1e8449;\n"
+"}", nullptr));
+        VirtualDriverButton->setText(QString());
+        groupBox_5->setTitle(QCoreApplication::translate("VoiceChangerMainWindow", "Recording", nullptr));
+        recordingButton->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background-color: #27ae60;\n"
+"    color: white;\n"
+"    border: none;\n"
+"    border-radius: 6px;\n"
+"    padding: 8px 12px;\n"
+"    font-weight: bold;\n"
+"    font-size: 11px;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    background-color: #229954;\n"
+"}\n"
+"QPushButton:pressed {\n"
+"    background-color: #1e8449;\n"
+"}", nullptr));
+        recordingButton->setText(QCoreApplication::translate("VoiceChangerMainWindow", "\342\227\217", nullptr));
+        EffectsSideBarWidget->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QWidget#EffectsSideBarWidget {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a35, stop:0.5 #1c1b25, stop:1 #050505);\n"
+"    border: 2px solid #363540;\n"
+"    border-radius: 8px;\n"
+"    padding: 10px;\n"
+"}", nullptr));
+        settingsHideButton->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #404050, stop:0.5 #2c2b35, stop:1 #0a0a0a);\n"
+"    border: 2px solid #363540;\n"
+"    border-radius: 6px;\n"
+"    color: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #00ff88, stop:1 #00cc66);\n"
+"    font-size: 14px;\n"
+"    font-weight: bold;\n"
+"    padding: 2px;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #5a5a6a, stop:0.5 #363540, stop:1 #1a1a1a);\n"
+"}\n"
+"QPushButton:pressed {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #20202a, stop:1 #000000);\n"
+"    border-color: #26252f;\n"
+"    color: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #00ff88, stop:1 #00cc66);\n"
+"}", nullptr));
+        settingsHideButton->setText(QString());
+        effectsSidebarTitle->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QLabel {\n"
+"    color: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #00ff88, stop:1 #00cc66);\n"
+"    padding: 10px 5px 5px 5px;\n"
+"}", nullptr));
+        effectsSidebarTitle->setText(QCoreApplication::translate("VoiceChangerMainWindow", "Effects", nullptr));
+        childWidget->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QWidget#childWidget {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);\n"
+"    border: 1px solid #363540;\n"
+"    border-radius: 8px;\n"
+"}", nullptr));
+        label_2->setText(QString());
+        childButton->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton#childButton {\n"
+"    background: qlineargradient(\n"
+"        x1:0, y1:0,\n"
+"        x2:1, y2:0,\n"
+"        stop:0 #2A2D3A,\n"
+"        stop:1 #1E202C\n"
+"    );\n"
+"    border: 2px solid #363540;\n"
+"    border-radius: 15px;\n"
+"    color: transparent;\n"
+"}\n"
+"\n"
+"QPushButton#childButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"    box-shadow: 0 0 10px rgba(0, 255, 136, 0.3);\n"
+"}\n"
+"\n"
+"QPushButton#childButton:checked {\n"
+"    background: qlineargradient(\n"
+"        x1:0, y1:0,\n"
+"        x2:1, y2:0,\n"
+"        stop:0 #006400,\n"
+"        stop:1 #00ff88\n"
+"    );\n"
+"    border-color: #00ff88;\n"
+"}", nullptr));
+        childButton->setText(QString());
+        caveWidget->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QWidget#caveWidget {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);\n"
+"    border: 1px solid #363540;\n"
+"    border-radius: 8px;\n"
+"}", nullptr));
+        label_4->setText(QString());
+        caveButton->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton#caveButton {\n"
+"    background: qlineargradient(\n"
+"        x1:0, y1:0,\n"
+"        x2:1, y2:0,\n"
+"        stop:0 #2A2D3A,\n"
+"        stop:1 #1E202C\n"
+"    );\n"
+"    border: 2px solid #363540;\n"
+"    border-radius: 15px;\n"
+"    color: transparent;\n"
+"}\n"
+"\n"
+"QPushButton#caveButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"    box-shadow: 0 0 10px rgba(0, 255, 136, 0.3);\n"
+"}\n"
+"\n"
+"QPushButton#caveButton:checked {\n"
+"    background: qlineargradient(\n"
+"        x1:0, y1:0,\n"
+"        x2:1, y2:0,\n"
+"        stop:0 #006400,\n"
+"        stop:1 #00ff88\n"
+"    );\n"
+"    border-color: #00ff88;\n"
+"}", nullptr));
+        caveButton->setText(QString());
+        robotWidget->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QWidget#robotWidget {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);\n"
+"    border: 1px solid #363540;\n"
+"    border-radius: 8px;\n"
+"}", nullptr));
+        label_5->setText(QString());
+        robotButton->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton#robotButton {\n"
+"    background: qlineargradient(\n"
+"        x1:0, y1:0,\n"
+"        x2:1, y2:0,\n"
+"        stop:0 #2A2D3A,\n"
+"        stop:1 #1E202C\n"
+"    );\n"
+"    border: 2px solid #363540;\n"
+"    border-radius: 15px;\n"
+"    color: transparent;\n"
+"}\n"
+"\n"
+"QPushButton#robotButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"    box-shadow: 0 0 10px rgba(0, 255, 136, 0.3);\n"
+"}\n"
+"\n"
+"QPushButton#robotButton:checked {\n"
+"    background: qlineargradient(\n"
+"        x1:0, y1:0,\n"
+"        x2:1, y2:0,\n"
+"        stop:0 #006400,\n"
+"        stop:1 #00ff88\n"
+"    );\n"
+"    border-color: #00ff88;\n"
+"}", nullptr));
+        robotButton->setText(QString());
+        devilWidget->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QWidget#devilWidget {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);\n"
+"    border: 1px solid #363540;\n"
+"    border-radius: 8px;\n"
+"}", nullptr));
+        label_6->setText(QString());
+        devilButton->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton#devilButton {\n"
+"    background: qlineargradient(\n"
+"        x1:0, y1:0,\n"
+"        x2:1, y2:0,\n"
+"        stop:0 #2A2D3A,\n"
+"        stop:1 #1E202C\n"
+"    );\n"
+"    border: 2px solid #363540;\n"
+"    border-radius: 15px;\n"
+"    color: transparent;\n"
+"}\n"
+"\n"
+"QPushButton#devilButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"    box-shadow: 0 0 10px rgba(0, 255, 136, 0.3);\n"
+"}\n"
+"\n"
+"QPushButton#devilButton:checked {\n"
+"    background: qlineargradient(\n"
+"        x1:0, y1:0,\n"
+"        x2:1, y2:0,\n"
+"        stop:0 #006400,\n"
+"        stop:1 #00ff88\n"
+"    );\n"
+"    border-color: #00ff88;\n"
+"}", nullptr));
+        devilButton->setText(QString());
+        femaleWidget->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QWidget#femaleWidget {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);\n"
+"    border: 1px solid #363540;\n"
+"    border-radius: 8px;\n"
+"}", nullptr));
+        label_7->setText(QString());
+        femaleButton->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton#femaleButton {\n"
+"    background: qlineargradient(\n"
+"        x1:0, y1:0,\n"
+"        x2:1, y2:0,\n"
+"        stop:0 #2A2D3A,\n"
+"        stop:1 #1E202C\n"
+"    );\n"
+"    border: 2px solid #363540;\n"
+"    border-radius: 15px;\n"
+"    color: transparent;\n"
+"}\n"
+"\n"
+"QPushButton#femaleButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"    box-shadow: 0 0 10px rgba(0, 255, 136, 0.3);\n"
+"}\n"
+"\n"
+"QPushButton#femaleButton:checked {\n"
+"    background: qlineargradient(\n"
+"        x1:0, y1:0,\n"
+"        x2:1, y2:0,\n"
+"        stop:0 #006400,\n"
+"        stop:1 #00ff88\n"
+"    );\n"
+"    border-color: #00ff88;\n"
+"}", nullptr));
+        femaleButton->setText(QString());
+        combineWidget->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QWidget#combineWidget {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);\n"
+"    border: 1px solid #363540;\n"
+"    border-radius: 8px;\n"
+"}", nullptr));
+        label_10->setText(QString());
+        combineButton->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton#combineButton {\n"
+"    background: qlineargradient(\n"
+"        x1:0, y1:0,\n"
+"        x2:1, y2:0,\n"
+"        stop:0 #2A2D3A,\n"
+"        stop:1 #1E202C\n"
+"    );\n"
+"    border: 2px solid #363540;\n"
+"    border-radius: 15px;\n"
+"    color: transparent;\n"
+"}\n"
+"\n"
+"QPushButton#combineButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"    box-shadow: 0 0 10px rgba(0, 255, 136, 0.3);\n"
+"}\n"
+"\n"
+"QPushButton#combineButton:checked {\n"
+"    background: qlineargradient(\n"
+"        x1:0, y1:0,\n"
+"        x2:1, y2:0,\n"
+"        stop:0 #006400,\n"
+"        stop:1 #00ff88\n"
+"    );\n"
+"    border-color: #00ff88;\n"
+"}", nullptr));
+        combineButton->setText(QString());
+        phaseWidget->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QWidget#phaseWidget {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);\n"
+"    border: 1px solid #363540;\n"
+"    border-radius: 8px;\n"
+"}", nullptr));
+        label_8->setText(QString());
+        phaseButton->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton#phaseButton {\n"
+"    background: qlineargradient(\n"
+"        x1:0, y1:0,\n"
+"        x2:1, y2:0,\n"
+"        stop:0 #2A2D3A,\n"
+"        stop:1 #1E202C\n"
+"    );\n"
+"    border: 2px solid #363540;\n"
+"    border-radius: 15px;\n"
+"    color: transparent;\n"
+"}\n"
+"\n"
+"QPushButton#phaseButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"    box-shadow: 0 0 10px rgba(0, 255, 136, 0.3);\n"
+"}\n"
+"\n"
+"QPushButton#phaseButton:checked {\n"
+"    background: qlineargradient(\n"
+"        x1:0, y1:0,\n"
+"        x2:1, y2:0,\n"
+"        stop:0 #006400,\n"
+"        stop:1 #00ff88\n"
+"    );\n"
+"    border-color: #00ff88;\n"
+"}", nullptr));
+        phaseButton->setText(QString());
+        flangerWidget->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QWidget#flangerWidget {\n"
+"    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);\n"
+"    border: 1px solid #363540;\n"
+"    border-radius: 8px;\n"
+"}", nullptr));
+        label_9->setText(QString());
+        flangerButton->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QPushButton#flangerButton {\n"
+"    background: qlineargradient(\n"
+"        x1:0, y1:0,\n"
+"        x2:1, y2:0,\n"
+"        stop:0 #2A2D3A,\n"
+"        stop:1 #1E202C\n"
+"    );\n"
+"    border: 2px solid #363540;\n"
+"    border-radius: 15px;\n"
+"    color: transparent;\n"
+"}\n"
+"\n"
+"QPushButton#flangerButton:hover {\n"
+"    border: 1px solid #00ff88;\n"
+"    box-shadow: 0 0 10px rgba(0, 255, 136, 0.3);\n"
+"}\n"
+"\n"
+"QPushButton#flangerButton:checked {\n"
+"    background: qlineargradient(\n"
+"        x1:0, y1:0,\n"
+"        x2:1, y2:0,\n"
+"        stop:0 #006400,\n"
+"        stop:1 #00ff88\n"
+"    );\n"
+"    border-color: #00ff88;\n"
+"}", nullptr));
+        flangerButton->setText(QString());
     } // retranslateUi
 
 };
 
 namespace Ui {
-    class MainWindow: public Ui_MainWindow {};
+    class VoiceChangerMainWindow: public Ui_VoiceChangerMainWindow {};
 } // namespace Ui
 
 QT_END_NAMESPACE

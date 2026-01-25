@@ -116,8 +116,24 @@ void MainWindow::on_startRecord_clicked()
 
     qDebug() << "Recording started - capturing mixed audio from AudioPipeline (input+soundpack or effects+soundpack)";
 
-    ui->startRecord->setText("Recording...");
-    ui->startRecord->setEnabled(false);
+    ui->recordingButton->setText("Recording...");
+    ui->recordingButton->setStyleSheet(
+        "QPushButton {"
+        "    background-color: #e74c3c;"
+        "    color: white;"
+        "    border: none;"
+        "    padding: 8px;"
+        "    border-radius: 4px;"
+        "    font-weight: bold;"
+        "}"
+        "QPushButton:hover {"
+        "    background-color: #c0392b;"
+        "}"
+        "QPushButton:pressed {"
+        "    background-color: #a93226;"
+        "}"
+    );
+    ui->recordingButton->setEnabled(true);
 
     qDebug() << "Recording started to:" << fileName;
 }
@@ -170,8 +186,24 @@ void MainWindow::on_stopRecord_clicked()
         audioPipeline->setRecordingState(false);
     }
 
-    ui->startRecord->setText("Start Record");
-    ui->startRecord->setEnabled(true);
+    ui->recordingButton->setText("Start Record");
+    ui->recordingButton->setStyleSheet(
+        "QPushButton {"
+        "    background-color: #27ae60;"
+        "    color: white;"
+        "    border: none;"
+        "    padding: 8px;"
+        "    border-radius: 4px;"
+        "    font-weight: bold;"
+        "}"
+        "QPushButton:hover {"
+        "    background-color: #229954;"
+        "}"
+        "QPushButton:pressed {"
+        "    background-color: #1e8449;"
+        "}"
+    );
+    ui->recordingButton->setEnabled(true);
 
     qDebug() << "Recording stopped. Duration:" << recordingDuration << "ms";
 }

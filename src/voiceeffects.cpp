@@ -835,7 +835,7 @@ void VoiceEffects::applyGate(float* input, float* output, int bufferSize, float 
     }
 }
 
-void VoiceEffects::processPhaser(float* input, float* output, int bufferSize, float sampleRate)
+void VoiceEffects::processPhase(float* input, float* output, int bufferSize, float sampleRate)
 {
     float samplePeriod = 1.0f / sampleRate;
     float lfoInc = 2.0f * M_PI * phaser.rate * samplePeriod;

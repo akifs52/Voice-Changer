@@ -13,13 +13,7 @@ soundpack::soundpack(QWidget *parent)
     : QMainWindow{parent}
 {
     
-    QList<QPushButton*> buttons =
-        parent->findChildren<QPushButton*>();
 
-    for (auto btn : buttons) {
-        btn->setProperty("class", "soundPack");
-        btn->style()->polish(btn);
-    }
 }
 
 void MainWindow::preloadAudio(const QString &filename)
@@ -134,15 +128,11 @@ void MainWindow::playAudioNotInterrupt(const QString &filename, const QString &p
         // Move UI updates to main thread
         QMetaObject::invokeMethod(button, [button, picPath]() {
             QPixmap icon(picPath);
+
             QIcon buttonIcon = icon;
+
             button->setIcon(buttonIcon);
-            QSize size(75,75);
-            button->setIconSize(size);
-            
-            button->setProperty("selected", true);
-            button->style()->polish(button);
-            button->setProperty("playing", true);
-            button->style()->polish(button);
+
         }, Qt::QueuedConnection);
 
         // Set current playing sound tracking
@@ -480,7 +470,7 @@ void MainWindow::playAudioNotInterrupt(const QString &filename, const QString &p
 
 
 
-void MainWindow::on_sound1_clicked()
+void MainWindow::on_slot1_clicked()
 {
     // SoundPack başlamadan önce buffer temizliği - mix kalitesi için
     if (audioPipeline) {
@@ -504,11 +494,11 @@ void MainWindow::on_sound1_clicked()
         }
     }
 
-    playAudioNotInterrupt(filename1, pic1, ui->sound1);
+    playAudioNotInterrupt(filename1, pic1, ui->slot1);
 }
 
 
-void MainWindow::on_sound2_clicked()
+void MainWindow::on_slot2_clicked()
 {
     // SoundPack başlamadan önce buffer temizliği - mix kalitesi için
     if (audioPipeline) {
@@ -531,11 +521,11 @@ void MainWindow::on_sound2_clicked()
         }
     }
 
-    playAudioNotInterrupt(filename2, pic2, ui->sound2);
+    playAudioNotInterrupt(filename2, pic2, ui->slot2);
 }
 
 
-void MainWindow::on_sound3_clicked()
+void MainWindow::on_slot3_clicked()
 {
     // SoundPack başlamadan önce buffer temizliği - mix kalitesi için
     if (audioPipeline) {
@@ -558,11 +548,11 @@ void MainWindow::on_sound3_clicked()
         }
     }
 
-    playAudioNotInterrupt(filename3, pic3, ui->sound3);
+    playAudioNotInterrupt(filename3, pic3, ui->slot3);
 }
 
 
-void MainWindow::on_sound4_clicked()
+void MainWindow::on_slot4_clicked()
 {
     // SoundPack başlamadan önce buffer temizliği - mix kalitesi için
     if (audioPipeline) {
@@ -585,11 +575,11 @@ void MainWindow::on_sound4_clicked()
         }
     }
 
-    playAudioNotInterrupt(filename4, pic4, ui->sound4);
+    playAudioNotInterrupt(filename4, pic4, ui->slot4);
 }
 
 
-void MainWindow::on_sound5_clicked()
+void MainWindow::on_slot5_clicked()
 {
     // SoundPack başlamadan önce buffer temizliği - mix kalitesi için
     if (audioPipeline) {
@@ -612,12 +602,12 @@ void MainWindow::on_sound5_clicked()
         }
     }
 
-    playAudioNotInterrupt(filename5, pic5, ui->sound5);
+    playAudioNotInterrupt(filename5, pic5, ui->slot5);
 
 }
 
 
-void MainWindow::on_sound6_clicked()
+void MainWindow::on_slot6_clicked()
 {
     // SoundPack başlamadan önce buffer temizliği - mix kalitesi için
     if (audioPipeline) {
@@ -640,12 +630,12 @@ void MainWindow::on_sound6_clicked()
         }
     }
 
-    playAudioNotInterrupt(filename6, pic6, ui->sound6);
+    playAudioNotInterrupt(filename6, pic6, ui->slot6);
 
 }
 
 
-void MainWindow::on_sound7_clicked()
+void MainWindow::on_slot7_clicked()
 {
     // SoundPack başlamadan önce buffer temizliği - mix kalitesi için
     if (audioPipeline) {
@@ -668,11 +658,11 @@ void MainWindow::on_sound7_clicked()
         }
     }
 
-    playAudioNotInterrupt(filename7, pic7, ui->sound7);
+    playAudioNotInterrupt(filename7, pic7, ui->slot7);
 }
 
 
-void MainWindow::on_sound8_clicked()
+void MainWindow::on_slot8_clicked()
 {
     // SoundPack başlamadan önce buffer temizliği - mix kalitesi için
     if (audioPipeline) {
@@ -695,12 +685,12 @@ void MainWindow::on_sound8_clicked()
         }
     }
 
-    playAudioNotInterrupt(filename8, pic8, ui->sound8);
+    playAudioNotInterrupt(filename8, pic8, ui->slot8);
 }
 
 
 
-void MainWindow::on_sound9_clicked()
+void MainWindow::on_slot9_clicked()
 {
     // SoundPack başlamadan önce buffer temizliği - mix kalitesi için
     if (audioPipeline) {
@@ -723,11 +713,11 @@ void MainWindow::on_sound9_clicked()
         }
     }
 
-    playAudioNotInterrupt(filename9, pic9, ui->sound9);
+    playAudioNotInterrupt(filename9, pic9, ui->slot9);
 }
 
 
-void MainWindow::on_sound10_clicked()
+void MainWindow::on_slot10_clicked()
 {
     // SoundPack başlamadan önce buffer temizliği - mix kalitesi için
     if (audioPipeline) {
@@ -750,11 +740,11 @@ void MainWindow::on_sound10_clicked()
         }
     }
 
-    playAudioNotInterrupt(filename10, pic10, ui->sound10);
+    playAudioNotInterrupt(filename10, pic10, ui->slot10);
 }
 
 
-void MainWindow::on_sound11_clicked()
+void MainWindow::on_slot11_clicked()
 {
     // SoundPack başlamadan önce buffer temizliği - mix kalitesi için
     if (audioPipeline) {
@@ -777,11 +767,11 @@ void MainWindow::on_sound11_clicked()
         }
     }
 
-    playAudioNotInterrupt(filename11, pic11, ui->sound11);
+    playAudioNotInterrupt(filename11, pic11, ui->slot11);
 }
 
 
-void MainWindow::on_sound12_clicked()
+void MainWindow::on_slot12_clicked()
 {
     // SoundPack başlamadan önce buffer temizliği - mix kalitesi için
     if (audioPipeline) {
@@ -804,11 +794,11 @@ void MainWindow::on_sound12_clicked()
         }
     }
 
-    playAudioNotInterrupt(filename12, pic12, ui->sound12);
+    playAudioNotInterrupt(filename12, pic12, ui->slot12);
 }
 
 
-void MainWindow::on_sound13_clicked()
+void MainWindow::on_slot13_clicked()
 {
     // SoundPack başlamadan önce buffer temizliği - mix kalitesi için
     if (audioPipeline) {
@@ -831,11 +821,11 @@ void MainWindow::on_sound13_clicked()
         }
     }
 
-    playAudioNotInterrupt(filename13, pic13, ui->sound13);
+    playAudioNotInterrupt(filename13, pic13, ui->slot13);
 }
 
 
-void MainWindow::on_sound14_clicked()
+void MainWindow::on_slot14_clicked()
 {
     // SoundPack başlamadan önce buffer temizliği - mix kalitesi için
     if (audioPipeline) {
@@ -858,11 +848,11 @@ void MainWindow::on_sound14_clicked()
         }
     }
 
-    playAudioNotInterrupt(filename14, pic14, ui->sound14);
+    playAudioNotInterrupt(filename14, pic14, ui->slot14);
 }
 
 
-void MainWindow::on_sound15_clicked()
+void MainWindow::on_slot15_clicked()
 {
     // SoundPack başlamadan önce buffer temizliği - mix kalitesi için
     if (audioPipeline) {
@@ -885,11 +875,11 @@ void MainWindow::on_sound15_clicked()
         }
     }
 
-    playAudioNotInterrupt(filename15, pic15, ui->sound15);
+    playAudioNotInterrupt(filename15, pic15, ui->slot15);
 }
 
 
-void MainWindow::on_sound16_clicked()
+void MainWindow::on_slot16_clicked()
 {
     // SoundPack başlamadan önce buffer temizliği - mix kalitesi için
     if (audioPipeline) {
@@ -912,11 +902,11 @@ void MainWindow::on_sound16_clicked()
         }
     }
 
-    playAudioNotInterrupt(filename16, pic16, ui->sound16);
+    playAudioNotInterrupt(filename16, pic16, ui->slot16);
 }
 
 
-void MainWindow::on_sound17_clicked()
+void MainWindow::on_slot17_clicked()
 {
     // SoundPack başlamadan önce buffer temizliği - mix kalitesi için
     if (audioPipeline) {
@@ -939,11 +929,11 @@ void MainWindow::on_sound17_clicked()
         }
     }
 
-    playAudioNotInterrupt(filename17, pic17, ui->sound17);
+    playAudioNotInterrupt(filename17, pic17, ui->slot17);
 }
 
 
-void MainWindow::on_sound18_clicked()
+void MainWindow::on_slot18_clicked()
 {
     // SoundPack başlamadan önce buffer temizliği - mix kalitesi için
     if (audioPipeline) {
@@ -966,11 +956,11 @@ void MainWindow::on_sound18_clicked()
         }
     }
 
-    playAudioNotInterrupt(filename18, pic18, ui->sound18);
+    playAudioNotInterrupt(filename18, pic18, ui->slot18);
 }
 
 
-void MainWindow::on_sound19_clicked()
+void MainWindow::on_slot19_clicked()
 {
     // SoundPack başlamadan önce buffer temizliği - mix kalitesi için
     if (audioPipeline) {
@@ -993,11 +983,11 @@ void MainWindow::on_sound19_clicked()
         }
     }
 
-    playAudioNotInterrupt(filename19, pic19, ui->sound19);
+    playAudioNotInterrupt(filename19, pic19, ui->slot19);
 }
 
 
-void MainWindow::on_sound20_clicked()
+void MainWindow::on_slot20_clicked()
 {
     // SoundPack başlamadan önce buffer temizliği - mix kalitesi için
     if (audioPipeline) {
@@ -1020,5 +1010,5 @@ void MainWindow::on_sound20_clicked()
         }
     }
 
-    playAudioNotInterrupt(filename20, pic20, ui->sound20);
+    playAudioNotInterrupt(filename20, pic20, ui->slot20);
 }

@@ -13,6 +13,7 @@ SOURCES += \
     circularbuffer.cpp \
     deletesoundpack.cpp \
     effects.cpp \
+    gloweffekt.cpp \
     hotkeys.cpp \
     loadouts.cpp \
     main.cpp \
@@ -27,6 +28,7 @@ HEADERS += \
     circularbuffer.h \
     deletesoundpack.h \
     effects.h \
+    gloweffekt.h \
     hotkeys.h \
     loadouts.h \
     mainwindow.h \

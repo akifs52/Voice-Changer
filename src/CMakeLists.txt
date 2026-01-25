@@ -62,6 +62,7 @@ set(SOURCES
     circularbuffer.cpp
     deletesoundpack.cpp
     effects.cpp
+    gloweffekt.cpp
     hotkeys.cpp
     loadouts.cpp
     psola.cpp
@@ -77,6 +78,7 @@ set(HEADERS
     circularbuffer.h
     deletesoundpack.h
     effects.h
+    gloweffekt.h
     hotkeys.h
     loadouts.h
     psola.h

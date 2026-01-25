@@ -32,7 +32,7 @@ public:
     void processFemale(float* input, float* output, int bufferSize, float sampleRate);
     void processMilitary(float* input, float* output, int bufferSize, float sampleRate);
     void processEko(float* input, float* output, int bufferSize, float sampleRate);
-    void processPhaser(float* input, float* output, int bufferSize, float sampleRate);
+    void processPhase(float* input, float* output, int bufferSize, float sampleRate);
     void processFlanger(float* input, float* output, int bufferSize, float sampleRate);
 
     // Utility functions
@@ -180,7 +180,7 @@ private:
     void applyPitchCorrection(float* input, float* output, int bufferSize, float sampleRate);
     void applyRadioStatic(float* input, float* output, int bufferSize, float sampleRate);
     void applyGate(float* input, float* output, int bufferSize, float sampleRate);
-    void applyPhaser(float* input, float* output, int bufferSize, float sampleRate);
+    void applyPhase(float* input, float* output, int bufferSize, float sampleRate);
     void applyFlanger(float* input, float* output, int bufferSize, float sampleRate);
     
     // Utility functions

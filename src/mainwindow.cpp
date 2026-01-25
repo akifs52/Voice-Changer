@@ -1,10 +1,12 @@
 #include "mainwindow.h"
 #include "audiopipeline.h"
 #include "ui_mainwindow.h"
+#include "gloweffekt.h"
 #include <QSettings>
 #include <QTimer>
 #include <QMessageBox>
 #include <QDesktopServices>
+#include <QUrl>
 #include <QProcess>
 #include <QIcon>
 #include <QThread>
@@ -21,7 +23,7 @@
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
+    , ui(new Ui::VoiceChangerMainWindow)
     , format(new QAudioFormat)
     , audioOutput(nullptr)
     , audioInput(nullptr)
@@ -39,9 +41,32 @@ MainWindow::MainWindow(QWidget *parent)
 
 {
     ui->setupUi(this);
-    ui->frame_3->hide();
+
+    // Initialize glow effects
+    glowEffect = new GlowEffect(ui, this);
+
+    // Remove top default bar but keep in taskbar and side borders for resizing
+    setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
+
+    // Initialize dragging variables
+    isDragging = false;
+    isMaximizing = false;
+
+    ui->EffectsSideBarWidget->hide();
+    ui->presetsSidebarWidget->hide();
+
     searchInputDevice();
     searchOutputDevice();
+    
+    // Auto-select first input device if available
+    if (ui->inputDeviceCombobox->count() > 0) {
+        ui->inputDeviceCombobox->setCurrentIndex(0);
+    }
+    
+    // Auto-select first output device if available  
+    if (ui->OutputDEviceCombobox->count() > 0) {
+        ui->OutputDEviceCombobox->setCurrentIndex(0);
+    }
     
     // Virtual ayarlar
     searchVirtualDevices();
@@ -54,7 +79,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Populate hotkey dropdowns
     for (int i = 1; i <= 20; ++i) {
-        QString name = QString("hotkey%1").arg(i);
+        QString name = QString("slot%1Hotkey").arg(i);
         QComboBox *combo = findChild<QComboBox*>(name);
         if (combo) {
             populateComboBox(combo);
@@ -63,6 +88,14 @@ MainWindow::MainWindow(QWidget *parent)
     
     // Install event filter for hotkey handling
     this->installEventFilter(this);
+    
+    // Install event filter for titlebar dragging
+    ui->titleBar->installEventFilter(this);
+    
+    // Connect titlebar buttons
+    connect(ui->minimizeButton, &QPushButton::clicked, this, &MainWindow::on_minimizeButton_clicked);
+    connect(ui->maximizeButton, &QPushButton::clicked, this, &MainWindow::on_maximizeButton_clicked);
+    connect(ui->closeButton, &QPushButton::clicked, this, &MainWindow::on_closeButton_clicked);
     
     // Load saved hotkeys
     loadHotkeys();
@@ -148,6 +181,33 @@ MainWindow::~MainWindow()
 
 bool MainWindow::eventFilter(QObject *obj, QEvent *event)
 {
+    // Handle titlebar dragging
+    if (obj == ui->titleBar) {
+        switch (event->type()) {
+        case QEvent::MouseButtonPress:
+            if (static_cast<QMouseEvent*>(event)->button() == Qt::LeftButton) {
+                isDragging = true;
+                dragPosition = static_cast<QMouseEvent*>(event)->globalPosition().toPoint() - frameGeometry().topLeft();
+                return true;
+            }
+            break;
+        case QEvent::MouseMove:
+            if (isDragging && (static_cast<QMouseEvent*>(event)->buttons() & Qt::LeftButton)) {
+                move(static_cast<QMouseEvent*>(event)->globalPosition().toPoint() - dragPosition);
+                return true;
+            }
+            break;
+        case QEvent::MouseButtonRelease:
+            if (static_cast<QMouseEvent*>(event)->button() == Qt::LeftButton) {
+                isDragging = false;
+                return true;
+            }
+            break;
+        default:
+            break;
+        }
+    }
+    
     // Event filter is now handled by QShortcut and global hotkey system
     // This can remain simple for any future custom event handling
     return QMainWindow::eventFilter(obj, event);
@@ -165,26 +225,26 @@ bool MainWindow::nativeEvent(const QByteArray &eventType, void *message, qintptr
             if (soundIndex >= 1 && soundIndex <= 20) {
                 // Trigger the corresponding sound button click
                 switch(soundIndex) {
-                    case 1: on_sound1_clicked(); break;
-                    case 2: on_sound2_clicked(); break;
-                    case 3: on_sound3_clicked(); break;
-                    case 4: on_sound4_clicked(); break;
-                    case 5: on_sound5_clicked(); break;
-                    case 6: on_sound6_clicked(); break;
-                    case 7: on_sound7_clicked(); break;
-                    case 8: on_sound8_clicked(); break;
-                    case 9: on_sound9_clicked(); break;
-                    case 10: on_sound10_clicked(); break;
-                    case 11: on_sound11_clicked(); break;
-                    case 12: on_sound12_clicked(); break;
-                    case 13: on_sound13_clicked(); break;
-                    case 14: on_sound14_clicked(); break;
-                    case 15: on_sound15_clicked(); break;
-                    case 16: on_sound16_clicked(); break;
-                    case 17: on_sound17_clicked(); break;
-                    case 18: on_sound18_clicked(); break;
-                    case 19: on_sound19_clicked(); break;
-                    case 20: on_sound20_clicked(); break;
+                    case 1: on_slot1_clicked(); break;
+                    case 2: on_slot2_clicked(); break;
+                    case 3: on_slot3_clicked(); break;
+                    case 4: on_slot4_clicked(); break;
+                    case 5: on_slot5_clicked(); break;
+                    case 6: on_slot6_clicked(); break;
+                    case 7: on_slot7_clicked(); break;
+                    case 8: on_slot8_clicked(); break;
+                    case 9: on_slot9_clicked(); break;
+                    case 10: on_slot10_clicked(); break;
+                    case 11: on_slot11_clicked(); break;
+                    case 12: on_slot12_clicked(); break;
+                    case 13: on_slot13_clicked(); break;
+                    case 14: on_slot14_clicked(); break;
+                    case 15: on_slot15_clicked(); break;
+                    case 16: on_slot16_clicked(); break;
+                    case 17: on_slot17_clicked(); break;
+                    case 18: on_slot18_clicked(); break;
+                    case 19: on_slot19_clicked(); break;
+                    case 20: on_slot20_clicked(); break;
                 }
                 *result = 0;
                 return true;
@@ -200,7 +260,7 @@ void MainWindow::searchInputDevice()
     const auto devicesI = QMediaDevices::audioInputs();
     for(const QAudioDevice &device : devicesI)
     {
-        ui->inputcombobox->addItem(device.description(), QVariant::fromValue(device) ); //bakılacak
+        ui->inputDeviceCombobox->addItem(device.description(), QVariant::fromValue(device) ); //bakılacak
     }
 }
 
@@ -209,7 +269,7 @@ void MainWindow::searchOutputDevice()
     const auto devicesO = QMediaDevices::audioOutputs();
     for(const QAudioDevice &device : devicesO)
     {
-        ui->outputcombobox->addItem(device.description(), QVariant::fromValue(device));
+        ui->OutputDEviceCombobox->addItem(device.description(), QVariant::fromValue(device));
     }
 
 }
@@ -217,10 +277,8 @@ void MainWindow::searchOutputDevice()
 
 void MainWindow::on_inputslider_valueChanged(int value)
 {
-    ui->inputlabel->setText(QString::number(value));
-
     if (audioInput) {
-        ui->inputslider->setValue(static_cast<int>(audioInput->volume() * 100));
+        ui->inputSlider->setValue(static_cast<int>(audioInput->volume() * 100));
     }
 
 
@@ -231,10 +289,9 @@ void MainWindow::on_inputslider_valueChanged(int value)
 
 void MainWindow::on_outputslider_valueChanged(int value)
 {
-    ui->outputlabel->setText(QString::number(value));
 
     if (audioOutput) {
-        ui->outputslider->setValue(static_cast<int>(audioOutput->volume() * 100));
+        ui->outputSlider->setValue(static_cast<int>(audioOutput->volume() * 100));
 
     }
 
@@ -246,33 +303,43 @@ void MainWindow::on_outputslider_valueChanged(int value)
 void MainWindow::on_refreshInput_clicked()
 {
 
-    qDebug()<< ui->inputcombobox->count();
+    qDebug()<< ui->inputDeviceCombobox->count();
 
-    for(int i= ui->inputcombobox->count(); i>-1 ; i--)
+    for(int i= ui->inputDeviceCombobox->count(); i>-1 ; i--)
     {
-        ui->inputcombobox->removeItem(i);
+        ui->inputDeviceCombobox->removeItem(i);
     }
 
     searchInputDevice();
+    
+    // Auto-select first input device if available
+    if (ui->inputDeviceCombobox->count() > 0) {
+        ui->inputDeviceCombobox->setCurrentIndex(0);
+    }
 }
 
 
 void MainWindow::on_refreshOutput_clicked()
 {
-    qDebug()<< ui->outputcombobox->count();
+    qDebug()<< ui->OutputDEviceCombobox->count();
 
-    for(int i= ui->outputcombobox->count(); i>-1 ; i--)
+    for(int i= ui->OutputDEviceCombobox->count(); i>-1 ; i--)
     {
-        ui->outputcombobox->removeItem(i);
+        ui->OutputDEviceCombobox->removeItem(i);
     }
 
     searchOutputDevice();
+    
+    // Auto-select first output device if available
+    if (ui->OutputDEviceCombobox->count() > 0) {
+        ui->OutputDEviceCombobox->setCurrentIndex(0);
+    }
 
 }
 
 
 
-void MainWindow::on_inputcombobox_currentIndexChanged(int index)
+void MainWindow::on_inputDeviceCombobox_currentIndexChanged(int index)
 {
     // Varsayılan format ayarları
     format->setSampleRate(48000);
@@ -280,7 +347,7 @@ void MainWindow::on_inputcombobox_currentIndexChanged(int index)
     format->setSampleFormat(QAudioFormat::Int16);
 
 
-    QVariant inputData = ui->inputcombobox->itemData(index);
+    QVariant inputData = ui->inputDeviceCombobox->itemData(index);
     if (!inputData.isValid()) {
         qWarning() << "No valid input device selected.";
         return;
@@ -352,7 +419,7 @@ void MainWindow::on_inputcombobox_currentIndexChanged(int index)
 
 
 
-void MainWindow::on_outputcombobox_currentIndexChanged(int index)
+void MainWindow::on_OutputDEviceCombobox_currentIndexChanged(int index)
 {
     // Varsayılan format ayarları
     format->setSampleRate(48000);
@@ -360,7 +427,7 @@ void MainWindow::on_outputcombobox_currentIndexChanged(int index)
     format->setSampleFormat(QAudioFormat::Int16);
 
 
-    QVariant outputData = ui->outputcombobox->itemData(index);
+    QVariant outputData = ui->OutputDEviceCombobox->itemData(index);
     if (!outputData.isValid())
     {
         qWarning() << "No valid output device selected.";
@@ -459,15 +526,15 @@ void MainWindow::on_testButton_clicked(bool checked)
                         // Hangi efekt aktif olduğunu kontrol et
                         if (ui->robotButton->isChecked()) {
                             processToRobotVoice(data);
-                        } else if (ui->bananaButton->isChecked()) {
-                            processToBananaVoice(data);
+                        } else if (ui->childButton->isChecked()) {
+                            processToChildVoice(data);
                         } else if (ui->devilButton->isChecked()) {
                             processToDevilVoice(data);
                         } else if (ui->femaleButton->isChecked()) {
                             processToFemaleVoice(data);
                         } else if (ui->combineButton->isChecked()) {
                             processToCombineVoice(data);
-                        } else if (ui->ekoButton->isChecked()) {
+                        } else if (ui->caveButton->isChecked()) {
                             processToEkoVoice(data);
                         }
                         // Efekt yoksa data değişmeden kalır
@@ -605,7 +672,7 @@ void MainWindow::progressBarOutput()
 
                 // Progress bar'ı güncelle (0-100 arası)
                 int progress = (maxAmplitude * 100) / 32768;
-                ui->inputslider->setValue(progress);
+                ui->inputSlider->setValue(progress);
                 return;
             }
         }
@@ -637,7 +704,7 @@ void MainWindow::progressBarOutput()
 // Virtual Audio fonksiyonları
 void MainWindow::searchVirtualDevices()
 {
-    ui->virtualcombobox->clear();
+    ui->virtualInputcombobox->clear();
     
     QList<QAudioDevice> outputDevices = QMediaDevices::audioOutputs();
     for (const QAudioDevice &device : outputDevices) {
@@ -649,17 +716,17 @@ void MainWindow::searchVirtualDevices()
             deviceName.contains("BlackHole", Qt::CaseInsensitive) ||
             deviceName.contains("Soundflower", Qt::CaseInsensitive) ||
             deviceName.contains("Loopback", Qt::CaseInsensitive) ||
-            deviceName.contains("Audio", Qt::CaseInsensitive) && 
+            (deviceName.contains("Audio", Qt::CaseInsensitive) &&
             (deviceName.contains("Virtual", Qt::CaseInsensitive) || 
-             deviceName.contains("Cable", Qt::CaseInsensitive))) {
+             deviceName.contains("Cable", Qt::CaseInsensitive)))) {
             
-            ui->virtualcombobox->addItem(deviceName);
+            ui->virtualInputcombobox->addItem(deviceName);
         }
     }
     
     // Auto-select first virtual device if found
-    if (ui->virtualcombobox->count() > 0) {
-        ui->virtualcombobox->setCurrentIndex(0);
+    if (ui->virtualInputcombobox->count() > 0) {
+        ui->virtualInputcombobox->setCurrentIndex(0);
         vbCableFound = true;
     } else {
         vbCableFound = false;
@@ -681,21 +748,21 @@ bool MainWindow::detectVBCable()
              deviceName.contains("Input", Qt::CaseInsensitive))) {
             
             // Add virtual input device to normal input combobox
-            ui->inputcombobox->addItem(deviceName);
+            ui->inputDeviceCombobox->addItem(deviceName);
             
             // Auto-select and lock it
-            int index = ui->inputcombobox->findText(deviceName);
+            int index = ui->inputDeviceCombobox->findText(deviceName);
             if (index >= 0) {
-                ui->inputcombobox->setCurrentIndex(index);
+                ui->inputDeviceCombobox->setCurrentIndex(index);
                 cableInputSelected = true;
-                ui->inputcombobox->setEnabled(false); // Değiştirilemez yap
+                ui->inputDeviceCombobox->setEnabled(false); // Değiştirilemez yap
                 return true;
             }
         }
     }
     
     cableInputSelected = false;
-    ui->inputcombobox->setEnabled(true); // Normal kullanım için aktif
+    ui->inputDeviceCombobox->setEnabled(true); // Normal kullanım için aktif
 
     return false;
 }
@@ -703,25 +770,59 @@ bool MainWindow::detectVBCable()
 void MainWindow::updateVirtualStatusLabel()
 {
     if (vbCableFound) {
-        ui->virtualStatusLabel->setText("Virtual Audio Device Found - Active");
-        ui->virtualStatusLabel->setStyleSheet("color: #00ff88; font-weight: bold; font-size: 10px;");
-    } else {
-        ui->virtualStatusLabel->setText("No Virtual Audio Device - Install One");
-        ui->virtualStatusLabel->setStyleSheet("color: red; font-weight: bold; font-size: 10px;");
-        
-        // Show virtual audio device installation prompt
-        QMessageBox::StandardButton reply = QMessageBox::question(
-            this,
-            "Virtual Audio Device Required",
-            "No virtual audio device found.\n\nA virtual audio device is required for audio routing.\n\nWould you like to see installation instructions?",
-            QMessageBox::Yes | QMessageBox::No,
-            QMessageBox::Yes
-            );
-        
-        if (reply == QMessageBox::Yes) {
-            showVirtualDeviceInstructions();
+        // Find the virtual audio device name
+        QString deviceName = "Unknown";
+        if (ui->virtualInputcombobox->count() > 0) {
+            deviceName = ui->virtualInputcombobox->currentText();
         }
+        
+        ui->VirtualDriverButton->setText("Driver Found: " + deviceName);
+        ui->VirtualDriverButton->setStyleSheet(
+            "QPushButton {"
+            "    background-color: #27ae60;"
+            "	 font: 10px;"
+            "    color: white;"
+            "    border: none;"
+            "    padding: 8px;"
+            "    border-radius: 4px;"
+            "    font-weight: bold;"
+            "}"
+            "QPushButton:hover {"
+            "    background-color: #229954;"
+            "}"
+            "QPushButton:pressed {"
+            "    background-color: #1e8449;"
+            "}"
+        );
+    } else {
+        ui->VirtualDriverButton->setText("Driver Not Found");
+        ui->VirtualDriverButton->setStyleSheet(
+            "QPushButton {"
+            "    background-color: #e74c3c;"
+            "	 font:10px;"
+            "    color: white;"
+            "    border: none;"
+            "    padding: 8px;"
+            "    border-radius: 4px;"
+            "    font-weight: bold;"
+            "}"
+            "QPushButton:hover {"
+            "    background-color: #c0392b;"
+            "}"
+            "QPushButton:pressed {"
+            "    background-color: #a93226;"
+            "}"
+        );
     }
+}
+
+void MainWindow::on_VirtualDriverButton_clicked()
+{
+    if (!vbCableFound) {
+        // Open VB-CABLE download page
+        QDesktopServices::openUrl(QUrl("https://vb-audio.com/Cable/"));
+    }
+    // If driver is found, do nothing (button is just for display)
 }
 
 void MainWindow::showVirtualDeviceInstructions()
@@ -788,13 +889,13 @@ void MainWindow::setupVirtualOutput()
         virtualAudioOutput = nullptr;
     }
     
-    if (ui->virtualcombobox->count() == 0) {
+    if (ui->virtualInputcombobox->count() == 0) {
         return;
     }
     
     QList<QAudioDevice> outputDevices = QMediaDevices::audioOutputs();
     for (const QAudioDevice &device : outputDevices) {
-        if (device.description() == ui->virtualcombobox->currentText()) {
+        if (device.description() == ui->virtualInputcombobox->currentText()) {
             format->setSampleRate(48000);
             format->setChannelCount(2);
             format->setSampleFormat(QAudioFormat::Int16);
@@ -819,18 +920,84 @@ void MainWindow::setupVirtualOutput()
     }
 }
 
-void MainWindow::on_virtualcombobox_currentIndexChanged(int index)
+// Mouse event functions for titlebar dragging
+void MainWindow::mousePressEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton) {
+        isDragging = true;
+        dragPosition = event->globalPosition().toPoint() - frameGeometry().topLeft();
+        event->accept();
+    }
+}
+
+void MainWindow::mouseMoveEvent(QMouseEvent *event)
+{
+    if (isDragging && (event->buttons() & Qt::LeftButton)) {
+        move(event->globalPosition().toPoint() - dragPosition);
+        event->accept();
+    }
+}
+
+void MainWindow::mouseReleaseEvent(QMouseEvent *event)
+{
+    isDragging = false;
+    event->accept();
+}
+
+void MainWindow::on_virtualInputcombobox_currentIndexChanged(int index)
 {
     Q_UNUSED(index);
     setupVirtualOutput();
 }
 
-void MainWindow::on_virtualslider_valueChanged(int value)
+void MainWindow::on_VirtualSlider_valueChanged(int value)
 {
     if (virtualAudioOutput) {
         float volume = static_cast<float>(value) / 100.0f;
         virtualAudioOutput->setVolume(volume);
     }
+}
+
+// Titlebar button functions
+void MainWindow::on_minimizeButton_clicked()
+{
+    showMinimized();
+}
+
+void MainWindow::on_maximizeButton_clicked()
+{
+    // Prevent multiple rapid clicks
+    if (isMaximizing) {
+        qDebug() << "Maximize operation in progress, ignoring click";
+        return;
+    }
+    
+    isMaximizing = true;
+    
+    // Check current window state before changing
+    Qt::WindowStates currentState = windowState();
+    
+    if (currentState & Qt::WindowMaximized) {
+        // Window is currently maximized, restore it
+        showNormal();
+        ui->maximizeButton->setText("□");
+        qDebug() << "Window restored to normal size";
+    } else {
+        // Window is not maximized, maximize it
+        showMaximized();
+        ui->maximizeButton->setText("❐");
+        qDebug() << "Window maximized";
+    }
+    
+    // Reset the flag after a short delay to prevent rapid clicking
+    QTimer::singleShot(200, [this]() {
+        isMaximizing = false;
+    });
+}
+
+void MainWindow::on_closeButton_clicked()
+{
+    close();
 }
 
 

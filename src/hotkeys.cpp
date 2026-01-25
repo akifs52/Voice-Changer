@@ -113,7 +113,7 @@ void MainWindow::handleHotkeyChange(const QString &key, int soundIndex) {
     if (m_hotkeyAssignments.contains(key) && m_hotkeyAssignments[key] != soundIndex) {
         int conflictingSoundIndex = m_hotkeyAssignments[key];
         
-        QString comboName = QString("hotkey%1").arg(conflictingSoundIndex);
+        QString comboName = QString("slot%1Hotkey").arg(conflictingSoundIndex);
         QComboBox *conflictingCombo = findChild<QComboBox*>(comboName);
         if (conflictingCombo) {
             conflictingCombo->blockSignals(true);
@@ -175,26 +175,26 @@ void MainWindow::handleHotkeyChange(const QString &key, int soundIndex) {
     connect(shortcut, &QShortcut::activated, this, [this, soundIndex]() {
         // Trigger the corresponding sound button click
         switch(soundIndex) {
-            case 1: on_sound1_clicked(); break;
-            case 2: on_sound2_clicked(); break;
-            case 3: on_sound3_clicked(); break;
-            case 4: on_sound4_clicked(); break;
-            case 5: on_sound5_clicked(); break;
-            case 6: on_sound6_clicked(); break;
-            case 7: on_sound7_clicked(); break;
-            case 8: on_sound8_clicked(); break;
-            case 9: on_sound9_clicked(); break;
-            case 10: on_sound10_clicked(); break;
-            case 11: on_sound11_clicked(); break;
-            case 12: on_sound12_clicked(); break;
-            case 13: on_sound13_clicked(); break;
-            case 14: on_sound14_clicked(); break;
-            case 15: on_sound15_clicked(); break;
-            case 16: on_sound16_clicked(); break;
-            case 17: on_sound17_clicked(); break;
-            case 18: on_sound18_clicked(); break;
-            case 19: on_sound19_clicked(); break;
-            case 20: on_sound20_clicked(); break;
+            case 1: on_slot1_clicked(); break;
+            case 2: on_slot2_clicked(); break;
+            case 3: on_slot3_clicked(); break;
+            case 4: on_slot4_clicked(); break;
+            case 5: on_slot5_clicked(); break;
+            case 6: on_slot6_clicked(); break;
+            case 7: on_slot7_clicked(); break;
+            case 8: on_slot8_clicked(); break;
+            case 9: on_slot9_clicked(); break;
+            case 10: on_slot10_clicked(); break;
+            case 11: on_slot11_clicked(); break;
+            case 12: on_slot12_clicked(); break;
+            case 13: on_slot13_clicked(); break;
+            case 14: on_slot14_clicked(); break;
+            case 15: on_slot15_clicked(); break;
+            case 16: on_slot16_clicked(); break;
+            case 17: on_slot17_clicked(); break;
+            case 18: on_slot18_clicked(); break;
+            case 19: on_slot19_clicked(); break;
+            case 20: on_slot20_clicked(); break;
         }
     });
 
@@ -319,65 +319,68 @@ void MainWindow::handleHotkeyChange(const QString &key, int soundIndex) {
 void MainWindow::connectAllHotkeys()
 {
     // Connect hotkey signals to slots
-    connect(ui->hotkey1, &QComboBox::currentTextChanged, this, &MainWindow::on_comboBox1_currentTextChanged);
-    connect(ui->hotkey2, &QComboBox::currentTextChanged, this, &MainWindow::on_comboBox2_currentTextChanged);
-    connect(ui->hotkey3, &QComboBox::currentTextChanged, this, &MainWindow::on_comboBox3_currentTextChanged);
-    connect(ui->hotkey4, &QComboBox::currentTextChanged, this, &MainWindow::on_comboBox4_currentTextChanged);
-    connect(ui->hotkey5, &QComboBox::currentTextChanged, this, &MainWindow::on_comboBox5_currentTextChanged);
-    connect(ui->hotkey6, &QComboBox::currentTextChanged, this, &MainWindow::on_comboBox6_currentTextChanged);
-    connect(ui->hotkey7, &QComboBox::currentTextChanged, this, &MainWindow::on_comboBox7_currentTextChanged);
-    connect(ui->hotkey8, &QComboBox::currentTextChanged, this, &MainWindow::on_comboBox8_currentTextChanged);
-    connect(ui->hotkey9, &QComboBox::currentTextChanged, this, &MainWindow::on_comboBox9_currentTextChanged);
-    connect(ui->hotkey10, &QComboBox::currentTextChanged, this, &MainWindow::on_comboBox10_currentTextChanged);
-    connect(ui->hotkey11, &QComboBox::currentTextChanged, this, &MainWindow::on_comboBox11_currentTextChanged);
-    connect(ui->hotkey12, &QComboBox::currentTextChanged, this, &MainWindow::on_comboBox12_currentTextChanged);
-    connect(ui->hotkey13, &QComboBox::currentTextChanged, this, &MainWindow::on_comboBox13_currentTextChanged);
-    connect(ui->hotkey14, &QComboBox::currentTextChanged, this, &MainWindow::on_comboBox14_currentTextChanged);
-    connect(ui->hotkey15, &QComboBox::currentTextChanged, this, &MainWindow::on_comboBox15_currentTextChanged);
-    connect(ui->hotkey16, &QComboBox::currentTextChanged, this, &MainWindow::on_comboBox16_currentTextChanged);
-    connect(ui->hotkey17, &QComboBox::currentTextChanged, this, &MainWindow::on_comboBox17_currentTextChanged);
-    connect(ui->hotkey18, &QComboBox::currentTextChanged, this, &MainWindow::on_comboBox18_currentTextChanged);
-    connect(ui->hotkey19, &QComboBox::currentTextChanged, this, &MainWindow::on_comboBox19_currentTextChanged);
-    connect(ui->hotkey20, &QComboBox::currentTextChanged, this, &MainWindow::on_comboBox20_currentTextChanged);
+    connect(ui->slot1Hotkey, &QComboBox::currentTextChanged, this, &MainWindow::on_slot1Hotkey_currentTextChanged);
+    connect(ui->slot2Hotkey, &QComboBox::currentTextChanged, this, &MainWindow::on_slot2Hotkey_currentTextChanged);
+    connect(ui->slot3Hotkey, &QComboBox::currentTextChanged, this, &MainWindow::on_slot3Hotkey_currentTextChanged);
+    connect(ui->slot4Hotkey, &QComboBox::currentTextChanged, this, &MainWindow::on_slot4Hotkey_currentTextChanged);
+    connect(ui->slot5Hotkey, &QComboBox::currentTextChanged, this, &MainWindow::on_slot5Hotkey_currentTextChanged);
+    connect(ui->slot6Hotkey, &QComboBox::currentTextChanged, this, &MainWindow::on_slot6Hotkey_currentTextChanged);
+    connect(ui->slot7Hotkey, &QComboBox::currentTextChanged, this, &MainWindow::on_slot7Hotkey_currentTextChanged);
+    connect(ui->slot8Hotkey, &QComboBox::currentTextChanged, this, &MainWindow::on_slot8Hotkey_currentTextChanged);
+    connect(ui->slot9Hotkey, &QComboBox::currentTextChanged, this, &MainWindow::on_slot9Hotkey_currentTextChanged);
+    connect(ui->slot10Hotkey, &QComboBox::currentTextChanged, this, &MainWindow::on_slot10Hotkey_currentTextChanged);
+    connect(ui->slot11Hotkey, &QComboBox::currentTextChanged, this, &MainWindow::on_slot11Hotkey_currentTextChanged);
+    connect(ui->slot12Hotkey, &QComboBox::currentTextChanged, this, &MainWindow::on_slot12Hotkey_currentTextChanged);
+    connect(ui->slot13Hotkey, &QComboBox::currentTextChanged, this, &MainWindow::on_slot13Hotkey_currentTextChanged);
+    connect(ui->slot14Hotkey, &QComboBox::currentTextChanged, this, &MainWindow::on_slot14Hotkey_currentTextChanged);
+    connect(ui->slot15Hotkey, &QComboBox::currentTextChanged, this, &MainWindow::on_slot15Hotkey_currentTextChanged);
+    connect(ui->slot16Hotkey, &QComboBox::currentTextChanged, this, &MainWindow::on_slot16Hotkey_currentTextChanged);
+    connect(ui->slot17Hotkey, &QComboBox::currentTextChanged, this, &MainWindow::on_slot17Hotkey_currentTextChanged);
+    connect(ui->slot18Hotkey, &QComboBox::currentTextChanged, this, &MainWindow::on_slot18Hotkey_currentTextChanged);
+    connect(ui->slot19Hotkey, &QComboBox::currentTextChanged, this, &MainWindow::on_slot19Hotkey_currentTextChanged);
+    connect(ui->slot20Hotkey, &QComboBox::currentTextChanged, this, &MainWindow::on_slot20Hotkey_currentTextChanged);
 }
 
 // --- Slots for Hotkey ComboBoxes ---
 
-void MainWindow::on_comboBox1_currentTextChanged(const QString &key) { handleHotkeyChange(key, 1); }
-void MainWindow::on_comboBox2_currentTextChanged(const QString &key) { handleHotkeyChange(key, 2); }
-void MainWindow::on_comboBox3_currentTextChanged(const QString &key) { handleHotkeyChange(key, 3); }
-void MainWindow::on_comboBox4_currentTextChanged(const QString &key) { handleHotkeyChange(key, 4); }
-void MainWindow::on_comboBox5_currentTextChanged(const QString &key) { handleHotkeyChange(key, 5); }
-void MainWindow::on_comboBox6_currentTextChanged(const QString &key) { handleHotkeyChange(key, 6); }
-void MainWindow::on_comboBox7_currentTextChanged(const QString &key) { handleHotkeyChange(key, 7); }
-void MainWindow::on_comboBox8_currentTextChanged(const QString &key) { handleHotkeyChange(key, 8); }
-void MainWindow::on_comboBox9_currentTextChanged(const QString &key) { handleHotkeyChange(key, 9); }
-void MainWindow::on_comboBox10_currentTextChanged(const QString &key) { handleHotkeyChange(key, 10); }
-void MainWindow::on_comboBox11_currentTextChanged(const QString &key) { handleHotkeyChange(key, 11); }
-void MainWindow::on_comboBox12_currentTextChanged(const QString &key) { handleHotkeyChange(key, 12); }
-void MainWindow::on_comboBox13_currentTextChanged(const QString &key) { handleHotkeyChange(key, 13); }
-void MainWindow::on_comboBox14_currentTextChanged(const QString &key) { handleHotkeyChange(key, 14); }
-void MainWindow::on_comboBox15_currentTextChanged(const QString &key) { handleHotkeyChange(key, 15); }
-void MainWindow::on_comboBox16_currentTextChanged(const QString &key) { handleHotkeyChange(key, 16); }
-void MainWindow::on_comboBox17_currentTextChanged(const QString &key) { handleHotkeyChange(key, 17); }
-void MainWindow::on_comboBox18_currentTextChanged(const QString &key) { handleHotkeyChange(key, 18); }
-void MainWindow::on_comboBox19_currentTextChanged(const QString &key) { handleHotkeyChange(key, 19); }
-void MainWindow::on_comboBox20_currentTextChanged(const QString &key) { handleHotkeyChange(key, 20); }
+void MainWindow::on_slot1Hotkey_currentTextChanged(const QString &key) { handleHotkeyChange(key, 1); }
+void MainWindow::on_slot2Hotkey_currentTextChanged(const QString &key) { handleHotkeyChange(key, 2); }
+void MainWindow::on_slot3Hotkey_currentTextChanged(const QString &key) { handleHotkeyChange(key, 3); }
+void MainWindow::on_slot4Hotkey_currentTextChanged(const QString &key) { handleHotkeyChange(key, 4); }
+void MainWindow::on_slot5Hotkey_currentTextChanged(const QString &key) { handleHotkeyChange(key, 5); }
+void MainWindow::on_slot6Hotkey_currentTextChanged(const QString &key) { handleHotkeyChange(key, 6); }
+void MainWindow::on_slot7Hotkey_currentTextChanged(const QString &key) { handleHotkeyChange(key, 7); }
+void MainWindow::on_slot8Hotkey_currentTextChanged(const QString &key) { handleHotkeyChange(key, 8); }
+void MainWindow::on_slot9Hotkey_currentTextChanged(const QString &key) { handleHotkeyChange(key, 9); }
+void MainWindow::on_slot10Hotkey_currentTextChanged(const QString &key) { handleHotkeyChange(key, 10); }
+void MainWindow::on_slot11Hotkey_currentTextChanged(const QString &key) { handleHotkeyChange(key, 11); }
+void MainWindow::on_slot12Hotkey_currentTextChanged(const QString &key) { handleHotkeyChange(key, 12); }
+void MainWindow::on_slot13Hotkey_currentTextChanged(const QString &key) { handleHotkeyChange(key, 13); }
+void MainWindow::on_slot14Hotkey_currentTextChanged(const QString &key) { handleHotkeyChange(key, 14); }
+void MainWindow::on_slot15Hotkey_currentTextChanged(const QString &key) { handleHotkeyChange(key, 15); }
+void MainWindow::on_slot16Hotkey_currentTextChanged(const QString &key) { handleHotkeyChange(key, 16); }
+void MainWindow::on_slot17Hotkey_currentTextChanged(const QString &key) { handleHotkeyChange(key, 17); }
+void MainWindow::on_slot18Hotkey_currentTextChanged(const QString &key) { handleHotkeyChange(key, 18); }
+void MainWindow::on_slot19Hotkey_currentTextChanged(const QString &key) { handleHotkeyChange(key, 19); }
+void MainWindow::on_slot20Hotkey_currentTextChanged(const QString &key) { handleHotkeyChange(key, 20); }
 
 void MainWindow::saveHotkeys()
 {
     QSettings settings("VoiceChanger", "Hotkeys");
     settings.clear();
     
+    int savedCount = 0;
     for (auto it = m_soundIndexToKey.begin(); it != m_soundIndexToKey.end(); ++it) {
         int soundIndex = it.key();
         QString key = it.value();
         if (key != "None" && !key.isEmpty()) {
-            settings.setValue(QString("hotkey_%1").arg(soundIndex), key);
+            settings.setValue(QString("slot%1Hotkey").arg(soundIndex), key);
+            savedCount++;
+            qDebug() << "Saved hotkey for slot" << soundIndex << ":" << key;
         }
     }
     
-    qDebug() << "Hotkeys saved to settings";
+    qDebug() << "Hotkeys saved to settings. Total saved:" << savedCount;
 }
 
 void MainWindow::loadHotkeys()
@@ -385,10 +388,10 @@ void MainWindow::loadHotkeys()
     QSettings settings("VoiceChanger", "Hotkeys");
     
     for (int soundIndex = 1; soundIndex <= 20; ++soundIndex) {
-        QString key = settings.value(QString("hotkey_%1").arg(soundIndex), "None").toString();
+        QString key = settings.value(QString("slot%1Hotkey").arg(soundIndex), "None").toString();
         
         // Find the corresponding combobox and set its value
-        QString comboName = QString("hotkey%1").arg(soundIndex);
+        QString comboName = QString("slot%1Hotkey").arg(soundIndex);
         QComboBox *combo = findChild<QComboBox*>(comboName);
         if (combo) {
             int index = combo->findText(key);

@@ -109,200 +109,182 @@ void MainWindow::loadLoadout(const QString &loadout)
 
     settings.endGroup();
 
-    ui->sound1->setIcon(QIcon());
-    ui->sound2->setIcon(QIcon());
-    ui->sound3->setIcon(QIcon());
-    ui->sound4->setIcon(QIcon());
-    ui->sound5->setIcon(QIcon());
-    ui->sound6->setIcon(QIcon());
-    ui->sound7->setIcon(QIcon());
-    ui->sound8->setIcon(QIcon());
-    ui->sound9->setIcon(QIcon());
-    ui->sound10->setIcon(QIcon());
-    ui->sound11->setIcon(QIcon());
-    ui->sound12->setIcon(QIcon());
-    ui->sound13->setIcon(QIcon());
-    ui->sound14->setIcon(QIcon());
-    ui->sound15->setIcon(QIcon());
-    ui->sound16->setIcon(QIcon());
-    ui->sound17->setIcon(QIcon());
-    ui->sound18->setIcon(QIcon());
-    ui->sound19->setIcon(QIcon());
-    ui->sound20->setIcon(QIcon());
+    ui->slot1->setIcon(QIcon());
+    ui->slot2->setIcon(QIcon());
+    ui->slot3->setIcon(QIcon());
+    ui->slot4->setIcon(QIcon());
+    ui->slot5->setIcon(QIcon());
+    ui->slot6->setIcon(QIcon());
+    ui->slot7->setIcon(QIcon());
+    ui->slot8->setIcon(QIcon());
+    ui->slot9->setIcon(QIcon());
+    ui->slot10->setIcon(QIcon());
+    ui->slot11->setIcon(QIcon());
+    ui->slot12->setIcon(QIcon());
+    ui->slot13->setIcon(QIcon());
+    ui->slot14->setIcon(QIcon());
+    ui->slot15->setIcon(QIcon());
+    ui->slot16->setIcon(QIcon());
+    ui->slot17->setIcon(QIcon());
+    ui->slot18->setIcon(QIcon());
+    ui->slot19->setIcon(QIcon());
+    ui->slot20->setIcon(QIcon());
 
     if(!pic1.isEmpty())
     {
         QIcon icon(pic1);
 
-        QSize size(75,75);
+        ui->slot1->setIcon(icon);
 
-        ui->sound1->setIcon(icon);
-
-        ui->sound1->setIconSize(size);
     }
 
     if(!pic2.isEmpty())
     {
         QIcon icon(pic2);
 
-        QSize size(75,75);
+        
 
-        ui->sound2->setIcon(icon);
+        ui->slot2->setIcon(icon);
 
-        ui->sound2->setIconSize(size);
+        
     }
     if(!pic3.isEmpty())
     {
         QIcon icon(pic3);
 
-        QSize size(75,75);
+        
 
-        ui->sound3->setIcon(icon);
+        ui->slot3->setIcon(icon);
 
-        ui->sound3->setIconSize(size);
+       
     }
 
     if(!pic4.isEmpty())
     {
         QIcon icon(pic4);
 
-        QSize size(75,75);
+    
 
-        ui->sound4->setIcon(icon);
+        ui->slot4->setIcon(icon);
 
-        ui->sound4->setIconSize(size);
+        
     }
 
     if(!pic5.isEmpty())
     {
         QIcon icon(pic5);
 
-        QSize size(75,75);
+        
 
-        ui->sound5->setIcon(icon);
+        ui->slot5->setIcon(icon);
 
-        ui->sound5->setIconSize(size);
     }
 
     if(!pic6.isEmpty())
     {
         QIcon icon(pic6);
 
-        QSize size(75,75);
+      
 
-        ui->sound6->setIcon(icon);
+        ui->slot6->setIcon(icon);
 
-        ui->sound6->setIconSize(size);
     }
 
     if(!pic7.isEmpty())
     {
         QIcon icon(pic7);
 
-        QSize size(75,75);
 
-        ui->sound7->setIcon(icon);
-
-        ui->sound7->setIconSize(size);
+        ui->slot7->setIcon(icon);
+    
     }
 
     if(!pic8.isEmpty())
     {
         QIcon icon(pic8);
 
-        QSize size(75,75);
+        ui->slot8->setIcon(icon);
 
-        ui->sound8->setIcon(icon);
-
-        ui->sound8->setIconSize(size);
     }
 
     if(!pic9.isEmpty())
     {
         QIcon icon(pic9);
 
-        QSize size(75,75);
+      
 
-        ui->sound9->setIcon(icon);
+        ui->slot9->setIcon(icon);
 
-        ui->sound9->setIconSize(size);
     }
 
     if(!pic10.isEmpty())
     {
         QIcon icon(pic10);
 
-        QSize size(75,75);
+     
 
-        ui->sound10->setIcon(icon);
+        ui->slot10->setIcon(icon);
 
-        ui->sound10->setIconSize(size);
     }
 
     if(!pic11.isEmpty())
     {
         QIcon icon(pic11);
 
-        QSize size(75,75);
 
-        ui->sound11->setIcon(icon);
+        ui->slot11->setIcon(icon);
 
-        ui->sound11->setIconSize(size);
     }
 
     if(!pic12.isEmpty())
     {
         QIcon icon(pic12);
 
-        QSize size(75,75);
+      
 
-        ui->sound12->setIcon(icon);
+        ui->slot12->setIcon(icon);
 
-        ui->sound12->setIconSize(size);
+
     }
 
     if(!pic14.isEmpty())
     {
         QIcon icon(pic14);
 
-        QSize size(75,75);
+        
 
-        ui->sound14->setIcon(icon);
+        ui->slot14->setIcon(icon);
 
-        ui->sound14->setIconSize(size);
+
     }
 
     if(!pic15.isEmpty())
     {
         QIcon icon(pic15);
 
-        QSize size(75,75);
 
-        ui->sound15->setIcon(icon);
+        ui->slot15->setIcon(icon);
 
-        ui->sound15->setIconSize(size);
+
     }
 
     if(!pic16.isEmpty())
     {
         QIcon icon(pic16);
 
-        QSize size(75,75);
 
-        ui->sound16->setIcon(icon);
+        ui->slot16->setIcon(icon);
 
-        ui->sound16->setIconSize(size);
+  
     }
 
     if(!pic17.isEmpty())
     {
         QIcon icon(pic17);
 
-        QSize size(75,75);
 
-        ui->sound17->setIcon(icon);
+        ui->slot17->setIcon(icon);
 
-        ui->sound17->setIconSize(size);
     }
 
 
@@ -310,11 +292,11 @@ void MainWindow::loadLoadout(const QString &loadout)
     {
         QIcon icon(pic18);
 
-        QSize size(75,75);
+        
 
-        ui->sound18->setIcon(icon);
+        ui->slot18->setIcon(icon);
 
-        ui->sound18->setIconSize(size);
+
     }
 
 
@@ -322,11 +304,11 @@ void MainWindow::loadLoadout(const QString &loadout)
     {
         QIcon icon(pic19);
 
-        QSize size(75,75);
+        
 
-        ui->sound19->setIcon(icon);
+        ui->slot19->setIcon(icon);
 
-        ui->sound19->setIconSize(size);
+    
     }
 
 
@@ -334,22 +316,19 @@ void MainWindow::loadLoadout(const QString &loadout)
     {
         QIcon icon(pic13);
 
-        QSize size(75,75);
 
-        ui->sound13->setIcon(icon);
+        ui->slot13->setIcon(icon);
 
-        ui->sound13->setIconSize(size);
     }
 
     if(!pic20.isEmpty())
     {
         QIcon icon(pic20);
 
-        QSize size(75,75);
+        
 
-        ui->sound20->setIcon(icon);
+        ui->slot20->setIcon(icon);
 
-        ui->sound20->setIconSize(size);
     }
 
 }

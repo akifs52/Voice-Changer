@@ -19,8 +19,11 @@ void MainWindow::stopAllEffects()
     ui->robotButton->setChecked(false);
     ui->robotButton->setText("Robot");
 
-    ui->bananaButton->setChecked(false);
-    ui->bananaButton->setText("Child");
+    ui->childButton->setChecked(false);
+    ui->childButton->setText("Child");
+
+    ui->caveButton->setChecked(false);
+    ui->caveButton->setText("Cave");
 
     ui->devilButton->setChecked(false);
     ui->devilButton->setText("Monster");
@@ -31,14 +34,11 @@ void MainWindow::stopAllEffects()
     ui->combineButton->setChecked(false);
     ui->combineButton->setText("Combine");
 
-    ui->ekoButton->setChecked(false);
-    ui->ekoButton->setText("Echo");
-
-    ui->phaserButton->setChecked(false);
-    ui->phaserButton->setText("Phaser");
-
     ui->flangerButton->setChecked(false);
     ui->flangerButton->setText("Flanger");
+
+    ui->phaseButton->setChecked(false);
+    ui->phaseButton->setText("Phase");
 
     // Mevcut bağlantıları kopar - AMA kayıt sinyali bağlantısını koparma!
     if (inputDevice) {
@@ -87,7 +87,7 @@ void MainWindow::stopAllEffects()
 
 
 
-void MainWindow::processToBananaVoice(QByteArray &data)
+void MainWindow::processToChildVoice(QByteArray &data)
 {
     // Safety checks
     if (data.isEmpty() || data.size() < static_cast<qsizetype>(sizeof(int16_t))) {
@@ -95,7 +95,7 @@ void MainWindow::processToBananaVoice(QByteArray &data)
     }
 
     if (!format) {
-        qWarning() << "Audio format is null in processToBananaVoice";
+        qWarning() << "Audio format is null in processToChildVoice";
         return;
     }
 
@@ -257,7 +257,7 @@ void MainWindow::processToCombineVoice(QByteArray &data)
     }
 }
 
-void MainWindow::processToPhaserVoice(QByteArray &data)
+void MainWindow::processToPhaseVoice(QByteArray &data)
 {
     // Safety checks
     if (data.isEmpty() || data.size() < static_cast<qsizetype>(sizeof(int16_t))) {
@@ -265,7 +265,7 @@ void MainWindow::processToPhaserVoice(QByteArray &data)
     }
 
     if (!format) {
-        qWarning() << "Audio format is null in processToPhaserVoice";
+        qWarning() << "Audio format is null in processToPhaseVoice";
         return;
     }
 
@@ -281,8 +281,8 @@ void MainWindow::processToPhaserVoice(QByteArray &data)
         floatInput[i] = static_cast<float>(samples[i]) / 32768.0f;
     }
     
-    // Apply PHASER effect using new VoiceEffects
-    voiceEffects->processPhaser(floatInput.data(), floatOutput.data(), sampleCount, format->sampleRate());
+    // Apply PHASE effect using new VoiceEffects
+    voiceEffects->processPhase(floatInput.data(), floatOutput.data(), sampleCount, format->sampleRate());
     
     // Convert float back to int16
     for (int i = 0; i < sampleCount; ++i) {
@@ -443,19 +443,19 @@ void MainWindow::on_robotButton_clicked(bool checked)
 }
 
 
-void MainWindow::on_bananaButton_clicked(bool checked)
+void MainWindow::on_childButton_clicked(bool checked)
 {
     if (checked) {
         // Diğer tüm efektleri durdur
         stopAllEffects();
 
-        // Banana efektini başlat
-        ui->bananaButton->setChecked(true);
-        ui->bananaButton->setText("Stop");
+        // Child efektini başlat
+        ui->childButton->setChecked(true);
+        ui->childButton->setText("Stop");
 
         if (audioInput) {
-            setupEffectConnection("BANANA", [this](QByteArray &data) {
-                processToBananaVoice(data);
+            setupEffectConnection("CHILD", [this](QByteArray &data) {
+                processToChildVoice(data);
             });
         }
         else {
@@ -465,9 +465,9 @@ void MainWindow::on_bananaButton_clicked(bool checked)
         usingEffects = false;
         qDebug() << "Child voice effect started.";
     } else {
-        ui->bananaButton->setText("Çocuk Sesi");
+        ui->childButton->setText("Çocuk Sesi");
 
-        // Sadece banana efektini durdur
+        // Sadece child efektini durdur
         if (inputDevice) {
             disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
             
@@ -602,16 +602,16 @@ void MainWindow::on_devilButton_clicked(bool checked)
     }
 }
 
-void MainWindow::on_ekoButton_clicked(bool checked)
+void MainWindow::on_caveButton_clicked(bool checked)
 {
     if(checked)
     {
         // Diğer tüm efektleri durdur
         stopAllEffects();
         
-        // Eko efektini başlat
-        ui->ekoButton->setChecked(true);
-        ui->ekoButton->setText("Stop");
+        // Cave efektini başlat
+        ui->caveButton->setChecked(true);
+        ui->caveButton->setText("Stop");
 
         if(audioInput)
         {
@@ -629,9 +629,9 @@ void MainWindow::on_ekoButton_clicked(bool checked)
     }
     else
     {
-        ui->ekoButton->setText("Eko");
+        ui->caveButton->setText("Eko");
 
-        // Sadece eko efektini durdur
+        // Sadece cave efektini durdur
         if (inputDevice) {
             disconnect(inputDevice, &QIODevice::readyRead, this, nullptr);
             
@@ -846,21 +846,21 @@ void MainWindow::on_combineButton_clicked(bool checked)
     }
 }
 
-void MainWindow::on_phaserButton_clicked(bool checked)
+void MainWindow::on_phaseButton_clicked(bool checked)
 {
     if(checked)
     {
         // Diğer tüm efektleri durdur
         stopAllEffects();
         
-        // Phaser efektini başlat
-        ui->phaserButton->setChecked(true);
-        ui->phaserButton->setText("Stop");
+        // Phase efektini başlat
+        ui->phaseButton->setChecked(true);
+        ui->phaseButton->setText("Stop");
 
         if(audioInput)
         {
-            setupEffectConnection("PHASER", [this](QByteArray &data) {
-                processToPhaserVoice(data);
+            setupEffectConnection("PHASE", [this](QByteArray &data) {
+                processToPhaseVoice(data);
             });
         }
         else
@@ -869,11 +869,11 @@ void MainWindow::on_phaserButton_clicked(bool checked)
         }
 
         usingEffects = false;
-        qDebug() << "phaser effect started.";
+        qDebug() << "phase effect started.";
     }
     else
     {
-        ui->phaserButton->setText("Phaser");
+        ui->phaseButton->setText("Phase");
 
         // Sadece phaser efektini durdur
         if (inputDevice) {
@@ -924,7 +924,7 @@ void MainWindow::on_phaserButton_clicked(bool checked)
 
         data.clear();
         usingEffects = true;
-        qDebug() << "phaser effect stopped.";
+        qDebug() << "phase effect stopped.";
     }
 }
 
