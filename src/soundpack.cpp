@@ -48,6 +48,8 @@ void MainWindow::preloadAudio(const QString &filename)
         qDebug() << "Preloaded audio:" << filename << "Size:" << cache->audioData.size() << "bytes";
 
         preloadCount++;
+        emit preloadProgress(preloadCount, preloadTotal); // Emit progress update
+        
         if (preloadCount >= preloadTotal) {
             emit preloadFinished();
         }
@@ -169,7 +171,6 @@ void MainWindow::playAudioNotInterrupt(const QString &filename, const QString &p
                 // 48kHz stereo: 48000 samples/sec * 2 channels * 2 bytes = 192000 bytes/sec
                 // 256 samples chunks: 1024 bytes for optimal balance
                 const int chunkSize = 1024; // 256 samples at 48kHz stereo
-                const int sleepMs = 5; // 5ms delay for optimal playback
 
                 QElapsedTimer timer;
                 timer.start();
@@ -479,7 +480,7 @@ void MainWindow::on_slot1_clicked()
 
 
     if (filename1.isEmpty()) {
-        filename1 = QFileDialog::getOpenFileName(this, tr("Open MP3 File"), "", tr("Audio Files (*.wav)"));
+        filename1 = QFileDialog::getOpenFileName(this, tr("Open WAV File"), "", tr("Audio Files (*.wav)"));
         if (filename1.isEmpty()) {
             qWarning() << "No file selected.";
             return;
@@ -506,7 +507,7 @@ void MainWindow::on_slot2_clicked()
     }
 
     if (filename2.isEmpty()) {
-        filename2 = QFileDialog::getOpenFileName(this, tr("Open MP3 File"), "", tr("Audio Files (*.wav)"));
+        filename2 = QFileDialog::getOpenFileName(this, tr("Open WAV File"), "", tr("Audio Files (*.wav)"));
         if (filename2.isEmpty()) {
             qWarning() << "No file selected.";
             return;
@@ -533,7 +534,7 @@ void MainWindow::on_slot3_clicked()
     }
 
     if (filename3.isEmpty()) {
-        filename3 = QFileDialog::getOpenFileName(this, tr("Open MP3 File"), "", tr("Audio Files (*.wav)"));
+        filename3 = QFileDialog::getOpenFileName(this, tr("Open WAV File"), "", tr("Audio Files (*.wav)"));
         if (filename3.isEmpty()) {
             qWarning() << "No file selected.";
             return;
@@ -560,7 +561,7 @@ void MainWindow::on_slot4_clicked()
     }
 
     if (filename4.isEmpty()) {
-        filename4 = QFileDialog::getOpenFileName(this, tr("Open MP3 File"), "", tr("Audio Files (*.wav)"));
+        filename4 = QFileDialog::getOpenFileName(this, tr("Open WAV File"), "", tr("Audio Files (*.wav)"));
         if (filename4.isEmpty()) {
             qWarning() << "No file selected.";
             return;
@@ -587,7 +588,7 @@ void MainWindow::on_slot5_clicked()
     }
 
     if (filename5.isEmpty()) {
-        filename5 = QFileDialog::getOpenFileName(this, tr("Open MP3 File"), "", tr("Audio Files (*.wav)"));
+        filename5 = QFileDialog::getOpenFileName(this, tr("Open WAV File"), "", tr("Audio Files (*.wav)"));
         if (filename5.isEmpty()) {
             qWarning() << "No file selected.";
             return;
@@ -615,7 +616,7 @@ void MainWindow::on_slot6_clicked()
     }
 
     if (filename6.isEmpty()) {
-        filename6= QFileDialog::getOpenFileName(this, tr("Open MP3 File"), "", tr("Audio Files (*.wav)"));
+        filename6= QFileDialog::getOpenFileName(this, tr("Open WAV File"), "", tr("Audio Files (*.wav)"));
         if (filename6.isEmpty()) {
             qWarning() << "No file selected.";
             return;
@@ -643,7 +644,7 @@ void MainWindow::on_slot7_clicked()
     }
 
     if (filename7.isEmpty()) {
-        filename7 = QFileDialog::getOpenFileName(this, tr("Open MP3 File"), "", tr("Audio Files (*.wav)"));
+        filename7 = QFileDialog::getOpenFileName(this, tr("Open WAV File"), "", tr("Audio Files (*.wav)"));
         if (filename7.isEmpty()) {
             qWarning() << "No file selected.";
             return;
@@ -670,7 +671,7 @@ void MainWindow::on_slot8_clicked()
     }
 
     if (filename8.isEmpty()) {
-        filename8 = QFileDialog::getOpenFileName(this, tr("Open MP3 File"), "", tr("Audio Files (*.wav)"));
+        filename8 = QFileDialog::getOpenFileName(this, tr("Open WAV File"), "", tr("Audio Files (*.wav)"));
         if (filename8.isEmpty()) {
             qWarning() << "No file selected.";
             return;
@@ -698,7 +699,7 @@ void MainWindow::on_slot9_clicked()
     }
 
     if (filename9.isEmpty()) {
-        filename9 = QFileDialog::getOpenFileName(this, tr("Open MP3 File"), "", tr("Audio Files (*.wav)"));
+        filename9 = QFileDialog::getOpenFileName(this, tr("Open WAV File"), "", tr("Audio Files (*.wav)"));
         if (filename9.isEmpty()) {
             qWarning() << "No file selected.";
             return;
@@ -725,7 +726,7 @@ void MainWindow::on_slot10_clicked()
     }
 
     if (filename10.isEmpty()) {
-        filename10 = QFileDialog::getOpenFileName(this, tr("Open MP3 File"), "", tr("Audio Files (*.wav)"));
+        filename10 = QFileDialog::getOpenFileName(this, tr("Open WAV File"), "", tr("Audio Files (*.wav)"));
         if (filename10.isEmpty()) {
             qWarning() << "No file selected.";
             return;
@@ -752,7 +753,7 @@ void MainWindow::on_slot11_clicked()
     }
 
     if (filename11.isEmpty()) {
-        filename11 = QFileDialog::getOpenFileName(this, tr("Open MP3 File"), "", tr("Audio Files (*.wav)"));
+        filename11 = QFileDialog::getOpenFileName(this, tr("Open WAV File"), "", tr("Audio Files (*.wav)"));
         if (filename11.isEmpty()) {
             qWarning() << "No file selected.";
             return;
@@ -779,7 +780,7 @@ void MainWindow::on_slot12_clicked()
     }
 
     if (filename12.isEmpty()) {
-        filename12 = QFileDialog::getOpenFileName(this, tr("Open MP3 File"), "", tr("Audio Files (*.wav)"));
+        filename12 = QFileDialog::getOpenFileName(this, tr("Open WAV File"), "", tr("Audio Files (*.wav)"));
         if (filename12.isEmpty()) {
             qWarning() << "No file selected.";
             return;
@@ -806,7 +807,7 @@ void MainWindow::on_slot13_clicked()
     }
 
     if (filename13.isEmpty()) {
-        filename13 = QFileDialog::getOpenFileName(this, tr("Open MP3 File"), "", tr("Audio Files (*.wav)"));
+        filename13 = QFileDialog::getOpenFileName(this, tr("Open WAV File"), "", tr("Audio Files (*.wav)"));
         if (filename13.isEmpty()) {
             qWarning() << "No file selected.";
             return;
@@ -833,7 +834,7 @@ void MainWindow::on_slot14_clicked()
     }
 
     if (filename14.isEmpty()) {
-        filename14 = QFileDialog::getOpenFileName(this, tr("Open MP3 File"), "", tr("Audio Files (*.wav)"));
+        filename14 = QFileDialog::getOpenFileName(this, tr("Open WAV File"), "", tr("Audio Files (*.wav)"));
         if (filename14.isEmpty()) {
             qWarning() << "No file selected.";
             return;
@@ -860,7 +861,7 @@ void MainWindow::on_slot15_clicked()
     }
 
     if (filename15.isEmpty()) {
-        filename15 = QFileDialog::getOpenFileName(this, tr("Open MP3 File"), "", tr("Audio Files (*.wav)"));
+        filename15 = QFileDialog::getOpenFileName(this, tr("Open WAV File"), "", tr("Audio Files (*.wav)"));
         if (filename15.isEmpty()) {
             qWarning() << "No file selected.";
             return;
@@ -887,7 +888,7 @@ void MainWindow::on_slot16_clicked()
     }
 
     if (filename16.isEmpty()) {
-        filename16 = QFileDialog::getOpenFileName(this, tr("Open MP3 File"), "", tr("Audio Files (*.wav)"));
+        filename16 = QFileDialog::getOpenFileName(this, tr("Open WAV File"), "", tr("Audio Files (*.wav)"));
         if (filename16.isEmpty()) {
             qWarning() << "No file selected.";
             return;
@@ -914,7 +915,7 @@ void MainWindow::on_slot17_clicked()
     }
 
     if (filename17.isEmpty()) {
-        filename17 = QFileDialog::getOpenFileName(this, tr("Open MP3 File"), "", tr("Audio Files (*.wav)"));
+        filename17 = QFileDialog::getOpenFileName(this, tr("Open WAV File"), "", tr("Audio Files (*.wav)"));
         if (filename17.isEmpty()) {
             qWarning() << "No file selected.";
             return;
@@ -941,7 +942,7 @@ void MainWindow::on_slot18_clicked()
     }
 
     if (filename18.isEmpty()) {
-        filename18 = QFileDialog::getOpenFileName(this, tr("Open MP3 File"), "", tr("Audio Files (*.wav)"));
+        filename18 = QFileDialog::getOpenFileName(this, tr("Open WAV File"), "", tr("Audio Files (*.wav)"));
         if (filename18.isEmpty()) {
             qWarning() << "No file selected.";
             return;
@@ -968,7 +969,7 @@ void MainWindow::on_slot19_clicked()
     }
 
     if (filename19.isEmpty()) {
-        filename19 = QFileDialog::getOpenFileName(this, tr("Open MP3 File"), "", tr("Audio Files (*.wav)"));
+        filename19 = QFileDialog::getOpenFileName(this, tr("Open WAV File"), "", tr("Audio Files (*.wav)"));
         if (filename19.isEmpty()) {
             qWarning() << "No file selected.";
             return;
@@ -995,7 +996,7 @@ void MainWindow::on_slot20_clicked()
     }
 
     if (filename20.isEmpty()) {
-        filename20 = QFileDialog::getOpenFileName(this, tr("Open MP3 File"), "", tr("Audio Files (*.wav)"));
+        filename20 = QFileDialog::getOpenFileName(this, tr("Open WAV File"), "", tr("Audio Files (*.wav)"));
         if (filename20.isEmpty()) {
             qWarning() << "No file selected.";
             return;

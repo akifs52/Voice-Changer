@@ -44,9 +44,15 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Initialize glow effects
     glowEffect = new GlowEffect(ui, this);
+    
+    // Initialize preset notification widget
+    presetNotification = new PresetNotification(this);
+    
+    // Initialize recording animations
+    setupRecordingAnimations();
 
     // Remove top default bar but keep in taskbar and side borders for resizing
-    setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
+    setWindowFlags(Qt::Window | Qt::CustomizeWindowHint);
 
     // Initialize dragging variables
     isDragging = false;
@@ -168,8 +174,6 @@ MainWindow::~MainWindow()
 
     delete format;
 
-    on_stopRecord_clicked();
-    
     // Clean up audio cache
     for (auto it = audioCache.begin(); it != audioCache.end(); ++it) {
         delete it.value();
@@ -300,7 +304,7 @@ void MainWindow::on_outputslider_valueChanged(int value)
 }
 
 
-void MainWindow::on_refreshInput_clicked()
+void MainWindow::on_refreshInputDevice_clicked()
 {
 
     qDebug()<< ui->inputDeviceCombobox->count();
@@ -319,7 +323,7 @@ void MainWindow::on_refreshInput_clicked()
 }
 
 
-void MainWindow::on_refreshOutput_clicked()
+void MainWindow::on_refreshOutputDevice_clicked()
 {
     qDebug()<< ui->OutputDEviceCombobox->count();
 
@@ -486,7 +490,6 @@ void MainWindow::on_OutputDEviceCombobox_currentIndexChanged(int index)
 void MainWindow::on_testButton_clicked(bool checked)
 {
     if (checked) {
-        ui->testButton->setText("Stop");
         testButtonActive = true;
 
         // AudioPipeline test modunu ayarla
@@ -579,8 +582,6 @@ void MainWindow::on_testButton_clicked(bool checked)
         }
     } 
     else {
-        ui->testButton->setText("Test Device");
-
         // AudioPipeline test modunu kapat
         if (audioPipeline) {
             audioPipeline->setTestMode(false);
@@ -998,6 +999,19 @@ void MainWindow::on_maximizeButton_clicked()
 void MainWindow::on_closeButton_clicked()
 {
     close();
+}
+
+void MainWindow::on_recordingButton_clicked(bool checked)
+{
+    if (checked) {
+        // Start recording
+        startRecording();
+        // Animation is started in startRecording() function
+    } else {
+        // Stop recording
+        stopRecording();
+        // Animation is stopped in stopRecording() function
+    }
 }
 
 

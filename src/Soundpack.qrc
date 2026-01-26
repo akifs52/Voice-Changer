@@ -35,6 +35,7 @@
         <file>img/app/woman.png</file>
         <file>img/app/flanger.png</file>
         <file>img/app/phaser.png</file>
+        <file>img/app/add.png</file>
     </qresource>
     <qresource prefix="/"/>
 </RCC>

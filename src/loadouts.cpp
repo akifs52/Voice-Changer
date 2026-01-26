@@ -109,26 +109,26 @@ void MainWindow::loadLoadout(const QString &loadout)
 
     settings.endGroup();
 
-    ui->slot1->setIcon(QIcon());
-    ui->slot2->setIcon(QIcon());
-    ui->slot3->setIcon(QIcon());
-    ui->slot4->setIcon(QIcon());
-    ui->slot5->setIcon(QIcon());
-    ui->slot6->setIcon(QIcon());
-    ui->slot7->setIcon(QIcon());
-    ui->slot8->setIcon(QIcon());
-    ui->slot9->setIcon(QIcon());
-    ui->slot10->setIcon(QIcon());
-    ui->slot11->setIcon(QIcon());
-    ui->slot12->setIcon(QIcon());
-    ui->slot13->setIcon(QIcon());
-    ui->slot14->setIcon(QIcon());
-    ui->slot15->setIcon(QIcon());
-    ui->slot16->setIcon(QIcon());
-    ui->slot17->setIcon(QIcon());
-    ui->slot18->setIcon(QIcon());
-    ui->slot19->setIcon(QIcon());
-    ui->slot20->setIcon(QIcon());
+    ui->slot1->setIcon(QIcon(":/app/img/app/add.png"));
+    ui->slot2->setIcon(QIcon(":/app/img/app/add.png"));
+    ui->slot3->setIcon(QIcon(":/app/img/app/add.png"));
+    ui->slot4->setIcon(QIcon(":/app/img/app/add.png"));
+    ui->slot5->setIcon(QIcon(":/app/img/app/add.png"));
+    ui->slot6->setIcon(QIcon(":/app/img/app/add.png"));
+    ui->slot7->setIcon(QIcon(":/app/img/app/add.png"));
+    ui->slot8->setIcon(QIcon(":/app/img/app/add.png"));
+    ui->slot9->setIcon(QIcon(":/app/img/app/add.png"));
+    ui->slot10->setIcon(QIcon(":/app/img/app/add.png"));
+    ui->slot11->setIcon(QIcon(":/app/img/app/add.png"));
+    ui->slot12->setIcon(QIcon(":/app/img/app/add.png"));
+    ui->slot13->setIcon(QIcon(":/app/img/app/add.png"));
+    ui->slot14->setIcon(QIcon(":/app/img/app/add.png"));
+    ui->slot15->setIcon(QIcon(":/app/img/app/add.png"));
+    ui->slot16->setIcon(QIcon(":/app/img/app/add.png"));
+    ui->slot17->setIcon(QIcon(":/app/img/app/add.png"));
+    ui->slot18->setIcon(QIcon(":/app/img/app/add.png"));
+    ui->slot19->setIcon(QIcon(":/app/img/app/add.png"));
+    ui->slot20->setIcon(QIcon(":/app/img/app/add.png"));
 
     if(!pic1.isEmpty())
     {
@@ -251,10 +251,7 @@ void MainWindow::loadLoadout(const QString &loadout)
     {
         QIcon icon(pic14);
 
-        
-
         ui->slot14->setIcon(icon);
-
 
     }
 
@@ -262,9 +259,7 @@ void MainWindow::loadLoadout(const QString &loadout)
     {
         QIcon icon(pic15);
 
-
         ui->slot15->setIcon(icon);
-
 
     }
 
@@ -333,62 +328,189 @@ void MainWindow::loadLoadout(const QString &loadout)
 
 }
 
-void MainWindow::on_load1_clicked()
+// Preset Save Functions
+void MainWindow::on_savePreset1_clicked()
 {
-    loadLoadout("Loadout1");
+    connect(presetNotification, &PresetNotification::confirmed, this, [this]() {
+        saveLoadout("Preset1");
+        presetNotification->showSuccessNotification("Preset 1 Saved Successfully!");
+        disconnect(presetNotification, &PresetNotification::confirmed, nullptr, nullptr);
+        disconnect(presetNotification, &PresetNotification::cancelled, nullptr, nullptr);
+    });
+    
+    connect(presetNotification, &PresetNotification::cancelled, this, [this]() {
+        disconnect(presetNotification, &PresetNotification::confirmed, nullptr, nullptr);
+        disconnect(presetNotification, &PresetNotification::cancelled, nullptr, nullptr);
+    });
+    
+    presetNotification->showConfirmationDialog("Save Preset 1");
 }
 
-
-void MainWindow::on_load2_clicked()
+void MainWindow::on_savePreset2_clicked()
 {
-    loadLoadout("Loadout2");
+    connect(presetNotification, &PresetNotification::confirmed, this, [this]() {
+        saveLoadout("Preset2");
+        presetNotification->showSuccessNotification("Preset 2 Saved Successfully!");
+        disconnect(presetNotification, &PresetNotification::confirmed, nullptr, nullptr);
+        disconnect(presetNotification, &PresetNotification::cancelled, nullptr, nullptr);
+    });
+    
+    connect(presetNotification, &PresetNotification::cancelled, this, [this]() {
+        disconnect(presetNotification, &PresetNotification::confirmed, nullptr, nullptr);
+        disconnect(presetNotification, &PresetNotification::cancelled, nullptr, nullptr);
+    });
+    
+    presetNotification->showConfirmationDialog("Save Preset 2");
 }
 
-
-void MainWindow::on_load3_clicked()
+void MainWindow::on_savePreset3_clicked()
 {
-    loadLoadout("Loadout3");
+    connect(presetNotification, &PresetNotification::confirmed, this, [this]() {
+        saveLoadout("Preset3");
+        presetNotification->showSuccessNotification("Preset 3 Saved Successfully!");
+        disconnect(presetNotification, &PresetNotification::confirmed, nullptr, nullptr);
+        disconnect(presetNotification, &PresetNotification::cancelled, nullptr, nullptr);
+    });
+    
+    connect(presetNotification, &PresetNotification::cancelled, this, [this]() {
+        disconnect(presetNotification, &PresetNotification::confirmed, nullptr, nullptr);
+        disconnect(presetNotification, &PresetNotification::cancelled, nullptr, nullptr);
+    });
+    
+    presetNotification->showConfirmationDialog("Save Preset 3");
 }
 
-
-void MainWindow::on_load4_clicked()
+void MainWindow::on_savePreset4_clicked()
 {
-    loadLoadout("Loadout4");
+    connect(presetNotification, &PresetNotification::confirmed, this, [this]() {
+        saveLoadout("Preset4");
+        presetNotification->showSuccessNotification("Preset 4 Saved Successfully!");
+        disconnect(presetNotification, &PresetNotification::confirmed, nullptr, nullptr);
+        disconnect(presetNotification, &PresetNotification::cancelled, nullptr, nullptr);
+    });
+    
+    connect(presetNotification, &PresetNotification::cancelled, this, [this]() {
+        disconnect(presetNotification, &PresetNotification::confirmed, nullptr, nullptr);
+        disconnect(presetNotification, &PresetNotification::cancelled, nullptr, nullptr);
+    });
+    
+    presetNotification->showConfirmationDialog("Save Preset 4");
 }
 
-
-void MainWindow::on_load5_clicked()
+void MainWindow::on_savePreset5_clicked()
 {
-    loadLoadout("Loadout5");
+    connect(presetNotification, &PresetNotification::confirmed, this, [this]() {
+        saveLoadout("Preset5");
+        presetNotification->showSuccessNotification("Preset 5 Saved Successfully!");
+        disconnect(presetNotification, &PresetNotification::confirmed, nullptr, nullptr);
+        disconnect(presetNotification, &PresetNotification::cancelled, nullptr, nullptr);
+    });
+    
+    connect(presetNotification, &PresetNotification::cancelled, this, [this]() {
+        disconnect(presetNotification, &PresetNotification::confirmed, nullptr, nullptr);
+        disconnect(presetNotification, &PresetNotification::cancelled, nullptr, nullptr);
+    });
+    
+    presetNotification->showConfirmationDialog("Save Preset 5");
 }
 
-
-void MainWindow::on_save1_clicked()
+void MainWindow::on_savePreset6_clicked()
 {
-    saveLoadout("Loadout1");
+    connect(presetNotification, &PresetNotification::confirmed, this, [this]() {
+        saveLoadout("Preset6");
+        presetNotification->showSuccessNotification("Preset 6 Saved Successfully!");
+        disconnect(presetNotification, &PresetNotification::confirmed, nullptr, nullptr);
+        disconnect(presetNotification, &PresetNotification::cancelled, nullptr, nullptr);
+    });
+    
+    connect(presetNotification, &PresetNotification::cancelled, this, [this]() {
+        disconnect(presetNotification, &PresetNotification::confirmed, nullptr, nullptr);
+        disconnect(presetNotification, &PresetNotification::cancelled, nullptr, nullptr);
+    });
+    
+    presetNotification->showConfirmationDialog("Save Preset 6");
 }
 
-
-void MainWindow::on_save2_clicked()
+void MainWindow::on_savePreset7_clicked()
 {
-     saveLoadout("Loadout2");
+    connect(presetNotification, &PresetNotification::confirmed, this, [this]() {
+        saveLoadout("Preset7");
+        presetNotification->showSuccessNotification("Preset 7 Saved Successfully!");
+        disconnect(presetNotification, &PresetNotification::confirmed, nullptr, nullptr);
+        disconnect(presetNotification, &PresetNotification::cancelled, nullptr, nullptr);
+    });
+    
+    connect(presetNotification, &PresetNotification::cancelled, this, [this]() {
+        disconnect(presetNotification, &PresetNotification::confirmed, nullptr, nullptr);
+        disconnect(presetNotification, &PresetNotification::cancelled, nullptr, nullptr);
+    });
+    
+    presetNotification->showConfirmationDialog("Save Preset 7");
 }
 
-
-void MainWindow::on_savee3_clicked()
+void MainWindow::on_savePreset8_clicked()
 {
-     saveLoadout("Loadout3");
+    connect(presetNotification, &PresetNotification::confirmed, this, [this]() {
+        saveLoadout("Preset8");
+        presetNotification->showSuccessNotification("Preset 8 Saved Successfully!");
+        disconnect(presetNotification, &PresetNotification::confirmed, nullptr, nullptr);
+        disconnect(presetNotification, &PresetNotification::cancelled, nullptr, nullptr);
+    });
+    
+    connect(presetNotification, &PresetNotification::cancelled, this, [this]() {
+        disconnect(presetNotification, &PresetNotification::confirmed, nullptr, nullptr);
+        disconnect(presetNotification, &PresetNotification::cancelled, nullptr, nullptr);
+    });
+    
+    presetNotification->showConfirmationDialog("Save Preset 8");
 }
 
-
-void MainWindow::on_save4_clicked()
+// Preset Load Functions
+void MainWindow::on_loadPreset1_clicked()
 {
-     saveLoadout("Loadout4");
+    loadLoadout("Preset1");
+    presetNotification->showSuccessNotification("Preset 1 Loaded Successfully!");
 }
 
-
-void MainWindow::on_save5_clicked()
+void MainWindow::on_loadPreset2_clicked()
 {
-     saveLoadout("Loadout5");
+    loadLoadout("Preset2");
+    presetNotification->showSuccessNotification("Preset 2 Loaded Successfully!");
+}
+
+void MainWindow::on_loadPreset3_clicked()
+{
+    loadLoadout("Preset3");
+    presetNotification->showSuccessNotification("Preset 3 Loaded Successfully!");
+}
+
+void MainWindow::on_loadPreset4_clicked()
+{
+    loadLoadout("Preset4");
+    presetNotification->showSuccessNotification("Preset 4 Loaded Successfully!");
+}
+
+void MainWindow::on_loadPreset5_clicked()
+{
+    loadLoadout("Preset5");
+    presetNotification->showSuccessNotification("Preset 5 Loaded Successfully!");
+}
+
+void MainWindow::on_loadPreset6_clicked()
+{
+    loadLoadout("Preset6");
+    presetNotification->showSuccessNotification("Preset 6 Loaded Successfully!");
+}
+
+void MainWindow::on_loadPreset7_clicked()
+{
+    loadLoadout("Preset7");
+    presetNotification->showSuccessNotification("Preset 7 Loaded Successfully!");
+}
+
+void MainWindow::on_loadPreset8_clicked()
+{
+    loadLoadout("Preset8");
+    presetNotification->showSuccessNotification("Preset 8 Loaded Successfully!");
 }
 

@@ -23,10 +23,12 @@
 #include <QAction>
 #include <QMouseEvent>
 #include <QPoint>
+#include <QGraphicsDropShadowEffect>
 #include "audiopipeline.h"
 #include "circularbuffer.h"
 #include "voiceeffects.h"
 #include "gloweffekt.h"
+#include "presetnotification.h"
 #include "qcombobox.h"
 #include "qpushbutton.h"
 #include "ui_mainwindow.h"
@@ -71,13 +73,14 @@ protected:
 signals:
     void audioDataReady(const QByteArray &processedAudio);
     void preloadFinished();
+    void preloadProgress(int current, int total);
 
 private slots:
     // All the original slots...
     void on_outputslider_valueChanged(int value);
     void on_inputslider_valueChanged(int value);
-    void on_refreshInput_clicked();
-    void on_refreshOutput_clicked();
+    void on_refreshInputDevice_clicked();
+    void on_refreshOutputDevice_clicked();
     void on_inputDeviceCombobox_currentIndexChanged(int index);
     void on_OutputDEviceCombobox_currentIndexChanged(int index);
     void on_virtualInputcombobox_currentIndexChanged(int index);
@@ -100,8 +103,7 @@ private slots:
     void on_combineButton_clicked(bool checked);
     void on_phaseButton_clicked(bool checked);
     void on_flangerButton_clicked(bool checked);
-    void on_startRecord_clicked();
-    void on_stopRecord_clicked();
+    void on_recordingButton_clicked(bool checked);
     void on_slot1_clicked();
     void on_slot2_clicked();
     void on_slot3_clicked();
@@ -142,16 +144,25 @@ private slots:
     void on_slot18Delete_clicked();
     void on_slot19Delete_clicked();
     void on_slot20Delete_clicked();
-    void on_load1_clicked();
-    void on_load2_clicked();
-    void on_load3_clicked();
-    void on_load4_clicked();
-    void on_load5_clicked();
-    void on_save1_clicked();
-    void on_save2_clicked();
-    void on_savee3_clicked();
-    void on_save4_clicked();
-    void on_save5_clicked();
+    
+    // Preset Save and Load Functions
+    void on_savePreset1_clicked();
+    void on_savePreset2_clicked();
+    void on_savePreset3_clicked();
+    void on_savePreset4_clicked();
+    void on_savePreset5_clicked();
+    void on_savePreset6_clicked();
+    void on_savePreset7_clicked();
+    void on_savePreset8_clicked();
+    
+    void on_loadPreset1_clicked();
+    void on_loadPreset2_clicked();
+    void on_loadPreset3_clicked();
+    void on_loadPreset4_clicked();
+    void on_loadPreset5_clicked();
+    void on_loadPreset6_clicked();
+    void on_loadPreset7_clicked();
+    void on_loadPreset8_clicked();
 
     // Titlebar functionality
     void on_minimizeButton_clicked();
@@ -342,6 +353,9 @@ private:
     
     // GlowEffect instance for widget glow effects
     GlowEffect *glowEffect;
+    
+    // Preset notification widget
+    PresetNotification *presetNotification;
 
     // Virtual audio fonksiyonları
     void searchVirtualDevices();
@@ -358,6 +372,16 @@ private:
     void saveHotkeys();
     void loadHotkeys();
     void stopAllEffects();
+    
+    // Recording button animation functions
+    void setupRecordingAnimations();
+    void startRecordingAnimation();
+    void stopRecordingAnimation();
+    void updateRecordingPulse();
+    
+    // Recording control functions
+    void startRecording();
+    void stopRecording();
 #ifdef Q_OS_WIN
     bool winEventFilter(MSG *message, long *result);
 #endif

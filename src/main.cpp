@@ -1,44 +1,69 @@
 #include "mainwindow.h"
+#include "loading.h"
 
 #include <QApplication>
-#include <QSplashScreen>
-#include <QPixmap>
-#include <QLabel>
-#include <QVBoxLayout>
-#include <QTimer>
-#include <QScreen>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    // Yükleniyor ekranı oluştur
-    QWidget *splashWidget = new QWidget(nullptr, Qt::SplashScreen | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
-    splashWidget->setFixedSize(300, 100);
-    splashWidget->setStyleSheet("background-color: #2d2d2d; border-radius: 10px; border: 2px solid #555;");
-
-    QVBoxLayout *layout = new QVBoxLayout(splashWidget);
-    QLabel *label = new QLabel("Loading...", splashWidget);
-    label->setStyleSheet("color: white; font-size: 18px; font-weight: bold;");
-    label->setAlignment(Qt::AlignCenter);
-    layout->addWidget(label);
-
-    // Ekranın ortasına konumlandır
-    QScreen *screen = QApplication::primaryScreen();
-    QRect screenGeometry = screen->geometry();
-    int x = (screenGeometry.width() - splashWidget->width()) / 2;
-    int y = (screenGeometry.height() - splashWidget->height()) / 2;
-    splashWidget->move(x, y);
-
-    splashWidget->show();
-    a.processEvents();
+    // Create modern loading widget
+    LoadingWidget loadingWidget;
+    
+    // Show loading screen
+    loadingWidget.showLoading();
+    
+    // Initial progress animation
+    QTimer *progressTimer = new QTimer(&loadingWidget);
+    int progressValue = 0;
+    
+    QObject::connect(progressTimer, &QTimer::timeout, [&]() {
+        progressValue += 2;
+        if (progressValue > 90) progressValue = 90; // Stop at 90%, complete when app loads
+        
+        loadingWidget.updateProgress(progressValue, 100);
+        
+        // Update loading text based on progress
+        if (progressValue < 30) {
+            loadingWidget.updateStatus("Initializing audio system...");
+        } else if (progressValue < 60) {
+            loadingWidget.updateStatus("Loading voice effects...");
+        } else if (progressValue < 90) {
+            loadingWidget.updateStatus("Preparing interface...");
+        }
+    });
+    
+    progressTimer->start(50); // Update every 50ms
 
     MainWindow w;
     
+    // Connect to preload progress for real-time updates
+    QObject::connect(&w, &MainWindow::preloadProgress, [&](int current, int total) {
+        int progress = (current * 80) / 100; // Use 80% of progress bar for preload
+        loadingWidget.updateProgress(progress, 100);
+        
+        if (current < total / 3) {
+            loadingWidget.updateStatus(QString("Loading soundpacks... %1/%2").arg(current).arg(total));
+        } else if (current < (total * 2) / 3) {
+            loadingWidget.updateStatus(QString("Processing audio files... %1/%2").arg(current).arg(total));
+        } else {
+            loadingWidget.updateStatus(QString("Finalizing... %1/%2").arg(current).arg(total));
+        }
+    });
+    
     // Preload bitince splash'i kapat ve pencereyi göster
-    QObject::connect(&w, &MainWindow::preloadFinished, splashWidget, [splashWidget, &w]() {
-        splashWidget->close();
-        w.show();
+    QObject::connect(&w, &MainWindow::preloadFinished, [&]() {
+        progressTimer->stop();
+        
+        // Complete progress to 100%
+        loadingWidget.updateProgress(100, 100);
+        loadingWidget.updateStatus("Ready!");
+        
+        // Hide loading screen and show main window
+        QTimer::singleShot(500, [&]() {
+            loadingWidget.hideLoading();
+            w.show();
+        });
     });
 
     return a.exec();

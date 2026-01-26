@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>LoadingWidget</class>
+ <widget class="QWidget" name="LoadingWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>200</height>
+   </rect>
+  </property>
+  <property name="windowFlags">
+   <set>Qt::SplashScreen | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint</set>
+  </property>
+  <property name="styleSheet">
+   <string>QWidget {
+    background: transparent;
+}</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QFrame" name="loadingFrame">
+     <property name="styleSheet">
+      <string>QFrame {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1, 
+    stop:0 #1a1a2e, stop:0.5 #16213e, stop:1 #0f3460);
+    border-radius: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+}</string>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <property name="spacing">
+       <number>15</number>
+      </property>
+      <property name="leftMargin">
+       <number>20</number>
+      </property>
+      <property name="topMargin">
+       <number>20</number>
+      </property>
+      <property name="rightMargin">
+       <number>20</number>
+      </property>
+      <property name="bottomMargin">
+       <number>20</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="titleLabel">
+        <property name="styleSheet">
+         <string>color: #ffffff;
+font-size: 24px;
+font-weight: bold;
+font-family: 'Segoe UI', Arial, sans-serif;
+padding: 10px;
+background-image: url(qrc:/img/img/icon.png);
+background-repeat: no-repeat;
+background-position: left center;
+padding-left: 45px;</string>
+        </property>
+        <property name="text">
+         <string>Voice Changer</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QProgressBar" name="progressBar">
+        <property name="styleSheet">
+         <string>QProgressBar {
+    border: none;
+    border-radius: 10px;
+    text-align: center;
+    color: white;
+    font-weight: bold;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+QProgressBar::chunk {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0, 
+    stop:0 #00d4ff, stop:0.5 #0099cc, stop:1 #006699);
+    border-radius: 10px;
+}</string>
+        </property>
+        <property name="value">
+         <number>0</number>
+        </property>
+        <property name="textVisible">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="loadingLabel">
+        <property name="styleSheet">
+         <string>color: #ffffff;
+font-size: 12px;
+font-family: 'Segoe UI', Arial, sans-serif;</string>
+        </property>
+        <property name="text">
+         <string>Loading...</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

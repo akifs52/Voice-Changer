@@ -65,6 +65,8 @@ set(SOURCES
     gloweffekt.cpp
     hotkeys.cpp
     loadouts.cpp
+    loading.cpp
+    presetnotification.cpp
     psola.cpp
     recorder.cpp
     soundpack.cpp
@@ -81,6 +83,8 @@ set(HEADERS
     gloweffekt.h
     hotkeys.h
     loadouts.h
+    loading.h
+    presetnotification.h
     psola.h
     recorder.h
     soundpack.h
@@ -90,6 +94,8 @@ set(HEADERS
 # UI files
 set(UI_FILES
     mainwindow.ui
+    loading.ui
+    presetnotification.ui
 )
 
 # Resource files

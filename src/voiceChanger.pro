@@ -16,8 +16,10 @@ SOURCES += \
     gloweffekt.cpp \
     hotkeys.cpp \
     loadouts.cpp \
+    loading.cpp \
     main.cpp \
     mainwindow.cpp \
+    presetnotification.cpp \
     psola.cpp \
     recorder.cpp \
     soundpack.cpp \
@@ -31,7 +33,9 @@ HEADERS += \
     gloweffekt.h \
     hotkeys.h \
     loadouts.h \
+    loading.h \
     mainwindow.h \
+    presetnotification.h \
     psola.h \
     recorder.h \
     soundpack.h \
@@ -39,7 +43,9 @@ HEADERS += \
     voiceeffects.h
 
 FORMS += \
-    mainwindow.ui
+    mainwindow.ui \
+    loading.ui \
+    presetnotification.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

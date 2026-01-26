@@ -1578,399 +1578,7 @@ QPushButton:pressed {
          </item>
          <item>
           <layout class="QGridLayout" name="gridLayout">
-           <item row="0" column="5">
-            <widget class="QWidget" name="slot5Widget" native="true">
-             <property name="styleSheet">
-              <string>QWidget#slot5Widget {
-    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);
-    border: 1px solid #363540;
-    border-radius: 8px;
-}</string>
-             </property>
-             <layout class="QVBoxLayout" name="slot5Layout">
-              <property name="spacing">
-               <number>10</number>
-              </property>
-              <property name="leftMargin">
-               <number>10</number>
-              </property>
-              <property name="topMargin">
-               <number>10</number>
-              </property>
-              <property name="rightMargin">
-               <number>10</number>
-              </property>
-              <property name="bottomMargin">
-               <number>5</number>
-              </property>
-              <item>
-               <widget class="QPushButton" name="slot5">
-                <property name="minimumSize">
-                 <size>
-                  <width>110</width>
-                  <height>110</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>16777215</height>
-                 </size>
-                </property>
-                <property name="styleSheet">
-                 <string>QPushButton {
-    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #303040, stop:0.5 #1a1a2a, stop:1 #000010);
-    border: 2px solid #202030;
-    border-radius: 12px;
-    color: white;
-    font-size: 14px;
-    font-weight: bold;
-}
-QPushButton:hover {
-    border: 1px solid #00ff88;
-}
-QPushButton:pressed {
-    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #101020, stop:0.5 #0a0a1a, stop:1 #000000);
-    border-color: #1a1a2a;
-}</string>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="icon">
-                 <iconset resource="Soundpack.qrc">
-                  <normaloff>:/img/img/talisca.jpeg</normaloff>:/img/img/talisca.jpeg</iconset>
-                </property>
-                <property name="iconSize">
-                 <size>
-                  <width>96</width>
-                  <height>96</height>
-                 </size>
-                </property>
-                <property name="scaledContents" stdset="0">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <layout class="QHBoxLayout" name="slot5Controls">
-                <property name="leftMargin">
-                 <number>0</number>
-                </property>
-                <property name="topMargin">
-                 <number>0</number>
-                </property>
-                <property name="rightMargin">
-                 <number>0</number>
-                </property>
-                <property name="bottomMargin">
-                 <number>0</number>
-                </property>
-                <item>
-                 <widget class="QComboBox" name="slot5Hotkey">
-                  <property name="minimumSize">
-                   <size>
-                    <width>70</width>
-                    <height>25</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>70</width>
-                    <height>25</height>
-                   </size>
-                  </property>
-                  <property name="styleSheet">
-                   <string>QComboBox {
-    background: #2f2f2f;
-    border-radius: 8px;
-    border: 1px solid #3a3a3a;
-    padding: 2px 8px;
-    color: white;
-}
-
-QComboBox:hover {
-    border: 1px solid #00ff88;
-}
-
-QComboBox::drop-down {
-    border: none;
-    width: 18px;
-}
-
-QComboBox QAbstractItemView {
-    background: #2a2a2a;
-    border: 1px solid #00ff88;
-    selection-background-color: #00ff88;
-    selection-color: #000000;
-    color: white;
-}
-
-QComboBox QAbstractItemView::item {
-    padding: 5px 10px;
-}
-
-QComboBox QAbstractItemView::item:selected {
-    background: #00ff88;
-    color: #000000;
-}
-
-QScrollBar:vertical {
-    background: #2a2a2a;
-    width: 8px;
-    border-radius: 4px;
-}
-
-QScrollBar::handle:vertical {
-    background: #00ff88;
-    border-radius: 4px;
-    min-height: 20px;
-}
-
-QScrollBar::handle:vertical:hover {
-    background: #00cc66;
-}</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="slot5Delete">
-                  <property name="minimumSize">
-                   <size>
-                    <width>25</width>
-                    <height>25</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>25</width>
-                    <height>25</height>
-                   </size>
-                  </property>
-                  <property name="styleSheet">
-                   <string>QPushButton {
-    background-color: #e74c3c;
-    border: none;
-    border-radius: 12px;
-    color: white;
-    font-size: 12px;
-    font-weight: bold;
-}
-QPushButton:hover {
-    border: 1px solid #00ff88;
-}</string>
-                  </property>
-                  <property name="text">
-                   <string/>
-                  </property>
-                  <property name="icon">
-                   <iconset resource="Soundpack.qrc">
-                    <normaloff>:/app/img/app/bin (1).png</normaloff>:/app/img/app/bin (1).png</iconset>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item row="1" column="2">
-            <widget class="QWidget" name="slot7Widget" native="true">
-             <property name="styleSheet">
-              <string>QWidget#slot7Widget {
-    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);
-    border: 1px solid #363540;
-    border-radius: 8px;
-}</string>
-             </property>
-             <layout class="QVBoxLayout" name="slot7Layout">
-              <property name="spacing">
-               <number>10</number>
-              </property>
-              <property name="leftMargin">
-               <number>10</number>
-              </property>
-              <property name="topMargin">
-               <number>10</number>
-              </property>
-              <property name="rightMargin">
-               <number>10</number>
-              </property>
-              <property name="bottomMargin">
-               <number>5</number>
-              </property>
-              <item>
-               <widget class="QPushButton" name="slot7">
-                <property name="minimumSize">
-                 <size>
-                  <width>110</width>
-                  <height>110</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>16777215</height>
-                 </size>
-                </property>
-                <property name="styleSheet">
-                 <string>QPushButton {
-    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #303040, stop:0.5 #1a1a2a, stop:1 #000010);
-    border: 2px solid #202030;
-    border-radius: 12px;
-    color: white;
-    font-size: 14px;
-    font-weight: bold;
-}
-QPushButton:hover {
-    border: 1px solid #00ff88;
-}
-QPushButton:pressed {
-    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #101020, stop:0.5 #0a0a1a, stop:1 #000000);
-    border-color: #1a1a2a;
-}</string>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="icon">
-                 <iconset resource="Soundpack.qrc">
-                  <normaloff>:/img/img/sus.jpg</normaloff>:/img/img/sus.jpg</iconset>
-                </property>
-                <property name="iconSize">
-                 <size>
-                  <width>96</width>
-                  <height>96</height>
-                 </size>
-                </property>
-                <property name="scaledContents" stdset="0">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <layout class="QHBoxLayout" name="slot7Controls">
-                <property name="leftMargin">
-                 <number>0</number>
-                </property>
-                <property name="topMargin">
-                 <number>0</number>
-                </property>
-                <property name="rightMargin">
-                 <number>0</number>
-                </property>
-                <property name="bottomMargin">
-                 <number>0</number>
-                </property>
-                <item>
-                 <widget class="QComboBox" name="slot7Hotkey">
-                  <property name="minimumSize">
-                   <size>
-                    <width>70</width>
-                    <height>25</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>70</width>
-                    <height>25</height>
-                   </size>
-                  </property>
-                  <property name="styleSheet">
-                   <string>QComboBox {
-    background: #2f2f2f;
-    border-radius: 8px;
-    border: 1px solid #3a3a3a;
-    padding: 2px 8px;
-    color: white;
-}
-
-QComboBox:hover {
-    border: 1px solid #00ff88;
-}
-
-QComboBox::drop-down {
-    border: none;
-    width: 18px;
-}
-
-QComboBox QAbstractItemView {
-    background: #2a2a2a;
-    border: 1px solid #00ff88;
-    selection-background-color: #00ff88;
-    selection-color: #000000;
-    color: white;
-}
-
-QComboBox QAbstractItemView::item {
-    padding: 5px 10px;
-}
-
-QComboBox QAbstractItemView::item:selected {
-    background: #00ff88;
-    color: #000000;
-}
-
-QScrollBar:vertical {
-    background: #2a2a2a;
-    width: 8px;
-    border-radius: 4px;
-}
-
-QScrollBar::handle:vertical {
-    background: #00ff88;
-    border-radius: 4px;
-    min-height: 20px;
-}
-
-QScrollBar::handle:vertical:hover {
-    background: #00cc66;
-}</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="slot7Delete">
-                  <property name="minimumSize">
-                   <size>
-                    <width>25</width>
-                    <height>25</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>25</width>
-                    <height>25</height>
-                   </size>
-                  </property>
-                  <property name="styleSheet">
-                   <string>QPushButton {
-    background-color: #e74c3c;
-    border: none;
-    border-radius: 12px;
-    color: white;
-    font-size: 12px;
-    font-weight: bold;
-}
-QPushButton:hover {
-    border: 1px solid #00ff88;
-}</string>
-                  </property>
-                  <property name="text">
-                   <string/>
-                  </property>
-                  <property name="icon">
-                   <iconset resource="Soundpack.qrc">
-                    <normaloff>:/app/img/app/bin (1).png</normaloff>:/app/img/app/bin (1).png</iconset>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item row="0" column="4">
+           <item row="0" column="3">
             <widget class="QWidget" name="slot4Widget" native="true">
              <property name="styleSheet">
               <string>QWidget#slot4Widget {
@@ -2166,16 +1774,16 @@ QPushButton:hover {
              </layout>
             </widget>
            </item>
-           <item row="2" column="5">
-            <widget class="QWidget" name="slot15Widget" native="true">
+           <item row="0" column="4">
+            <widget class="QWidget" name="slot5Widget" native="true">
              <property name="styleSheet">
-              <string>QWidget#slot15Widget {
+              <string>QWidget#slot5Widget {
     background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);
     border: 1px solid #363540;
     border-radius: 8px;
 }</string>
              </property>
-             <layout class="QVBoxLayout" name="slot15Layout">
+             <layout class="QVBoxLayout" name="slot5Layout">
               <property name="spacing">
                <number>10</number>
               </property>
@@ -2192,7 +1800,7 @@ QPushButton:hover {
                <number>5</number>
               </property>
               <item>
-               <widget class="QPushButton" name="slot15">
+               <widget class="QPushButton" name="slot5">
                 <property name="minimumSize">
                  <size>
                   <width>110</width>
@@ -2223,7 +1831,11 @@ QPushButton:pressed {
 }</string>
                 </property>
                 <property name="text">
-                 <string>+</string>
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="Soundpack.qrc">
+                  <normaloff>:/img/img/talisca.jpeg</normaloff>:/img/img/talisca.jpeg</iconset>
                 </property>
                 <property name="iconSize">
                  <size>
@@ -2237,7 +1849,7 @@ QPushButton:pressed {
                </widget>
               </item>
               <item>
-               <layout class="QHBoxLayout" name="slot15Controls">
+               <layout class="QHBoxLayout" name="slot5Controls">
                 <property name="leftMargin">
                  <number>0</number>
                 </property>
@@ -2251,7 +1863,7 @@ QPushButton:pressed {
                  <number>0</number>
                 </property>
                 <item>
-                 <widget class="QComboBox" name="slot15Hotkey">
+                 <widget class="QComboBox" name="slot5Hotkey">
                   <property name="minimumSize">
                    <size>
                     <width>70</width>
@@ -2318,7 +1930,7 @@ QScrollBar::handle:vertical:hover {
                  </widget>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="slot15Delete">
+                 <widget class="QPushButton" name="slot5Delete">
                   <property name="minimumSize">
                    <size>
                     <width>25</width>
@@ -2358,196 +1970,7 @@ QPushButton:hover {
              </layout>
             </widget>
            </item>
-           <item row="3" column="4">
-            <widget class="QWidget" name="slot19Widget" native="true">
-             <property name="styleSheet">
-              <string>QWidget#slot19Widget {
-    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);
-    border: 1px solid #363540;
-    border-radius: 8px;
-}</string>
-             </property>
-             <layout class="QVBoxLayout" name="slot19Layout">
-              <property name="spacing">
-               <number>10</number>
-              </property>
-              <property name="leftMargin">
-               <number>10</number>
-              </property>
-              <property name="topMargin">
-               <number>10</number>
-              </property>
-              <property name="rightMargin">
-               <number>10</number>
-              </property>
-              <property name="bottomMargin">
-               <number>5</number>
-              </property>
-              <item>
-               <widget class="QPushButton" name="slot19">
-                <property name="minimumSize">
-                 <size>
-                  <width>110</width>
-                  <height>110</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>16777215</height>
-                 </size>
-                </property>
-                <property name="styleSheet">
-                 <string>QPushButton {
-    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #303040, stop:0.5 #1a1a2a, stop:1 #000010);
-    border: 2px solid #202030;
-    border-radius: 12px;
-    color: white;
-    font-size: 14px;
-    font-weight: bold;
-}
-QPushButton:hover {
-    border: 1px solid #00ff88;
-}
-QPushButton:pressed {
-    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #101020, stop:0.5 #0a0a1a, stop:1 #000000);
-    border-color: #1a1a2a;
-}</string>
-                </property>
-                <property name="text">
-                 <string>+</string>
-                </property>
-                <property name="iconSize">
-                 <size>
-                  <width>96</width>
-                  <height>96</height>
-                 </size>
-                </property>
-                <property name="scaledContents" stdset="0">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <layout class="QHBoxLayout" name="slot19Controls">
-                <property name="leftMargin">
-                 <number>0</number>
-                </property>
-                <property name="topMargin">
-                 <number>0</number>
-                </property>
-                <property name="rightMargin">
-                 <number>0</number>
-                </property>
-                <property name="bottomMargin">
-                 <number>0</number>
-                </property>
-                <item>
-                 <widget class="QComboBox" name="slot19Hotkey">
-                  <property name="minimumSize">
-                   <size>
-                    <width>70</width>
-                    <height>25</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>70</width>
-                    <height>25</height>
-                   </size>
-                  </property>
-                  <property name="styleSheet">
-                   <string>QComboBox {
-    background: #2f2f2f;
-    border-radius: 8px;
-    border: 1px solid #3a3a3a;
-    padding: 2px 8px;
-    color: white;
-}
-
-QComboBox:hover {
-    border: 1px solid #00ff88;
-}
-
-QComboBox::drop-down {
-    border: none;
-    width: 18px;
-}
-
-QComboBox QAbstractItemView {
-    background: #2a2a2a;
-    border: 1px solid #00ff88;
-    selection-background-color: #00ff88;
-    selection-color: #000000;
-    color: white;
-}
-
-QComboBox QAbstractItemView::item {
-    padding: 5px 10px;
-}
-
-QComboBox QAbstractItemView::item:selected {
-    background: #00ff88;
-    color: #000000;
-}
-
-QScrollBar:vertical {
-    background: #2a2a2a;
-    width: 8px;
-    border-radius: 4px;
-}
-
-QScrollBar::handle:vertical {
-    background: #00ff88;
-    border-radius: 4px;
-    min-height: 20px;
-}
-
-QScrollBar::handle:vertical:hover {
-    background: #00cc66;
-}</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="slot19Delete">
-                  <property name="minimumSize">
-                   <size>
-                    <width>25</width>
-                    <height>25</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>25</width>
-                    <height>25</height>
-                   </size>
-                  </property>
-                  <property name="styleSheet">
-                   <string>QPushButton {
-    background-color: #e74c3c;
-    border: none;
-    border-radius: 12px;
-    color: white;
-    font-size: 12px;
-    font-weight: bold;
-}
-QPushButton:hover {
-    border: 1px solid #00ff88;
-}</string>
-                  </property>
-                  <property name="icon">
-                   <iconset resource="Soundpack.qrc">
-                    <normaloff>:/app/img/app/bin (1).png</normaloff>:/app/img/app/bin (1).png</iconset>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item row="2" column="4">
+           <item row="2" column="3">
             <widget class="QWidget" name="slot14Widget" native="true">
              <property name="styleSheet">
               <string>QWidget#slot14Widget {
@@ -2604,7 +2027,10 @@ QPushButton:pressed {
 }</string>
                 </property>
                 <property name="text">
-                 <string>+</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="Soundpack.qrc">
+                  <normaloff>:/app/img/app/add.png</normaloff>:/app/img/app/add.png</iconset>
                 </property>
                 <property name="iconSize">
                  <size>
@@ -2739,7 +2165,7 @@ QPushButton:hover {
              </layout>
             </widget>
            </item>
-           <item row="2" column="2">
+           <item row="2" column="1">
             <widget class="QWidget" name="slot12Widget" native="true">
              <property name="styleSheet">
               <string>QWidget#slot12Widget {
@@ -2796,7 +2222,10 @@ QPushButton:pressed {
 }</string>
                 </property>
                 <property name="text">
-                 <string>+</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="Soundpack.qrc">
+                  <normaloff>:/app/img/app/add.png</normaloff>:/app/img/app/add.png</iconset>
                 </property>
                 <property name="iconSize">
                  <size>
@@ -2931,16 +2360,16 @@ QPushButton:hover {
              </layout>
             </widget>
            </item>
-           <item row="3" column="2">
-            <widget class="QWidget" name="slot17Widget" native="true">
+           <item row="3" column="3">
+            <widget class="QWidget" name="slot19Widget" native="true">
              <property name="styleSheet">
-              <string>QWidget#slot17Widget {
+              <string>QWidget#slot19Widget {
     background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);
     border: 1px solid #363540;
     border-radius: 8px;
 }</string>
              </property>
-             <layout class="QVBoxLayout" name="slot17Layout">
+             <layout class="QVBoxLayout" name="slot19Layout">
               <property name="spacing">
                <number>10</number>
               </property>
@@ -2957,7 +2386,7 @@ QPushButton:hover {
                <number>5</number>
               </property>
               <item>
-               <widget class="QPushButton" name="slot17">
+               <widget class="QPushButton" name="slot19">
                 <property name="minimumSize">
                  <size>
                   <width>110</width>
@@ -2988,7 +2417,10 @@ QPushButton:pressed {
 }</string>
                 </property>
                 <property name="text">
-                 <string>+</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="Soundpack.qrc">
+                  <normaloff>:/app/img/app/add.png</normaloff>:/app/img/app/add.png</iconset>
                 </property>
                 <property name="iconSize">
                  <size>
@@ -3002,7 +2434,7 @@ QPushButton:pressed {
                </widget>
               </item>
               <item>
-               <layout class="QHBoxLayout" name="slot17Controls">
+               <layout class="QHBoxLayout" name="slot19Controls">
                 <property name="leftMargin">
                  <number>0</number>
                 </property>
@@ -3016,7 +2448,7 @@ QPushButton:pressed {
                  <number>0</number>
                 </property>
                 <item>
-                 <widget class="QComboBox" name="slot17Hotkey">
+                 <widget class="QComboBox" name="slot19Hotkey">
                   <property name="minimumSize">
                    <size>
                     <width>70</width>
@@ -3083,7 +2515,199 @@ QScrollBar::handle:vertical:hover {
                  </widget>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="slot17Delete">
+                 <widget class="QPushButton" name="slot19Delete">
+                  <property name="minimumSize">
+                   <size>
+                    <width>25</width>
+                    <height>25</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>25</width>
+                    <height>25</height>
+                   </size>
+                  </property>
+                  <property name="styleSheet">
+                   <string>QPushButton {
+    background-color: #e74c3c;
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+}
+QPushButton:hover {
+    border: 1px solid #00ff88;
+}</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="Soundpack.qrc">
+                    <normaloff>:/app/img/app/bin (1).png</normaloff>:/app/img/app/bin (1).png</iconset>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QWidget" name="slot11Widget" native="true">
+             <property name="styleSheet">
+              <string>QWidget#slot11Widget {
+    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);
+    border: 1px solid #363540;
+    border-radius: 8px;
+}</string>
+             </property>
+             <layout class="QVBoxLayout" name="slot11Layout">
+              <property name="spacing">
+               <number>10</number>
+              </property>
+              <property name="leftMargin">
+               <number>10</number>
+              </property>
+              <property name="topMargin">
+               <number>10</number>
+              </property>
+              <property name="rightMargin">
+               <number>10</number>
+              </property>
+              <property name="bottomMargin">
+               <number>5</number>
+              </property>
+              <item>
+               <widget class="QPushButton" name="slot11">
+                <property name="minimumSize">
+                 <size>
+                  <width>110</width>
+                  <height>110</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="styleSheet">
+                 <string>QPushButton {
+    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #303040, stop:0.5 #1a1a2a, stop:1 #000010);
+    border: 2px solid #202030;
+    border-radius: 12px;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+}
+QPushButton:hover {
+    border: 1px solid #00ff88;
+}
+QPushButton:pressed {
+    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #101020, stop:0.5 #0a0a1a, stop:1 #000000);
+    border-color: #1a1a2a;
+}</string>
+                </property>
+                <property name="text">
+                </property>
+                <property name="icon">
+                 <iconset resource="Soundpack.qrc">
+                  <normaloff>:/app/img/app/add.png</normaloff>:/app/img/app/add.png</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>96</width>
+                  <height>96</height>
+                 </size>
+                </property>
+                <property name="scaledContents" stdset="0">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="slot11Controls">
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QComboBox" name="slot11Hotkey">
+                  <property name="minimumSize">
+                   <size>
+                    <width>70</width>
+                    <height>25</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>70</width>
+                    <height>25</height>
+                   </size>
+                  </property>
+                  <property name="styleSheet">
+                   <string>QComboBox {
+    background: #2f2f2f;
+    border-radius: 8px;
+    border: 1px solid #3a3a3a;
+    padding: 2px 8px;
+    color: white;
+}
+
+QComboBox:hover {
+    border: 1px solid #00ff88;
+}
+
+QComboBox::drop-down {
+    border: none;
+    width: 18px;
+}
+
+QComboBox QAbstractItemView {
+    background: #2a2a2a;
+    border: 1px solid #00ff88;
+    selection-background-color: #00ff88;
+    selection-color: #000000;
+    color: white;
+}
+
+QComboBox QAbstractItemView::item {
+    padding: 5px 10px;
+}
+
+QComboBox QAbstractItemView::item:selected {
+    background: #00ff88;
+    color: #000000;
+}
+
+QScrollBar:vertical {
+    background: #2a2a2a;
+    width: 8px;
+    border-radius: 4px;
+}
+
+QScrollBar::handle:vertical {
+    background: #00ff88;
+    border-radius: 4px;
+    min-height: 20px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background: #00cc66;
+}</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="slot11Delete">
                   <property name="minimumSize">
                    <size>
                     <width>25</width>
@@ -3123,7 +2747,593 @@ QPushButton:hover {
              </layout>
             </widget>
            </item>
-           <item row="1" column="5">
+           <item row="2" column="2">
+            <widget class="QWidget" name="slot13Widget" native="true">
+             <property name="styleSheet">
+              <string>QWidget#slot13Widget {
+    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);
+    border: 1px solid #363540;
+    border-radius: 8px;
+}</string>
+             </property>
+             <layout class="QVBoxLayout" name="slot13Layout">
+              <property name="spacing">
+               <number>10</number>
+              </property>
+              <property name="leftMargin">
+               <number>10</number>
+              </property>
+              <property name="topMargin">
+               <number>10</number>
+              </property>
+              <property name="rightMargin">
+               <number>10</number>
+              </property>
+              <property name="bottomMargin">
+               <number>5</number>
+              </property>
+              <item>
+               <widget class="QPushButton" name="slot13">
+                <property name="minimumSize">
+                 <size>
+                  <width>110</width>
+                  <height>110</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="styleSheet">
+                 <string>QPushButton {
+    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #303040, stop:0.5 #1a1a2a, stop:1 #000010);
+    border: 2px solid #202030;
+    border-radius: 12px;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+}
+QPushButton:hover {
+    border: 1px solid #00ff88;
+}
+QPushButton:pressed {
+    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #101020, stop:0.5 #0a0a1a, stop:1 #000000);
+    border-color: #1a1a2a;
+}</string>
+                </property>
+                <property name="text">
+                </property>
+                <property name="icon">
+                 <iconset resource="Soundpack.qrc">
+                  <normaloff>:/app/img/app/add.png</normaloff>:/app/img/app/add.png</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>96</width>
+                  <height>96</height>
+                 </size>
+                </property>
+                <property name="scaledContents" stdset="0">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="slot13Controls">
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QComboBox" name="slot13Hotkey">
+                  <property name="minimumSize">
+                   <size>
+                    <width>70</width>
+                    <height>25</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>70</width>
+                    <height>25</height>
+                   </size>
+                  </property>
+                  <property name="styleSheet">
+                   <string>QComboBox {
+    background: #2f2f2f;
+    border-radius: 8px;
+    border: 1px solid #3a3a3a;
+    padding: 2px 8px;
+    color: white;
+}
+
+QComboBox:hover {
+    border: 1px solid #00ff88;
+}
+
+QComboBox::drop-down {
+    border: none;
+    width: 18px;
+}
+
+QComboBox QAbstractItemView {
+    background: #2a2a2a;
+    border: 1px solid #00ff88;
+    selection-background-color: #00ff88;
+    selection-color: #000000;
+    color: white;
+}
+
+QComboBox QAbstractItemView::item {
+    padding: 5px 10px;
+}
+
+QComboBox QAbstractItemView::item:selected {
+    background: #00ff88;
+    color: #000000;
+}
+
+QScrollBar:vertical {
+    background: #2a2a2a;
+    width: 8px;
+    border-radius: 4px;
+}
+
+QScrollBar::handle:vertical {
+    background: #00ff88;
+    border-radius: 4px;
+    min-height: 20px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background: #00cc66;
+}</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="slot13Delete">
+                  <property name="minimumSize">
+                   <size>
+                    <width>25</width>
+                    <height>25</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>25</width>
+                    <height>25</height>
+                   </size>
+                  </property>
+                  <property name="styleSheet">
+                   <string>QPushButton {
+    background-color: #e74c3c;
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+}
+QPushButton:hover {
+    border: 1px solid #00ff88;
+}</string>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="Soundpack.qrc">
+                    <normaloff>:/app/img/app/bin (1).png</normaloff>:/app/img/app/bin (1).png</iconset>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="1" column="2">
+            <widget class="QWidget" name="slot8Widget" native="true">
+             <property name="styleSheet">
+              <string>QWidget#slot8Widget {
+    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);
+    border: 1px solid #363540;
+    border-radius: 8px;
+}</string>
+             </property>
+             <layout class="QVBoxLayout" name="slot8Layout">
+              <property name="spacing">
+               <number>10</number>
+              </property>
+              <property name="leftMargin">
+               <number>10</number>
+              </property>
+              <property name="topMargin">
+               <number>10</number>
+              </property>
+              <property name="rightMargin">
+               <number>10</number>
+              </property>
+              <property name="bottomMargin">
+               <number>5</number>
+              </property>
+              <item>
+               <widget class="QPushButton" name="slot8">
+                <property name="minimumSize">
+                 <size>
+                  <width>110</width>
+                  <height>110</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="styleSheet">
+                 <string>QPushButton {
+    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #303040, stop:0.5 #1a1a2a, stop:1 #000010);
+    border: 2px solid #202030;
+    border-radius: 12px;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+}
+QPushButton:hover {
+    border: 1px solid #00ff88;
+}
+QPushButton:pressed {
+    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #101020, stop:0.5 #0a0a1a, stop:1 #000000);
+    border-color: #1a1a2a;
+}</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="Soundpack.qrc">
+                  <normaloff>:/img/img/osuruk1.jpg</normaloff>:/img/img/osuruk1.jpg</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>96</width>
+                  <height>96</height>
+                 </size>
+                </property>
+                <property name="scaledContents" stdset="0">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="slot8Controls">
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QComboBox" name="slot8Hotkey">
+                  <property name="minimumSize">
+                   <size>
+                    <width>70</width>
+                    <height>25</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>70</width>
+                    <height>25</height>
+                   </size>
+                  </property>
+                  <property name="styleSheet">
+                   <string>QComboBox {
+    background: #2f2f2f;
+    border-radius: 8px;
+    border: 1px solid #3a3a3a;
+    padding: 2px 8px;
+    color: white;
+}
+
+QComboBox:hover {
+    border: 1px solid #00ff88;
+}
+
+QComboBox::drop-down {
+    border: none;
+    width: 18px;
+}
+
+QComboBox QAbstractItemView {
+    background: #2a2a2a;
+    border: 1px solid #00ff88;
+    selection-background-color: #00ff88;
+    selection-color: #000000;
+    color: white;
+}
+
+QComboBox QAbstractItemView::item {
+    padding: 5px 10px;
+}
+
+QComboBox QAbstractItemView::item:selected {
+    background: #00ff88;
+    color: #000000;
+}
+
+QScrollBar:vertical {
+    background: #2a2a2a;
+    width: 8px;
+    border-radius: 4px;
+}
+
+QScrollBar::handle:vertical {
+    background: #00ff88;
+    border-radius: 4px;
+    min-height: 20px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background: #00cc66;
+}</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="slot8Delete">
+                  <property name="minimumSize">
+                   <size>
+                    <width>25</width>
+                    <height>25</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>25</width>
+                    <height>25</height>
+                   </size>
+                  </property>
+                  <property name="styleSheet">
+                   <string>QPushButton {
+    background-color: #e74c3c;
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+}
+QPushButton:hover {
+    border: 1px solid #00ff88;
+}</string>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="Soundpack.qrc">
+                    <normaloff>:/app/img/app/bin (1).png</normaloff>:/app/img/app/bin (1).png</iconset>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="2" column="4">
+            <widget class="QWidget" name="slot15Widget" native="true">
+             <property name="styleSheet">
+              <string>QWidget#slot15Widget {
+    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);
+    border: 1px solid #363540;
+    border-radius: 8px;
+}</string>
+             </property>
+             <layout class="QVBoxLayout" name="slot15Layout">
+              <property name="spacing">
+               <number>10</number>
+              </property>
+              <property name="leftMargin">
+               <number>10</number>
+              </property>
+              <property name="topMargin">
+               <number>10</number>
+              </property>
+              <property name="rightMargin">
+               <number>10</number>
+              </property>
+              <property name="bottomMargin">
+               <number>5</number>
+              </property>
+              <item>
+               <widget class="QPushButton" name="slot15">
+                <property name="minimumSize">
+                 <size>
+                  <width>110</width>
+                  <height>110</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="styleSheet">
+                 <string>QPushButton {
+    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #303040, stop:0.5 #1a1a2a, stop:1 #000010);
+    border: 2px solid #202030;
+    border-radius: 12px;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+}
+QPushButton:hover {
+    border: 1px solid #00ff88;
+}
+QPushButton:pressed {
+    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #101020, stop:0.5 #0a0a1a, stop:1 #000000);
+    border-color: #1a1a2a;
+}</string>
+                </property>
+                <property name="text">
+                </property>
+                <property name="icon">
+                 <iconset resource="Soundpack.qrc">
+                  <normaloff>:/app/img/app/add.png</normaloff>:/app/img/app/add.png</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>96</width>
+                  <height>96</height>
+                 </size>
+                </property>
+                <property name="scaledContents" stdset="0">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="slot15Controls">
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QComboBox" name="slot15Hotkey">
+                  <property name="minimumSize">
+                   <size>
+                    <width>70</width>
+                    <height>25</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>70</width>
+                    <height>25</height>
+                   </size>
+                  </property>
+                  <property name="styleSheet">
+                   <string>QComboBox {
+    background: #2f2f2f;
+    border-radius: 8px;
+    border: 1px solid #3a3a3a;
+    padding: 2px 8px;
+    color: white;
+}
+
+QComboBox:hover {
+    border: 1px solid #00ff88;
+}
+
+QComboBox::drop-down {
+    border: none;
+    width: 18px;
+}
+
+QComboBox QAbstractItemView {
+    background: #2a2a2a;
+    border: 1px solid #00ff88;
+    selection-background-color: #00ff88;
+    selection-color: #000000;
+    color: white;
+}
+
+QComboBox QAbstractItemView::item {
+    padding: 5px 10px;
+}
+
+QComboBox QAbstractItemView::item:selected {
+    background: #00ff88;
+    color: #000000;
+}
+
+QScrollBar:vertical {
+    background: #2a2a2a;
+    width: 8px;
+    border-radius: 4px;
+}
+
+QScrollBar::handle:vertical {
+    background: #00ff88;
+    border-radius: 4px;
+    min-height: 20px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background: #00cc66;
+}</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="slot15Delete">
+                  <property name="minimumSize">
+                   <size>
+                    <width>25</width>
+                    <height>25</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>25</width>
+                    <height>25</height>
+                   </size>
+                  </property>
+                  <property name="styleSheet">
+                   <string>QPushButton {
+    background-color: #e74c3c;
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+}
+QPushButton:hover {
+    border: 1px solid #00ff88;
+}</string>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="Soundpack.qrc">
+                    <normaloff>:/app/img/app/bin (1).png</normaloff>:/app/img/app/bin (1).png</iconset>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="1" column="4">
             <widget class="QWidget" name="slot10Widget" native="true">
              <property name="styleSheet">
               <string>QWidget#slot10Widget {
@@ -3319,16 +3529,16 @@ QPushButton:hover {
              </layout>
             </widget>
            </item>
-           <item row="0" column="3">
-            <widget class="QWidget" name="slot3Widget" native="true">
+           <item row="3" column="0">
+            <widget class="QWidget" name="slot16Widget" native="true">
              <property name="styleSheet">
-              <string>QWidget#slot3Widget {
+              <string>QWidget#slot16Widget {
     background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);
     border: 1px solid #363540;
     border-radius: 8px;
 }</string>
              </property>
-             <layout class="QVBoxLayout" name="slot3Layout">
+             <layout class="QVBoxLayout" name="slot16Layout">
               <property name="spacing">
                <number>10</number>
               </property>
@@ -3345,7 +3555,7 @@ QPushButton:hover {
                <number>5</number>
               </property>
               <item>
-               <widget class="QPushButton" name="slot3">
+               <widget class="QPushButton" name="slot16">
                 <property name="minimumSize">
                  <size>
                   <width>110</width>
@@ -3376,11 +3586,10 @@ QPushButton:pressed {
 }</string>
                 </property>
                 <property name="text">
-                 <string/>
                 </property>
                 <property name="icon">
                  <iconset resource="Soundpack.qrc">
-                  <normaloff>:/img/img/chineseRap.jpeg</normaloff>:/img/img/chineseRap.jpeg</iconset>
+                  <normaloff>:/app/img/app/add.png</normaloff>:/app/img/app/add.png</iconset>
                 </property>
                 <property name="iconSize">
                  <size>
@@ -3394,7 +3603,7 @@ QPushButton:pressed {
                </widget>
               </item>
               <item>
-               <layout class="QHBoxLayout" name="slot3Controls">
+               <layout class="QHBoxLayout" name="slot16Controls">
                 <property name="leftMargin">
                  <number>0</number>
                 </property>
@@ -3408,7 +3617,7 @@ QPushButton:pressed {
                  <number>0</number>
                 </property>
                 <item>
-                 <widget class="QComboBox" name="slot3Hotkey">
+                 <widget class="QComboBox" name="slot16Hotkey">
                   <property name="minimumSize">
                    <size>
                     <width>70</width>
@@ -3475,7 +3684,7 @@ QScrollBar::handle:vertical:hover {
                  </widget>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="slot3Delete">
+                 <widget class="QPushButton" name="slot16Delete">
                   <property name="minimumSize">
                    <size>
                     <width>25</width>
@@ -3515,397 +3724,7 @@ QPushButton:hover {
              </layout>
             </widget>
            </item>
-           <item row="0" column="2">
-            <widget class="QWidget" name="slot2Widget" native="true">
-             <property name="styleSheet">
-              <string>QWidget#slot2Widget {
-    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);
-    border: 1px solid #363540;
-    border-radius: 8px;
-}</string>
-             </property>
-             <layout class="QVBoxLayout" name="slot2Layout">
-              <property name="leftMargin">
-               <number>10</number>
-              </property>
-              <property name="topMargin">
-               <number>10</number>
-              </property>
-              <property name="rightMargin">
-               <number>10</number>
-              </property>
-              <property name="bottomMargin">
-               <number>5</number>
-              </property>
-              <item>
-               <widget class="QPushButton" name="slot2">
-                <property name="minimumSize">
-                 <size>
-                  <width>110</width>
-                  <height>110</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>16777215</height>
-                 </size>
-                </property>
-                <property name="styleSheet">
-                 <string>QPushButton {
-    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #303040, stop:0.5 #1a1a2a, stop:1 #000010);
-    border: 2px solid #202030;
-    border-radius: 12px;
-    color: white;
-    font-size: 14px;
-    font-weight: bold;
-    icon-size: 96px 96px;
-}
-QPushButton:hover {
-    border: 1px solid #00ff88;
-}
-QPushButton:pressed {
-    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #101020, stop:0.5 #0a0a1a, stop:1 #000000);
-    border-color: #1a1a2a;
-}</string>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="icon">
-                 <iconset resource="Soundpack.qrc">
-                  <normaloff>:/img/img/yArra-Earrape.jpg</normaloff>:/img/img/yArra-Earrape.jpg</iconset>
-                </property>
-                <property name="iconSize">
-                 <size>
-                  <width>90</width>
-                  <height>90</height>
-                 </size>
-                </property>
-                <property name="scaledContents" stdset="0">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <layout class="QHBoxLayout" name="slot2Controls">
-                <property name="leftMargin">
-                 <number>0</number>
-                </property>
-                <property name="topMargin">
-                 <number>0</number>
-                </property>
-                <property name="rightMargin">
-                 <number>0</number>
-                </property>
-                <property name="bottomMargin">
-                 <number>0</number>
-                </property>
-                <item>
-                 <widget class="QComboBox" name="slot2Hotkey">
-                  <property name="minimumSize">
-                   <size>
-                    <width>70</width>
-                    <height>25</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>70</width>
-                    <height>25</height>
-                   </size>
-                  </property>
-                  <property name="styleSheet">
-                   <string>QComboBox {
-    background: #2f2f2f;
-    border-radius: 8px;
-    border: 1px solid #3a3a3a;
-    padding: 2px 8px;
-    color: white;
-}
-
-QComboBox:hover {
-    border: 1px solid #00ff88;
-}
-
-QComboBox::drop-down {
-    border: none;
-    width: 18px;
-}
-
-QComboBox QAbstractItemView {
-    background: #2a2a2a;
-    border: 1px solid #00ff88;
-    selection-background-color: #00ff88;
-    selection-color: #000000;
-    color: white;
-}
-
-QComboBox QAbstractItemView::item {
-    padding: 5px 10px;
-}
-
-QComboBox QAbstractItemView::item:selected {
-    background: #00ff88;
-    color: #000000;
-}
-
-QScrollBar:vertical {
-    background: #2a2a2a;
-    width: 8px;
-    border-radius: 4px;
-}
-
-QScrollBar::handle:vertical {
-    background: #00ff88;
-    border-radius: 4px;
-    min-height: 20px;
-}
-
-QScrollBar::handle:vertical:hover {
-    background: #00cc66;
-}</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="slot2Delete">
-                  <property name="minimumSize">
-                   <size>
-                    <width>25</width>
-                    <height>25</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>25</width>
-                    <height>25</height>
-                   </size>
-                  </property>
-                  <property name="styleSheet">
-                   <string>QPushButton {
-    background-color: #e74c3c;
-    border: none;
-    border-radius: 12px;
-    color: white;
-    font-size: 12px;
-    font-weight: bold;
-}
-QPushButton:hover {
-    border: 1px solid #00ff88;
-}</string>
-                  </property>
-                  <property name="text">
-                   <string/>
-                  </property>
-                  <property name="icon">
-                   <iconset resource="Soundpack.qrc">
-                    <normaloff>:/app/img/app/bin (1).png</normaloff>:/app/img/app/bin (1).png</iconset>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item row="1" column="1">
-            <widget class="QWidget" name="slot6Widget" native="true">
-             <property name="styleSheet">
-              <string>QWidget#slot6Widget {
-    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);
-    border: 1px solid #363540;
-    border-radius: 8px;
-}</string>
-             </property>
-             <layout class="QVBoxLayout" name="slot6Layout">
-              <property name="spacing">
-               <number>10</number>
-              </property>
-              <property name="leftMargin">
-               <number>10</number>
-              </property>
-              <property name="topMargin">
-               <number>10</number>
-              </property>
-              <property name="rightMargin">
-               <number>10</number>
-              </property>
-              <property name="bottomMargin">
-               <number>5</number>
-              </property>
-              <item>
-               <widget class="QPushButton" name="slot6">
-                <property name="minimumSize">
-                 <size>
-                  <width>110</width>
-                  <height>110</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>16777215</height>
-                 </size>
-                </property>
-                <property name="styleSheet">
-                 <string>QPushButton {
-    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #303040, stop:0.5 #1a1a2a, stop:1 #000010);
-    border: 2px solid #202030;
-    border-radius: 12px;
-    color: white;
-    font-size: 14px;
-    font-weight: bold;
-}
-QPushButton:hover {
-    border: 1px solid #00ff88;
-}
-QPushButton:pressed {
-    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #101020, stop:0.5 #0a0a1a, stop:1 #000000);
-    border-color: #1a1a2a;
-}</string>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="icon">
-                 <iconset resource="Soundpack.qrc">
-                  <normaloff>:/img/img/trollface.jpg</normaloff>:/img/img/trollface.jpg</iconset>
-                </property>
-                <property name="iconSize">
-                 <size>
-                  <width>96</width>
-                  <height>96</height>
-                 </size>
-                </property>
-                <property name="scaledContents" stdset="0">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <layout class="QHBoxLayout" name="slot6Controls">
-                <property name="leftMargin">
-                 <number>0</number>
-                </property>
-                <property name="topMargin">
-                 <number>0</number>
-                </property>
-                <property name="rightMargin">
-                 <number>0</number>
-                </property>
-                <property name="bottomMargin">
-                 <number>0</number>
-                </property>
-                <item>
-                 <widget class="QComboBox" name="slot6Hotkey">
-                  <property name="minimumSize">
-                   <size>
-                    <width>70</width>
-                    <height>25</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>70</width>
-                    <height>25</height>
-                   </size>
-                  </property>
-                  <property name="styleSheet">
-                   <string>QComboBox {
-    background: #2f2f2f;
-    border-radius: 8px;
-    border: 1px solid #3a3a3a;
-    padding: 2px 8px;
-    color: white;
-}
-
-QComboBox:hover {
-    border: 1px solid #00ff88;
-}
-
-QComboBox::drop-down {
-    border: none;
-    width: 18px;
-}
-
-QComboBox QAbstractItemView {
-    background: #2a2a2a;
-    border: 1px solid #00ff88;
-    selection-background-color: #00ff88;
-    selection-color: #000000;
-    color: white;
-}
-
-QComboBox QAbstractItemView::item {
-    padding: 5px 10px;
-}
-
-QComboBox QAbstractItemView::item:selected {
-    background: #00ff88;
-    color: #000000;
-}
-
-QScrollBar:vertical {
-    background: #2a2a2a;
-    width: 8px;
-    border-radius: 4px;
-}
-
-QScrollBar::handle:vertical {
-    background: #00ff88;
-    border-radius: 4px;
-    min-height: 20px;
-}
-
-QScrollBar::handle:vertical:hover {
-    background: #00cc66;
-}</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="slot6Delete">
-                  <property name="minimumSize">
-                   <size>
-                    <width>25</width>
-                    <height>25</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>25</width>
-                    <height>25</height>
-                   </size>
-                  </property>
-                  <property name="styleSheet">
-                   <string>QPushButton {
-    background-color: #e74c3c;
-    border: none;
-    border-radius: 12px;
-    color: white;
-    font-size: 12px;
-    font-weight: bold;
-}
-QPushButton:hover {
-    border: 1px solid #00ff88;
-}</string>
-                  </property>
-                  <property name="text">
-                   <string/>
-                  </property>
-                  <property name="icon">
-                   <iconset resource="Soundpack.qrc">
-                    <normaloff>:/app/img/app/bin (1).png</normaloff>:/app/img/app/bin (1).png</iconset>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item row="0" column="1">
+           <item row="0" column="0">
             <widget class="QWidget" name="slot1Widget" native="true">
              <property name="styleSheet">
               <string>QWidget#slot1Widget {
@@ -4102,16 +3921,16 @@ QPushButton:hover {
              </layout>
             </widget>
            </item>
-           <item row="1" column="3">
-            <widget class="QWidget" name="slot8Widget" native="true">
+           <item row="3" column="1">
+            <widget class="QWidget" name="slot17Widget" native="true">
              <property name="styleSheet">
-              <string>QWidget#slot8Widget {
+              <string>QWidget#slot17Widget {
     background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);
     border: 1px solid #363540;
     border-radius: 8px;
 }</string>
              </property>
-             <layout class="QVBoxLayout" name="slot8Layout">
+             <layout class="QVBoxLayout" name="slot17Layout">
               <property name="spacing">
                <number>10</number>
               </property>
@@ -4128,7 +3947,7 @@ QPushButton:hover {
                <number>5</number>
               </property>
               <item>
-               <widget class="QPushButton" name="slot8">
+               <widget class="QPushButton" name="slot17">
                 <property name="minimumSize">
                  <size>
                   <width>110</width>
@@ -4159,11 +3978,10 @@ QPushButton:pressed {
 }</string>
                 </property>
                 <property name="text">
-                 <string/>
                 </property>
                 <property name="icon">
                  <iconset resource="Soundpack.qrc">
-                  <normaloff>:/img/img/osuruk1.jpg</normaloff>:/img/img/osuruk1.jpg</iconset>
+                  <normaloff>:/app/img/app/add.png</normaloff>:/app/img/app/add.png</iconset>
                 </property>
                 <property name="iconSize">
                  <size>
@@ -4177,7 +3995,7 @@ QPushButton:pressed {
                </widget>
               </item>
               <item>
-               <layout class="QHBoxLayout" name="slot8Controls">
+               <layout class="QHBoxLayout" name="slot17Controls">
                 <property name="leftMargin">
                  <number>0</number>
                 </property>
@@ -4191,7 +4009,7 @@ QPushButton:pressed {
                  <number>0</number>
                 </property>
                 <item>
-                 <widget class="QComboBox" name="slot8Hotkey">
+                 <widget class="QComboBox" name="slot17Hotkey">
                   <property name="minimumSize">
                    <size>
                     <width>70</width>
@@ -4258,7 +4076,7 @@ QScrollBar::handle:vertical:hover {
                  </widget>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="slot8Delete">
+                 <widget class="QPushButton" name="slot17Delete">
                   <property name="minimumSize">
                    <size>
                     <width>25</width>
@@ -4298,967 +4116,7 @@ QPushButton:hover {
              </layout>
             </widget>
            </item>
-           <item row="2" column="1">
-            <widget class="QWidget" name="slot11Widget" native="true">
-             <property name="styleSheet">
-              <string>QWidget#slot11Widget {
-    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);
-    border: 1px solid #363540;
-    border-radius: 8px;
-}</string>
-             </property>
-             <layout class="QVBoxLayout" name="slot11Layout">
-              <property name="spacing">
-               <number>10</number>
-              </property>
-              <property name="leftMargin">
-               <number>10</number>
-              </property>
-              <property name="topMargin">
-               <number>10</number>
-              </property>
-              <property name="rightMargin">
-               <number>10</number>
-              </property>
-              <property name="bottomMargin">
-               <number>5</number>
-              </property>
-              <item>
-               <widget class="QPushButton" name="slot11">
-                <property name="minimumSize">
-                 <size>
-                  <width>110</width>
-                  <height>110</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>16777215</height>
-                 </size>
-                </property>
-                <property name="styleSheet">
-                 <string>QPushButton {
-    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #303040, stop:0.5 #1a1a2a, stop:1 #000010);
-    border: 2px solid #202030;
-    border-radius: 12px;
-    color: white;
-    font-size: 14px;
-    font-weight: bold;
-}
-QPushButton:hover {
-    border: 1px solid #00ff88;
-}
-QPushButton:pressed {
-    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #101020, stop:0.5 #0a0a1a, stop:1 #000000);
-    border-color: #1a1a2a;
-}</string>
-                </property>
-                <property name="text">
-                 <string>+</string>
-                </property>
-                <property name="iconSize">
-                 <size>
-                  <width>96</width>
-                  <height>96</height>
-                 </size>
-                </property>
-                <property name="scaledContents" stdset="0">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <layout class="QHBoxLayout" name="slot11Controls">
-                <property name="leftMargin">
-                 <number>0</number>
-                </property>
-                <property name="topMargin">
-                 <number>0</number>
-                </property>
-                <property name="rightMargin">
-                 <number>0</number>
-                </property>
-                <property name="bottomMargin">
-                 <number>0</number>
-                </property>
-                <item>
-                 <widget class="QComboBox" name="slot11Hotkey">
-                  <property name="minimumSize">
-                   <size>
-                    <width>70</width>
-                    <height>25</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>70</width>
-                    <height>25</height>
-                   </size>
-                  </property>
-                  <property name="styleSheet">
-                   <string>QComboBox {
-    background: #2f2f2f;
-    border-radius: 8px;
-    border: 1px solid #3a3a3a;
-    padding: 2px 8px;
-    color: white;
-}
-
-QComboBox:hover {
-    border: 1px solid #00ff88;
-}
-
-QComboBox::drop-down {
-    border: none;
-    width: 18px;
-}
-
-QComboBox QAbstractItemView {
-    background: #2a2a2a;
-    border: 1px solid #00ff88;
-    selection-background-color: #00ff88;
-    selection-color: #000000;
-    color: white;
-}
-
-QComboBox QAbstractItemView::item {
-    padding: 5px 10px;
-}
-
-QComboBox QAbstractItemView::item:selected {
-    background: #00ff88;
-    color: #000000;
-}
-
-QScrollBar:vertical {
-    background: #2a2a2a;
-    width: 8px;
-    border-radius: 4px;
-}
-
-QScrollBar::handle:vertical {
-    background: #00ff88;
-    border-radius: 4px;
-    min-height: 20px;
-}
-
-QScrollBar::handle:vertical:hover {
-    background: #00cc66;
-}</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="slot11Delete">
-                  <property name="minimumSize">
-                   <size>
-                    <width>25</width>
-                    <height>25</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>25</width>
-                    <height>25</height>
-                   </size>
-                  </property>
-                  <property name="styleSheet">
-                   <string>QPushButton {
-    background-color: #e74c3c;
-    border: none;
-    border-radius: 12px;
-    color: white;
-    font-size: 12px;
-    font-weight: bold;
-}
-QPushButton:hover {
-    border: 1px solid #00ff88;
-}</string>
-                  </property>
-                  <property name="text">
-                   <string/>
-                  </property>
-                  <property name="icon">
-                   <iconset resource="Soundpack.qrc">
-                    <normaloff>:/app/img/app/bin (1).png</normaloff>:/app/img/app/bin (1).png</iconset>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item row="3" column="3">
-            <widget class="QWidget" name="slot18Widget" native="true">
-             <property name="styleSheet">
-              <string>QWidget#slot18Widget {
-    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);
-    border: 1px solid #363540;
-    border-radius: 8px;
-}</string>
-             </property>
-             <layout class="QVBoxLayout" name="slot18Layout">
-              <property name="spacing">
-               <number>10</number>
-              </property>
-              <property name="leftMargin">
-               <number>10</number>
-              </property>
-              <property name="topMargin">
-               <number>10</number>
-              </property>
-              <property name="rightMargin">
-               <number>10</number>
-              </property>
-              <property name="bottomMargin">
-               <number>5</number>
-              </property>
-              <item>
-               <widget class="QPushButton" name="slot18">
-                <property name="minimumSize">
-                 <size>
-                  <width>110</width>
-                  <height>110</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>16777215</height>
-                 </size>
-                </property>
-                <property name="styleSheet">
-                 <string>QPushButton {
-    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #303040, stop:0.5 #1a1a2a, stop:1 #000010);
-    border: 2px solid #202030;
-    border-radius: 12px;
-    color: white;
-    font-size: 14px;
-    font-weight: bold;
-}
-QPushButton:hover {
-    border: 1px solid #00ff88;
-}
-QPushButton:pressed {
-    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #101020, stop:0.5 #0a0a1a, stop:1 #000000);
-    border-color: #1a1a2a;
-}</string>
-                </property>
-                <property name="text">
-                 <string>+</string>
-                </property>
-                <property name="iconSize">
-                 <size>
-                  <width>96</width>
-                  <height>96</height>
-                 </size>
-                </property>
-                <property name="scaledContents" stdset="0">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <layout class="QHBoxLayout" name="slot18Controls">
-                <property name="leftMargin">
-                 <number>0</number>
-                </property>
-                <property name="topMargin">
-                 <number>0</number>
-                </property>
-                <property name="rightMargin">
-                 <number>0</number>
-                </property>
-                <property name="bottomMargin">
-                 <number>0</number>
-                </property>
-                <item>
-                 <widget class="QComboBox" name="slot18Hotkey">
-                  <property name="minimumSize">
-                   <size>
-                    <width>70</width>
-                    <height>25</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>70</width>
-                    <height>25</height>
-                   </size>
-                  </property>
-                  <property name="styleSheet">
-                   <string>QComboBox {
-    background: #2f2f2f;
-    border-radius: 8px;
-    border: 1px solid #3a3a3a;
-    padding: 2px 8px;
-    color: white;
-}
-
-QComboBox:hover {
-    border: 1px solid #00ff88;
-}
-
-QComboBox::drop-down {
-    border: none;
-    width: 18px;
-}
-
-QComboBox QAbstractItemView {
-    background: #2a2a2a;
-    border: 1px solid #00ff88;
-    selection-background-color: #00ff88;
-    selection-color: #000000;
-    color: white;
-}
-
-QComboBox QAbstractItemView::item {
-    padding: 5px 10px;
-}
-
-QComboBox QAbstractItemView::item:selected {
-    background: #00ff88;
-    color: #000000;
-}
-
-QScrollBar:vertical {
-    background: #2a2a2a;
-    width: 8px;
-    border-radius: 4px;
-}
-
-QScrollBar::handle:vertical {
-    background: #00ff88;
-    border-radius: 4px;
-    min-height: 20px;
-}
-
-QScrollBar::handle:vertical:hover {
-    background: #00cc66;
-}</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="slot18Delete">
-                  <property name="minimumSize">
-                   <size>
-                    <width>25</width>
-                    <height>25</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>25</width>
-                    <height>25</height>
-                   </size>
-                  </property>
-                  <property name="styleSheet">
-                   <string>QPushButton {
-    background-color: #e74c3c;
-    border: none;
-    border-radius: 12px;
-    color: white;
-    font-size: 12px;
-    font-weight: bold;
-}
-QPushButton:hover {
-    border: 1px solid #00ff88;
-}</string>
-                  </property>
-                  <property name="text">
-                   <string/>
-                  </property>
-                  <property name="icon">
-                   <iconset resource="Soundpack.qrc">
-                    <normaloff>:/app/img/app/bin (1).png</normaloff>:/app/img/app/bin (1).png</iconset>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item row="2" column="3">
-            <widget class="QWidget" name="slot13Widget" native="true">
-             <property name="styleSheet">
-              <string>QWidget#slot13Widget {
-    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);
-    border: 1px solid #363540;
-    border-radius: 8px;
-}</string>
-             </property>
-             <layout class="QVBoxLayout" name="slot13Layout">
-              <property name="spacing">
-               <number>10</number>
-              </property>
-              <property name="leftMargin">
-               <number>10</number>
-              </property>
-              <property name="topMargin">
-               <number>10</number>
-              </property>
-              <property name="rightMargin">
-               <number>10</number>
-              </property>
-              <property name="bottomMargin">
-               <number>5</number>
-              </property>
-              <item>
-               <widget class="QPushButton" name="slot13">
-                <property name="minimumSize">
-                 <size>
-                  <width>110</width>
-                  <height>110</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>16777215</height>
-                 </size>
-                </property>
-                <property name="styleSheet">
-                 <string>QPushButton {
-    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #303040, stop:0.5 #1a1a2a, stop:1 #000010);
-    border: 2px solid #202030;
-    border-radius: 12px;
-    color: white;
-    font-size: 14px;
-    font-weight: bold;
-}
-QPushButton:hover {
-    border: 1px solid #00ff88;
-}
-QPushButton:pressed {
-    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #101020, stop:0.5 #0a0a1a, stop:1 #000000);
-    border-color: #1a1a2a;
-}</string>
-                </property>
-                <property name="text">
-                 <string>+</string>
-                </property>
-                <property name="iconSize">
-                 <size>
-                  <width>96</width>
-                  <height>96</height>
-                 </size>
-                </property>
-                <property name="scaledContents" stdset="0">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <layout class="QHBoxLayout" name="slot13Controls">
-                <property name="leftMargin">
-                 <number>0</number>
-                </property>
-                <property name="topMargin">
-                 <number>0</number>
-                </property>
-                <property name="rightMargin">
-                 <number>0</number>
-                </property>
-                <property name="bottomMargin">
-                 <number>0</number>
-                </property>
-                <item>
-                 <widget class="QComboBox" name="slot13Hotkey">
-                  <property name="minimumSize">
-                   <size>
-                    <width>70</width>
-                    <height>25</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>70</width>
-                    <height>25</height>
-                   </size>
-                  </property>
-                  <property name="styleSheet">
-                   <string>QComboBox {
-    background: #2f2f2f;
-    border-radius: 8px;
-    border: 1px solid #3a3a3a;
-    padding: 2px 8px;
-    color: white;
-}
-
-QComboBox:hover {
-    border: 1px solid #00ff88;
-}
-
-QComboBox::drop-down {
-    border: none;
-    width: 18px;
-}
-
-QComboBox QAbstractItemView {
-    background: #2a2a2a;
-    border: 1px solid #00ff88;
-    selection-background-color: #00ff88;
-    selection-color: #000000;
-    color: white;
-}
-
-QComboBox QAbstractItemView::item {
-    padding: 5px 10px;
-}
-
-QComboBox QAbstractItemView::item:selected {
-    background: #00ff88;
-    color: #000000;
-}
-
-QScrollBar:vertical {
-    background: #2a2a2a;
-    width: 8px;
-    border-radius: 4px;
-}
-
-QScrollBar::handle:vertical {
-    background: #00ff88;
-    border-radius: 4px;
-    min-height: 20px;
-}
-
-QScrollBar::handle:vertical:hover {
-    background: #00cc66;
-}</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="slot13Delete">
-                  <property name="minimumSize">
-                   <size>
-                    <width>25</width>
-                    <height>25</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>25</width>
-                    <height>25</height>
-                   </size>
-                  </property>
-                  <property name="styleSheet">
-                   <string>QPushButton {
-    background-color: #e74c3c;
-    border: none;
-    border-radius: 12px;
-    color: white;
-    font-size: 12px;
-    font-weight: bold;
-}
-QPushButton:hover {
-    border: 1px solid #00ff88;
-}</string>
-                  </property>
-                  <property name="text">
-                   <string/>
-                  </property>
-                  <property name="icon">
-                   <iconset resource="Soundpack.qrc">
-                    <normaloff>:/app/img/app/bin (1).png</normaloff>:/app/img/app/bin (1).png</iconset>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item row="3" column="1">
-            <widget class="QWidget" name="slot16Widget" native="true">
-             <property name="styleSheet">
-              <string>QWidget#slot16Widget {
-    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);
-    border: 1px solid #363540;
-    border-radius: 8px;
-}</string>
-             </property>
-             <layout class="QVBoxLayout" name="slot16Layout">
-              <property name="spacing">
-               <number>10</number>
-              </property>
-              <property name="leftMargin">
-               <number>10</number>
-              </property>
-              <property name="topMargin">
-               <number>10</number>
-              </property>
-              <property name="rightMargin">
-               <number>10</number>
-              </property>
-              <property name="bottomMargin">
-               <number>5</number>
-              </property>
-              <item>
-               <widget class="QPushButton" name="slot16">
-                <property name="minimumSize">
-                 <size>
-                  <width>110</width>
-                  <height>110</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>16777215</height>
-                 </size>
-                </property>
-                <property name="styleSheet">
-                 <string>QPushButton {
-    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #303040, stop:0.5 #1a1a2a, stop:1 #000010);
-    border: 2px solid #202030;
-    border-radius: 12px;
-    color: white;
-    font-size: 14px;
-    font-weight: bold;
-}
-QPushButton:hover {
-    border: 1px solid #00ff88;
-}
-QPushButton:pressed {
-    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #101020, stop:0.5 #0a0a1a, stop:1 #000000);
-    border-color: #1a1a2a;
-}</string>
-                </property>
-                <property name="text">
-                 <string>+</string>
-                </property>
-                <property name="iconSize">
-                 <size>
-                  <width>96</width>
-                  <height>96</height>
-                 </size>
-                </property>
-                <property name="scaledContents" stdset="0">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <layout class="QHBoxLayout" name="slot16Controls">
-                <property name="leftMargin">
-                 <number>0</number>
-                </property>
-                <property name="topMargin">
-                 <number>0</number>
-                </property>
-                <property name="rightMargin">
-                 <number>0</number>
-                </property>
-                <property name="bottomMargin">
-                 <number>0</number>
-                </property>
-                <item>
-                 <widget class="QComboBox" name="slot16Hotkey">
-                  <property name="minimumSize">
-                   <size>
-                    <width>70</width>
-                    <height>25</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>70</width>
-                    <height>25</height>
-                   </size>
-                  </property>
-                  <property name="styleSheet">
-                   <string>QComboBox {
-    background: #2f2f2f;
-    border-radius: 8px;
-    border: 1px solid #3a3a3a;
-    padding: 2px 8px;
-    color: white;
-}
-
-QComboBox:hover {
-    border: 1px solid #00ff88;
-}
-
-QComboBox::drop-down {
-    border: none;
-    width: 18px;
-}
-
-QComboBox QAbstractItemView {
-    background: #2a2a2a;
-    border: 1px solid #00ff88;
-    selection-background-color: #00ff88;
-    selection-color: #000000;
-    color: white;
-}
-
-QComboBox QAbstractItemView::item {
-    padding: 5px 10px;
-}
-
-QComboBox QAbstractItemView::item:selected {
-    background: #00ff88;
-    color: #000000;
-}
-
-QScrollBar:vertical {
-    background: #2a2a2a;
-    width: 8px;
-    border-radius: 4px;
-}
-
-QScrollBar::handle:vertical {
-    background: #00ff88;
-    border-radius: 4px;
-    min-height: 20px;
-}
-
-QScrollBar::handle:vertical:hover {
-    background: #00cc66;
-}</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="slot16Delete">
-                  <property name="minimumSize">
-                   <size>
-                    <width>25</width>
-                    <height>25</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>25</width>
-                    <height>25</height>
-                   </size>
-                  </property>
-                  <property name="styleSheet">
-                   <string>QPushButton {
-    background-color: #e74c3c;
-    border: none;
-    border-radius: 12px;
-    color: white;
-    font-size: 12px;
-    font-weight: bold;
-}
-QPushButton:hover {
-    border: 1px solid #00ff88;
-}</string>
-                  </property>
-                  <property name="text">
-                   <string/>
-                  </property>
-                  <property name="icon">
-                   <iconset resource="Soundpack.qrc">
-                    <normaloff>:/app/img/app/bin (1).png</normaloff>:/app/img/app/bin (1).png</iconset>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item row="3" column="5">
-            <widget class="QWidget" name="slot20Widget" native="true">
-             <property name="styleSheet">
-              <string>QWidget#slot20Widget {
-    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);
-    border: 1px solid #363540;
-    border-radius: 8px;
-}</string>
-             </property>
-             <layout class="QVBoxLayout" name="slot20Layout">
-              <property name="spacing">
-               <number>10</number>
-              </property>
-              <property name="leftMargin">
-               <number>10</number>
-              </property>
-              <property name="topMargin">
-               <number>10</number>
-              </property>
-              <property name="rightMargin">
-               <number>10</number>
-              </property>
-              <property name="bottomMargin">
-               <number>5</number>
-              </property>
-              <item>
-               <widget class="QPushButton" name="slot20">
-                <property name="minimumSize">
-                 <size>
-                  <width>110</width>
-                  <height>110</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>16777215</height>
-                 </size>
-                </property>
-                <property name="styleSheet">
-                 <string>QPushButton {
-    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #303040, stop:0.5 #1a1a2a, stop:1 #000010);
-    border: 2px solid #202030;
-    border-radius: 12px;
-    color: white;
-    font-size: 14px;
-    font-weight: bold;
-}
-QPushButton:hover {
-    border: 1px solid #00ff88;
-}
-QPushButton:pressed {
-    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #101020, stop:0.5 #0a0a1a, stop:1 #000000);
-    border-color: #1a1a2a;
-}</string>
-                </property>
-                <property name="text">
-                 <string>+</string>
-                </property>
-                <property name="iconSize">
-                 <size>
-                  <width>96</width>
-                  <height>96</height>
-                 </size>
-                </property>
-                <property name="scaledContents" stdset="0">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <layout class="QHBoxLayout" name="slot20Controls">
-                <property name="leftMargin">
-                 <number>0</number>
-                </property>
-                <property name="topMargin">
-                 <number>0</number>
-                </property>
-                <property name="rightMargin">
-                 <number>0</number>
-                </property>
-                <property name="bottomMargin">
-                 <number>0</number>
-                </property>
-                <item>
-                 <widget class="QComboBox" name="slot20Hotkey">
-                  <property name="minimumSize">
-                   <size>
-                    <width>70</width>
-                    <height>25</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>70</width>
-                    <height>25</height>
-                   </size>
-                  </property>
-                  <property name="styleSheet">
-                   <string>QComboBox {
-    background: #2f2f2f;
-    border-radius: 8px;
-    border: 1px solid #3a3a3a;
-    padding: 2px 8px;
-    color: white;
-}
-
-QComboBox:hover {
-    border: 1px solid #00ff88;
-}
-
-QComboBox::drop-down {
-    border: none;
-    width: 18px;
-}
-
-QComboBox QAbstractItemView {
-    background: #2a2a2a;
-    border: 1px solid #00ff88;
-    selection-background-color: #00ff88;
-    selection-color: #000000;
-    color: white;
-}
-
-QComboBox QAbstractItemView::item {
-    padding: 5px 10px;
-}
-
-QComboBox QAbstractItemView::item:selected {
-    background: #00ff88;
-    color: #000000;
-}
-
-QScrollBar:vertical {
-    background: #2a2a2a;
-    width: 8px;
-    border-radius: 4px;
-}
-
-QScrollBar::handle:vertical {
-    background: #00ff88;
-    border-radius: 4px;
-    min-height: 20px;
-}
-
-QScrollBar::handle:vertical:hover {
-    background: #00cc66;
-}</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="slot20Delete">
-                  <property name="minimumSize">
-                   <size>
-                    <width>25</width>
-                    <height>25</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>25</width>
-                    <height>25</height>
-                   </size>
-                  </property>
-                  <property name="styleSheet">
-                   <string>QPushButton {
-    background-color: #e74c3c;
-    border: none;
-    border-radius: 12px;
-    color: white;
-    font-size: 12px;
-    font-weight: bold;
-}
-QPushButton:hover {
-    border: 1px solid #00ff88;
-}</string>
-                  </property>
-                  <property name="text">
-                   <string/>
-                  </property>
-                  <property name="icon">
-                   <iconset resource="Soundpack.qrc">
-                    <normaloff>:/app/img/app/bin (1).png</normaloff>:/app/img/app/bin (1).png</iconset>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item row="1" column="4">
+           <item row="1" column="3">
             <widget class="QWidget" name="slot9Widget" native="true">
              <property name="styleSheet">
               <string>QWidget#slot9Widget {
@@ -5454,8 +4312,1177 @@ QPushButton:hover {
              </layout>
             </widget>
            </item>
-           <item row="0" column="0">
-            <layout class="QVBoxLayout" name="verticalLayout_2"/>
+           <item row="0" column="2">
+            <widget class="QWidget" name="slot3Widget" native="true">
+             <property name="styleSheet">
+              <string>QWidget#slot3Widget {
+    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);
+    border: 1px solid #363540;
+    border-radius: 8px;
+}</string>
+             </property>
+             <layout class="QVBoxLayout" name="slot3Layout">
+              <property name="spacing">
+               <number>10</number>
+              </property>
+              <property name="leftMargin">
+               <number>10</number>
+              </property>
+              <property name="topMargin">
+               <number>10</number>
+              </property>
+              <property name="rightMargin">
+               <number>10</number>
+              </property>
+              <property name="bottomMargin">
+               <number>5</number>
+              </property>
+              <item>
+               <widget class="QPushButton" name="slot3">
+                <property name="minimumSize">
+                 <size>
+                  <width>110</width>
+                  <height>110</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="styleSheet">
+                 <string>QPushButton {
+    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #303040, stop:0.5 #1a1a2a, stop:1 #000010);
+    border: 2px solid #202030;
+    border-radius: 12px;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+}
+QPushButton:hover {
+    border: 1px solid #00ff88;
+}
+QPushButton:pressed {
+    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #101020, stop:0.5 #0a0a1a, stop:1 #000000);
+    border-color: #1a1a2a;
+}</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="Soundpack.qrc">
+                  <normaloff>:/img/img/chineseRap.jpeg</normaloff>:/img/img/chineseRap.jpeg</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>96</width>
+                  <height>96</height>
+                 </size>
+                </property>
+                <property name="scaledContents" stdset="0">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="slot3Controls">
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QComboBox" name="slot3Hotkey">
+                  <property name="minimumSize">
+                   <size>
+                    <width>70</width>
+                    <height>25</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>70</width>
+                    <height>25</height>
+                   </size>
+                  </property>
+                  <property name="styleSheet">
+                   <string>QComboBox {
+    background: #2f2f2f;
+    border-radius: 8px;
+    border: 1px solid #3a3a3a;
+    padding: 2px 8px;
+    color: white;
+}
+
+QComboBox:hover {
+    border: 1px solid #00ff88;
+}
+
+QComboBox::drop-down {
+    border: none;
+    width: 18px;
+}
+
+QComboBox QAbstractItemView {
+    background: #2a2a2a;
+    border: 1px solid #00ff88;
+    selection-background-color: #00ff88;
+    selection-color: #000000;
+    color: white;
+}
+
+QComboBox QAbstractItemView::item {
+    padding: 5px 10px;
+}
+
+QComboBox QAbstractItemView::item:selected {
+    background: #00ff88;
+    color: #000000;
+}
+
+QScrollBar:vertical {
+    background: #2a2a2a;
+    width: 8px;
+    border-radius: 4px;
+}
+
+QScrollBar::handle:vertical {
+    background: #00ff88;
+    border-radius: 4px;
+    min-height: 20px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background: #00cc66;
+}</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="slot3Delete">
+                  <property name="minimumSize">
+                   <size>
+                    <width>25</width>
+                    <height>25</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>25</width>
+                    <height>25</height>
+                   </size>
+                  </property>
+                  <property name="styleSheet">
+                   <string>QPushButton {
+    background-color: #e74c3c;
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+}
+QPushButton:hover {
+    border: 1px solid #00ff88;
+}</string>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="Soundpack.qrc">
+                    <normaloff>:/app/img/app/bin (1).png</normaloff>:/app/img/app/bin (1).png</iconset>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="3" column="2">
+            <widget class="QWidget" name="slot18Widget" native="true">
+             <property name="styleSheet">
+              <string>QWidget#slot18Widget {
+    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);
+    border: 1px solid #363540;
+    border-radius: 8px;
+}</string>
+             </property>
+             <layout class="QVBoxLayout" name="slot18Layout">
+              <property name="spacing">
+               <number>10</number>
+              </property>
+              <property name="leftMargin">
+               <number>10</number>
+              </property>
+              <property name="topMargin">
+               <number>10</number>
+              </property>
+              <property name="rightMargin">
+               <number>10</number>
+              </property>
+              <property name="bottomMargin">
+               <number>5</number>
+              </property>
+              <item>
+               <widget class="QPushButton" name="slot18">
+                <property name="minimumSize">
+                 <size>
+                  <width>110</width>
+                  <height>110</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="styleSheet">
+                 <string>QPushButton {
+    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #303040, stop:0.5 #1a1a2a, stop:1 #000010);
+    border: 2px solid #202030;
+    border-radius: 12px;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+}
+QPushButton:hover {
+    border: 1px solid #00ff88;
+}
+QPushButton:pressed {
+    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #101020, stop:0.5 #0a0a1a, stop:1 #000000);
+    border-color: #1a1a2a;
+}</string>
+                </property>
+                <property name="text">
+                </property>
+                <property name="icon">
+                 <iconset resource="Soundpack.qrc">
+                  <normaloff>:/app/img/app/add.png</normaloff>:/app/img/app/add.png</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>96</width>
+                  <height>96</height>
+                 </size>
+                </property>
+                <property name="scaledContents" stdset="0">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="slot18Controls">
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QComboBox" name="slot18Hotkey">
+                  <property name="minimumSize">
+                   <size>
+                    <width>70</width>
+                    <height>25</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>70</width>
+                    <height>25</height>
+                   </size>
+                  </property>
+                  <property name="styleSheet">
+                   <string>QComboBox {
+    background: #2f2f2f;
+    border-radius: 8px;
+    border: 1px solid #3a3a3a;
+    padding: 2px 8px;
+    color: white;
+}
+
+QComboBox:hover {
+    border: 1px solid #00ff88;
+}
+
+QComboBox::drop-down {
+    border: none;
+    width: 18px;
+}
+
+QComboBox QAbstractItemView {
+    background: #2a2a2a;
+    border: 1px solid #00ff88;
+    selection-background-color: #00ff88;
+    selection-color: #000000;
+    color: white;
+}
+
+QComboBox QAbstractItemView::item {
+    padding: 5px 10px;
+}
+
+QComboBox QAbstractItemView::item:selected {
+    background: #00ff88;
+    color: #000000;
+}
+
+QScrollBar:vertical {
+    background: #2a2a2a;
+    width: 8px;
+    border-radius: 4px;
+}
+
+QScrollBar::handle:vertical {
+    background: #00ff88;
+    border-radius: 4px;
+    min-height: 20px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background: #00cc66;
+}</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="slot18Delete">
+                  <property name="minimumSize">
+                   <size>
+                    <width>25</width>
+                    <height>25</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>25</width>
+                    <height>25</height>
+                   </size>
+                  </property>
+                  <property name="styleSheet">
+                   <string>QPushButton {
+    background-color: #e74c3c;
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+}
+QPushButton:hover {
+    border: 1px solid #00ff88;
+}</string>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="Soundpack.qrc">
+                    <normaloff>:/app/img/app/bin (1).png</normaloff>:/app/img/app/bin (1).png</iconset>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="3" column="4">
+            <widget class="QWidget" name="slot20Widget" native="true">
+             <property name="styleSheet">
+              <string>QWidget#slot20Widget {
+    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);
+    border: 1px solid #363540;
+    border-radius: 8px;
+}</string>
+             </property>
+             <layout class="QVBoxLayout" name="slot20Layout">
+              <property name="spacing">
+               <number>10</number>
+              </property>
+              <property name="leftMargin">
+               <number>10</number>
+              </property>
+              <property name="topMargin">
+               <number>10</number>
+              </property>
+              <property name="rightMargin">
+               <number>10</number>
+              </property>
+              <property name="bottomMargin">
+               <number>5</number>
+              </property>
+              <item>
+               <widget class="QPushButton" name="slot20">
+                <property name="minimumSize">
+                 <size>
+                  <width>110</width>
+                  <height>110</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="styleSheet">
+                 <string>QPushButton {
+    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #303040, stop:0.5 #1a1a2a, stop:1 #000010);
+    border: 2px solid #202030;
+    border-radius: 12px;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+}
+QPushButton:hover {
+    border: 1px solid #00ff88;
+}
+QPushButton:pressed {
+    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #101020, stop:0.5 #0a0a1a, stop:1 #000000);
+    border-color: #1a1a2a;
+}</string>
+                </property>
+                <property name="text">
+                </property>
+                <property name="icon">
+                 <iconset resource="Soundpack.qrc">
+                  <normaloff>:/app/img/app/add.png</normaloff>:/app/img/app/add.png</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>96</width>
+                  <height>96</height>
+                 </size>
+                </property>
+                <property name="scaledContents" stdset="0">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="slot20Controls">
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QComboBox" name="slot20Hotkey">
+                  <property name="minimumSize">
+                   <size>
+                    <width>70</width>
+                    <height>25</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>70</width>
+                    <height>25</height>
+                   </size>
+                  </property>
+                  <property name="styleSheet">
+                   <string>QComboBox {
+    background: #2f2f2f;
+    border-radius: 8px;
+    border: 1px solid #3a3a3a;
+    padding: 2px 8px;
+    color: white;
+}
+
+QComboBox:hover {
+    border: 1px solid #00ff88;
+}
+
+QComboBox::drop-down {
+    border: none;
+    width: 18px;
+}
+
+QComboBox QAbstractItemView {
+    background: #2a2a2a;
+    border: 1px solid #00ff88;
+    selection-background-color: #00ff88;
+    selection-color: #000000;
+    color: white;
+}
+
+QComboBox QAbstractItemView::item {
+    padding: 5px 10px;
+}
+
+QComboBox QAbstractItemView::item:selected {
+    background: #00ff88;
+    color: #000000;
+}
+
+QScrollBar:vertical {
+    background: #2a2a2a;
+    width: 8px;
+    border-radius: 4px;
+}
+
+QScrollBar::handle:vertical {
+    background: #00ff88;
+    border-radius: 4px;
+    min-height: 20px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background: #00cc66;
+}</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="slot20Delete">
+                  <property name="minimumSize">
+                   <size>
+                    <width>25</width>
+                    <height>25</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>25</width>
+                    <height>25</height>
+                   </size>
+                  </property>
+                  <property name="styleSheet">
+                   <string>QPushButton {
+    background-color: #e74c3c;
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+}
+QPushButton:hover {
+    border: 1px solid #00ff88;
+}</string>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="Soundpack.qrc">
+                    <normaloff>:/app/img/app/bin (1).png</normaloff>:/app/img/app/bin (1).png</iconset>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QWidget" name="slot7Widget" native="true">
+             <property name="styleSheet">
+              <string>QWidget#slot7Widget {
+    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);
+    border: 1px solid #363540;
+    border-radius: 8px;
+}</string>
+             </property>
+             <layout class="QVBoxLayout" name="slot7Layout">
+              <property name="spacing">
+               <number>10</number>
+              </property>
+              <property name="leftMargin">
+               <number>10</number>
+              </property>
+              <property name="topMargin">
+               <number>10</number>
+              </property>
+              <property name="rightMargin">
+               <number>10</number>
+              </property>
+              <property name="bottomMargin">
+               <number>5</number>
+              </property>
+              <item>
+               <widget class="QPushButton" name="slot7">
+                <property name="minimumSize">
+                 <size>
+                  <width>110</width>
+                  <height>110</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="styleSheet">
+                 <string>QPushButton {
+    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #303040, stop:0.5 #1a1a2a, stop:1 #000010);
+    border: 2px solid #202030;
+    border-radius: 12px;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+}
+QPushButton:hover {
+    border: 1px solid #00ff88;
+}
+QPushButton:pressed {
+    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #101020, stop:0.5 #0a0a1a, stop:1 #000000);
+    border-color: #1a1a2a;
+}</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="Soundpack.qrc">
+                  <normaloff>:/img/img/sus.jpg</normaloff>:/img/img/sus.jpg</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>96</width>
+                  <height>96</height>
+                 </size>
+                </property>
+                <property name="scaledContents" stdset="0">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="slot7Controls">
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QComboBox" name="slot7Hotkey">
+                  <property name="minimumSize">
+                   <size>
+                    <width>70</width>
+                    <height>25</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>70</width>
+                    <height>25</height>
+                   </size>
+                  </property>
+                  <property name="styleSheet">
+                   <string>QComboBox {
+    background: #2f2f2f;
+    border-radius: 8px;
+    border: 1px solid #3a3a3a;
+    padding: 2px 8px;
+    color: white;
+}
+
+QComboBox:hover {
+    border: 1px solid #00ff88;
+}
+
+QComboBox::drop-down {
+    border: none;
+    width: 18px;
+}
+
+QComboBox QAbstractItemView {
+    background: #2a2a2a;
+    border: 1px solid #00ff88;
+    selection-background-color: #00ff88;
+    selection-color: #000000;
+    color: white;
+}
+
+QComboBox QAbstractItemView::item {
+    padding: 5px 10px;
+}
+
+QComboBox QAbstractItemView::item:selected {
+    background: #00ff88;
+    color: #000000;
+}
+
+QScrollBar:vertical {
+    background: #2a2a2a;
+    width: 8px;
+    border-radius: 4px;
+}
+
+QScrollBar::handle:vertical {
+    background: #00ff88;
+    border-radius: 4px;
+    min-height: 20px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background: #00cc66;
+}</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="slot7Delete">
+                  <property name="minimumSize">
+                   <size>
+                    <width>25</width>
+                    <height>25</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>25</width>
+                    <height>25</height>
+                   </size>
+                  </property>
+                  <property name="styleSheet">
+                   <string>QPushButton {
+    background-color: #e74c3c;
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+}
+QPushButton:hover {
+    border: 1px solid #00ff88;
+}</string>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="Soundpack.qrc">
+                    <normaloff>:/app/img/app/bin (1).png</normaloff>:/app/img/app/bin (1).png</iconset>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QWidget" name="slot2Widget" native="true">
+             <property name="styleSheet">
+              <string>QWidget#slot2Widget {
+    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);
+    border: 1px solid #363540;
+    border-radius: 8px;
+}</string>
+             </property>
+             <layout class="QVBoxLayout" name="slot2Layout">
+              <property name="leftMargin">
+               <number>10</number>
+              </property>
+              <property name="topMargin">
+               <number>10</number>
+              </property>
+              <property name="rightMargin">
+               <number>10</number>
+              </property>
+              <property name="bottomMargin">
+               <number>5</number>
+              </property>
+              <item>
+               <widget class="QPushButton" name="slot2">
+                <property name="minimumSize">
+                 <size>
+                  <width>110</width>
+                  <height>110</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="styleSheet">
+                 <string>QPushButton {
+    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #303040, stop:0.5 #1a1a2a, stop:1 #000010);
+    border: 2px solid #202030;
+    border-radius: 12px;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    icon-size: 96px 96px;
+}
+QPushButton:hover {
+    border: 1px solid #00ff88;
+}
+QPushButton:pressed {
+    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #101020, stop:0.5 #0a0a1a, stop:1 #000000);
+    border-color: #1a1a2a;
+}</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="Soundpack.qrc">
+                  <normaloff>:/img/img/yArra-Earrape.jpg</normaloff>:/img/img/yArra-Earrape.jpg</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>90</width>
+                  <height>90</height>
+                 </size>
+                </property>
+                <property name="scaledContents" stdset="0">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="slot2Controls">
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QComboBox" name="slot2Hotkey">
+                  <property name="minimumSize">
+                   <size>
+                    <width>70</width>
+                    <height>25</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>70</width>
+                    <height>25</height>
+                   </size>
+                  </property>
+                  <property name="styleSheet">
+                   <string>QComboBox {
+    background: #2f2f2f;
+    border-radius: 8px;
+    border: 1px solid #3a3a3a;
+    padding: 2px 8px;
+    color: white;
+}
+
+QComboBox:hover {
+    border: 1px solid #00ff88;
+}
+
+QComboBox::drop-down {
+    border: none;
+    width: 18px;
+}
+
+QComboBox QAbstractItemView {
+    background: #2a2a2a;
+    border: 1px solid #00ff88;
+    selection-background-color: #00ff88;
+    selection-color: #000000;
+    color: white;
+}
+
+QComboBox QAbstractItemView::item {
+    padding: 5px 10px;
+}
+
+QComboBox QAbstractItemView::item:selected {
+    background: #00ff88;
+    color: #000000;
+}
+
+QScrollBar:vertical {
+    background: #2a2a2a;
+    width: 8px;
+    border-radius: 4px;
+}
+
+QScrollBar::handle:vertical {
+    background: #00ff88;
+    border-radius: 4px;
+    min-height: 20px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background: #00cc66;
+}</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="slot2Delete">
+                  <property name="minimumSize">
+                   <size>
+                    <width>25</width>
+                    <height>25</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>25</width>
+                    <height>25</height>
+                   </size>
+                  </property>
+                  <property name="styleSheet">
+                   <string>QPushButton {
+    background-color: #e74c3c;
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+}
+QPushButton:hover {
+    border: 1px solid #00ff88;
+}</string>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="Soundpack.qrc">
+                    <normaloff>:/app/img/app/bin (1).png</normaloff>:/app/img/app/bin (1).png</iconset>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QWidget" name="slot6Widget" native="true">
+             <property name="styleSheet">
+              <string>QWidget#slot6Widget {
+    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #2a2a3a, stop:0.5 #1a1a2a, stop:1 #0a0a1a);
+    border: 1px solid #363540;
+    border-radius: 8px;
+}</string>
+             </property>
+             <layout class="QVBoxLayout" name="slot6Layout">
+              <property name="spacing">
+               <number>10</number>
+              </property>
+              <property name="leftMargin">
+               <number>10</number>
+              </property>
+              <property name="topMargin">
+               <number>10</number>
+              </property>
+              <property name="rightMargin">
+               <number>10</number>
+              </property>
+              <property name="bottomMargin">
+               <number>5</number>
+              </property>
+              <item>
+               <widget class="QPushButton" name="slot6">
+                <property name="minimumSize">
+                 <size>
+                  <width>110</width>
+                  <height>110</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="styleSheet">
+                 <string>QPushButton {
+    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #303040, stop:0.5 #1a1a2a, stop:1 #000010);
+    border: 2px solid #202030;
+    border-radius: 12px;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+}
+QPushButton:hover {
+    border: 1px solid #00ff88;
+}
+QPushButton:pressed {
+    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #101020, stop:0.5 #0a0a1a, stop:1 #000000);
+    border-color: #1a1a2a;
+}</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="Soundpack.qrc">
+                  <normaloff>:/img/img/trollface.jpg</normaloff>:/img/img/trollface.jpg</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>96</width>
+                  <height>96</height>
+                 </size>
+                </property>
+                <property name="scaledContents" stdset="0">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="slot6Controls">
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QComboBox" name="slot6Hotkey">
+                  <property name="minimumSize">
+                   <size>
+                    <width>70</width>
+                    <height>25</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>70</width>
+                    <height>25</height>
+                   </size>
+                  </property>
+                  <property name="styleSheet">
+                   <string>QComboBox {
+    background: #2f2f2f;
+    border-radius: 8px;
+    border: 1px solid #3a3a3a;
+    padding: 2px 8px;
+    color: white;
+}
+
+QComboBox:hover {
+    border: 1px solid #00ff88;
+}
+
+QComboBox::drop-down {
+    border: none;
+    width: 18px;
+}
+
+QComboBox QAbstractItemView {
+    background: #2a2a2a;
+    border: 1px solid #00ff88;
+    selection-background-color: #00ff88;
+    selection-color: #000000;
+    color: white;
+}
+
+QComboBox QAbstractItemView::item {
+    padding: 5px 10px;
+}
+
+QComboBox QAbstractItemView::item:selected {
+    background: #00ff88;
+    color: #000000;
+}
+
+QScrollBar:vertical {
+    background: #2a2a2a;
+    width: 8px;
+    border-radius: 4px;
+}
+
+QScrollBar::handle:vertical {
+    background: #00ff88;
+    border-radius: 4px;
+    min-height: 20px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background: #00cc66;
+}</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="slot6Delete">
+                  <property name="minimumSize">
+                   <size>
+                    <width>25</width>
+                    <height>25</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>25</width>
+                    <height>25</height>
+                   </size>
+                  </property>
+                  <property name="styleSheet">
+                   <string>QPushButton {
+    background-color: #e74c3c;
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+}
+QPushButton:hover {
+    border: 1px solid #00ff88;
+}</string>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="Soundpack.qrc">
+                    <normaloff>:/app/img/app/bin (1).png</normaloff>:/app/img/app/bin (1).png</iconset>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
            </item>
           </layout>
          </item>
@@ -5590,7 +5617,7 @@ QPushButton:pressed {
                </widget>
               </item>
               <item>
-               <widget class="QPushButton" name="refreshInpurDevice">
+               <widget class="QPushButton" name="refreshInputDevice">
                 <property name="maximumSize">
                  <size>
                   <width>30</width>
@@ -5730,6 +5757,12 @@ QPushButton:hover {
 }
 QPushButton:pressed {
     background-color: #1e8449;
+}
+QPushButton:checked {
+    background-color: #ff4444;
+}
+QPushButton:checked:hover {
+    background-color: #ff6666;
 }</string>
                 </property>
                 <property name="text">
@@ -5738,6 +5771,9 @@ QPushButton:pressed {
                 <property name="icon">
                  <iconset resource="Soundpack.qrc">
                   <normaloff>:/app/img/app/microphone.png</normaloff>:/app/img/app/microphone.png</iconset>
+                </property>
+                <property name="checkable">
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>
@@ -5850,16 +5886,25 @@ QPushButton:pressed {
     background-color: #27ae60;
     color: white;
     border: none;
-    border-radius: 6px;
+    border-radius: 30px;
     padding: 8px 12px;
     font-weight: bold;
-    font-size: 11px;
+    font-size: 16px;
 }
 QPushButton:hover {
     background-color: #229954;
 }
 QPushButton:pressed {
     background-color: #1e8449;
+}
+QPushButton#recordingButton[recording="true"] {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    padding: 8px 12px;
+    font-weight: bold;
+    font-size: 16px;
 }</string>
               </property>
               <property name="text">
