@@ -2081,14 +2081,6 @@ public:
         VoiceChangerMainWindow->setCentralWidget(centralwidget);
 
         retranslateUi(VoiceChangerMainWindow);
-        QObject::connect(miniSidebarToggleBtn, &QPushButton::clicked, miniSidebarWidget, qOverload<>(&QWidget::hide));
-        QObject::connect(miniSidebarToggleBtn, &QPushButton::clicked, presetsSidebarWidget, qOverload<>(&QWidget::show));
-        QObject::connect(presetsSidebarHideButton, &QPushButton::clicked, miniSidebarWidget, qOverload<>(&QWidget::show));
-        QObject::connect(presetsSidebarHideButton, &QPushButton::clicked, presetsSidebarWidget, qOverload<>(&QWidget::hide));
-        QObject::connect(toggleEffectsSidebar, &QPushButton::clicked, settingsSidebarWidget, qOverload<>(&QWidget::hide));
-        QObject::connect(toggleEffectsSidebar, &QPushButton::clicked, EffectsSideBarWidget, qOverload<>(&QWidget::show));
-        QObject::connect(settingsHideButton, &QPushButton::clicked, EffectsSideBarWidget, qOverload<>(&QWidget::hide));
-        QObject::connect(settingsHideButton, &QPushButton::clicked, settingsSidebarWidget, qOverload<>(&QWidget::show));
 
         QMetaObject::connectSlotsByName(VoiceChangerMainWindow);
     } // setupUi

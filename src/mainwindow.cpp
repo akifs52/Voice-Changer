@@ -48,6 +48,9 @@ MainWindow::MainWindow(QWidget *parent)
     // Initialize preset notification widget
     presetNotification = new PresetNotification(this);
     
+    // Initialize animation widget for sidebar transitions
+    animationWidget = new AnimationWidget(this);
+    
     // Initialize recording animations
     setupRecordingAnimations();
 
@@ -1012,6 +1015,31 @@ void MainWindow::on_recordingButton_clicked(bool checked)
         stopRecording();
         // Animation is stopped in stopRecording() function
     }
+}
+
+// Animated sidebar transition functions
+void MainWindow::on_miniSidebarToggleBtn_clicked()
+{
+    // Animate from mini sidebar to presets sidebar
+    animationWidget->animateSidebarTransition(ui->presetsSidebarWidget, ui->miniSidebarWidget, "right", 350);
+}
+
+void MainWindow::on_presetsSidebarHideButton_clicked()
+{
+    // Animate from presets sidebar back to mini sidebar
+    animationWidget->animateSidebarTransition(ui->miniSidebarWidget, ui->presetsSidebarWidget, "left", 350);
+}
+
+void MainWindow::on_toggleEffectsSidebar_clicked()
+{
+    // Animate from settings sidebar to effects sidebar
+    animationWidget->animateSidebarTransition(ui->EffectsSideBarWidget, ui->settingsSidebarWidget, "left", 350);
+}
+
+void MainWindow::on_settingsHideButton_clicked()
+{
+    // Animate from effects sidebar back to settings sidebar
+    animationWidget->animateSidebarTransition(ui->settingsSidebarWidget, ui->EffectsSideBarWidget, "right", 350);
 }
 
 

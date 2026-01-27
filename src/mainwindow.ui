@@ -6850,8 +6850,8 @@ QPushButton#flangerButton:checked {
   <connection>
    <sender>miniSidebarToggleBtn</sender>
    <signal>clicked()</signal>
-   <receiver>miniSidebarWidget</receiver>
-   <slot>hide()</slot>
+   <receiver>VoiceChangerMainWindow</receiver>
+   <slot>on_miniSidebarToggleBtn_clicked()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>21</x>
@@ -6866,8 +6866,8 @@ QPushButton#flangerButton:checked {
   <connection>
    <sender>miniSidebarToggleBtn</sender>
    <signal>clicked()</signal>
-   <receiver>presetsSidebarWidget</receiver>
-   <slot>show()</slot>
+   <receiver>VoiceChangerMainWindow</receiver>
+   <slot>on_miniSidebarToggleBtn_clicked()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>23</x>
@@ -6882,8 +6882,8 @@ QPushButton#flangerButton:checked {
   <connection>
    <sender>presetsSidebarHideButton</sender>
    <signal>clicked()</signal>
-   <receiver>miniSidebarWidget</receiver>
-   <slot>show()</slot>
+   <receiver>VoiceChangerMainWindow</receiver>
+   <slot>on_presetsSidebarHideButton_clicked()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>50</x>
@@ -6898,8 +6898,8 @@ QPushButton#flangerButton:checked {
   <connection>
    <sender>presetsSidebarHideButton</sender>
    <signal>clicked()</signal>
-   <receiver>presetsSidebarWidget</receiver>
-   <slot>hide()</slot>
+   <receiver>VoiceChangerMainWindow</receiver>
+   <slot>on_presetsSidebarHideButton_clicked()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>65</x>
@@ -6914,8 +6914,8 @@ QPushButton#flangerButton:checked {
   <connection>
    <sender>toggleEffectsSidebar</sender>
    <signal>clicked()</signal>
-   <receiver>settingsSidebarWidget</receiver>
-   <slot>hide()</slot>
+   <receiver>VoiceChangerMainWindow</receiver>
+   <slot>on_toggleEffectsSidebar_clicked()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>916</x>
@@ -6930,8 +6930,8 @@ QPushButton#flangerButton:checked {
   <connection>
    <sender>toggleEffectsSidebar</sender>
    <signal>clicked()</signal>
-   <receiver>EffectsSideBarWidget</receiver>
-   <slot>show()</slot>
+   <receiver>VoiceChangerMainWindow</receiver>
+   <slot>on_toggleEffectsSidebar_clicked()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>898</x>
@@ -6946,8 +6946,8 @@ QPushButton#flangerButton:checked {
   <connection>
    <sender>settingsHideButton</sender>
    <signal>clicked()</signal>
-   <receiver>EffectsSideBarWidget</receiver>
-   <slot>hide()</slot>
+   <receiver>VoiceChangerMainWindow</receiver>
+   <slot>on_settingsHideButton_clicked()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>953</x>
@@ -6962,8 +6962,8 @@ QPushButton#flangerButton:checked {
   <connection>
    <sender>settingsHideButton</sender>
    <signal>clicked()</signal>
-   <receiver>settingsSidebarWidget</receiver>
-   <slot>show()</slot>
+   <receiver>VoiceChangerMainWindow</receiver>
+   <slot>on_settingsHideButton_clicked()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>952</x>

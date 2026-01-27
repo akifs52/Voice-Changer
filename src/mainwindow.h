@@ -29,6 +29,7 @@
 #include "voiceeffects.h"
 #include "gloweffekt.h"
 #include "presetnotification.h"
+#include "animationwidget.h"
 #include "qcombobox.h"
 #include "qpushbutton.h"
 #include "ui_mainwindow.h"
@@ -168,6 +169,12 @@ private slots:
     void on_minimizeButton_clicked();
     void on_maximizeButton_clicked();
     void on_closeButton_clicked();
+
+    // Animated sidebar transitions
+    void on_miniSidebarToggleBtn_clicked();
+    void on_presetsSidebarHideButton_clicked();
+    void on_toggleEffectsSidebar_clicked();
+    void on_settingsHideButton_clicked();
 
     // Slots for hotkeys
     void on_slot1Hotkey_currentTextChanged(const QString &key);
@@ -356,6 +363,9 @@ private:
     
     // Preset notification widget
     PresetNotification *presetNotification;
+
+    // Animation system for sidebar transitions
+    AnimationWidget *animationWidget;
 
     // Virtual audio fonksiyonları
     void searchVirtualDevices();
