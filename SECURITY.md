@@ -1,11 +1,5 @@
 # Security Policy
 
-## Supported Versions
-
-| Version | Supported |
-|---------|-----------|
-| 1.0.x   | ✅        |
-| < 1.0   | ❌        |
 
 ## Reporting a Vulnerability
 
@@ -13,9 +7,9 @@ If you discover a security vulnerability in Voice Changer, please report it priv
 
 ### How to Report
 
-1. **Email**: Send an email to security@voicechanger.app with details about the vulnerability
-2. **GitHub Security**: Use GitHub's private vulnerability reporting feature
-3. **Include in your report**:
+
+1. **GitHub Security**: Use GitHub's private vulnerability reporting feature
+2. **Include in your report**:
    - Type of vulnerability (e.g., buffer overflow, code injection, etc.)
    - Steps to reproduce the vulnerability
    - Potential impact of the vulnerability
