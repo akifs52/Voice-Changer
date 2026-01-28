@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/img">
-        <file>img/ajdar-israil.jpg</file>
         <file>img/chineseRap.jpeg</file>
         <file>img/osuru2.jpg</file>
         <file>img/osuruk.jpg</file>

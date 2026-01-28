@@ -1,15 +1,17 @@
 #include "mainwindow.h"
 #include "audiopipeline.h"
 #include "ui_mainwindow.h"
-#include "gloweffekt.h"
-#include <QSettings>
+#include <QFileDialog>
 #include <QTimer>
-#include <QMessageBox>
+#include <QDateTime>
+#include <QPropertyAnimation>
 #include <QDesktopServices>
 #include <QUrl>
 #include <QProcess>
 #include <QIcon>
 #include <QThread>
+#include <QFile>
+#include <QMessageBox>
 
 #ifdef Q_OS_WIN
 #include <windows.h>
@@ -64,6 +66,10 @@ MainWindow::MainWindow(QWidget *parent)
     ui->EffectsSideBarWidget->hide();
     ui->presetsSidebarWidget->hide();
 
+    #ifdef Q_OS_LINUX
+    ui->titleBar->hide();
+    #endif
+
     searchInputDevice();
     searchOutputDevice();
     
@@ -110,19 +116,57 @@ MainWindow::MainWindow(QWidget *parent)
     loadHotkeys();
     
     // Preload default sound files to prevent first-click delay
-    preloadTotal = 10;
+    preloadTotal = 0;
     preloadCount = 0;
-    preloadAudio(filename1);
-    preloadAudio(filename2);
-    preloadAudio(filename3);
-    preloadAudio(filename4);
-    preloadAudio(filename5);
-    preloadAudio(filename6);
-    preloadAudio(filename7);
-    preloadAudio(filename8);
-    preloadAudio(filename9);
-    preloadAudio(filename10);
-    qDebug() << "Default sound files preloading started";
+    
+    // Helper function to check if file exists and preload it
+    auto checkAndPreload = [&](const QString& filename) {
+        QString appDirPath = QCoreApplication::applicationDirPath();
+        QString sourceDirPath = appDirPath;
+        
+        // When running from Qt Creator build directory, check source directory too
+        if (appDirPath.contains("/build/")) {
+            sourceDirPath = appDirPath.left(appDirPath.indexOf("/build/"));
+        }
+        
+        // Try application directory first
+        QString fullPath = filename;
+        if (QFile::exists(fullPath)) {
+            preloadTotal++;
+            preloadAudio(fullPath);
+            return;
+        }
+        
+        // Try source directory (for Qt Creator builds)
+        if (appDirPath.contains("/build/")) {
+            QString sourcePath = fullPath;
+            sourcePath.replace(appDirPath, sourceDirPath);
+            if (QFile::exists(sourcePath)) {
+                preloadTotal++;
+                preloadAudio(sourcePath);
+                return;
+            }
+        }
+    };
+    
+    // Check and preload all default files
+    checkAndPreload(filename1);
+    checkAndPreload(filename2);
+    checkAndPreload(filename3);
+    checkAndPreload(filename4);
+    checkAndPreload(filename5);
+    checkAndPreload(filename6);
+    checkAndPreload(filename7);
+    checkAndPreload(filename8);
+    checkAndPreload(filename9);
+    checkAndPreload(filename10);
+    
+    qDebug() << "Default sound files preloading started - files to preload:" << preloadTotal;
+    
+    // If no files to preload, emit finished immediately
+    if (preloadTotal == 0) {
+        emit preloadFinished();
+    }
 
 }
 
@@ -262,6 +306,14 @@ bool MainWindow::nativeEvent(const QByteArray &eventType, void *message, qintptr
 }
 #endif
 
+#ifdef Q_OS_LINUX
+bool MainWindow::nativeEvent(const QByteArray &eventType, void *message, qintptr *result)
+{
+    // Handle X11 events if needed
+    return QMainWindow::nativeEvent(eventType, message, result);
+}
+#endif
+
 void MainWindow::searchInputDevice()
 {
     const auto devicesI = QMediaDevices::audioInputs();
@@ -282,7 +334,7 @@ void MainWindow::searchOutputDevice()
 }
 
 
-void MainWindow::on_inputslider_valueChanged(int value)
+void MainWindow::on_inputSlider_valueChanged(int value)
 {
     if (audioInput) {
         ui->inputSlider->setValue(static_cast<int>(audioInput->volume() * 100));
@@ -294,7 +346,7 @@ void MainWindow::on_inputslider_valueChanged(int value)
 
 }
 
-void MainWindow::on_outputslider_valueChanged(int value)
+void MainWindow::on_outputSlider_valueChanged(int value)
 {
 
     if (audioOutput) {
@@ -844,39 +896,44 @@ void MainWindow::showVirtualDeviceInstructions()
     downloadUrl = "https://vb-audio.com/Cable/";
 #elif defined(Q_OS_MACOS)
     instructions = "macOS Virtual Audio Device Installation:\n\n"
-                   "Option 1: BlackHole (Recommended)\n"
+                   "Option 1: VB-CABLE (Recommended)\n"
+                   "1. Download VB-CABLE from: https://vb-audio.com/Cable/\n"
+                   "2. Run the installer and follow instructions\n"
+                   "3. Restart your computer\n"
+                   "4. Launch VoiceChanger again\n\n"
+                   "Option 2: BlackHole (Alternative)\n"
                    "1. Download BlackHole from: https://github.com/ExistentialAudio/BlackHole\n"
                    "2. Install the .pkg file\n"
                    "3. Restart your computer\n"
-                   "4. Launch VoiceChanger again\n\n"
-                   "Option 2: Soundflower (Legacy)\n"
-                   "1. Download Soundflower from: https://github.com/mattingalls/Soundflower\n"
-                   "2. Install the .pkg file\n"
-                   "3. Restart your computer\n"
                    "4. Launch VoiceChanger again";
-    downloadUrl = "https://github.com/ExistentialAudio/BlackHole";
+    downloadUrl = "https://vb-audio.com/Cable/";
 #elif defined(Q_OS_LINUX)
     instructions = "Linux Virtual Audio Device Installation:\n\n"
-                   "Option 1: Using PulseAudio\n"
+                   "Option 1: Carla (Recommended)\n"
+                   "1. Install Carla: sudo apt install carla-plugin-gui\n"
+                   "2. Launch Carla and create a virtual device\n"
+                   "3. Configure audio routing in Carla\n\n"
+                   "Option 2: Using PulseAudio\n"
                    "1. Install pavucontrol: sudo apt install pavucontrol\n"
                    "2. Create a null sink: pactl load-module module-null-sink sink_name=virtual\n"
                    "3. Use pavucontrol to route audio\n\n"
-                   "Option 2: Using JACK Audio Connection Kit\n"
+                   "Option 3: Using JACK Audio Connection Kit\n"
                    "1. Install JACK: sudo apt install jackd2\n"
                    "2. Configure JACK for virtual routing\n\n"
-                   "Option 3: Using Loopback devices\n"
+                   "Option 4: Using Loopback devices\n"
                    "1. Install ALSA loopback: sudo modprobe snd-aloop\n"
                    "2. Configure in your .asoundrc file";
-    downloadUrl = "https://wiki.archlinux.org/title/PulseAudio/Examples";
+    downloadUrl = "https://kx.studio/Applications/Carla";
 #else
     instructions = "Virtual Audio Device Installation:\n\n"
                    "Please search for virtual audio software for your operating system.\n"
                    "Common options include:\n"
-                   "- VB-CABLE (Windows)\n"
+                   "- VB-CABLE (Windows/macOS)\n"
+                   "- Carla (Linux)\n"
                    "- BlackHole (macOS)\n"
                    "- PulseAudio null sink (Linux)\n"
                    "- JACK Audio Connection Kit (Cross-platform)";
-    downloadUrl = "https://vb-audio.com/Cable/";
+    downloadUrl = "https://kx.studio/Applications/Carla";
 #endif
     
     QMessageBox::information(this, "Virtual Audio Device Installation", instructions);
@@ -954,7 +1011,7 @@ void MainWindow::on_virtualInputcombobox_currentIndexChanged(int index)
     setupVirtualOutput();
 }
 
-void MainWindow::on_VirtualSlider_valueChanged(int value)
+void MainWindow::on_virtualSlider_valueChanged(int value)
 {
     if (virtualAudioOutput) {
         float volume = static_cast<float>(value) / 100.0f;

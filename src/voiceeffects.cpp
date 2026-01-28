@@ -55,7 +55,7 @@ VoiceEffects::~VoiceEffects()
     if (ekoProcessor) soundtouch_destroyInstance(ekoProcessor);
     if (phaserProcessor) soundtouch_destroyInstance(phaserProcessor);
     if (flangerProcessor) soundtouch_destroyInstance(flangerProcessor);
-#else
+#elif defined(Q_OS_LINUX)
     // Destroy SoundTouch processors (Linux C++ API)
     delete (soundtouch::SoundTouch*)robotProcessor;
     delete (soundtouch::SoundTouch*)bananaProcessor;
@@ -80,7 +80,7 @@ void VoiceEffects::initializeSoundTouch()
     ekoProcessor = soundtouch_createInstance();
     phaserProcessor = soundtouch_createInstance();
     flangerProcessor = soundtouch_createInstance();
-#else
+#elif defined(Q_OS_LINUX)
     // Create SoundTouch instances for each effect (Linux C++ API)
     robotProcessor = new soundtouch::SoundTouch();
     bananaProcessor = new soundtouch::SoundTouch();
@@ -90,8 +90,18 @@ void VoiceEffects::initializeSoundTouch()
     ekoProcessor = new soundtouch::SoundTouch();
     phaserProcessor = new soundtouch::SoundTouch();
     flangerProcessor = new soundtouch::SoundTouch();
+#else
+    robotProcessor = nullptr;
+    bananaProcessor = nullptr;
+    devilProcessor = nullptr;
+    femaleProcessor = nullptr;
+    militaryProcessor = nullptr;
+    ekoProcessor = nullptr;
+    phaserProcessor = nullptr;
+    flangerProcessor = nullptr;
 #endif
-    
+
+#if defined(Q_OS_WIN) || defined(Q_OS_LINUX)
     // Configure ROBOT effect (Autotune style: slight pitch correction)
     setSampleRate(robotProcessor, 44100);
     setChannels(robotProcessor, 1);
@@ -155,6 +165,7 @@ void VoiceEffects::initializeSoundTouch()
     setRate(flangerProcessor, 1.0f);
     setTempo(flangerProcessor, 1.0f);
     setSetting(flangerProcessor, 0, 1);
+#endif
 }
 
 void VoiceEffects::initializeFilters()
@@ -249,8 +260,8 @@ void VoiceEffects::processRobot(float* input, float* output, int bufferSize, flo
     // ROBOT EFFECT: Autotune style like rappers use
     
     // Update sample rate if needed
-    if (soundtouch_getSetting(robotProcessor, 1) != static_cast<int>(sampleRate)) {
-        soundtouch_setSampleRate(robotProcessor, static_cast<uint>(sampleRate));
+    if (robotProcessor) {
+        setSampleRate(robotProcessor, static_cast<uint>(sampleRate));
     }
     
     // Step 1: Apply gate to reduce noise
@@ -296,8 +307,8 @@ void VoiceEffects::processBanana(float* input, float* output, int bufferSize, fl
     // BANANA EFFECT: Alvin & Chipmunks style using SoundTouch
     
     // Update sample rate if needed
-    if (soundtouch_getSetting(bananaProcessor, 1) != static_cast<int>(sampleRate)) {
-        soundtouch_setSampleRate(bananaProcessor, static_cast<uint>(sampleRate));
+    if (bananaProcessor) {
+        setSampleRate(bananaProcessor, static_cast<uint>(sampleRate));
     }
     
     // Step 1: High-pass filter to remove low frequencies
@@ -305,14 +316,14 @@ void VoiceEffects::processBanana(float* input, float* output, int bufferSize, fl
     applyHighPass(input, filtered.data(), bufferSize, 400.0f, sampleRate);
     
     // Step 2: Pitch shift using SoundTouch
-    soundtouch_putSamples(bananaProcessor, filtered.data(), bufferSize);
+    putSamples(bananaProcessor, filtered.data(), bufferSize);
     std::vector<float> pitchedBuffer(bufferSize);
-    uint receivedSamples = soundtouch_receiveSamples(bananaProcessor, pitchedBuffer.data(), bufferSize);
+    uint receivedSamples = receiveSamples(bananaProcessor, pitchedBuffer.data(), bufferSize);
     
     // If we didn't get enough samples, flush the processor
     if (receivedSamples < static_cast<uint>(bufferSize)) {
-        soundtouch_flush(bananaProcessor);
-        uint additionalSamples = soundtouch_receiveSamples(
+        flush(bananaProcessor);
+        uint additionalSamples = receiveSamples(
             bananaProcessor, pitchedBuffer.data() + receivedSamples, bufferSize - receivedSamples);
         receivedSamples += additionalSamples;
     }
@@ -341,19 +352,19 @@ void VoiceEffects::processDevil(float* input, float* output, int bufferSize, flo
     // DEVIL EFFECT: Deep, demonic voice using SoundTouch
     
     // Update sample rate if needed
-    if (soundtouch_getSetting(devilProcessor, 1) != static_cast<int>(sampleRate)) {
-        soundtouch_setSampleRate(devilProcessor, static_cast<uint>(sampleRate));
+    if (devilProcessor) {
+        setSampleRate(devilProcessor, static_cast<uint>(sampleRate));
     }
     
     // Step 1: Pitch shift using SoundTouch
-    soundtouch_putSamples(devilProcessor, input, bufferSize);
+    putSamples(devilProcessor, input, bufferSize);
     std::vector<float> pitchedBuffer(bufferSize);
-    uint receivedSamples = soundtouch_receiveSamples(devilProcessor, pitchedBuffer.data(), bufferSize);
+    uint receivedSamples = receiveSamples(devilProcessor, pitchedBuffer.data(), bufferSize);
     
     // If we didn't get enough samples, flush the processor
     if (receivedSamples < static_cast<uint>(bufferSize)) {
-        soundtouch_flush(devilProcessor);
-        uint additionalSamples = soundtouch_receiveSamples(
+        flush(devilProcessor);
+        uint additionalSamples = receiveSamples(
             devilProcessor, pitchedBuffer.data() + receivedSamples, bufferSize - receivedSamples);
         receivedSamples += additionalSamples;
     }
@@ -382,19 +393,19 @@ void VoiceEffects::processFemale(float* input, float* output, int bufferSize, fl
     // FEMALE EFFECT: Natural female voice transformation using SoundTouch
     
     // Update sample rate if needed
-    if (soundtouch_getSetting(femaleProcessor, 1) != static_cast<int>(sampleRate)) {
-        soundtouch_setSampleRate(femaleProcessor, static_cast<uint>(sampleRate));
+    if (femaleProcessor) {
+        setSampleRate(femaleProcessor, static_cast<uint>(sampleRate));
     }
     
     // Step 1: Pitch shift using SoundTouch
-    soundtouch_putSamples(femaleProcessor, input, bufferSize);
+    putSamples(femaleProcessor, input, bufferSize);
     std::vector<float> pitchedBuffer(bufferSize);
-    uint receivedSamples = soundtouch_receiveSamples(femaleProcessor, pitchedBuffer.data(), bufferSize);
+    uint receivedSamples = receiveSamples(femaleProcessor, pitchedBuffer.data(), bufferSize);
     
     // If we didn't get enough samples, flush the processor
     if (receivedSamples < static_cast<uint>(bufferSize)) {
-        soundtouch_flush(femaleProcessor);
-        uint additionalSamples = soundtouch_receiveSamples(
+        flush(femaleProcessor);
+        uint additionalSamples = receiveSamples(
             femaleProcessor, pitchedBuffer.data() + receivedSamples, bufferSize - receivedSamples);
         receivedSamples += additionalSamples;
     }
@@ -417,18 +428,18 @@ void VoiceEffects::processMilitary(float* input, float* output, int bufferSize, 
     // MILITARY EFFECT: Half-Life Combine soldier style - deep voice with radio static
     
     // Step 1: Pitch shift down for deep, throaty voice (-6 semitones)
-    if (soundtouch_getSetting(militaryProcessor, 1) != static_cast<int>(sampleRate)) {
-        soundtouch_setSampleRate(militaryProcessor, static_cast<uint>(sampleRate));
+    if (militaryProcessor) {
+        setSampleRate(militaryProcessor, static_cast<uint>(sampleRate));
+        setPitchSemiTones(militaryProcessor, -6);
     }
     
-    soundtouch_setPitchSemiTones(militaryProcessor, -6);  // Deep voice
-    soundtouch_putSamples(militaryProcessor, input, bufferSize);
+    putSamples(militaryProcessor, input, bufferSize);
     std::vector<float> pitchedBuffer(bufferSize);
-    uint receivedSamples = soundtouch_receiveSamples(militaryProcessor, pitchedBuffer.data(), bufferSize);
+    uint receivedSamples = receiveSamples(militaryProcessor, pitchedBuffer.data(), bufferSize);
     
     if (receivedSamples < static_cast<uint>(bufferSize)) {
-        soundtouch_flush(militaryProcessor);
-        uint additionalSamples = soundtouch_receiveSamples(
+        flush(militaryProcessor);
+        uint additionalSamples = receiveSamples(
             militaryProcessor, pitchedBuffer.data() + receivedSamples, bufferSize - receivedSamples);
         receivedSamples += additionalSamples;
     }
@@ -483,14 +494,14 @@ void VoiceEffects::processEko(float* input, float* output, int bufferSize, float
 void VoiceEffects::resetEffects()
 {
     // Reset all SoundTouch processors
-    soundtouch_clear(robotProcessor);
-    soundtouch_clear(bananaProcessor);
-    soundtouch_clear(devilProcessor);
-    soundtouch_clear(femaleProcessor);
-    soundtouch_clear(militaryProcessor);
-    soundtouch_clear(ekoProcessor);
-    soundtouch_clear(phaserProcessor);
-    soundtouch_clear(flangerProcessor);
+    clear(robotProcessor);
+    clear(bananaProcessor);
+    clear(devilProcessor);
+    clear(femaleProcessor);
+    clear(militaryProcessor);
+    clear(ekoProcessor);
+    clear(phaserProcessor);
+    clear(flangerProcessor);
     
     // Reset all filter states
     memset(&lowPass, 0, sizeof(lowPass));
@@ -759,8 +770,7 @@ void VoiceEffects::designBandPass(float lowFreq, float highFreq, float sampleRat
 void VoiceEffects::applyPitchCorrection(float* input, float* output, int bufferSize, float sampleRate)
 {
     // Simplified autotune effect - snap to musical scales
-    float samplePeriod = 1.0f / sampleRate;
-    
+ 
     for (int i = 0; i < bufferSize; ++i) {
         // Add sample to analysis buffer
         pitchCorrection.analysisBuffer[pitchCorrection.analysisIndex] = input[i];
@@ -784,8 +794,6 @@ void VoiceEffects::applyPitchCorrection(float* input, float* output, int bufferS
 
 void VoiceEffects::applyRadioStatic(float* input, float* output, int bufferSize, float sampleRate)
 {
-    float samplePeriod = 1.0f / sampleRate;
-    
     for (int i = 0; i < bufferSize; ++i) {
         float dry = input[i];
         float wet = dry;
@@ -888,7 +896,6 @@ void VoiceEffects::processFlanger(float* input, float* output, int bufferSize, f
     
     for (int i = 0; i < bufferSize; ++i) {
         float dry = input[i];
-        float wet = dry;
         
         // LFO modulation for delay time - wider range for dramatic effect
         float lfo = sinf(flanger.lfoPhase) * 0.5f + 0.5f;
@@ -930,8 +937,11 @@ void VoiceEffects::setSampleRate(SoundTouchHandle handle, uint rate)
 {
 #ifdef Q_OS_WIN
     soundtouch_setSampleRate(handle, rate);
+#elif defined(Q_OS_LINUX)
+    if (handle) {
+        ((soundtouch::SoundTouch*)handle)->setSampleRate(rate);
+    }
 #else
-    ((soundtouch::SoundTouch*)handle)->setSampleRate(rate);
 #endif
 }
 
@@ -939,8 +949,11 @@ void VoiceEffects::setChannels(SoundTouchHandle handle, uint channels)
 {
 #ifdef Q_OS_WIN
     soundtouch_setChannels(handle, channels);
+#elif defined(Q_OS_LINUX)
+    if (handle) {
+        ((soundtouch::SoundTouch*)handle)->setChannels(channels);
+    }
 #else
-    ((soundtouch::SoundTouch*)handle)->setChannels(channels);
 #endif
 }
 
@@ -948,8 +961,11 @@ void VoiceEffects::setPitchSemiTones(SoundTouchHandle handle, float pitch)
 {
 #ifdef Q_OS_WIN
     soundtouch_setPitchSemiTones(handle, pitch);
+#elif defined(Q_OS_LINUX)
+    if (handle) {
+        ((soundtouch::SoundTouch*)handle)->setPitchSemiTones(pitch);
+    }
 #else
-    ((soundtouch::SoundTouch*)handle)->setPitchSemiTones(pitch);
 #endif
 }
 
@@ -957,8 +973,11 @@ void VoiceEffects::setRate(SoundTouchHandle handle, float rate)
 {
 #ifdef Q_OS_WIN
     soundtouch_setRate(handle, rate);
+#elif defined(Q_OS_LINUX)
+    if (handle) {
+        ((soundtouch::SoundTouch*)handle)->setRate(rate);
+    }
 #else
-    ((soundtouch::SoundTouch*)handle)->setRate(rate);
 #endif
 }
 
@@ -966,8 +985,11 @@ void VoiceEffects::setTempo(SoundTouchHandle handle, float tempo)
 {
 #ifdef Q_OS_WIN
     soundtouch_setTempo(handle, tempo);
+#elif defined(Q_OS_LINUX)
+    if (handle) {
+        ((soundtouch::SoundTouch*)handle)->setTempo(tempo);
+    }
 #else
-    ((soundtouch::SoundTouch*)handle)->setTempo(tempo);
 #endif
 }
 
@@ -975,8 +997,11 @@ void VoiceEffects::setSetting(SoundTouchHandle handle, int settingId, int settin
 {
 #ifdef Q_OS_WIN
     soundtouch_setSetting(handle, settingId, settingValue);
+#elif defined(Q_OS_LINUX)
+    if (handle) {
+        ((soundtouch::SoundTouch*)handle)->setSetting(settingId, settingValue);
+    }
 #else
-    ((soundtouch::SoundTouch*)handle)->setSetting(settingId, settingValue);
 #endif
 }
 
@@ -984,8 +1009,11 @@ void VoiceEffects::putSamples(SoundTouchHandle handle, const float* samples, uin
 {
 #ifdef Q_OS_WIN
     soundtouch_putSamples(handle, samples, numSamples);
+#elif defined(Q_OS_LINUX)
+    if (handle) {
+        ((soundtouch::SoundTouch*)handle)->putSamples(samples, numSamples);
+    }
 #else
-    ((soundtouch::SoundTouch*)handle)->putSamples(samples, numSamples);
 #endif
 }
 
@@ -993,8 +1021,16 @@ uint VoiceEffects::receiveSamples(SoundTouchHandle handle, float* samples, uint 
 {
 #ifdef Q_OS_WIN
     return soundtouch_receiveSamples(handle, samples, maxSamples);
-#else
+#elif defined(Q_OS_LINUX)
+    if (!handle) {
+        return 0;
+    }
     return ((soundtouch::SoundTouch*)handle)->receiveSamples(samples, maxSamples);
+#else
+    (void)handle;
+    (void)samples;
+    (void)maxSamples;
+    return 0;
 #endif
 }
 
@@ -1002,7 +1038,22 @@ void VoiceEffects::flush(SoundTouchHandle handle)
 {
 #ifdef Q_OS_WIN
     soundtouch_flush(handle);
+#elif defined(Q_OS_LINUX)
+    if (handle) {
+        ((soundtouch::SoundTouch*)handle)->flush();
+    }
 #else
-    ((soundtouch::SoundTouch*)handle)->flush();
+#endif
+}
+
+void VoiceEffects::clear(SoundTouchHandle handle)
+{
+#ifdef Q_OS_WIN
+    soundtouch_clear(handle);
+#elif defined(Q_OS_LINUX)
+    if (handle) {
+        ((soundtouch::SoundTouch*)handle)->clear();
+    }
+#else
 #endif
 }

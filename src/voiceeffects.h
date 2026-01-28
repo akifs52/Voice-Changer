@@ -5,15 +5,17 @@
 #include <cmath>
 #include <vector>
 #include <cstring>
+#include <cstdint>
 
 // Cross-platform handle type
 #ifdef Q_OS_WIN
 #include <windows.h>
 typedef HANDLE SoundTouchHandle;
 #include <SoundTouchDLL.h>
-#else
+#elif defined(Q_OS_LINUX)
 #include <SoundTouch.h>
-#include <soundtouch_config.h>
+typedef void* SoundTouchHandle;
+#else
 typedef void* SoundTouchHandle;
 #endif
 
@@ -49,6 +51,7 @@ private:
     void putSamples(SoundTouchHandle handle, const float* samples, uint numSamples);
     uint receiveSamples(SoundTouchHandle handle, float* samples, uint maxSamples);
     void flush(SoundTouchHandle handle);
+    void clear(SoundTouchHandle handle);
 
     // SoundTouch handles for different effects
     SoundTouchHandle robotProcessor;

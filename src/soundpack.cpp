@@ -479,7 +479,7 @@ void MainWindow::on_slot1_clicked()
     }
 
 
-    if (filename1.isEmpty()) {
+    if (filename1.isEmpty() || !QFile::exists(filename1)) {
         filename1 = QFileDialog::getOpenFileName(this, tr("Open WAV File"), "", tr("Audio Files (*.wav)"));
         if (filename1.isEmpty()) {
             qWarning() << "No file selected.";
@@ -487,7 +487,7 @@ void MainWindow::on_slot1_clicked()
         }
     }
 
-    if (pic1.isEmpty()) {
+    if (pic1.isEmpty() || !QFile::exists(pic1)) {
         pic1 = QFileDialog::getOpenFileName(this, tr("Open image"), "", tr("Images (*.jpg *.png *.jpeg)"));
         if (pic1.isEmpty()) {
             qWarning() << "No file selected.";
@@ -506,7 +506,7 @@ void MainWindow::on_slot2_clicked()
         audioPipeline->clearSoundpackBuffer();
     }
 
-    if (filename2.isEmpty()) {
+    if (filename2.isEmpty() || !QFile::exists(filename2)) {
         filename2 = QFileDialog::getOpenFileName(this, tr("Open WAV File"), "", tr("Audio Files (*.wav)"));
         if (filename2.isEmpty()) {
             qWarning() << "No file selected.";
@@ -514,7 +514,7 @@ void MainWindow::on_slot2_clicked()
         }
     }
 
-    if (pic2.isEmpty()) {
+    if (pic2.isEmpty() || !QFile::exists(pic2)) {
         pic2 = QFileDialog::getOpenFileName(this, tr("Open image"), "", tr("Images (*.jpg *.png *.jpeg)"));
         if (pic2.isEmpty()) {
             qWarning() << "No file selected.";
@@ -533,7 +533,7 @@ void MainWindow::on_slot3_clicked()
         audioPipeline->clearSoundpackBuffer();
     }
 
-    if (filename3.isEmpty()) {
+    if (filename3.isEmpty() || !QFile::exists(filename3)) {
         filename3 = QFileDialog::getOpenFileName(this, tr("Open WAV File"), "", tr("Audio Files (*.wav)"));
         if (filename3.isEmpty()) {
             qWarning() << "No file selected.";
@@ -541,7 +541,7 @@ void MainWindow::on_slot3_clicked()
         }
     }
 
-    if (pic3.isEmpty()) {
+    if (pic3.isEmpty() || !QFile::exists(pic3)) {
         pic3 = QFileDialog::getOpenFileName(this, tr("Open image"), "", tr("Images (*.jpg *.png *.jpeg)"));
         if (pic3.isEmpty()) {
             qWarning() << "No file selected.";
@@ -560,7 +560,7 @@ void MainWindow::on_slot4_clicked()
         audioPipeline->clearSoundpackBuffer();
     }
 
-    if (filename4.isEmpty()) {
+    if (filename4.isEmpty() || !QFile::exists(filename4)) {
         filename4 = QFileDialog::getOpenFileName(this, tr("Open WAV File"), "", tr("Audio Files (*.wav)"));
         if (filename4.isEmpty()) {
             qWarning() << "No file selected.";
@@ -568,7 +568,7 @@ void MainWindow::on_slot4_clicked()
         }
     }
 
-    if (pic4.isEmpty()) {
+    if (pic4.isEmpty() || !QFile::exists(pic4)) {
         pic4 = QFileDialog::getOpenFileName(this, tr("Open image"), "", tr("Images (*.jpg *.png *.jpeg)"));
         if (pic4.isEmpty()) {
             qWarning() << "No file selected.";
@@ -587,7 +587,7 @@ void MainWindow::on_slot5_clicked()
         audioPipeline->clearSoundpackBuffer();
     }
 
-    if (filename5.isEmpty()) {
+    if (filename5.isEmpty() || !QFile::exists(filename5)) {
         filename5 = QFileDialog::getOpenFileName(this, tr("Open WAV File"), "", tr("Audio Files (*.wav)"));
         if (filename5.isEmpty()) {
             qWarning() << "No file selected.";
@@ -595,7 +595,7 @@ void MainWindow::on_slot5_clicked()
         }
     }
 
-    if (pic5.isEmpty()) {
+    if (pic5.isEmpty() || !QFile::exists(pic5)) {
         pic5= QFileDialog::getOpenFileName(this, tr("Open image"), "", tr("Images (*.jpg *.png *.jpeg)"));
         if (pic5.isEmpty()) {
             qWarning() << "No file selected.";
@@ -615,7 +615,7 @@ void MainWindow::on_slot6_clicked()
         audioPipeline->clearSoundpackBuffer();
     }
 
-    if (filename6.isEmpty()) {
+    if (filename6.isEmpty() || !QFile::exists(filename6)) {
         filename6= QFileDialog::getOpenFileName(this, tr("Open WAV File"), "", tr("Audio Files (*.wav)"));
         if (filename6.isEmpty()) {
             qWarning() << "No file selected.";
@@ -623,7 +623,7 @@ void MainWindow::on_slot6_clicked()
         }
     }
 
-    if (pic6.isEmpty()) {
+    if (pic6.isEmpty() || !QFile::exists(pic6)) {
         pic6 = QFileDialog::getOpenFileName(this, tr("Open image"), "", tr("Images (*.jpg *.png *.jpeg)"));
         if (pic6.isEmpty()) {
             qWarning() << "No file selected.";
@@ -643,7 +643,7 @@ void MainWindow::on_slot7_clicked()
         audioPipeline->clearSoundpackBuffer();
     }
 
-    if (filename7.isEmpty()) {
+    if (filename7.isEmpty() || !QFile::exists(filename7)) {
         filename7 = QFileDialog::getOpenFileName(this, tr("Open WAV File"), "", tr("Audio Files (*.wav)"));
         if (filename7.isEmpty()) {
             qWarning() << "No file selected.";
@@ -651,7 +651,7 @@ void MainWindow::on_slot7_clicked()
         }
     }
 
-    if (pic7.isEmpty()) {
+    if (pic7.isEmpty() || !QFile::exists(pic7)) {
         pic7 = QFileDialog::getOpenFileName(this, tr("Open image"), "", tr("Images (*.jpg *.png *.jpeg)"));
         if (pic7.isEmpty()) {
             qWarning() << "No file selected.";
@@ -670,7 +670,7 @@ void MainWindow::on_slot8_clicked()
         audioPipeline->clearSoundpackBuffer();
     }
 
-    if (filename8.isEmpty()) {
+    if (filename8.isEmpty() || !QFile::exists(filename8)) {
         filename8 = QFileDialog::getOpenFileName(this, tr("Open WAV File"), "", tr("Audio Files (*.wav)"));
         if (filename8.isEmpty()) {
             qWarning() << "No file selected.";
@@ -678,7 +678,7 @@ void MainWindow::on_slot8_clicked()
         }
     }
 
-    if (pic8.isEmpty()) {
+    if (pic8.isEmpty() || !QFile::exists(pic8)) {
         pic8 = QFileDialog::getOpenFileName(this, tr("Open image"), "", tr("Images (*.jpg *.png *.jpeg)"));
         if (pic8.isEmpty()) {
             qWarning() << "No file selected.";
@@ -698,7 +698,7 @@ void MainWindow::on_slot9_clicked()
         audioPipeline->clearSoundpackBuffer();
     }
 
-    if (filename9.isEmpty()) {
+    if (filename9.isEmpty() || !QFile::exists(filename9)) {
         filename9 = QFileDialog::getOpenFileName(this, tr("Open WAV File"), "", tr("Audio Files (*.wav)"));
         if (filename9.isEmpty()) {
             qWarning() << "No file selected.";
@@ -706,7 +706,7 @@ void MainWindow::on_slot9_clicked()
         }
     }
 
-    if (pic9.isEmpty()) {
+    if (pic9.isEmpty() || !QFile::exists(pic9)) {
         pic9 = QFileDialog::getOpenFileName(this, tr("Open image"), "", tr("Images (*.jpg *.png *.jpeg)"));
         if (pic9.isEmpty()) {
             qWarning() << "No file selected.";
@@ -725,7 +725,7 @@ void MainWindow::on_slot10_clicked()
         audioPipeline->clearSoundpackBuffer();
     }
 
-    if (filename10.isEmpty()) {
+    if (filename10.isEmpty() || !QFile::exists(filename10)) {
         filename10 = QFileDialog::getOpenFileName(this, tr("Open WAV File"), "", tr("Audio Files (*.wav)"));
         if (filename10.isEmpty()) {
             qWarning() << "No file selected.";
@@ -733,7 +733,7 @@ void MainWindow::on_slot10_clicked()
         }
     }
 
-    if (pic10.isEmpty()) {
+    if (pic10.isEmpty() || !QFile::exists(pic10)) {
         pic10 = QFileDialog::getOpenFileName(this, tr("Open image"), "", tr("Images (*.jpg *.png *.jpeg)"));
         if (pic10.isEmpty()) {
             qWarning() << "No file selected.";

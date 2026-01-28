@@ -84,7 +84,7 @@ win32 {
     DEPENDPATH += $$PWD/../../ffmpeg-master-latest-win64-lgpl-shared/include
 }
 unix:!macx {
-    LIBS += -lavcodec -lavformat -lavutil -lswresample
+LIBS += -lavcodec -lavformat -lavutil -lswresample -lX11
     INCLUDEPATH += /usr/include/ffmpeg
     DEPENDPATH += /usr/include/ffmpeg
 }
@@ -100,7 +100,7 @@ win32 {
     RC_ICONS = D:\qt\voiceChanger\img\icon.ico
 }
 unix:!macx {
-    # Linux icon will be handled by .desktop file
+    #ICON = \home\akif\Desktop\voiceChangerUpdated\Voice-Changer\src\img\icon.png
 }
 macx {
     ICON = img/icon.icns
@@ -123,7 +123,7 @@ win32 {
     DEPENDPATH += $$PWD/../../soundtouch_dll-2.3.3
 }
 unix:!macx {
-    LIBS += -lsoundtouch
+    LIBS += -lSoundTouch -lX11
     INCLUDEPATH += /usr/include/soundtouch
     DEPENDPATH += /usr/include/soundtouch
 }

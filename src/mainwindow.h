@@ -38,9 +38,7 @@
 #include <windows.h>
 #endif
 #ifdef Q_OS_LINUX
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
-#include <X11/keysym.h>
+struct _XDisplay;
 #endif
 #ifdef Q_OS_MACOS
 #include <Carbon/Carbon.h>
@@ -78,14 +76,14 @@ signals:
 
 private slots:
     // All the original slots...
-    void on_outputslider_valueChanged(int value);
-    void on_inputslider_valueChanged(int value);
+    void on_outputSlider_valueChanged(int value);
+    void on_inputSlider_valueChanged(int value);
     void on_refreshInputDevice_clicked();
     void on_refreshOutputDevice_clicked();
     void on_inputDeviceCombobox_currentIndexChanged(int index);
     void on_OutputDEviceCombobox_currentIndexChanged(int index);
     void on_virtualInputcombobox_currentIndexChanged(int index);
-    void on_VirtualSlider_valueChanged(int value);
+    void on_virtualSlider_valueChanged(int value);
     void on_VirtualDriverButton_clicked();
     void processToChildVoice(QByteArray &data);
     void processToRobotVoice(QByteArray &data);
@@ -278,13 +276,15 @@ private:
     
     // Cross-platform global hotkey data
 #ifdef Q_OS_LINUX
-    Display* m_x11Display = nullptr;
-    Window m_rootWindow;
+    _XDisplay* m_x11Display = nullptr;
+    unsigned long m_rootWindow;
 #endif
 #ifdef Q_OS_MACOS
-    QMap<QString, EventHotKeyRef> m_macHotkeyRefs;
-    EventHandlerRef m_macEventHandler = nullptr;
+QMap<QString, EventHotKeyRef> m_macHotkeyRefs;
+EventHandlerRef m_macEventHandler = nullptr;
 #endif
+
+
 
     // Original sound file variables
     QString filename1 = QCoreApplication::applicationDirPath() + ("/soundpack/YARRA.wav");
@@ -293,7 +293,7 @@ private:
     QString pic2 = ":/img/img/yArra-Earrape.jpg";
     QString filename3 = QCoreApplication::applicationDirPath() + ("/soundpack/Chinese-Rap-meme.wav");
     QString pic3 = ":/img/img/chineseRap.jpeg" ;
-    QString filename4 = QCoreApplication::applicationDirPath() + ("/soundpack/Danger alarm meme sound effect.wav");
+    QString filename4 = QCoreApplication::applicationDirPath() + ("/soundpack/Danger-alarm-meme-sound-effect.wav");
     QString pic4 = ":/img/img/ohacet.jpg";
     QString filename5 = QCoreApplication::applicationDirPath() + ("/soundpack/sarhos-talisca.wav");
     QString pic5 = ":/img/img/talisca.jpeg";

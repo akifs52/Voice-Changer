@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created by: Qt User Interface Compiler version 6.8.1
+** Created by: Qt User Interface Compiler version 6.10.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -284,6 +284,9 @@ public:
         if (VoiceChangerMainWindow->objectName().isEmpty())
             VoiceChangerMainWindow->setObjectName("VoiceChangerMainWindow");
         VoiceChangerMainWindow->resize(1080, 804);
+        QIcon icon;
+        icon.addFile(QString::fromUtf8(":/img/img/icon.png"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
+        VoiceChangerMainWindow->setWindowIcon(icon);
         VoiceChangerMainWindow->setStyleSheet(QString::fromUtf8("QMainWindow {\n"
 "    background: qlineargradient(\n"
 "        x1:0, y1:0,\n"
@@ -575,9 +578,9 @@ public:
         miniSidebarToggleBtn->setObjectName("miniSidebarToggleBtn");
         miniSidebarToggleBtn->setMinimumSize(QSize(30, 30));
         miniSidebarToggleBtn->setMaximumSize(QSize(30, 30));
-        QIcon icon;
-        icon.addFile(QString::fromUtf8(":/app/img/app/menu.png"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
-        miniSidebarToggleBtn->setIcon(icon);
+        QIcon icon1;
+        icon1.addFile(QString::fromUtf8(":/app/img/app/menu.png"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
+        miniSidebarToggleBtn->setIcon(icon1);
 
         miniSidebarLayout->addWidget(miniSidebarToggleBtn);
 
@@ -603,7 +606,7 @@ public:
         presetsSidebarHideButton->setObjectName("presetsSidebarHideButton");
         presetsSidebarHideButton->setMinimumSize(QSize(30, 30));
         presetsSidebarHideButton->setMaximumSize(QSize(30, 30));
-        presetsSidebarHideButton->setIcon(icon);
+        presetsSidebarHideButton->setIcon(icon1);
 
         horizontalLayout_5->addWidget(presetsSidebarHideButton);
 
@@ -837,9 +840,9 @@ public:
         slot4->setObjectName("slot4");
         slot4->setMinimumSize(QSize(110, 110));
         slot4->setMaximumSize(QSize(16777215, 16777215));
-        QIcon icon1;
-        icon1.addFile(QString::fromUtf8(":/img/img/ohacet.jpg"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
-        slot4->setIcon(icon1);
+        QIcon icon2;
+        icon2.addFile(QString::fromUtf8(":/img/img/ohacet.jpg"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
+        slot4->setIcon(icon2);
         slot4->setIconSize(QSize(96, 96));
         slot4->setProperty("scaledContents", QVariant(true));
 
@@ -859,9 +862,9 @@ public:
         slot4Delete->setObjectName("slot4Delete");
         slot4Delete->setMinimumSize(QSize(25, 25));
         slot4Delete->setMaximumSize(QSize(25, 25));
-        QIcon icon2;
-        icon2.addFile(QString::fromUtf8(":/app/img/app/bin (1).png"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
-        slot4Delete->setIcon(icon2);
+        QIcon icon3;
+        icon3.addFile(QString::fromUtf8(":/app/img/app/bin (1).png"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
+        slot4Delete->setIcon(icon3);
 
         slot4Controls->addWidget(slot4Delete);
 
@@ -881,9 +884,9 @@ public:
         slot5->setObjectName("slot5");
         slot5->setMinimumSize(QSize(110, 110));
         slot5->setMaximumSize(QSize(16777215, 16777215));
-        QIcon icon3;
-        icon3.addFile(QString::fromUtf8(":/img/img/talisca.jpeg"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
-        slot5->setIcon(icon3);
+        QIcon icon4;
+        icon4.addFile(QString::fromUtf8(":/img/img/talisca.jpeg"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
+        slot5->setIcon(icon4);
         slot5->setIconSize(QSize(96, 96));
         slot5->setProperty("scaledContents", QVariant(true));
 
@@ -903,7 +906,7 @@ public:
         slot5Delete->setObjectName("slot5Delete");
         slot5Delete->setMinimumSize(QSize(25, 25));
         slot5Delete->setMaximumSize(QSize(25, 25));
-        slot5Delete->setIcon(icon2);
+        slot5Delete->setIcon(icon3);
 
         slot5Controls->addWidget(slot5Delete);
 
@@ -923,9 +926,9 @@ public:
         slot14->setObjectName("slot14");
         slot14->setMinimumSize(QSize(110, 110));
         slot14->setMaximumSize(QSize(16777215, 16777215));
-        QIcon icon4;
-        icon4.addFile(QString::fromUtf8(":/app/img/app/add.png"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
-        slot14->setIcon(icon4);
+        QIcon icon5;
+        icon5.addFile(QString::fromUtf8(":/app/img/app/add.png"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
+        slot14->setIcon(icon5);
         slot14->setIconSize(QSize(96, 96));
         slot14->setProperty("scaledContents", QVariant(true));
 
@@ -945,7 +948,7 @@ public:
         slot14Delete->setObjectName("slot14Delete");
         slot14Delete->setMinimumSize(QSize(25, 25));
         slot14Delete->setMaximumSize(QSize(25, 25));
-        slot14Delete->setIcon(icon2);
+        slot14Delete->setIcon(icon3);
 
         slot14Controls->addWidget(slot14Delete);
 
@@ -965,7 +968,7 @@ public:
         slot12->setObjectName("slot12");
         slot12->setMinimumSize(QSize(110, 110));
         slot12->setMaximumSize(QSize(16777215, 16777215));
-        slot12->setIcon(icon4);
+        slot12->setIcon(icon5);
         slot12->setIconSize(QSize(96, 96));
         slot12->setProperty("scaledContents", QVariant(true));
 
@@ -985,7 +988,7 @@ public:
         slot12Delete->setObjectName("slot12Delete");
         slot12Delete->setMinimumSize(QSize(25, 25));
         slot12Delete->setMaximumSize(QSize(25, 25));
-        slot12Delete->setIcon(icon2);
+        slot12Delete->setIcon(icon3);
 
         slot12Controls->addWidget(slot12Delete);
 
@@ -1005,7 +1008,7 @@ public:
         slot19->setObjectName("slot19");
         slot19->setMinimumSize(QSize(110, 110));
         slot19->setMaximumSize(QSize(16777215, 16777215));
-        slot19->setIcon(icon4);
+        slot19->setIcon(icon5);
         slot19->setIconSize(QSize(96, 96));
         slot19->setProperty("scaledContents", QVariant(true));
 
@@ -1025,7 +1028,7 @@ public:
         slot19Delete->setObjectName("slot19Delete");
         slot19Delete->setMinimumSize(QSize(25, 25));
         slot19Delete->setMaximumSize(QSize(25, 25));
-        slot19Delete->setIcon(icon2);
+        slot19Delete->setIcon(icon3);
 
         slot19Controls->addWidget(slot19Delete);
 
@@ -1045,7 +1048,7 @@ public:
         slot11->setObjectName("slot11");
         slot11->setMinimumSize(QSize(110, 110));
         slot11->setMaximumSize(QSize(16777215, 16777215));
-        slot11->setIcon(icon4);
+        slot11->setIcon(icon5);
         slot11->setIconSize(QSize(96, 96));
         slot11->setProperty("scaledContents", QVariant(true));
 
@@ -1065,7 +1068,7 @@ public:
         slot11Delete->setObjectName("slot11Delete");
         slot11Delete->setMinimumSize(QSize(25, 25));
         slot11Delete->setMaximumSize(QSize(25, 25));
-        slot11Delete->setIcon(icon2);
+        slot11Delete->setIcon(icon3);
 
         slot11Controls->addWidget(slot11Delete);
 
@@ -1085,7 +1088,7 @@ public:
         slot13->setObjectName("slot13");
         slot13->setMinimumSize(QSize(110, 110));
         slot13->setMaximumSize(QSize(16777215, 16777215));
-        slot13->setIcon(icon4);
+        slot13->setIcon(icon5);
         slot13->setIconSize(QSize(96, 96));
         slot13->setProperty("scaledContents", QVariant(true));
 
@@ -1105,7 +1108,7 @@ public:
         slot13Delete->setObjectName("slot13Delete");
         slot13Delete->setMinimumSize(QSize(25, 25));
         slot13Delete->setMaximumSize(QSize(25, 25));
-        slot13Delete->setIcon(icon2);
+        slot13Delete->setIcon(icon3);
 
         slot13Controls->addWidget(slot13Delete);
 
@@ -1125,9 +1128,9 @@ public:
         slot8->setObjectName("slot8");
         slot8->setMinimumSize(QSize(110, 110));
         slot8->setMaximumSize(QSize(16777215, 16777215));
-        QIcon icon5;
-        icon5.addFile(QString::fromUtf8(":/img/img/osuruk1.jpg"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
-        slot8->setIcon(icon5);
+        QIcon icon6;
+        icon6.addFile(QString::fromUtf8(":/img/img/osuruk1.jpg"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
+        slot8->setIcon(icon6);
         slot8->setIconSize(QSize(96, 96));
         slot8->setProperty("scaledContents", QVariant(true));
 
@@ -1147,7 +1150,7 @@ public:
         slot8Delete->setObjectName("slot8Delete");
         slot8Delete->setMinimumSize(QSize(25, 25));
         slot8Delete->setMaximumSize(QSize(25, 25));
-        slot8Delete->setIcon(icon2);
+        slot8Delete->setIcon(icon3);
 
         slot8Controls->addWidget(slot8Delete);
 
@@ -1167,7 +1170,7 @@ public:
         slot15->setObjectName("slot15");
         slot15->setMinimumSize(QSize(110, 110));
         slot15->setMaximumSize(QSize(16777215, 16777215));
-        slot15->setIcon(icon4);
+        slot15->setIcon(icon5);
         slot15->setIconSize(QSize(96, 96));
         slot15->setProperty("scaledContents", QVariant(true));
 
@@ -1187,7 +1190,7 @@ public:
         slot15Delete->setObjectName("slot15Delete");
         slot15Delete->setMinimumSize(QSize(25, 25));
         slot15Delete->setMaximumSize(QSize(25, 25));
-        slot15Delete->setIcon(icon2);
+        slot15Delete->setIcon(icon3);
 
         slot15Controls->addWidget(slot15Delete);
 
@@ -1207,9 +1210,9 @@ public:
         slot10->setObjectName("slot10");
         slot10->setMinimumSize(QSize(110, 110));
         slot10->setMaximumSize(QSize(16777215, 16777215));
-        QIcon icon6;
-        icon6.addFile(QString::fromUtf8(":/img/img/osuru2.jpg"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
-        slot10->setIcon(icon6);
+        QIcon icon7;
+        icon7.addFile(QString::fromUtf8(":/img/img/osuru2.jpg"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
+        slot10->setIcon(icon7);
         slot10->setIconSize(QSize(96, 96));
         slot10->setProperty("scaledContents", QVariant(true));
 
@@ -1229,7 +1232,7 @@ public:
         slot10Delete->setObjectName("slot10Delete");
         slot10Delete->setMinimumSize(QSize(25, 25));
         slot10Delete->setMaximumSize(QSize(25, 25));
-        slot10Delete->setIcon(icon2);
+        slot10Delete->setIcon(icon3);
 
         slot10Controls->addWidget(slot10Delete);
 
@@ -1249,7 +1252,7 @@ public:
         slot16->setObjectName("slot16");
         slot16->setMinimumSize(QSize(110, 110));
         slot16->setMaximumSize(QSize(16777215, 16777215));
-        slot16->setIcon(icon4);
+        slot16->setIcon(icon5);
         slot16->setIconSize(QSize(96, 96));
         slot16->setProperty("scaledContents", QVariant(true));
 
@@ -1269,7 +1272,7 @@ public:
         slot16Delete->setObjectName("slot16Delete");
         slot16Delete->setMinimumSize(QSize(25, 25));
         slot16Delete->setMaximumSize(QSize(25, 25));
-        slot16Delete->setIcon(icon2);
+        slot16Delete->setIcon(icon3);
 
         slot16Controls->addWidget(slot16Delete);
 
@@ -1289,9 +1292,9 @@ public:
         slot1->setObjectName("slot1");
         slot1->setMinimumSize(QSize(110, 110));
         slot1->setMaximumSize(QSize(16777215, 16777215));
-        QIcon icon7;
-        icon7.addFile(QString::fromUtf8(":/img/img/yArra.jpg"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
-        slot1->setIcon(icon7);
+        QIcon icon8;
+        icon8.addFile(QString::fromUtf8(":/img/img/yArra.jpg"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
+        slot1->setIcon(icon8);
         slot1->setIconSize(QSize(90, 90));
         slot1->setProperty("scaledContents", QVariant(true));
 
@@ -1311,7 +1314,7 @@ public:
         slot1Delete->setObjectName("slot1Delete");
         slot1Delete->setMinimumSize(QSize(25, 25));
         slot1Delete->setMaximumSize(QSize(25, 25));
-        slot1Delete->setIcon(icon2);
+        slot1Delete->setIcon(icon3);
 
         slot1Controls->addWidget(slot1Delete);
 
@@ -1331,7 +1334,7 @@ public:
         slot17->setObjectName("slot17");
         slot17->setMinimumSize(QSize(110, 110));
         slot17->setMaximumSize(QSize(16777215, 16777215));
-        slot17->setIcon(icon4);
+        slot17->setIcon(icon5);
         slot17->setIconSize(QSize(96, 96));
         slot17->setProperty("scaledContents", QVariant(true));
 
@@ -1351,7 +1354,7 @@ public:
         slot17Delete->setObjectName("slot17Delete");
         slot17Delete->setMinimumSize(QSize(25, 25));
         slot17Delete->setMaximumSize(QSize(25, 25));
-        slot17Delete->setIcon(icon2);
+        slot17Delete->setIcon(icon3);
 
         slot17Controls->addWidget(slot17Delete);
 
@@ -1371,9 +1374,9 @@ public:
         slot9->setObjectName("slot9");
         slot9->setMinimumSize(QSize(110, 110));
         slot9->setMaximumSize(QSize(16777215, 16777215));
-        QIcon icon8;
-        icon8.addFile(QString::fromUtf8(":/img/img/osuruk.jpg"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
-        slot9->setIcon(icon8);
+        QIcon icon9;
+        icon9.addFile(QString::fromUtf8(":/img/img/osuruk.jpg"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
+        slot9->setIcon(icon9);
         slot9->setIconSize(QSize(96, 96));
         slot9->setProperty("scaledContents", QVariant(true));
 
@@ -1393,7 +1396,7 @@ public:
         slot9Delete->setObjectName("slot9Delete");
         slot9Delete->setMinimumSize(QSize(25, 25));
         slot9Delete->setMaximumSize(QSize(25, 25));
-        slot9Delete->setIcon(icon2);
+        slot9Delete->setIcon(icon3);
 
         slot9Controls->addWidget(slot9Delete);
 
@@ -1413,9 +1416,9 @@ public:
         slot3->setObjectName("slot3");
         slot3->setMinimumSize(QSize(110, 110));
         slot3->setMaximumSize(QSize(16777215, 16777215));
-        QIcon icon9;
-        icon9.addFile(QString::fromUtf8(":/img/img/chineseRap.jpeg"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
-        slot3->setIcon(icon9);
+        QIcon icon10;
+        icon10.addFile(QString::fromUtf8(":/img/img/chineseRap.jpeg"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
+        slot3->setIcon(icon10);
         slot3->setIconSize(QSize(96, 96));
         slot3->setProperty("scaledContents", QVariant(true));
 
@@ -1435,7 +1438,7 @@ public:
         slot3Delete->setObjectName("slot3Delete");
         slot3Delete->setMinimumSize(QSize(25, 25));
         slot3Delete->setMaximumSize(QSize(25, 25));
-        slot3Delete->setIcon(icon2);
+        slot3Delete->setIcon(icon3);
 
         slot3Controls->addWidget(slot3Delete);
 
@@ -1455,7 +1458,7 @@ public:
         slot18->setObjectName("slot18");
         slot18->setMinimumSize(QSize(110, 110));
         slot18->setMaximumSize(QSize(16777215, 16777215));
-        slot18->setIcon(icon4);
+        slot18->setIcon(icon5);
         slot18->setIconSize(QSize(96, 96));
         slot18->setProperty("scaledContents", QVariant(true));
 
@@ -1475,7 +1478,7 @@ public:
         slot18Delete->setObjectName("slot18Delete");
         slot18Delete->setMinimumSize(QSize(25, 25));
         slot18Delete->setMaximumSize(QSize(25, 25));
-        slot18Delete->setIcon(icon2);
+        slot18Delete->setIcon(icon3);
 
         slot18Controls->addWidget(slot18Delete);
 
@@ -1495,7 +1498,7 @@ public:
         slot20->setObjectName("slot20");
         slot20->setMinimumSize(QSize(110, 110));
         slot20->setMaximumSize(QSize(16777215, 16777215));
-        slot20->setIcon(icon4);
+        slot20->setIcon(icon5);
         slot20->setIconSize(QSize(96, 96));
         slot20->setProperty("scaledContents", QVariant(true));
 
@@ -1515,7 +1518,7 @@ public:
         slot20Delete->setObjectName("slot20Delete");
         slot20Delete->setMinimumSize(QSize(25, 25));
         slot20Delete->setMaximumSize(QSize(25, 25));
-        slot20Delete->setIcon(icon2);
+        slot20Delete->setIcon(icon3);
 
         slot20Controls->addWidget(slot20Delete);
 
@@ -1535,9 +1538,9 @@ public:
         slot7->setObjectName("slot7");
         slot7->setMinimumSize(QSize(110, 110));
         slot7->setMaximumSize(QSize(16777215, 16777215));
-        QIcon icon10;
-        icon10.addFile(QString::fromUtf8(":/img/img/sus.jpg"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
-        slot7->setIcon(icon10);
+        QIcon icon11;
+        icon11.addFile(QString::fromUtf8(":/img/img/sus.jpg"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
+        slot7->setIcon(icon11);
         slot7->setIconSize(QSize(96, 96));
         slot7->setProperty("scaledContents", QVariant(true));
 
@@ -1557,7 +1560,7 @@ public:
         slot7Delete->setObjectName("slot7Delete");
         slot7Delete->setMinimumSize(QSize(25, 25));
         slot7Delete->setMaximumSize(QSize(25, 25));
-        slot7Delete->setIcon(icon2);
+        slot7Delete->setIcon(icon3);
 
         slot7Controls->addWidget(slot7Delete);
 
@@ -1576,9 +1579,9 @@ public:
         slot2->setObjectName("slot2");
         slot2->setMinimumSize(QSize(110, 110));
         slot2->setMaximumSize(QSize(16777215, 16777215));
-        QIcon icon11;
-        icon11.addFile(QString::fromUtf8(":/img/img/yArra-Earrape.jpg"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
-        slot2->setIcon(icon11);
+        QIcon icon12;
+        icon12.addFile(QString::fromUtf8(":/img/img/yArra-Earrape.jpg"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
+        slot2->setIcon(icon12);
         slot2->setIconSize(QSize(90, 90));
         slot2->setProperty("scaledContents", QVariant(true));
 
@@ -1598,7 +1601,7 @@ public:
         slot2Delete->setObjectName("slot2Delete");
         slot2Delete->setMinimumSize(QSize(25, 25));
         slot2Delete->setMaximumSize(QSize(25, 25));
-        slot2Delete->setIcon(icon2);
+        slot2Delete->setIcon(icon3);
 
         slot2Controls->addWidget(slot2Delete);
 
@@ -1618,9 +1621,9 @@ public:
         slot6->setObjectName("slot6");
         slot6->setMinimumSize(QSize(110, 110));
         slot6->setMaximumSize(QSize(16777215, 16777215));
-        QIcon icon12;
-        icon12.addFile(QString::fromUtf8(":/img/img/trollface.jpg"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
-        slot6->setIcon(icon12);
+        QIcon icon13;
+        icon13.addFile(QString::fromUtf8(":/img/img/trollface.jpg"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
+        slot6->setIcon(icon13);
         slot6->setIconSize(QSize(96, 96));
         slot6->setProperty("scaledContents", QVariant(true));
 
@@ -1640,7 +1643,7 @@ public:
         slot6Delete->setObjectName("slot6Delete");
         slot6Delete->setMinimumSize(QSize(25, 25));
         slot6Delete->setMaximumSize(QSize(25, 25));
-        slot6Delete->setIcon(icon2);
+        slot6Delete->setIcon(icon3);
 
         slot6Controls->addWidget(slot6Delete);
 
@@ -1683,7 +1686,7 @@ public:
         toggleEffectsSidebar->setObjectName("toggleEffectsSidebar");
         toggleEffectsSidebar->setMinimumSize(QSize(30, 30));
         toggleEffectsSidebar->setMaximumSize(QSize(30, 30));
-        toggleEffectsSidebar->setIcon(icon);
+        toggleEffectsSidebar->setIcon(icon1);
 
         effectsTitleLayout->addWidget(toggleEffectsSidebar);
 
@@ -1705,9 +1708,9 @@ public:
         refreshInputDevice = new QPushButton(groupBox);
         refreshInputDevice->setObjectName("refreshInputDevice");
         refreshInputDevice->setMaximumSize(QSize(30, 30));
-        QIcon icon13;
-        icon13.addFile(QString::fromUtf8(":/app/img/app/refresh.png"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
-        refreshInputDevice->setIcon(icon13);
+        QIcon icon14;
+        icon14.addFile(QString::fromUtf8(":/app/img/app/refresh.png"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
+        refreshInputDevice->setIcon(icon14);
 
         horizontalLayout_2->addWidget(refreshInputDevice);
 
@@ -1741,7 +1744,7 @@ public:
         refreshOutputDevice = new QPushButton(groupBox_2);
         refreshOutputDevice->setObjectName("refreshOutputDevice");
         refreshOutputDevice->setMaximumSize(QSize(30, 30));
-        refreshOutputDevice->setIcon(icon13);
+        refreshOutputDevice->setIcon(icon14);
 
         horizontalLayout_3->addWidget(refreshOutputDevice);
 
@@ -1760,9 +1763,9 @@ public:
         testButton = new QPushButton(groupBox_2);
         testButton->setObjectName("testButton");
         testButton->setMaximumSize(QSize(30, 30));
-        QIcon icon14;
-        icon14.addFile(QString::fromUtf8(":/app/img/app/microphone.png"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
-        testButton->setIcon(icon14);
+        QIcon icon15;
+        icon15.addFile(QString::fromUtf8(":/app/img/app/microphone.png"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
+        testButton->setIcon(icon15);
         testButton->setCheckable(true);
 
         horizontalLayout_51->addWidget(testButton);
@@ -1849,7 +1852,7 @@ public:
         settingsHideButton->setObjectName("settingsHideButton");
         settingsHideButton->setMinimumSize(QSize(30, 30));
         settingsHideButton->setMaximumSize(QSize(30, 30));
-        settingsHideButton->setIcon(icon);
+        settingsHideButton->setIcon(icon1);
 
         horizontalLayout_9->addWidget(settingsHideButton);
 
@@ -2081,6 +2084,14 @@ public:
         VoiceChangerMainWindow->setCentralWidget(centralwidget);
 
         retranslateUi(VoiceChangerMainWindow);
+        QObject::connect(miniSidebarToggleBtn, SIGNAL(clicked()), VoiceChangerMainWindow, SLOT(on_miniSidebarToggleBtn_clicked()));
+        QObject::connect(miniSidebarToggleBtn, SIGNAL(clicked()), VoiceChangerMainWindow, SLOT(on_miniSidebarToggleBtn_clicked()));
+        QObject::connect(presetsSidebarHideButton, SIGNAL(clicked()), VoiceChangerMainWindow, SLOT(on_presetsSidebarHideButton_clicked()));
+        QObject::connect(presetsSidebarHideButton, SIGNAL(clicked()), VoiceChangerMainWindow, SLOT(on_presetsSidebarHideButton_clicked()));
+        QObject::connect(toggleEffectsSidebar, SIGNAL(clicked()), VoiceChangerMainWindow, SLOT(on_toggleEffectsSidebar_clicked()));
+        QObject::connect(toggleEffectsSidebar, SIGNAL(clicked()), VoiceChangerMainWindow, SLOT(on_toggleEffectsSidebar_clicked()));
+        QObject::connect(settingsHideButton, SIGNAL(clicked()), VoiceChangerMainWindow, SLOT(on_settingsHideButton_clicked()));
+        QObject::connect(settingsHideButton, SIGNAL(clicked()), VoiceChangerMainWindow, SLOT(on_settingsHideButton_clicked()));
 
         QMetaObject::connectSlotsByName(VoiceChangerMainWindow);
     } // setupUi
@@ -2724,6 +2735,7 @@ public:
 "    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #101020, stop:0.5 #0a0a1a, stop:1 #000000);\n"
 "    border-color: #1a1a2a;\n"
 "}", nullptr));
+        slot14->setText(QString());
         slot14Hotkey->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QComboBox {\n"
 "    background: #2f2f2f;\n"
 "    border-radius: 8px;\n"
@@ -2806,6 +2818,7 @@ public:
 "    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #101020, stop:0.5 #0a0a1a, stop:1 #000000);\n"
 "    border-color: #1a1a2a;\n"
 "}", nullptr));
+        slot12->setText(QString());
         slot12Hotkey->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QComboBox {\n"
 "    background: #2f2f2f;\n"
 "    border-radius: 8px;\n"
@@ -2888,6 +2901,7 @@ public:
 "    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #101020, stop:0.5 #0a0a1a, stop:1 #000000);\n"
 "    border-color: #1a1a2a;\n"
 "}", nullptr));
+        slot19->setText(QString());
         slot19Hotkey->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QComboBox {\n"
 "    background: #2f2f2f;\n"
 "    border-radius: 8px;\n"
@@ -2969,6 +2983,7 @@ public:
 "    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #101020, stop:0.5 #0a0a1a, stop:1 #000000);\n"
 "    border-color: #1a1a2a;\n"
 "}", nullptr));
+        slot11->setText(QString());
         slot11Hotkey->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QComboBox {\n"
 "    background: #2f2f2f;\n"
 "    border-radius: 8px;\n"
@@ -3051,6 +3066,7 @@ public:
 "    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #101020, stop:0.5 #0a0a1a, stop:1 #000000);\n"
 "    border-color: #1a1a2a;\n"
 "}", nullptr));
+        slot13->setText(QString());
         slot13Hotkey->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QComboBox {\n"
 "    background: #2f2f2f;\n"
 "    border-radius: 8px;\n"
@@ -3216,6 +3232,7 @@ public:
 "    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #101020, stop:0.5 #0a0a1a, stop:1 #000000);\n"
 "    border-color: #1a1a2a;\n"
 "}", nullptr));
+        slot15->setText(QString());
         slot15Hotkey->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QComboBox {\n"
 "    background: #2f2f2f;\n"
 "    border-radius: 8px;\n"
@@ -3381,6 +3398,7 @@ public:
 "    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #101020, stop:0.5 #0a0a1a, stop:1 #000000);\n"
 "    border-color: #1a1a2a;\n"
 "}", nullptr));
+        slot16->setText(QString());
         slot16Hotkey->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QComboBox {\n"
 "    background: #2f2f2f;\n"
 "    border-radius: 8px;\n"
@@ -3547,6 +3565,7 @@ public:
 "    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #101020, stop:0.5 #0a0a1a, stop:1 #000000);\n"
 "    border-color: #1a1a2a;\n"
 "}", nullptr));
+        slot17->setText(QString());
         slot17Hotkey->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QComboBox {\n"
 "    background: #2f2f2f;\n"
 "    border-radius: 8px;\n"
@@ -3795,6 +3814,7 @@ public:
 "    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #101020, stop:0.5 #0a0a1a, stop:1 #000000);\n"
 "    border-color: #1a1a2a;\n"
 "}", nullptr));
+        slot18->setText(QString());
         slot18Hotkey->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QComboBox {\n"
 "    background: #2f2f2f;\n"
 "    border-radius: 8px;\n"
@@ -3877,6 +3897,7 @@ public:
 "    background: qradialgradient(cx:0.5, cy:0.5, radius:0.8, fx:0.5, fy:0.5, stop:0 #101020, stop:0.5 #0a0a1a, stop:1 #000000);\n"
 "    border-color: #1a1a2a;\n"
 "}", nullptr));
+        slot20->setText(QString());
         slot20Hotkey->setStyleSheet(QCoreApplication::translate("VoiceChangerMainWindow", "QComboBox {\n"
 "    background: #2f2f2f;\n"
 "    border-radius: 8px;\n"

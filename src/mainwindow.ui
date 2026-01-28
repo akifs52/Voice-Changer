@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>Voice Changer</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="Soundpack.qrc">
+    <normaloff>:/img/img/icon.ico</normaloff>:/img/img/icon.ico</iconset>
+  </property>
   <property name="styleSheet">
    <string notr="true">QMainWindow {
     background: qlineargradient(
@@ -2027,6 +2031,7 @@ QPushButton:pressed {
 }</string>
                 </property>
                 <property name="text">
+                 <string/>
                 </property>
                 <property name="icon">
                  <iconset resource="Soundpack.qrc">
@@ -2222,6 +2227,7 @@ QPushButton:pressed {
 }</string>
                 </property>
                 <property name="text">
+                 <string/>
                 </property>
                 <property name="icon">
                  <iconset resource="Soundpack.qrc">
@@ -2417,6 +2423,7 @@ QPushButton:pressed {
 }</string>
                 </property>
                 <property name="text">
+                 <string/>
                 </property>
                 <property name="icon">
                  <iconset resource="Soundpack.qrc">
@@ -2609,6 +2616,7 @@ QPushButton:pressed {
 }</string>
                 </property>
                 <property name="text">
+                 <string/>
                 </property>
                 <property name="icon">
                  <iconset resource="Soundpack.qrc">
@@ -2804,6 +2812,7 @@ QPushButton:pressed {
 }</string>
                 </property>
                 <property name="text">
+                 <string/>
                 </property>
                 <property name="icon">
                  <iconset resource="Soundpack.qrc">
@@ -3195,6 +3204,7 @@ QPushButton:pressed {
 }</string>
                 </property>
                 <property name="text">
+                 <string/>
                 </property>
                 <property name="icon">
                  <iconset resource="Soundpack.qrc">
@@ -3586,6 +3596,7 @@ QPushButton:pressed {
 }</string>
                 </property>
                 <property name="text">
+                 <string/>
                 </property>
                 <property name="icon">
                  <iconset resource="Soundpack.qrc">
@@ -3978,6 +3989,7 @@ QPushButton:pressed {
 }</string>
                 </property>
                 <property name="text">
+                 <string/>
                 </property>
                 <property name="icon">
                  <iconset resource="Soundpack.qrc">
@@ -4565,6 +4577,7 @@ QPushButton:pressed {
 }</string>
                 </property>
                 <property name="text">
+                 <string/>
                 </property>
                 <property name="icon">
                  <iconset resource="Soundpack.qrc">
@@ -4760,6 +4773,7 @@ QPushButton:pressed {
 }</string>
                 </property>
                 <property name="text">
+                 <string/>
                 </property>
                 <property name="icon">
                  <iconset resource="Soundpack.qrc">
@@ -5897,7 +5911,7 @@ QPushButton:hover {
 QPushButton:pressed {
     background-color: #1e8449;
 }
-QPushButton#recordingButton[recording="true"] {
+QPushButton#recordingButton[recording=&quot;true&quot;] {
     background-color: #e74c3c;
     color: white;
     border: none;
@@ -6976,4 +6990,10 @@ QPushButton#flangerButton:checked {
    </hints>
   </connection>
  </connections>
+ <slots>
+  <slot>on_miniSidebarToggleBtn_clicked()</slot>
+  <slot>on_presetsSidebarHideButton_clicked()</slot>
+  <slot>on_toggleEffectsSidebar_clicked()</slot>
+  <slot>on_settingsHideButton_clicked()</slot>
+ </slots>
 </ui>
