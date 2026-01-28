@@ -1,0 +1,121 @@
+# Build directories
+build/
+build-*/
+*.build/
+debug/
+release/
+
+# Qt specific
+*.pro.user*
+*.qmake.stash
+*.qm
+*.prl
+*.la
+*.a
+*.lib
+*.obj
+*.exe
+*.dll
+*.dylib
+*.so
+*.so.*
+*.app
+*.dll.*
+*.exe.*
+*.app.*
+
+# Qt Creator
+*.pro.user*
+*.qbs.user*
+*.autosave
+*.orig
+*.user
+
+# Qt MOC
+moc_*.cpp
+moc_*.h
+qrc_*.cpp
+ui_*.h
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+*.cmake
+CMakeScripts/
+
+# Compiled binaries
+voiceChanger
+VoiceChanger.exe
+voiceChanger.exe
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS specific
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Dependencies (assuming they're external)
+ffmpeg-master-latest-win64-lgpl-shared/
+soundtouch_dll-2.3.3/
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+*.bak
+*.backup
+
+# Audio files (development/test files)
+*.wav
+*.mp3
+*.flac
+*.aac
+*.ogg
+test_audio/
+samples/
+
+# Configuration files (user-specific)
+config.ini
+settings.ini
+*.cfg
+
+# Package files
+*.deb
+*.rpm
+*.dmg
+*.pkg
+*.msi
+*.zip
+*.tar.gz
+*.tar.bz2
+
+# Documentation build
+docs/build/
+docs/_build/
+
+# Coverage reports
+coverage/
+*.gcov
+*.gcda
+*.gcno
+
+# Profiling
+*.prof
+*.trace
+
+# Local development
+local/
+dev/
+test/
