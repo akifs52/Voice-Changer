@@ -1,0 +1,129 @@
+cmake_minimum_required(VERSION 3.20)
+project(VoiceChanger WASM CXX)
+
+# WebAssembly toolchain
+set(CMAKE_SYSTEM_NAME Emscripten)
+set(CMAKE_SYSTEM_VERSION 1)
+
+# C++ standard
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# Find Qt6 for WebAssembly
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Multimedia Widgets)
+
+# WebAssembly specific compiler flags
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -flto -s WASM=1 -s USE_PTHREADS=1")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s WASM=1 -s USE_PTHREADS=1")
+
+# Memory configuration
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s ALLOW_MEMORY_GROWTH=1 -s INITIAL_MEMORY=64MB -s MAX_MEMORY=512MB")
+
+# FFmpeg for WebAssembly
+set(FFMPEG_WASM_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/../ffmpeg-wasm-lib)
+set(FFMPEG_INCLUDE_DIRS ${FFMPEG_WASM_ROOT}/include)
+set(FFMPEG_LIBRARY_DIRS ${FFMPEG_WASM_ROOT}/lib)
+
+# FFmpeg libraries
+find_library(AVCODEC_LIB avcodec PATHS ${FFMPEG_LIBRARY_DIRS})
+find_library(AVFORMAT_LIB avformat PATHS ${FFMPEG_LIBRARY_DIRS})
+find_library(AVUTIL_LIB avutil PATHS ${FFMPEG_LIBRARY_DIRS})
+find_library(SWRESAMPLE_LIB swresample PATHS ${FFMPEG_LIBRARY_DIRS})
+find_library(SWSCALE_LIB swscale PATHS ${FFMPEG_LIBRARY_DIRS})
+
+# SoundTouch for WebAssembly
+set(SOUNDTOUCH_WASM_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/../soundtouch-wasm)
+set(SOUNDTOUCH_INCLUDE_DIRS ${SOUNDTOUCH_WASM_ROOT}/include)
+set(SOUNDTOUCH_LIBRARY_DIRS ${SOUNDTOUCH_WASM_ROOT}/lib)
+
+find_library(SOUNDTOUCH_LIB SoundTouch PATHS ${SOUNDTOUCH_LIBRARY_DIRS})
+
+# Source files
+set(SOURCES
+    main.cpp
+    mainwindow.cpp
+    voiceeffects.cpp
+    audiopipeline.cpp
+    circularbuffer.cpp
+    soundpack.cpp
+    recorder.cpp
+    hotkeys.cpp
+    effects.cpp
+    animationwidget.cpp
+    gloweffekt.cpp
+    presetnotification.cpp
+    loadouts.cpp
+    loading.cpp
+    deletesoundpack.cpp
+    psola.cpp
+)
+
+set(HEADERS
+    mainwindow.h
+    voiceeffects.h
+    audiopipeline.h
+    circularbuffer.h
+    soundpack.h
+    recorder.h
+    hotkeys.h
+    effects.h
+    animationwidget.h
+    gloweffekt.h
+    presetnotification.h
+    loadouts.h
+    loading.h
+    deletesoundpack.h
+    psola.h
+)
+
+# Create executable
+add_executable(VoiceChanger ${SOURCES} ${HEADERS})
+
+# Qt6 libraries
+target_link_libraries(VoiceChanger 
+    Qt6::Core 
+    Qt6::Gui 
+    Qt6::Multimedia 
+    Qt6::Widgets
+)
+
+# FFmpeg libraries
+target_link_libraries(VoiceChanger
+    ${AVCODEC_LIB}
+    ${AVFORMAT_LIB}
+    ${AVUTIL_LIB}
+    ${SWRESAMPLE_LIB}
+    ${SWSCALE_LIB}
+)
+
+# SoundTouch library
+target_link_libraries(VoiceChanger ${SOUNDTOUCH_LIB})
+
+# Include directories
+target_include_directories(VoiceChanger PRIVATE
+    ${FFMPEG_INCLUDE_DIRS}
+    ${SOUNDTOUCH_INCLUDE_DIRS}
+)
+
+# WebAssembly specific linker flags
+set_target_properties(VoiceChanger PROPERTIES
+    LINK_FLAGS "-s EXPORTED_FUNCTIONS='[\"_main\", \"_processAudio\", \"_initAudio\"]' \
+                 -s EXPORTED_RUNTIME_METHODS='[\"ccall\", \"cwrap\"]' \
+                 -s MODULARIZE=1 \
+                 -s EXPORT_NAME=\"VoiceChangerModule\" \
+                 -s ENVIRONMENT=\"web,webview,worker\" \
+                 -s FORCE_FILESYSTEM=1 \
+                 -s IDBFS=1 \
+                 -s LZ4=1 \
+                 -s ASSERTIONS=1 \
+                 -s DEMANGLE_SUPPORT=1"
+)
+
+# Post-build HTML generation
+set(CMAKE_EXECUTABLE_SUFFIX ".html")
+
+# Custom target for generating JS wrapper
+add_custom_command(TARGET VoiceChanger POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E echo "WebAssembly build completed"
+    COMMAND ${CMAKE_COMMAND} -E echo "Files: VoiceChanger.js, VoiceChanger.wasm, VoiceChanger.html"
+)
