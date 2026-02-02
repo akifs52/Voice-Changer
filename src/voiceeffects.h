@@ -15,6 +15,27 @@ typedef HANDLE SoundTouchHandle;
 #elif defined(Q_OS_LINUX)
 #include <SoundTouch.h>
 typedef void* SoundTouchHandle;
+#elif defined(__EMSCRIPTEN__)
+#include <SoundTouch.h>
+// WebAssembly SoundTouch implementation
+typedef void* SoundTouchHandle;
+// WebAssembly SoundTouch header will be included here
+// For now, we'll use a basic stub
+extern "C" {
+    // WebAssembly SoundTouch function declarations
+    void* wasm_soundtouch_create();
+    void wasm_soundtouch_destroy(void* handle);
+    void wasm_soundtouch_setSampleRate(void* handle, uint rate);
+    void wasm_soundtouch_setChannels(void* handle, uint channels);
+    void wasm_soundtouch_setPitchSemiTones(void* handle, float pitch);
+    void wasm_soundtouch_setRate(void* handle, float rate);
+    void wasm_soundtouch_setTempo(void* handle, float tempo);
+    void wasm_soundtouch_putSamples(void* handle, const float* samples, uint numSamples);
+    uint wasm_soundtouch_receiveSamples(void* handle, float* samples, uint maxSamples);
+    void wasm_soundtouch_flush(void* handle);
+    void wasm_soundtouch_clear(void* handle);
+    void wasm_soundtouch_setSetting(void* handle, int settingId, int settingValue);
+}
 #else
 typedef void* SoundTouchHandle;
 #endif

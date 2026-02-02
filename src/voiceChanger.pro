@@ -9,6 +9,11 @@ CONFIG += c++17
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+# WebAssembly plugin imports
+wasm {
+    QTPLUGIN += qwasmmedia qwasmintegration qsvgicon qgif qicns qico qjpeg qsvg qtga qtiff qwbmp qwebp qtlsbackendcertonly
+}
+
 SOURCES += \
     animationwidget.cpp \
     circularbuffer.cpp \
@@ -25,7 +30,8 @@ SOURCES += \
     recorder.cpp \
     soundpack.cpp \
     audiopipeline.cpp \
-    voiceeffects.cpp
+    voiceeffects.cpp \
+    wasm_soundtouch.cpp
 
 HEADERS += \
     animationwidget.h \
@@ -62,27 +68,65 @@ contains(ANDROID_TARGET_ARCH,arm64-v8a) {
 
 
 # FFmpeg libraries - cross-platform
-win32 {
-    CONFIG(release, debug|release): LIBS += -L$$PWD/../../ffmpeg-master-latest-win64-lgpl-shared/lib/ -llibavcodec.dll
-    else:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../ffmpeg-master-latest-win64-lgpl-shared/lib/ -llibavcodec.dll
-    INCLUDEPATH += $$PWD/../../ffmpeg-master-latest-win64-lgpl-shared/include
-    DEPENDPATH += $$PWD/../../ffmpeg-master-latest-win64-lgpl-shared/include
-
-    CONFIG(release, debug|release): LIBS += -L$$PWD/../../ffmpeg-master-latest-win64-lgpl-shared/lib/ -llibavformat.dll
-    else:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../ffmpeg-master-latest-win64-lgpl-shared/lib/ -llibavformat.dll
-    INCLUDEPATH += $$PWD/../../ffmpeg-master-latest-win64-lgpl-shared/include
-    DEPENDPATH += $$PWD/../../ffmpeg-master-latest-win64-lgpl-shared/include
-
-    CONFIG(release, debug|release): LIBS += -L$$PWD/../../ffmpeg-master-latest-win64-lgpl-shared/lib/ -llibavutil.dll
-    else:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../ffmpeg-master-latest-win64-lgpl-shared/lib/ -llibavutil.dll
-    INCLUDEPATH += $$PWD/../../ffmpeg-master-latest-win64-lgpl-shared/include
-    DEPENDPATH += $$PWD/../../ffmpeg-master-latest-win64-lgpl-shared/include
-
-    CONFIG(release, debug|release): LIBS += -L$$PWD/../../ffmpeg-master-latest-win64-lgpl-shared/lib/ -llibswresample.dll
-    else:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../ffmpeg-master-latest-win64-lgpl-shared/lib/ -llibswresample.dll
-    INCLUDEPATH += $$PWD/../../ffmpeg-master-latest-win64-lgpl-shared/include
-    DEPENDPATH += $$PWD/../../ffmpeg-master-latest-win64-lgpl-shared/include
+wasm {
+    message("WebAssembly build configuration")
+    
+    # FFmpeg libraries for WebAssembly - .a files in the main directory
+    FFMPEG_LIBS = -LD:/soundtouch-wasm/FFmpeg/wasm_build \
+        -lavcodec \
+        -lavformat \
+        -lavutil \
+        -lswresample \
+        -lswscale
+        
+    # SoundTouch library for WebAssembly  
+    SOUNDTOUCH_LIBS = -LD:/soundtouch-wasm/soundtouch-wasm/lib \
+        -lSoundTouch
+        
+    # WebAssembly-specific settings
+    QMAKE_LFLAGS += -s WASM=1 \
+        -s ALLOW_MEMORY_GROWTH=1 \
+        -s MAX_WEBGL_VERSION=2 \
+        -s WEBGL2_BACKUP_COMPATIBILITY=1 \
+        -s DISABLE_EXCEPTION_CATCHING=1 \
+        -s PROXY_TO_PTHREAD=1 \
+        -s PTHREAD_POOL_SIZE=4 \
+        -s EXPORTED_FUNCTIONS="['_main', '_processAudio', '_setEffect', '_setPitch', '_setTempo']" \
+        -s EXPORTED_RUNTIME_METHODS="['ccall', 'cwrap']" \
+        -s MODULARIZE=1 \
+        -s EXPORT_NAME="VoiceChangerModule"
+        
+    # Include paths for WebAssembly libraries
+    INCLUDEPATH += D:/soundtouch-wasm/FFmpeg/wasm_build \
+        D:/soundtouch-wasm/soundtouch-wasm/include
+        
+    # Link libraries
+    LIBS += $$FFMPEG_LIBS $$SOUNDTOUCH_LIBS
 }
+
+win32 {
+    # Windows FFmpeg configuration
+    win32:CONFIG(release, debug|release): LIBS += -LD:/ffmpeg-master-latest-win64-lgpl-shared/lib/ -llibswresample.dll
+    else:win32:CONFIG(debug, debug|release): LIBS += -LD:/ffmpeg-master-latest-win64-lgpl-shared/lib/ -llibswresample.dll
+    else:unix: LIBS += -LD:/ffmpeg-master-latest-win64-lgpl-shared/lib/ -llibswresample.dll
+
+    win32:CONFIG(release, debug|release): LIBS += -LD:/ffmpeg-master-latest-win64-lgpl-shared/lib/ -llibavformat.dll
+    else:win32:CONFIG(debug, debug|release): LIBS += -LD:/ffmpeg-master-latest-win64-lgpl-shared/lib/ -llibavformat.dll
+    else:unix: LIBS += -LD:/ffmpeg-master-latest-win64-lgpl-shared/lib/ -llibavformat.dll
+
+    win32:CONFIG(release, debug|release): LIBS += -LD:/ffmpeg-master-latest-win64-lgpl-shared/lib/ -llibavcodec.dll
+    else:win32:CONFIG(debug, debug|release): LIBS += -LD:/ffmpeg-master-latest-win64-lgpl-shared/lib/ -llibavcodec.dll
+    else:unix: LIBS += -LD:/ffmpeg-master-latest-win64-lgpl-shared/lib/ -llibavcodec.dll
+
+    # Add missing avutil library
+    win32:CONFIG(release, debug|release): LIBS += -LD:/ffmpeg-master-latest-win64-lgpl-shared/lib/ -llibavutil.dll
+    else:win32:CONFIG(debug, debug|release): LIBS += -LD:/ffmpeg-master-latest-win64-lgpl-shared/lib/ -llibavutil.dll
+    else:unix: LIBS += -LD:/ffmpeg-master-latest-win64-lgpl-shared/lib/ -llibavutil.dll
+
+    INCLUDEPATH += D:/ffmpeg-master-latest-win64-lgpl-shared/include
+    DEPENDPATH += D:/ffmpeg-master-latest-win64-lgpl-shared/include
+}
+
 unix:!macx {
 LIBS += -lavcodec -lavformat -lavutil -lswresample -lX11
     INCLUDEPATH += /usr/include/ffmpeg
@@ -116,11 +160,15 @@ win32 {
 }
 
 # SoundTouch library - cross-platform
+
 win32 {
-    CONFIG(release, debug|release): LIBS += -L$$PWD/../../soundtouch_dll-2.3.3/ -lSoundTouchDLL_x64
-    else:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../soundtouch_dll-2.3.3/ -lSoundTouchDLL_x64
-    INCLUDEPATH += $$PWD/../../soundtouch_dll-2.3.3
-    DEPENDPATH += $$PWD/../../soundtouch_dll-2.3.3
+    # Windows SoundTouch configuration
+    win32:CONFIG(release, debug|release): LIBS += -LD:/soundtouch_dll-2.3.3/ -lSoundTouchDLL_x64
+    else:win32:CONFIG(debug, debug|release): LIBS += -LD:/soundtouch_dll-2.3.3/ -lSoundTouchDLL_x64
+    else:unix: LIBS += -LD:/soundtouch_dll-2.3.3/ -lSoundTouchDLL_x64
+
+    INCLUDEPATH += D:/soundtouch_dll-2.3.3
+    DEPENDPATH += D:/soundtouch_dll-2.3.3
 }
 unix:!macx {
     LIBS += -lSoundTouch -lX11
@@ -130,3 +178,9 @@ unix:!macx {
 macx {
     LIBS += -lsoundtouch
 }
+
+
+
+
+
+

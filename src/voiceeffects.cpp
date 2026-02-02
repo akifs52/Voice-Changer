@@ -215,7 +215,7 @@ void VoiceEffects::initializeRadioStatic()
     
     // Generate white noise
     for (size_t i = 0; i < radioStatic.noiseBuffer.size(); ++i) {
-        radioStatic.noiseBuffer[i] = (static_cast<float>(rand()) / RAND_MAX) * 2.0f - 1.0f;
+        radioStatic.noiseBuffer[i] = (static_cast<float>(rand()) / static_cast<float>(RAND_MAX)) * 2.0f - 1.0f;
     }
 }
 
@@ -767,10 +767,10 @@ void VoiceEffects::designBandPass(float lowFreq, float highFreq, float sampleRat
     filter.a2 = 1.0f - bw;
 }
 
-void VoiceEffects::applyPitchCorrection(float* input, float* output, int bufferSize, float sampleRate)
+void VoiceEffects::applyPitchCorrection(float* input, float* output, int bufferSize, float /*sampleRate*/)
 {
     // Simplified autotune effect - snap to musical scales
- 
+
     for (int i = 0; i < bufferSize; ++i) {
         // Add sample to analysis buffer
         pitchCorrection.analysisBuffer[pitchCorrection.analysisIndex] = input[i];
@@ -792,7 +792,7 @@ void VoiceEffects::applyPitchCorrection(float* input, float* output, int bufferS
     }
 }
 
-void VoiceEffects::applyRadioStatic(float* input, float* output, int bufferSize, float sampleRate)
+void VoiceEffects::applyRadioStatic(float* input, float* output, int bufferSize, float /*sampleRate*/)
 {
     for (int i = 0; i < bufferSize; ++i) {
         float dry = input[i];
@@ -804,8 +804,8 @@ void VoiceEffects::applyRadioStatic(float* input, float* output, int bufferSize,
         wet += noise * radioStatic.staticLevel;
         
         // Add very rare crackles with reduced intensity
-        if (static_cast<float>(rand()) / RAND_MAX < radioStatic.crackleProbability) {
-            wet += (static_cast<float>(rand()) / RAND_MAX) * 0.1f - 0.05f;  // Much reduced intensity
+        if (static_cast<float>(rand()) / static_cast<float>(RAND_MAX) < radioStatic.crackleProbability) {
+            wet += (static_cast<float>(rand()) / static_cast<float>(RAND_MAX)) * 0.1f - 0.05f;  // Much reduced intensity
         }
         
         // Minimal radio effect - mostly dry signal
@@ -941,6 +941,11 @@ void VoiceEffects::setSampleRate(SoundTouchHandle handle, uint rate)
     if (handle) {
         ((soundtouch::SoundTouch*)handle)->setSampleRate(rate);
     }
+#elif defined(__EMSCRIPTEN__)
+    // WebAssembly implementation
+    if (handle) {
+        wasm_soundtouch_setSampleRate(handle, rate);
+    }
 #else
 #endif
 }
@@ -952,6 +957,11 @@ void VoiceEffects::setChannels(SoundTouchHandle handle, uint channels)
 #elif defined(Q_OS_LINUX)
     if (handle) {
         ((soundtouch::SoundTouch*)handle)->setChannels(channels);
+    }
+#elif defined(__EMSCRIPTEN__)
+    // WebAssembly implementation
+    if (handle) {
+        wasm_soundtouch_setChannels(handle, channels);
     }
 #else
 #endif
@@ -965,6 +975,11 @@ void VoiceEffects::setPitchSemiTones(SoundTouchHandle handle, float pitch)
     if (handle) {
         ((soundtouch::SoundTouch*)handle)->setPitchSemiTones(pitch);
     }
+#elif defined(__EMSCRIPTEN__)
+    // WebAssembly implementation
+    if (handle) {
+        wasm_soundtouch_setPitchSemiTones(handle, pitch);
+    }
 #else
 #endif
 }
@@ -976,6 +991,11 @@ void VoiceEffects::setRate(SoundTouchHandle handle, float rate)
 #elif defined(Q_OS_LINUX)
     if (handle) {
         ((soundtouch::SoundTouch*)handle)->setRate(rate);
+    }
+#elif defined(__EMSCRIPTEN__)
+    // WebAssembly implementation
+    if (handle) {
+        wasm_soundtouch_setRate(handle, rate);
     }
 #else
 #endif
@@ -989,6 +1009,11 @@ void VoiceEffects::setTempo(SoundTouchHandle handle, float tempo)
     if (handle) {
         ((soundtouch::SoundTouch*)handle)->setTempo(tempo);
     }
+#elif defined(__EMSCRIPTEN__)
+    // WebAssembly implementation
+    if (handle) {
+        wasm_soundtouch_setTempo(handle, tempo);
+    }
 #else
 #endif
 }
@@ -1001,6 +1026,11 @@ void VoiceEffects::setSetting(SoundTouchHandle handle, int settingId, int settin
     if (handle) {
         ((soundtouch::SoundTouch*)handle)->setSetting(settingId, settingValue);
     }
+#elif defined(__EMSCRIPTEN__)
+    // WebAssembly implementation
+    if (handle) {
+        wasm_soundtouch_setSetting(handle, settingId, settingValue);
+    }
 #else
 #endif
 }
@@ -1012,6 +1042,11 @@ void VoiceEffects::putSamples(SoundTouchHandle handle, const float* samples, uin
 #elif defined(Q_OS_LINUX)
     if (handle) {
         ((soundtouch::SoundTouch*)handle)->putSamples(samples, numSamples);
+    }
+#elif defined(__EMSCRIPTEN__)
+    // WebAssembly implementation
+    if (handle) {
+        wasm_soundtouch_putSamples(handle, samples, numSamples);
     }
 #else
 #endif
@@ -1042,6 +1077,11 @@ void VoiceEffects::flush(SoundTouchHandle handle)
     if (handle) {
         ((soundtouch::SoundTouch*)handle)->flush();
     }
+#elif defined(__EMSCRIPTEN__)
+    // WebAssembly implementation
+    if (handle) {
+        wasm_soundtouch_flush(handle);
+    }
 #else
 #endif
 }
@@ -1053,6 +1093,11 @@ void VoiceEffects::clear(SoundTouchHandle handle)
 #elif defined(Q_OS_LINUX)
     if (handle) {
         ((soundtouch::SoundTouch*)handle)->clear();
+    }
+#elif defined(__EMSCRIPTEN__)
+    // WebAssembly implementation
+    if (handle) {
+        wasm_soundtouch_clear(handle);
     }
 #else
 #endif
