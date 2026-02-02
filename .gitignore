@@ -119,3 +119,15 @@ coverage/
 local/
 dev/
 test/
+
+# WebAssembly (WASM)
+*.wasm
+*.wat
+*.js.map
+*.wasm.map
+wasm/
+pkg/
+target/wasm32-*/
+node_modules/
+dist/
+public/wasm/
